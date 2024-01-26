@@ -1,0 +1,6 @@
+# VS cache
+.vs
+
+# Build results
+bin
+obj
