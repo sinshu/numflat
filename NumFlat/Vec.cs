@@ -44,7 +44,5 @@ namespace NumFlat
         public int Count => count;
         public int Stride => stride;
         public Memory<T> Memory => memory;
-
-        public static Vec<T> Empty => default;
     }
 }
