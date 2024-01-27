@@ -8,9 +8,9 @@ namespace NumFlat
 {
     public partial struct Vec<T> : IReadOnlyList<T> where T : unmanaged, INumberBase<T>
     {
-        private int count;
-        private int stride;
-        private Memory<T> memory;
+        private readonly int count;
+        private readonly int stride;
+        private readonly Memory<T> memory;
 
         public Vec(int count, int stride, Memory<T> memory)
         {
