@@ -35,10 +35,6 @@ namespace NumFlat
 
         public Vec(int count) : this(count, 1, new T[count])
         {
-            if (count <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), "The length of the vector must be a positive integer.");
-            }
         }
 
         public Vec(Memory<T> memory) : this(memory.Length, 1, memory)
@@ -72,7 +68,7 @@ namespace NumFlat
         {
             if (destination.count != this.count)
             {
-                throw new ArgumentException("The source and destination length must be the same.");
+                throw new ArgumentException("The source and destination must be the same length.");
             }
 
             var st = this.memory.Span;
