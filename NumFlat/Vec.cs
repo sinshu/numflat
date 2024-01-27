@@ -45,6 +45,22 @@ namespace NumFlat
         {
         }
 
+        public void Fill(T value)
+        {
+            var span = memory.Span;
+            var position = 0;
+            while (position < span.Length)
+            {
+                span[position] = value;
+                position += stride;
+            }
+        }
+
+        public void Clear()
+        {
+            Fill(default);
+        }
+
         public Vec<T> Subvector(int index, int count)
         {
             var stride = this.stride;

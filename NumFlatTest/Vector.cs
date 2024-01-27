@@ -58,6 +58,68 @@ namespace NumFlatTest
                 vector[vectorIndex] = -1;
                 Assert.That(vector[vectorIndex] == -1);
             }
+
+            for (var position = 0; position < memory.Length; position++)
+            {
+                if (position % stride == 0)
+                {
+                    Assert.That(memory[position] == -1);
+                }
+                else
+                {
+                    Assert.That(memory[position] != -1);
+                }
+            }
+        }
+
+        [TestCase(1, 1, new int[] { 1 })]
+        [TestCase(3, 1, new int[] { 1, 2, 3 })]
+        [TestCase(3, 2, new int[] { 1, 2, 3, 4, 5 })]
+        [TestCase(3, 3, new int[] { 1, 2, 3, 4, 5, 6, 7 })]
+        [TestCase(2, 3, new int[] { 1, 2, 3, 4 })]
+        [TestCase(1, 3, new int[] { 1 })]
+        public void Fill(int count, int stride, int[] memory)
+        {
+            var vector = new Vec<int>(count, stride, memory);
+            vector.Fill(-1);
+            Assert.That(vector.All(value => value == -1));
+
+            for (var position = 0; position < memory.Length; position++)
+            {
+                if (position % stride == 0)
+                {
+                    Assert.That(memory[position] == -1);
+                }
+                else
+                {
+                    Assert.That(memory[position] != -1);
+                }
+            }
+        }
+
+        [TestCase(1, 1, new int[] { 1 })]
+        [TestCase(3, 1, new int[] { 1, 2, 3 })]
+        [TestCase(3, 2, new int[] { 1, 2, 3, 4, 5 })]
+        [TestCase(3, 3, new int[] { 1, 2, 3, 4, 5, 6, 7 })]
+        [TestCase(2, 3, new int[] { 1, 2, 3, 4 })]
+        [TestCase(1, 3, new int[] { 1 })]
+        public void Clear(int count, int stride, int[] memory)
+        {
+            var vector = new Vec<int>(count, stride, memory);
+            vector.Clear();
+            Assert.That(vector.All(value => value == 0));
+
+            for (var position = 0; position < memory.Length; position++)
+            {
+                if (position % stride == 0)
+                {
+                    Assert.That(memory[position] == 0);
+                }
+                else
+                {
+                    Assert.That(memory[position] != 0);
+                }
+            }
         }
 
         [TestCase(42, 1, 1)]
