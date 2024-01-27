@@ -77,5 +77,28 @@ namespace NumFlatTest
             var actual = vector.ToArray();
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        [TestCase(42, 1, 1, 0, 1)]
+        [TestCase(42, 1, 3, 0, 1)]
+        [TestCase(42, 3, 1, 0, 2)]
+        [TestCase(42, 3, 1, 1, 2)]
+        [TestCase(42, 3, 1, 0, 3)]
+        [TestCase(42, 3, 3, 0, 2)]
+        [TestCase(42, 3, 3, 1, 2)]
+        [TestCase(42, 3, 3, 0, 3)]
+        [TestCase(42, 11, 7, 3, 5)]
+        public void Subvector(int seed, int srcCount, int srcStride, int dstIndex, int dstCount)
+        {
+            var vector = Utilities.CreateRandomVector(seed, srcCount, srcStride);
+
+            var expected = new double[dstCount];
+            for (var i = 0; i < dstCount; i++)
+            {
+                expected[i] = vector[dstIndex + i];
+            }
+
+            var actual = vector.Subvector(dstIndex, dstCount).ToArray();
+            CollectionAssert.AreEqual(expected, actual);
+        }
     }
 }

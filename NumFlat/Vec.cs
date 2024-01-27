@@ -6,7 +6,7 @@ using System.Runtime.Intrinsics;
 
 namespace NumFlat
 {
-    public struct Vec<T> : IEnumerable<T> where T : unmanaged, INumberBase<T>
+    public struct Vec<T> : IReadOnlyList<T> where T : unmanaged, INumberBase<T>
     {
         private int count;
         private int stride;
