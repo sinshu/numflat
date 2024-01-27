@@ -50,7 +50,7 @@ namespace NumFlat
             }
         }
 
-        public static void ElemMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             if (destination.Count != x.Count || destination.Count != y.Count)
             {
@@ -72,7 +72,7 @@ namespace NumFlat
             }
         }
 
-        public static void ElemDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             if (destination.Count != x.Count || destination.Count != y.Count)
             {

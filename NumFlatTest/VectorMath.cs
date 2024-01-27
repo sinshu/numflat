@@ -54,7 +54,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomVector(xSeed, count, xStride);
             var y = Utilities.CreateRandomVector(ySeed, count, yStride);
             var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
-            Vec.ElemMul(x, y, destination);
+            Vec.PointwiseMul(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).ToArray();
             var actual = destination.ToArray();
@@ -72,7 +72,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomVector(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorNonZero(ySeed, count, yStride);
             var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
-            Vec.ElemDiv(x, y, destination);
+            Vec.PointwiseDiv(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 / val2).ToArray();
             var actual = destination.ToArray();
