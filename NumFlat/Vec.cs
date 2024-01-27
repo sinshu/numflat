@@ -41,6 +41,10 @@ namespace NumFlat
             }
         }
 
+        public Vec(Memory<T> memory) : this(memory.Length, 1, memory)
+        {
+        }
+
         public Vec<T> Subvector(int index, int count)
         {
             var stride = this.stride;

@@ -67,7 +67,7 @@ namespace NumFlatTest
         [TestCase(42, 11, 7)]
         public void Enumerate(int seed, int count, int stride)
         {
-            var vector = Utilities.CreateRandomVector(seed, count, stride);
+            var vector = Utilities.CreateRandomVectorDouble(seed, count, stride);
 
             var expected = new double[vector.Count];
             for (var i = 0; i < vector.Count; i++)
@@ -90,7 +90,7 @@ namespace NumFlatTest
         [TestCase(42, 11, 7, 3, 5)]
         public void Subvector(int seed, int srcCount, int srcStride, int dstIndex, int dstCount)
         {
-            var vector = Utilities.CreateRandomVector(seed, srcCount, srcStride);
+            var vector = Utilities.CreateRandomVectorDouble(seed, srcCount, srcStride);
 
             var expected = new double[dstCount];
             for (var i = 0; i < dstCount; i++)

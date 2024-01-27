@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using OpenBlasSharp;
 
 namespace NumFlat
 {
@@ -90,6 +91,33 @@ namespace NumFlat
                 px += x.Stride;
                 py += y.Stride;
                 pd += destination.Stride;
+            }
+        }
+
+        public static unsafe float DotProduct(Vec<float> x, Vec<float> y)
+        {
+            fixed (float* px = x.Memory.Span)
+            fixed (float* py = y.Memory.Span)
+            {
+                return Blas.Sdot(x.Count, px, x.Stride, py, y.Stride);
+            }
+        }
+
+        public static unsafe double DotProduct(Vec<double> x, Vec<double> y)
+        {
+            fixed (double* px = x.Memory.Span)
+            fixed (double* py = y.Memory.Span)
+            {
+                return Blas.Ddot(x.Count, px, x.Stride, py, y.Stride);
+            }
+        }
+
+        public static unsafe Complex DotProduct(Vec<Complex> x, Vec<Complex> y)
+        {
+            fixed (Complex* px = x.Memory.Span)
+            fixed (Complex* py = y.Memory.Span)
+            {
+                return Blas.Zdotu(x.Count, px, x.Stride, py, y.Stride);
             }
         }
     }
