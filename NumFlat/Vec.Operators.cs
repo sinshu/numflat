@@ -8,10 +8,9 @@ namespace NumFlat
     {
         public static Vec<T> operator +(Vec<T> x, Vec<T> y)
         {
-            if (x.count != y.count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y);
 
             var destination = new Vec<T>(x.count);
             Vec.Add(x, y, destination);
@@ -20,10 +19,9 @@ namespace NumFlat
 
         public static Vec<T> operator -(Vec<T> x, Vec<T> y)
         {
-            if (x.count != y.count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y);
 
             var destination = new Vec<T>(x.count);
             Vec.Sub(x, y, destination);

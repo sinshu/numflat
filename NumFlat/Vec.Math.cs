@@ -6,12 +6,12 @@ namespace NumFlat
 {
     public static class Vec
     {
-        public static void Add<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Add<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
         {
-            if (destination.Count != x.Count || destination.Count != y.Count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -28,12 +28,12 @@ namespace NumFlat
             }
         }
 
-        public static void Sub<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Sub<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
         {
-            if (destination.Count != x.Count || destination.Count != y.Count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -50,12 +50,12 @@ namespace NumFlat
             }
         }
 
-        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
         {
-            if (destination.Count != x.Count || destination.Count != y.Count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -72,12 +72,12 @@ namespace NumFlat
             }
         }
 
-        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
         {
-            if (destination.Count != x.Count || destination.Count != y.Count)
-            {
-                throw new ArgumentException("The vectors must be the same length.");
-            }
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
