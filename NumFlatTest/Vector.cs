@@ -18,11 +18,11 @@ namespace NumFlatTest
 
             Assert.That(vector.Count == count);
             Assert.That(vector.Stride == 1);
-            Assert.IsTrue(vector.Memory.Length == count);
+            Assert.That(vector.Memory.Length == count);
 
-            for (var vectorIndex = 0; vectorIndex < count; vectorIndex++)
+            for (var i = 0; i < count; i++)
             {
-                Assert.That(vector[vectorIndex] == 0);
+                Assert.That(vector[i] == 0);
             }
         }
 
@@ -36,11 +36,11 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count, stride, memory);
 
-            var memoryIndex = 0;
-            for (var vectorIndex = 0; vectorIndex < count; vectorIndex++)
+            var position = 0;
+            for (var i = 0; i < count; i++)
             {
-                Assert.That(vector[vectorIndex] == memory[memoryIndex]);
-                memoryIndex += stride;
+                Assert.That(vector[i] == memory[position]);
+                position += stride;
             }
         }
 
@@ -54,10 +54,10 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count, stride, memory);
 
-            for (var vectorIndex = 0; vectorIndex < count; vectorIndex++)
+            for (var i = 0; i < count; i++)
             {
-                vector[vectorIndex] = -1;
-                Assert.That(vector[vectorIndex] == -1);
+                vector[i] = -1;
+                Assert.That(vector[i] == -1);
             }
 
             for (var position = 0; position < memory.Length; position++)

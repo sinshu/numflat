@@ -38,6 +38,16 @@ namespace NumFlat
             this.memory = memory;
         }
 
+        public Mat(int rowCount, int colCount) : this(rowCount, colCount, rowCount, new T[rowCount * colCount])
+        {
+        }
+
+        public T this[int row, int col]
+        {
+            get => memory.Span[stride * col + row];
+            set => memory.Span[stride * col + row] = value;
+        }
+
         public int RowCount => rowCount;
         public int ColCount => colCount;
         public int Stride => stride;
