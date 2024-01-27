@@ -68,6 +68,25 @@ namespace NumFlat
             return new Vec<T>(count, stride, memory);
         }
 
+        public void CopyTo(Vec<T> destination)
+        {
+            if (destination.count != this.count)
+            {
+                throw new ArgumentException("The source and destination length must be the same.");
+            }
+
+            var st = this.memory.Span;
+            var sd = destination.memory.Span;
+            var pt = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = st[pt];
+                pt += this.stride;
+                pd += destination.stride;
+            }
+        }
+
         public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)this).GetEnumerator();

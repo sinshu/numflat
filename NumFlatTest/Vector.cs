@@ -122,14 +122,14 @@ namespace NumFlatTest
             }
         }
 
-        [TestCase(42, 1, 1)]
-        [TestCase(42, 1, 3)]
-        [TestCase(42, 3, 1)]
-        [TestCase(42, 10, 2)]
-        [TestCase(42, 11, 7)]
-        public void Enumerate(int seed, int count, int stride)
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(3, 1)]
+        [TestCase(10, 2)]
+        [TestCase(11, 7)]
+        public void Enumerate(int count, int stride)
         {
-            var vector = Utilities.CreateRandomVectorDouble(seed, count, stride);
+            var vector = Utilities.CreateRandomVectorDouble(42, count, stride);
 
             var expected = new double[vector.Count];
             for (var i = 0; i < vector.Count; i++)
@@ -141,18 +141,18 @@ namespace NumFlatTest
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        [TestCase(42, 1, 1, 0, 1)]
-        [TestCase(42, 1, 3, 0, 1)]
-        [TestCase(42, 3, 1, 0, 2)]
-        [TestCase(42, 3, 1, 1, 2)]
-        [TestCase(42, 3, 1, 0, 3)]
-        [TestCase(42, 3, 3, 0, 2)]
-        [TestCase(42, 3, 3, 1, 2)]
-        [TestCase(42, 3, 3, 0, 3)]
-        [TestCase(42, 11, 7, 3, 5)]
-        public void Subvector(int seed, int srcCount, int srcStride, int dstIndex, int dstCount)
+        [TestCase(1, 1, 0, 1)]
+        [TestCase(1, 3, 0, 1)]
+        [TestCase(3, 1, 0, 2)]
+        [TestCase(3, 1, 1, 2)]
+        [TestCase(3, 1, 0, 3)]
+        [TestCase(3, 3, 0, 2)]
+        [TestCase(3, 3, 1, 2)]
+        [TestCase(3, 3, 0, 3)]
+        [TestCase(11, 7, 3, 5)]
+        public void Subvector(int srcCount, int srcStride, int dstIndex, int dstCount)
         {
-            var vector = Utilities.CreateRandomVectorDouble(seed, srcCount, srcStride);
+            var vector = Utilities.CreateRandomVectorDouble(42, srcCount, srcStride);
 
             var expected = new double[dstCount];
             for (var i = 0; i < dstCount; i++)
@@ -162,6 +162,45 @@ namespace NumFlatTest
 
             var actual = vector.Subvector(dstIndex, dstCount).ToArray();
             CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestCase(1, 1, 0, 1, 1)]
+        [TestCase(1, 3, 0, 1, 3)]
+        [TestCase(3, 1, 0, 2, 1)]
+        [TestCase(3, 1, 1, 2, 1)]
+        [TestCase(3, 1, 0, 3, 1)]
+        [TestCase(3, 3, 0, 2, 5)]
+        [TestCase(3, 3, 1, 2, 3)]
+        [TestCase(3, 3, 0, 3, 2)]
+        [TestCase(11, 7, 3, 5, 4)]
+        public void CopyTo(int dstCount, int dstStride, int subIndex, int subCount, int srcStride)
+        {
+            var vector = Utilities.CreateRandomVectorDouble(42, dstCount, dstStride);
+            var expected = vector.ToArray();
+
+            var subvector = vector.Subvector(subIndex, subCount);
+            var source = Utilities.CreateRandomVectorDouble(57, subCount, srcStride);
+            source.CopyTo(subvector);
+            for (var i = 0; i < subCount; i++)
+            {
+                expected[subIndex + i] = source[i];
+            }
+            var actual = vector.ToArray();
+
+            CollectionAssert.AreEqual(subvector, source);
+            CollectionAssert.AreEqual(expected, actual);
+
+            for (var position = 0; position < vector.Memory.Length; position++)
+            {
+                if (position % vector.Stride == 0)
+                {
+                    Assert.That(!double.IsNaN(vector.Memory.Span[position]));
+                }
+                else
+                {
+                    Assert.That(double.IsNaN(vector.Memory.Span[position]));
+                }
+            }
         }
     }
 }
