@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace NumFlatTest
 {
-    public class VectorTests
+    public class Vector
     {
         [TestCase(1)]
         [TestCase(2)]
