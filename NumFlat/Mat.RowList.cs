@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace NumFlat
 {
@@ -24,7 +23,15 @@ namespace NumFlat
 
             public Vec<T> this[int index]
             {
-                get => new Vec<T>(colCount, stride, memory.Slice(index, stride * (colCount - 1) + 1));
+                get
+                {
+                    if ((uint)index >= rowCount)
+                    {
+                        throw new IndexOutOfRangeException("The index must be within the number of rows of the matrix.");
+                    }
+
+                    return new Vec<T>(colCount, stride, memory.Slice(index, stride * (colCount - 1) + 1));
+                }
             }
 
             public int Count => rowCount;

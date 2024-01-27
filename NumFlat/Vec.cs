@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -93,68 +92,31 @@ namespace NumFlat
             }
         }
 
-        public IEnumerator<T> GetEnumerator() => new Enumerator(ref this);
-
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)this).GetEnumerator();
-
         public T this[int index]
         {
-            get => memory.Span[stride * index];
-            set => memory.Span[stride * index] = value;
+            get
+            {
+                if ((uint)index >= count)
+                {
+                    throw new IndexOutOfRangeException("The index must be within the length of the vector.");
+                }
+
+                return memory.Span[stride * index];
+            }
+
+            set
+            {
+                if ((uint)index >= count)
+                {
+                    throw new IndexOutOfRangeException("The index must be within the length of the vector.");
+                }
+
+                memory.Span[stride * index] = value;
+            }
         }
 
         public int Count => count;
         public int Stride => stride;
         public Memory<T> Memory => memory;
-
-
-
-        public struct Enumerator : IEnumerator<T>, IEnumerator
-        {
-            private readonly int stride;
-            private readonly Memory<T> memory;
-            private int position;
-            private T current;
-
-            internal Enumerator(ref Vec<T> vector)
-            {
-                this.stride = vector.stride;
-                this.memory = vector.memory;
-                this.position = -vector.stride;
-                this.current = default;
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public bool MoveNext()
-            {
-                position += stride;
-                if (position < memory.Length)
-                {
-                    current = memory.Span[position];
-                    return true;
-                }
-                else
-                {
-                    current = default;
-                    return false;
-                }
-            }
-
-            public T Current => current;
-
-            object? IEnumerator.Current
-            {
-                get => current;
-            }
-
-            void IEnumerator.Reset()
-            {
-                this.position = -stride;
-                this.current = default;
-            }
-        }
     }
 }
