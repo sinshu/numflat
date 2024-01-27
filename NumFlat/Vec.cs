@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.Intrinsics;
 
 namespace NumFlat
 {
-    public partial struct Vec<T> : IReadOnlyList<T> where T : struct, INumberBase<T>
+    public partial struct Vec<T> : IReadOnlyList<T> where T : unmanaged, INumberBase<T>
     {
         private readonly int count;
         private readonly int stride;

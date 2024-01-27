@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace NumFlat
 {
     public static class Vec
     {
-        public static void Add<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
+        public static void Add<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -28,7 +27,7 @@ namespace NumFlat
             }
         }
 
-        public static void Sub<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
+        public static void Sub<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -50,7 +49,7 @@ namespace NumFlat
             }
         }
 
-        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
+        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -72,7 +71,7 @@ namespace NumFlat
             }
         }
 
-        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : struct, INumberBase<T>
+        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
