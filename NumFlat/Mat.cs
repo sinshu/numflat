@@ -74,5 +74,7 @@ namespace NumFlat
         public int ColCount => colCount;
         public int Stride => stride;
         public Memory<T> Memory => memory;
+        public RowList Rows => new RowList(ref this);
+        public ColList Cols => new ColList(ref this);
     }
 }

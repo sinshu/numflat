@@ -64,9 +64,9 @@ namespace NumFlatTest
             {
                 memory[i] = float.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextSingle(random);
+                memory[position] = NextSingle(random);
             }
 
             return new Vec<float>(count, stride, memory);
@@ -81,9 +81,9 @@ namespace NumFlatTest
             {
                 memory[i] = float.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextSingleNonZero(random);
+                memory[position] = NextSingleNonZero(random);
             }
 
             return new Vec<float>(count, stride, memory);
@@ -98,9 +98,9 @@ namespace NumFlatTest
             {
                 memory[i] = double.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextDouble(random);
+                memory[position] = NextDouble(random);
             }
 
             return new Vec<double>(count, stride, memory);
@@ -115,12 +115,34 @@ namespace NumFlatTest
             {
                 memory[i] = double.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextDoubleNonZero(random);
+                memory[position] = NextDoubleNonZero(random);
             }
 
             return new Vec<double>(count, stride, memory);
+        }
+
+        public static Mat<double> CreateRandomMatrixDouble(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new double[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = double.NaN;
+            }
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = NextDouble(random);
+                }
+            }
+
+            return new Mat<double>(rowCount, colCount, stride, memory);
         }
 
         public static Vec<Complex> CreateRandomVectorComplex(int seed, int count, int stride)
@@ -132,9 +154,9 @@ namespace NumFlatTest
             {
                 memory[i] = Complex.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextComplex(random);
+                memory[position] = NextComplex(random);
             }
 
             return new Vec<Complex>(count, stride, memory);
@@ -149,9 +171,9 @@ namespace NumFlatTest
             {
                 memory[i] = double.NaN;
             }
-            for (var postion = 0; postion < memory.Length; postion += stride)
+            for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[postion] = NextComplexNonZero(random);
+                memory[position] = NextComplexNonZero(random);
             }
 
             return new Vec<Complex>(count, stride, memory);

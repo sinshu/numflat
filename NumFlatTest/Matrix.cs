@@ -219,5 +219,77 @@ namespace NumFlatTest
                 offset += stride;
             }
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void Cols(int rowCount, int colCount, int stride)
+        {
+            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+
+            Assert.That(matrix.Cols.Count == colCount);
+
+            for (var col = 0; col < colCount; col++)
+            {
+                var expected = Enumerable.Range(0, rowCount).Select(row => matrix[row, col]).ToArray();
+                var actual = matrix.Cols[col].ToArray();
+                Assert.That(actual, Is.EqualTo(expected));
+            }
+
+            var cols = matrix.Cols.ToArray();
+            for (var col = 0; col < colCount; col++)
+            {
+                var expected = cols[col];
+                var actual = matrix.Cols[col].ToArray();
+                Assert.That(actual, Is.EqualTo(expected));
+            }
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void Rows(int rowCount, int colCount, int stride)
+        {
+            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+
+            Assert.That(matrix.Rows.Count == rowCount);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                var expected = Enumerable.Range(0, colCount).Select(col => matrix[row, col]).ToArray();
+                var actual = matrix.Rows[row].ToArray();
+                Assert.That(actual, Is.EqualTo(expected));
+            }
+
+            var rows = matrix.Rows.ToArray();
+            for (var row = 0; row < rowCount; row++)
+            {
+                var expected = rows[row];
+                var actual = matrix.Rows[row].ToArray();
+                Assert.That(actual, Is.EqualTo(expected));
+            }
+        }
     }
 }
