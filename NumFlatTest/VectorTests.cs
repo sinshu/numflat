@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using NumFlat;
+using System.Linq;
 
 namespace NumFlatTest
 {
@@ -56,6 +57,25 @@ namespace NumFlatTest
                 vector[vectorIndex] = -1;
                 Assert.That(vector[vectorIndex] == -1);
             }
+        }
+
+        [TestCase(42, 1, 1)]
+        [TestCase(42, 1, 3)]
+        [TestCase(42, 3, 1)]
+        [TestCase(42, 10, 2)]
+        [TestCase(42, 11, 7)]
+        public void Enumerate(int seed, int count, int stride)
+        {
+            var vector = Utilities.CreateRandomVector(seed, count, stride);
+
+            var expected = new double[vector.Count];
+            for (var i = 0; i < vector.Count; i++)
+            {
+                expected[i] = vector[i];
+            }
+
+            var actual = vector.ToArray();
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
