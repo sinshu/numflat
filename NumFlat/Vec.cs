@@ -59,6 +59,16 @@ namespace NumFlat
 
         public Vec<T> Subvector(int index, int count)
         {
+            if (index < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "The index must be a positive integer.");
+            }
+
+            if (index + count > this.count)
+            {
+                throw new ArgumentOutOfRangeException("`index + count` must be less than or equal to the length of the vector.");
+            }
+
             var stride = this.stride;
             var memory = this.memory.Slice(stride * index, stride * (count - 1) + 1);
             return new Vec<T>(count, stride, memory);

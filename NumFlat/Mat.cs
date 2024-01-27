@@ -42,6 +42,28 @@ namespace NumFlat
         {
         }
 
+        public void Fill(T value)
+        {
+            var span = memory.Span;
+            var offset = 0;
+            while (offset < span.Length)
+            {
+                var position = offset;
+                var end = offset + rowCount;
+                while (position < end)
+                {
+                    span[position] = value;
+                    position++;
+                }
+                offset += stride;
+            }
+        }
+
+        public void Clear()
+        {
+            Fill(default);
+        }
+
         public T this[int row, int col]
         {
             get => memory.Span[stride * col + row];

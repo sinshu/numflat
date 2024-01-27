@@ -127,5 +127,97 @@ namespace NumFlatTest
                 offset += stride;
             }
         }
+
+        [TestCase(1, 1, 1, new int[] { 1 })]
+        [TestCase(1, 1, 3, new int[] { 1 })]
+        [TestCase(2, 2, 2, new int[] { 1, 2, 3, 4 })]
+        [TestCase(2, 2, 3, new int[] { 1, 2, -1, 3, 4 })]
+        [TestCase(3, 3, 3, new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 })]
+        [TestCase(3, 3, 5, new int[] { 1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9 })]
+        [TestCase(1, 3, 1, new int[] { 1, 2, 3 })]
+        [TestCase(1, 3, 5, new int[] { 1, -1, -1, -1, -1, 2, -1, -1, -1, -1, 3 })]
+        [TestCase(3, 1, 3, new int[] { 1, 2, 3 })]
+        [TestCase(3, 1, 7, new int[] { 1, 2, 3 })]
+        [TestCase(2, 3, 2, new int[] { 1, 2, 3, 4, 5, 6 })]
+        [TestCase(2, 3, 4, new int[] { 1, 2, -1, -1, 3, 4, -1, -1, 5, 6 })]
+        [TestCase(3, 2, 3, new int[] { 1, 2, 3, 4, 5, 6 })]
+        [TestCase(3, 2, 6, new int[] { 1, 2, 3, -1, -1, -1, 4, 5, 6 })]
+        public void Fill(int rowCount, int colCount, int stride, int[] memory)
+        {
+            var matrix = new Mat<int>(rowCount, colCount, stride, memory);
+            matrix.Fill(int.MaxValue);
+            for (var col = 0; col < colCount; col++)
+            {
+                for (var row = 0; row < rowCount; row++)
+                {
+                    Assert.That(matrix[row, col] == int.MaxValue);
+                }
+            }
+
+            var offset = 0;
+            for (var col = 0; col < colCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < stride; row++)
+                {
+                    if (row < rowCount)
+                    {
+                        Assert.That(matrix.Memory.Span[position] == int.MaxValue);
+                    }
+                    else if (position < memory.Length)
+                    {
+                        Assert.That(matrix.Memory.Span[position] == -1);
+                    }
+                    position++;
+                }
+                offset += stride;
+            }
+        }
+
+        [TestCase(1, 1, 1, new int[] { 1 })]
+        [TestCase(1, 1, 3, new int[] { 1 })]
+        [TestCase(2, 2, 2, new int[] { 1, 2, 3, 4 })]
+        [TestCase(2, 2, 3, new int[] { 1, 2, -1, 3, 4 })]
+        [TestCase(3, 3, 3, new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 })]
+        [TestCase(3, 3, 5, new int[] { 1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9 })]
+        [TestCase(1, 3, 1, new int[] { 1, 2, 3 })]
+        [TestCase(1, 3, 5, new int[] { 1, -1, -1, -1, -1, 2, -1, -1, -1, -1, 3 })]
+        [TestCase(3, 1, 3, new int[] { 1, 2, 3 })]
+        [TestCase(3, 1, 7, new int[] { 1, 2, 3 })]
+        [TestCase(2, 3, 2, new int[] { 1, 2, 3, 4, 5, 6 })]
+        [TestCase(2, 3, 4, new int[] { 1, 2, -1, -1, 3, 4, -1, -1, 5, 6 })]
+        [TestCase(3, 2, 3, new int[] { 1, 2, 3, 4, 5, 6 })]
+        [TestCase(3, 2, 6, new int[] { 1, 2, 3, -1, -1, -1, 4, 5, 6 })]
+        public void Clear(int rowCount, int colCount, int stride, int[] memory)
+        {
+            var matrix = new Mat<int>(rowCount, colCount, stride, memory);
+            matrix.Clear();
+            for (var col = 0; col < colCount; col++)
+            {
+                for (var row = 0; row < rowCount; row++)
+                {
+                    Assert.That(matrix[row, col] == 0);
+                }
+            }
+
+            var offset = 0;
+            for (var col = 0; col < colCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < stride; row++)
+                {
+                    if (row < rowCount)
+                    {
+                        Assert.That(matrix.Memory.Span[position] == 0);
+                    }
+                    else if (position < memory.Length)
+                    {
+                        Assert.That(matrix.Memory.Span[position] == -1);
+                    }
+                    position++;
+                }
+                offset += stride;
+            }
+        }
     }
 }
