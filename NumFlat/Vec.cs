@@ -14,17 +14,17 @@ namespace NumFlat
         {
             if (count <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "The length of the vector must be a positive integer.");
+                throw new ArgumentOutOfRangeException(nameof(count), "`count` must be a positive value.");
             }
 
             if (stride <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "The stride must be a positive integer.");
+                throw new ArgumentOutOfRangeException(nameof(count), "`stride` must be a positive value.");
             }
 
             if (memory.Length != stride * (count - 1) + 1)
             {
-                throw new ArgumentException("The length of the memory must match `stride * (count - 1) + 1`.");
+                throw new ArgumentException("`memory.Length` must match `stride * (count - 1) + 1`.");
             }
 
             this.count = count;
@@ -60,12 +60,17 @@ namespace NumFlat
         {
             if (startIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), "The start index must be a positive integer.");
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "`startIndex` must be a non-negative value.");
+            }
+
+            if (count <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "`count` must be a positive value.");
             }
 
             if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("`startIndex + count` must be less than or equal to the length of the vector.");
+                throw new ArgumentOutOfRangeException("`startIndex + count` must be less than or equal to `Vec<T>.Count`.");
             }
 
             var stride = this.stride;
@@ -77,7 +82,7 @@ namespace NumFlat
         {
             if (destination.count != this.count)
             {
-                throw new ArgumentException("The source and destination must be the same length.");
+                throw new ArgumentException("`Vec<T>.Count` and `destination.Count` must be the same value.");
             }
 
             var st = this.memory.Span;
@@ -98,7 +103,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("The index must be within the length of the vector.");
+                    throw new IndexOutOfRangeException("`index` must be within the length of the vector.");
                 }
 
                 return memory.Span[stride * index];
@@ -108,7 +113,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("The index must be within the length of the vector.");
+                    throw new IndexOutOfRangeException("`index` must be within the length of the vector.");
                 }
 
                 memory.Span[stride * index] = value;
