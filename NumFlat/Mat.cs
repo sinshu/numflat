@@ -76,6 +76,16 @@ namespace NumFlat
                 throw new ArgumentOutOfRangeException(nameof(startCol), "`startCol` must be a non-negative value.");
             }
 
+            if (rowCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "`rowCount` must be a positive value.");
+            }
+
+            if (colCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(colCount), "`colCount` must be a positive value.");
+            }
+
             if (startRow + rowCount > this.rowCount)
             {
                 throw new ArgumentOutOfRangeException("`startRow + rowCount` must be less than or equal to `Vec<T>.RowCount`.");
