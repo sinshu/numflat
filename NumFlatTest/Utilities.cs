@@ -245,6 +245,21 @@ namespace NumFlatTest
             return new Mat<Complex>(rowCount, colCount, stride, memory);
         }
 
+        public static void FailIfOutOfRangeWrite(Vec<float> vector)
+        {
+            for (var position = 0; position < vector.Memory.Length; position++)
+            {
+                if (position % vector.Stride == 0)
+                {
+                    Assert.That(!float.IsNaN(vector.Memory.Span[position]));
+                }
+                else
+                {
+                    Assert.That(float.IsNaN(vector.Memory.Span[position]));
+                }
+            }
+        }
+
         public static void FailIfOutOfRangeWrite(Vec<double> vector)
         {
             for (var position = 0; position < vector.Memory.Length; position++)
@@ -256,6 +271,23 @@ namespace NumFlatTest
                 else
                 {
                     Assert.That(double.IsNaN(vector.Memory.Span[position]));
+                }
+            }
+        }
+
+        public static void FailIfOutOfRangeWrite(Vec<Complex> vector)
+        {
+            for (var position = 0; position < vector.Memory.Length; position++)
+            {
+                if (position % vector.Stride == 0)
+                {
+                    Assert.That(!double.IsNaN(vector.Memory.Span[position].Real));
+                    Assert.That(!double.IsNaN(vector.Memory.Span[position].Imaginary));
+                }
+                else
+                {
+                    Assert.That(double.IsNaN(vector.Memory.Span[position].Real));
+                    Assert.That(double.IsNaN(vector.Memory.Span[position].Imaginary));
                 }
             }
         }

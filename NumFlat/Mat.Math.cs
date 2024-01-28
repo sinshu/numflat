@@ -134,13 +134,45 @@ namespace NumFlat
             }
         }
 
+        public static unsafe void Mul(Mat<float> x, Vec<float> y, Vec<float> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (y.Count != x.ColCount)
+            {
+                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+            }
+
+            if (destination.Count != x.RowCount)
+            {
+                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+            }
+
+            fixed (float* px = x.Memory.Span)
+            fixed (float* py = y.Memory.Span)
+            fixed (float* pd = destination.Memory.Span)
+            {
+                Blas.Sgemv(
+                    Order.ColMajor,
+                    Transpose.NoTrans,
+                    x.RowCount, x.ColCount,
+                    1.0F,
+                    px, x.Stride,
+                    py, y.Stride,
+                    0.0F,
+                    pd, destination.Stride);
+            }
+        }
+
         public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (x.ColCount != y.Count)
+            if (y.Count != x.ColCount)
             {
                 throw new ArgumentException("`y.Count` must match `x.ColCount`.");
             }
@@ -166,13 +198,48 @@ namespace NumFlat
             }
         }
 
+        public static unsafe void Mul(Mat<Complex> x, Vec<Complex> y, Vec<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (y.Count != x.ColCount)
+            {
+                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+            }
+
+            if (destination.Count != x.RowCount)
+            {
+                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+            }
+
+            var one = Complex.One;
+            var zero = Complex.Zero;
+
+            fixed (Complex* px = x.Memory.Span)
+            fixed (Complex* py = y.Memory.Span)
+            fixed (Complex* pd = destination.Memory.Span)
+            {
+                Blas.Zgemv(
+                    Order.ColMajor,
+                    Transpose.NoTrans,
+                    x.RowCount, x.ColCount,
+                    &one,
+                    px, x.Stride,
+                    py, y.Stride,
+                    &zero,
+                    pd, destination.Stride);
+            }
+        }
+
         public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (x.ColCount != y.RowCount)
+            if (y.RowCount != x.ColCount)
             {
                 throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
             }
@@ -203,7 +270,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (x.ColCount != y.RowCount)
+            if (y.RowCount != x.ColCount)
             {
                 throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
             }
@@ -234,7 +301,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (x.ColCount != y.RowCount)
+            if (y.RowCount != x.ColCount)
             {
                 throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
             }

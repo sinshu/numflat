@@ -19,7 +19,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul1(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -44,6 +44,35 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 5)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(3, 3, 3, 7, 6)]
+        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(7, 3, 7, 1, 1)]
+        [TestCase(7, 4, 7, 2, 5)]
+        public void Mul2(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
+            var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
+            Mat.Mul(x, y, destination);
+
+            var mx = DenseMatrix.OfArray(x.ToArray());
+            var my = DenseVector.OfArray(y.ToArray());
+            var md = mx * my;
+
+            var expected = md.ToArray();
+            var actual = destination.ToArray();
+            for (var i = 0; i < destination.Count; i++)
+            {
+                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
+                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]
         [TestCase(2, 2, 2, 2, 2, 2)]
@@ -52,7 +81,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulOperator(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void MulOperator1(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -71,6 +100,32 @@ namespace NumFlatTest
                     Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
                     Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
                 }
+            }
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 5)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(3, 3, 3, 7, 6)]
+        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(7, 3, 7, 1, 1)]
+        [TestCase(7, 4, 7, 2, 5)]
+        public void MulOperator2(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
+            var destination = x * y;
+
+            var mx = DenseMatrix.OfArray(x.ToArray());
+            var my = DenseVector.OfArray(y.ToArray());
+            var md = mx * my;
+
+            var expected = md.ToArray();
+            var actual = destination.ToArray();
+            for (var i = 0; i < destination.Count; i++)
+            {
+                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
+                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
             }
         }
     }
