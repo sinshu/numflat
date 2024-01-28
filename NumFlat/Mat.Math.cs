@@ -134,6 +134,38 @@ namespace NumFlat
             }
         }
 
+        public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.ColCount != y.Count)
+            {
+                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+            }
+
+            if (destination.Count != x.RowCount)
+            {
+                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+            }
+
+            fixed (double* px = x.Memory.Span)
+            fixed (double* py = y.Memory.Span)
+            fixed (double* pd = destination.Memory.Span)
+            {
+                Blas.Dgemv(
+                    Order.ColMajor,
+                    Transpose.NoTrans,
+                    x.RowCount, x.ColCount,
+                    1.0,
+                    px, x.Stride,
+                    py, y.Stride,
+                    0.0,
+                    pd, destination.Stride);
+            }
+        }
+
         public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
