@@ -149,9 +149,6 @@ namespace NumFlat
             var n = y.ColCount;
             var k = x.ColCount;
 
-            // This is necessary to get the correct result with BLAS.
-            destination.Clear();
-
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
             fixed (double* pd = destination.Memory.Span)
@@ -163,7 +160,7 @@ namespace NumFlat
                     1.0,
                     px, x.Stride,
                     py, y.Stride,
-                    1.0,
+                    0.0,
                     pd, destination.Stride);
             }
         }
