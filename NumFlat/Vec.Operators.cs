@@ -12,9 +12,9 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
-            var resut = new Vec<T>(x.count);
-            Vec.Add(x, y, resut);
-            return resut;
+            var result = new Vec<T>(x.count);
+            Vec.Add(x, y, result);
+            return result;
         }
 
         public static Vec<T> operator -(Vec<T> x, Vec<T> y)
@@ -23,9 +23,27 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
-            var resut = new Vec<T>(x.count);
-            Vec.Sub(x, y, resut);
-            return resut;
+            var result = new Vec<T>(x.count);
+            Vec.Sub(x, y, result);
+            return result;
+        }
+
+        public static Vec<T> operator *(Vec<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Vec<T>(x.count);
+            Vec.Mul(x, y, result);
+            return result;
+        }
+
+        public static Vec<T> operator *(T x, Vec<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+
+            var result = new Vec<T>(y.count);
+            Vec.Mul(y, x, result);
+            return result;
         }
 
         public static T operator *(Vec<T> x, Vec<T> y)

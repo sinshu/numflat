@@ -70,5 +70,65 @@ namespace NumFlatTest
                 }
             }
         }
+
+        [TestCase(1, 1, 1, 2.5, 1)]
+        [TestCase(1, 1, 3, 4.1, 5)]
+        [TestCase(2, 2, 2, 2.3, 2)]
+        [TestCase(2, 2, 3, 5.4, 7)]
+        [TestCase(3, 3, 3, 3.2, 3)]
+        [TestCase(3, 3, 5, 4.0, 8)]
+        [TestCase(1, 3, 1, 1.3, 1)]
+        [TestCase(1, 3, 5, 0.2, 1)]
+        [TestCase(3, 1, 3, 0.4, 3)]
+        [TestCase(3, 1, 7, 0.7, 7)]
+        [TestCase(2, 3, 2, 4.6, 3)]
+        [TestCase(2, 3, 4, 0.3, 5)]
+        [TestCase(3, 2, 3, 4.6, 6)]
+        [TestCase(3, 2, 6, 0.4, 3)]
+        public void Mul1(int rowCount, int colCount, int xStride, double y, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
+            var destination = x * y;
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    var expected = x[row, col] * y;
+                    var actual = destination[row, col];
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                }
+            }
+        }
+
+        [TestCase(1, 1, 1, 2.5, 1)]
+        [TestCase(1, 1, 3, 4.1, 5)]
+        [TestCase(2, 2, 2, 2.3, 2)]
+        [TestCase(2, 2, 3, 5.4, 7)]
+        [TestCase(3, 3, 3, 3.2, 3)]
+        [TestCase(3, 3, 5, 4.0, 8)]
+        [TestCase(1, 3, 1, 1.3, 1)]
+        [TestCase(1, 3, 5, 0.2, 1)]
+        [TestCase(3, 1, 3, 0.4, 3)]
+        [TestCase(3, 1, 7, 0.7, 7)]
+        [TestCase(2, 3, 2, 4.6, 3)]
+        [TestCase(2, 3, 4, 0.3, 5)]
+        [TestCase(3, 2, 3, 4.6, 6)]
+        [TestCase(3, 2, 6, 0.4, 3)]
+        public void Mul2(int rowCount, int colCount, int xStride, double y, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
+            var destination = y * x;
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    var expected = x[row, col] * y;
+                    var actual = destination[row, col];
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                }
+            }
+        }
     }
 }

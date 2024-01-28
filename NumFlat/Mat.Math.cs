@@ -70,6 +70,32 @@ namespace NumFlat
             }
         }
 
+        public static void Mul<T>(Mat<T> x, T y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px] * y;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
         public static void PointwiseMul<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));

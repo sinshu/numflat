@@ -43,6 +43,38 @@ namespace NumFlatTest
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
 
+        [TestCase(1, 42, 1, 1.5, 1)]
+        [TestCase(1, 42, 3, 2.3, 4)]
+        [TestCase(3, 42, 1, 0.1, 1)]
+        [TestCase(3, 42, 3, 0.7, 4)]
+        [TestCase(5, 42, 1, 3.5, 3)]
+        [TestCase(11, 42, 7, 7.9, 5)]
+        public void Mul1(int count, int xSeed, int xStride, double y, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
+            var destination = x * y;
+
+            var expected = x.Select(value => value * y).ToArray();
+            var actual = destination.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
+
+        [TestCase(1, 42, 1, 1.5, 1)]
+        [TestCase(1, 42, 3, 2.3, 4)]
+        [TestCase(3, 42, 1, 0.1, 1)]
+        [TestCase(3, 42, 3, 0.7, 4)]
+        [TestCase(5, 42, 1, 3.5, 3)]
+        [TestCase(11, 42, 7, 7.9, 5)]
+        public void Mul2(int count, int xSeed, int xStride, double y, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
+            var destination = y * x;
+
+            var expected = x.Select(value => value * y).ToArray();
+            var actual = destination.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
+
         [TestCase(1, 42, 1, 57, 1)]
         [TestCase(1, 42, 3, 57, 2)]
         [TestCase(3, 42, 1, 57, 1)]

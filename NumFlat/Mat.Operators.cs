@@ -28,6 +28,24 @@ namespace NumFlat
             return result;
         }
 
+        public static Mat<T> operator *(Mat<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<T>(x.rowCount, x.colCount);
+            Mat.Mul(x, y, result);
+            return result;
+        }
+
+        public static Mat<T> operator *(T x, Mat<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+
+            var result = new Mat<T>(y.rowCount, y.colCount);
+            Mat.Mul(y, x, result);
+            return result;
+        }
+
         public static Vec<T> operator *(Mat<T> x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));

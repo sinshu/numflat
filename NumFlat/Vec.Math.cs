@@ -50,6 +50,24 @@ namespace NumFlat
             }
         }
 
+        public static void Mul<T>(Vec<T> x, T y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px] * y;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
         public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
