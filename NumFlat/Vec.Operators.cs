@@ -30,6 +30,10 @@ namespace NumFlat
 
         public static T operator *(Vec<T> x, Vec<T> y)
         {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+
             if (typeof(T) == typeof(float))
             {
                 var ux = Unsafe.As<Vec<T>, Vec<float>>(ref x);
