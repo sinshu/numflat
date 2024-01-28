@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using OpenBlasSharp;
 
 namespace NumFlat
 {
@@ -130,6 +131,40 @@ namespace NumFlat
                 ox += x.Stride;
                 oy += y.Stride;
                 od += destination.Stride;
+            }
+        }
+
+        public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.ColCount != y.RowCount)
+            {
+                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
+            }
+
+            var m = x.RowCount;
+            var n = y.ColCount;
+            var k = x.ColCount;
+
+            // This is necessary to get the correct result with BLAS.
+            destination.Clear();
+
+            fixed (double* px = x.Memory.Span)
+            fixed (double* py = y.Memory.Span)
+            fixed (double* pd = destination.Memory.Span)
+            {
+                Blas.Dgemm(
+                    Order.ColMajor,
+                    Transpose.NoTrans, Transpose.NoTrans,
+                    m, n, k,
+                    1.0,
+                    px, x.Stride,
+                    py, y.Stride,
+                    1.0,
+                    pd, destination.Stride);
             }
         }
     }

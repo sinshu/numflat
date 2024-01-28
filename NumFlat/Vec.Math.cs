@@ -96,6 +96,10 @@ namespace NumFlat
 
         public static unsafe float DotProduct(Vec<float> x, Vec<float> y)
         {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             {
@@ -105,6 +109,10 @@ namespace NumFlat
 
         public static unsafe double DotProduct(Vec<double> x, Vec<double> y)
         {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
             {
@@ -114,6 +122,10 @@ namespace NumFlat
 
         public static unsafe Complex DotProduct(Vec<Complex> x, Vec<Complex> y)
         {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+
             fixed (Complex* px = x.Memory.Span)
             fixed (Complex* py = y.Memory.Span)
             {
