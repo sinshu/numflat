@@ -56,20 +56,20 @@ namespace NumFlat
             Fill(default);
         }
 
-        public Vec<T> Subvector(int index, int count)
+        public Vec<T> Subvector(int startIndex, int count)
         {
-            if (index < 0)
+            if (startIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "The index must be a positive integer.");
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "The start index must be a positive integer.");
             }
 
-            if (index + count > this.count)
+            if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("`index + count` must be less than or equal to the length of the vector.");
+                throw new ArgumentOutOfRangeException("`startIndex + count` must be less than or equal to the length of the vector.");
             }
 
             var stride = this.stride;
-            var memory = this.memory.Slice(stride * index, stride * (count - 1) + 1);
+            var memory = this.memory.Slice(stride * startIndex, stride * (count - 1) + 1);
             return new Vec<T>(count, stride, memory);
         }
 
