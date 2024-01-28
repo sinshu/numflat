@@ -177,5 +177,33 @@ namespace NumFlatTest
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 1, 3, 1)]
+        [TestCase(3, 1, 3, 4)]
+        [TestCase(1, 3, 1, 3)]
+        [TestCase(1, 3, 2, 5)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(4, 5, 8, 7)]
+        [TestCase(9, 6, 11, 7)]
+        public void Transpose(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
+            var destination = Utilities.CreateRandomMatrixDouble(0, colCount, rowCount, dstStride);
+            Mat.Transpose(x, destination);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(x[row, col] == destination[col, row]);
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
     }
 }

@@ -182,7 +182,7 @@ namespace NumFlat
             {
                 Blas.Sgemv(
                     Order.ColMajor,
-                    Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans,
                     x.RowCount, x.ColCount,
                     1.0F,
                     px, x.Stride,
@@ -214,7 +214,7 @@ namespace NumFlat
             {
                 Blas.Dgemv(
                     Order.ColMajor,
-                    Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans,
                     x.RowCount, x.ColCount,
                     1.0,
                     px, x.Stride,
@@ -249,7 +249,7 @@ namespace NumFlat
             {
                 Blas.Zgemv(
                     Order.ColMajor,
-                    Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans,
                     x.RowCount, x.ColCount,
                     &one,
                     px, x.Stride,
@@ -280,7 +280,7 @@ namespace NumFlat
             {
                 Blas.Sgemm(
                     Order.ColMajor,
-                    Transpose.NoTrans, Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
                     m, n, k,
                     1.0F,
                     px, x.Stride,
@@ -311,7 +311,7 @@ namespace NumFlat
             {
                 Blas.Dgemm(
                     Order.ColMajor,
-                    Transpose.NoTrans, Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
                     m, n, k,
                     1.0,
                     px, x.Stride,
@@ -345,13 +345,44 @@ namespace NumFlat
             {
                 Blas.Zgemm(
                     Order.ColMajor,
-                    Transpose.NoTrans, Transpose.NoTrans,
+                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
                     m, n, k,
                     &one,
                     px, x.Stride,
                     py, y.Stride,
                     &zero,
                     pd, destination.Stride);
+            }
+        }
+
+        public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (destination.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`destination.RowCount` must match `x.ColCount`.");
+            }
+
+            if (destination.ColCount != x.RowCount)
+            {
+                throw new ArgumentException("`destination.ColCount` must match `x.RowCount`.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            for (var col = 0; col < destination.ColCount; col++)
+            {
+                var px = col;
+                var pd = destination.Stride * col;
+                var end = pd + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px];
+                    px += x.Stride;
+                    pd++;
+                }
             }
         }
     }
