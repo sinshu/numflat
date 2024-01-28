@@ -82,7 +82,7 @@ namespace NumFlat
         {
             if (destination.count != this.count)
             {
-                throw new ArgumentException("`Vec<T>.Count` and `destination.Count` must be the same value.");
+                throw new ArgumentException("`destination.Count` must match `Vec<T>.Count`.");
             }
 
             var st = this.memory.Span;

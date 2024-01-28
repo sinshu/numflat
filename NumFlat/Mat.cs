@@ -105,12 +105,12 @@ namespace NumFlat
         {
             if (destination.rowCount != this.rowCount)
             {
-                throw new ArgumentException("`Mat<T>.RowCount` and `destination.RowCount` must be the same value.");
+                throw new ArgumentException("`destination.RowCount` must match `Mat<T>.RowCount`.");
             }
 
             if (destination.colCount != this.colCount)
             {
-                throw new ArgumentException("`Mat<T>.ColCount` and `destination.ColCount` must be the same value.");
+                throw new ArgumentException("`destination.ColCount` must match `Mat<T>.ColCount`.");
             }
 
             var st = this.memory.Span;
