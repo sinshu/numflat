@@ -380,5 +380,33 @@ namespace NumFlatTest
                 offset += dstStride;
             }
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void ToArray(int rowCount, int colCount, int stride)
+        {
+            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+            var array = matrix.ToArray();
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(array[row, col] == matrix[row, col]);
+                }
+            }
+        }
     }
 }

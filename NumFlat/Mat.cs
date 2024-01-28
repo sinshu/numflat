@@ -134,6 +134,21 @@ namespace NumFlat
             }
         }
 
+        public T[,] ToArray()
+        {
+            var array = new T[rowCount, colCount];
+            for (var row = 0; row < rowCount; row++)
+            {
+                var position = row;
+                for (var col = 0; col < colCount; col++)
+                {
+                    array[row, col] = memory.Span[position];
+                    position += stride;
+                }
+            }
+            return array;
+        }
+
         public T this[int row, int col]
         {
             get => memory.Span[stride * col + row];
