@@ -11,7 +11,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -33,7 +33,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -55,7 +55,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -77,7 +77,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentLength(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;

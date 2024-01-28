@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
 
 namespace NumFlat
@@ -23,9 +22,9 @@ namespace NumFlat
                 throw new ArgumentOutOfRangeException(nameof(rowCount), "`colCount` must be a positive value.");
             }
 
-            if (stride <= 0)
+            if (stride < rowCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(stride), "`stride` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(stride), "`stride` must be greater than or equal to `rowCount`.");
             }
 
             if (memory.Length != stride * (colCount - 1) + rowCount)

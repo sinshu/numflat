@@ -145,6 +145,28 @@ namespace NumFlatTest
             return new Mat<double>(rowCount, colCount, stride, memory);
         }
 
+        public static Mat<double> CreateRandomMatrixNonZeroDouble(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new double[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = double.NaN;
+            }
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = NextDoubleNonZero(random);
+                }
+            }
+
+            return new Mat<double>(rowCount, colCount, stride, memory);
+        }
+
         public static Vec<Complex> CreateRandomVectorComplex(int seed, int count, int stride)
         {
             var random = new Random(seed);
