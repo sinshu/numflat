@@ -64,6 +64,13 @@ namespace NumFlat
             Fill(default);
         }
 
+        public Mat<T> Submatrix(int startRow, int startCol, int rowCount, int colCount)
+        {
+            var stride = this.stride;
+            var memory = this.memory.Slice(stride * startCol + startRow, stride * (colCount - 1) + rowCount);
+            return new Mat<T>(rowCount, colCount, stride, memory);
+        }
+
         public T this[int row, int col]
         {
             get => memory.Span[stride * col + row];
