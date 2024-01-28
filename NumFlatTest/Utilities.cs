@@ -200,5 +200,42 @@ namespace NumFlatTest
 
             return new Vec<Complex>(count, stride, memory);
         }
+
+        public static void FailIfOutOfRangeWrite(Vec<double> vector)
+        {
+            for (var position = 0; position < vector.Memory.Length; position++)
+            {
+                if (position % vector.Stride == 0)
+                {
+                    Assert.That(!double.IsNaN(vector.Memory.Span[position]));
+                }
+                else
+                {
+                    Assert.That(double.IsNaN(vector.Memory.Span[position]));
+                }
+            }
+        }
+
+        public static void FailIfOutOfRangeWrite(Mat<double> matrix)
+        {
+            var offset = 0;
+            for (var col = 0; col < matrix.ColCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < matrix.Stride; row++)
+                {
+                    if (row < matrix.RowCount)
+                    {
+                        Assert.That(!double.IsNaN(matrix.Memory.Span[position]));
+                    }
+                    else if (position < matrix.Memory.Length)
+                    {
+                        Assert.That(double.IsNaN(matrix.Memory.Span[position]));
+                    }
+                    position++;
+                }
+                offset += matrix.Stride;
+            }
+        }
     }
 }

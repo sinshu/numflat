@@ -40,24 +40,7 @@ namespace NumFlatTest
                 }
             }
 
-            var offset = 0;
-            for (var col = 0; col < colCount; col++)
-            {
-                var position = offset;
-                for (var row = 0; row < dstStride; row++)
-                {
-                    if (row < rowCount)
-                    {
-                        Assert.That(!double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    else if (position < destination.Memory.Length)
-                    {
-                        Assert.That(double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    position++;
-                }
-                offset += dstStride;
-            }
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
@@ -91,24 +74,7 @@ namespace NumFlatTest
                 }
             }
 
-            var offset = 0;
-            for (var col = 0; col < colCount; col++)
-            {
-                var position = offset;
-                for (var row = 0; row < dstStride; row++)
-                {
-                    if (row < rowCount)
-                    {
-                        Assert.That(!double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    else if (position < destination.Memory.Length)
-                    {
-                        Assert.That(double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    position++;
-                }
-                offset += dstStride;
-            }
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
@@ -142,24 +108,7 @@ namespace NumFlatTest
                 }
             }
 
-            var offset = 0;
-            for (var col = 0; col < colCount; col++)
-            {
-                var position = offset;
-                for (var row = 0; row < dstStride; row++)
-                {
-                    if (row < rowCount)
-                    {
-                        Assert.That(!double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    else if (position < destination.Memory.Length)
-                    {
-                        Assert.That(double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    position++;
-                }
-                offset += dstStride;
-            }
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
@@ -193,24 +142,7 @@ namespace NumFlatTest
                 }
             }
 
-            var offset = 0;
-            for (var col = 0; col < colCount; col++)
-            {
-                var position = offset;
-                for (var row = 0; row < dstStride; row++)
-                {
-                    if (row < rowCount)
-                    {
-                        Assert.That(!double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    else if (position < destination.Memory.Length)
-                    {
-                        Assert.That(double.IsNaN(destination.Memory.Span[position]));
-                    }
-                    position++;
-                }
-                offset += dstStride;
-            }
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
     }
 }

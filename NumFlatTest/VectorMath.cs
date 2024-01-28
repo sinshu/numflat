@@ -19,12 +19,14 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(ySeed, count, yStride);
-            var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
+            var destination = Utilities.CreateRandomVectorDouble(0, count, dstStride);
             Vec.Add(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 + val2).ToArray();
             var actual = destination.ToArray();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 42, 1, 57, 1, 1)]
@@ -37,12 +39,14 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(ySeed, count, yStride);
-            var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
+            var destination = Utilities.CreateRandomVectorDouble(0, count, dstStride);
             Vec.Sub(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 - val2).ToArray();
             var actual = destination.ToArray();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 42, 1, 57, 1, 1)]
@@ -55,12 +59,14 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(ySeed, count, yStride);
-            var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
+            var destination = Utilities.CreateRandomVectorDouble(0, count, dstStride);
             Vec.PointwiseMul(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).ToArray();
             var actual = destination.ToArray();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 42, 1, 57, 1, 1)]
@@ -73,12 +79,14 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorNonZeroDouble(ySeed, count, yStride);
-            var destination = new Vec<double>(count, dstStride, new double[dstStride * (count - 1) + 1]);
+            var destination = Utilities.CreateRandomVectorDouble(0, count, dstStride);
             Vec.PointwiseDiv(x, y, destination);
 
             var expected = x.Zip(y, (val1, val2) => val1 / val2).ToArray();
             var actual = destination.ToArray();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 42, 1, 57, 1, 1)]
