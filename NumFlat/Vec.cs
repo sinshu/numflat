@@ -103,7 +103,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("`index` must be within the length of the vector.");
+                    throw new IndexOutOfRangeException("`index` must be within `Vec<T>.Count`.");
                 }
 
                 return memory.Span[stride * index];
@@ -113,7 +113,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("`index` must be within the length of the vector.");
+                    throw new IndexOutOfRangeException("`index` must be within `Vec<T>.Count`.");
                 }
 
                 memory.Span[stride * index] = value;

@@ -27,7 +27,7 @@ namespace NumFlat
                 {
                     if ((uint)index >= rowCount)
                     {
-                        throw new IndexOutOfRangeException("The index must be within the number of rows of the matrix.");
+                        throw new IndexOutOfRangeException("`index` must be within `Mat<T>.RowCount`.");
                     }
 
                     return new Vec<T>(colCount, stride, memory.Slice(index, stride * (colCount - 1) + 1));
