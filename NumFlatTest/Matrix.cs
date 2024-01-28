@@ -337,5 +337,48 @@ namespace NumFlatTest
                 }
             }
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 3, 4)]
+        [TestCase(3, 3, 3, 3)]
+        [TestCase(3, 3, 5, 7)]
+        [TestCase(4, 3, 5, 7)]
+        [TestCase(8, 9, 11, 10)]
+        public void CopyTo(int rowCount, int colCount, int srcStride, int dstStride)
+        {
+            var source = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, srcStride);
+            var destination = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, dstStride);
+
+            source.CopyTo(destination);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(source[row, col] == destination[row, col]);
+                }
+            }
+
+            var offset = 0;
+            for (var col = 0; col < colCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < dstStride; row++)
+                {
+                    if (row < rowCount)
+                    {
+                        Assert.That(!double.IsNaN(destination.Memory.Span[position]));
+                    }
+                    else if (position < destination.Memory.Length)
+                    {
+                        Assert.That(double.IsNaN(destination.Memory.Span[position]));
+                    }
+                    position++;
+                }
+                offset += dstStride;
+            }
+        }
     }
 }

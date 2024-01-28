@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 
 namespace NumFlat
@@ -99,6 +100,38 @@ namespace NumFlat
             var stride = this.stride;
             var memory = this.memory.Slice(stride * startCol + startRow, stride * (colCount - 1) + rowCount);
             return new Mat<T>(rowCount, colCount, stride, memory);
+        }
+
+        public void CopyTo(Mat<T> destination)
+        {
+            if (destination.rowCount != this.rowCount)
+            {
+                throw new ArgumentException("`Mat<T>.RowCount` and `destination.RowCount` must be the same value.");
+            }
+
+            if (destination.colCount != this.colCount)
+            {
+                throw new ArgumentException("`Mat<T>.ColCount` and `destination.ColCount` must be the same value.");
+            }
+
+            var st = this.memory.Span;
+            var sd = destination.memory.Span;
+            var ot = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var pt = ot;
+                var pd = od;
+                var end = od + rowCount;
+                while (pd < end)
+                {
+                    sd[pd] = st[pt];
+                    pt++;
+                    pd++;
+                }
+                ot += this.stride;
+                od += destination.stride;
+            }
         }
 
         public T this[int row, int col]
