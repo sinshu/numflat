@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Numerics;
 using OpenBlasSharp;
 
@@ -383,6 +384,63 @@ namespace NumFlat
                     px += x.Stride;
                     pd++;
                 }
+            }
+        }
+
+        public static unsafe void Inverse(Mat<double> x, Mat<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`x` must be a square matrix.");
+            }
+
+            if (destination.RowCount != x.RowCount)
+            {
+                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+            }
+
+            if (destination.ColCount != x.ColCount)
+            {
+                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+            }
+
+            x.CopyTo(destination);
+
+            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            try
+            {
+                fixed (double* px = x.Memory.Span)
+                fixed (int* ppiv = piv)
+                {
+                    var info1 = Lapack.Dgetrf(
+                        MatrixLayout.ColMajor,
+                        x.RowCount, x.ColCount,
+                        px, x.Stride,
+                        ppiv);
+
+                    if (info1 != LapackInfo.None)
+                    {
+                        throw new Exception();
+                    }
+
+                    var info2 = Lapack.Dgetri(
+                        MatrixLayout.ColMajor,
+                        x.RowCount,
+                        px, x.Stride,
+                        ppiv);
+
+                    if (info2 != LapackInfo.None)
+                    {
+                        throw new Exception();
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<int>.Shared.Return(piv);
             }
         }
     }
