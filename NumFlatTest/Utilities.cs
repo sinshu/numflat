@@ -89,6 +89,28 @@ namespace NumFlatTest
             return new Vec<float>(count, stride, memory);
         }
 
+        public static Mat<float> CreateRandomMatrixSingle(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new float[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = float.NaN;
+            }
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = NextSingle(random);
+                }
+            }
+
+            return new Mat<float>(rowCount, colCount, stride, memory);
+        }
+
         public static Vec<double> CreateRandomVectorDouble(int seed, int count, int stride)
         {
             var random = new Random(seed);
@@ -201,6 +223,28 @@ namespace NumFlatTest
             return new Vec<Complex>(count, stride, memory);
         }
 
+        public static Mat<Complex> CreateRandomMatrixComplex(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new Complex[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = new Complex(double.NaN, double.NaN);
+            }
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = NextComplex(random);
+                }
+            }
+
+            return new Mat<Complex>(rowCount, colCount, stride, memory);
+        }
+
         public static void FailIfOutOfRangeWrite(Vec<double> vector)
         {
             for (var position = 0; position < vector.Memory.Length; position++)
@@ -213,6 +257,28 @@ namespace NumFlatTest
                 {
                     Assert.That(double.IsNaN(vector.Memory.Span[position]));
                 }
+            }
+        }
+
+        public static void FailIfOutOfRangeWrite(Mat<float> matrix)
+        {
+            var offset = 0;
+            for (var col = 0; col < matrix.ColCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < matrix.Stride; row++)
+                {
+                    if (row < matrix.RowCount)
+                    {
+                        Assert.That(!float.IsNaN(matrix.Memory.Span[position]));
+                    }
+                    else if (position < matrix.Memory.Length)
+                    {
+                        Assert.That(float.IsNaN(matrix.Memory.Span[position]));
+                    }
+                    position++;
+                }
+                offset += matrix.Stride;
             }
         }
 
@@ -231,6 +297,30 @@ namespace NumFlatTest
                     else if (position < matrix.Memory.Length)
                     {
                         Assert.That(double.IsNaN(matrix.Memory.Span[position]));
+                    }
+                    position++;
+                }
+                offset += matrix.Stride;
+            }
+        }
+
+        public static void FailIfOutOfRangeWrite(Mat<Complex> matrix)
+        {
+            var offset = 0;
+            for (var col = 0; col < matrix.ColCount; col++)
+            {
+                var position = offset;
+                for (var row = 0; row < matrix.Stride; row++)
+                {
+                    if (row < matrix.RowCount)
+                    {
+                        Assert.That(!double.IsNaN(matrix.Memory.Span[position].Real));
+                        Assert.That(!double.IsNaN(matrix.Memory.Span[position].Imaginary));
+                    }
+                    else if (position < matrix.Memory.Length)
+                    {
+                        Assert.That(double.IsNaN(matrix.Memory.Span[position].Real));
+                        Assert.That(double.IsNaN(matrix.Memory.Span[position].Imaginary));
                     }
                     position++;
                 }

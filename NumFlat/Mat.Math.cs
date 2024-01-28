@@ -134,6 +134,37 @@ namespace NumFlat
             }
         }
 
+        public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.ColCount != y.RowCount)
+            {
+                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
+            }
+
+            var m = x.RowCount;
+            var n = y.ColCount;
+            var k = x.ColCount;
+
+            fixed (float* px = x.Memory.Span)
+            fixed (float* py = y.Memory.Span)
+            fixed (float* pd = destination.Memory.Span)
+            {
+                Blas.Sgemm(
+                    Order.ColMajor,
+                    Transpose.NoTrans, Transpose.NoTrans,
+                    m, n, k,
+                    1.0F,
+                    px, x.Stride,
+                    py, y.Stride,
+                    0.0F,
+                    pd, destination.Stride);
+            }
+        }
+
         public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -161,6 +192,40 @@ namespace NumFlat
                     px, x.Stride,
                     py, y.Stride,
                     0.0,
+                    pd, destination.Stride);
+            }
+        }
+
+        public static unsafe void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.ColCount != y.RowCount)
+            {
+                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
+            }
+
+            var m = x.RowCount;
+            var n = y.ColCount;
+            var k = x.ColCount;
+
+            var one = Complex.One;
+            var zero = Complex.Zero;
+
+            fixed (Complex* px = x.Memory.Span)
+            fixed (Complex* py = y.Memory.Span)
+            fixed (Complex* pd = destination.Memory.Span)
+            {
+                Blas.Zgemm(
+                    Order.ColMajor,
+                    Transpose.NoTrans, Transpose.NoTrans,
+                    m, n, k,
+                    &one,
+                    px, x.Stride,
+                    py, y.Stride,
+                    &zero,
                     pd, destination.Stride);
             }
         }
