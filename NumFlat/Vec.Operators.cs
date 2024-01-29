@@ -6,6 +6,22 @@ namespace NumFlat
 {
     public partial struct Vec<T>
     {
+        /// <summary>
+        /// Computes a vector addition, x + y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the vector addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Add{T}(Vec{T}, Vec{T}, Vec{T})"/> instead.
+        /// </remarks>
         public static Vec<T> operator +(Vec<T> x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -17,6 +33,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a vector subtraction, x + y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the vector subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Sub{T}(Vec{T}, Vec{T}, Vec{T})"/> instead.
+        /// </remarks>
         public static Vec<T> operator -(Vec<T> x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -28,6 +60,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a vector-and-scalar multiplication, x * y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The result of the vector-and-scalar multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(Vec{T}, T, Vec{T})"/> instead.
+        /// </remarks>
         public static Vec<T> operator *(Vec<T> x, T y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -37,6 +85,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a scalar-and-vector multiplication, x * y.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the scalar-and-vector multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(Vec{T}, T, Vec{T})"/> instead.
+        /// </remarks>
         public static Vec<T> operator *(T x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -46,6 +110,18 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a dot product of vectors, x * y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the dot product.
+        /// </returns>
         public static T operator *(Vec<T> x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
