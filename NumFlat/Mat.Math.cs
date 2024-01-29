@@ -419,8 +419,14 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix X.
         /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
         /// <param name="y">
         /// The matrix Y.
+        /// </param>
+        /// <param name="transposeY">
+        /// If true, the matrix Y is treated as transposed.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix multiplication.
@@ -428,11 +434,6 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
-        {
-            Mul(x, false, y, false, destination);
-        }
-
         public static unsafe void Mul(Mat<float> x, bool transposeX, Mat<float> y, bool transposeY, Mat<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -474,20 +475,41 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
+        public static void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
+        {
+            Mul(x, false, y, false, destination);
+        }
+
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="transposeY">
+        /// If true, the matrix Y is treated as transposed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static unsafe void Mul(Mat<double> x, bool transposeX, Mat<double> y, bool transposeY, Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.RowCount != x.ColCount)
-            {
-                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
-            }
-
-            var m = x.RowCount;
-            var n = y.ColCount;
-            var k = x.ColCount;
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
 
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
@@ -495,7 +517,7 @@ namespace NumFlat
             {
                 Blas.Dgemm(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
+                    transX, transY,
                     m, n, k,
                     1.0,
                     px, x.Stride,
@@ -520,20 +542,55 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination)
+        public static void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
+        {
+            Mul(x, false, y, false, destination);
+        }
+
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
+        /// <param name="conjugateX">
+        /// If true, the matrix X is treated as conjugated.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="transposeY">
+        /// If true, the matrix Y is treated as transposed.
+        /// </param>
+        /// <param name="conjugateY">
+        /// If true, the matrix Y is treated as conjugated.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static unsafe void Mul(Mat<Complex> x, bool transposeX, bool conjugateX, Mat<Complex> y, bool transposeY, bool conjugateY, Mat<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.RowCount != x.ColCount)
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
+            if (conjugateX)
             {
-                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
+                transX = transX == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
             }
-
-            var m = x.RowCount;
-            var n = y.ColCount;
-            var k = x.ColCount;
+            if (conjugateY)
+            {
+                transY = transY == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
+            }
 
             var one = Complex.One;
             var zero = Complex.Zero;
@@ -544,7 +601,7 @@ namespace NumFlat
             {
                 Blas.Zgemm(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
+                    transX, transY,
                     m, n, k,
                     &one,
                     px, x.Stride,
@@ -552,6 +609,52 @@ namespace NumFlat
                     &zero,
                     pd, destination.Stride);
             }
+        }
+
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="transposeY">
+        /// If true, the matrix Y is treated as transposed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Mul(Mat<Complex> x, bool transposeX, Mat<Complex> y, bool transposeY, Mat<Complex> destination)
+        {
+            Mul(x, transposeX, false, y, transposeY, false, destination);
+        }
+
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination)
+        {
+            Mul(x, false, false, y, false, false, destination);
         }
 
         /// <summary>
