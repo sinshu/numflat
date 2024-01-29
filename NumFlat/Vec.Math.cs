@@ -206,7 +206,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a dot product of vectors, x * y.
+        /// Computes an inner product of vectors, x^T * y.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -215,12 +215,12 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The result of the inner product.
         /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe float DotProduct(Vec<float> x, Vec<float> y)
+        public static unsafe float InnerProduct(Vec<float> x, Vec<float> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -234,7 +234,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a dot product of vectors, x * y.
+        /// Computes an inner product of vectors, x^T * y.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -243,12 +243,12 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The result of the inner product.
         /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe double DotProduct(Vec<double> x, Vec<double> y)
+        public static unsafe double InnerProduct(Vec<double> x, Vec<double> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -262,7 +262,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a dot product of vectors, x * y.
+        /// Computes an inner product of vectors, x^T * y.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -271,12 +271,12 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The result of the inner product.
         /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe Complex DotProduct(Vec<Complex> x, Vec<Complex> y)
+        public static unsafe Complex InnerProduct(Vec<Complex> x, Vec<Complex> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));

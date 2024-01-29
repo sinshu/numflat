@@ -118,7 +118,7 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorSingle(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorSingle(ySeed, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.InnerProduct(x, y);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
@@ -134,7 +134,7 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(ySeed, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.InnerProduct(x, y);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
@@ -150,7 +150,7 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorComplex(xSeed, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(ySeed, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.InnerProduct(x, y);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Aggregate((sum, next) => sum + next);
             Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
