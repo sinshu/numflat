@@ -603,6 +603,76 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
         /// </remarks>
+        public static unsafe void Inverse(Mat<float> x, Mat<float> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`x` must be a square matrix.");
+            }
+
+            if (destination.RowCount != x.RowCount)
+            {
+                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+            }
+
+            if (destination.ColCount != x.ColCount)
+            {
+                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+            }
+
+            x.CopyTo(destination);
+
+            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            try
+            {
+                fixed (float* px = x.Memory.Span)
+                fixed (int* ppiv = piv)
+                {
+                    var info = Lapack.Sgetrf(
+                        MatrixLayout.ColMajor,
+                        x.RowCount, x.ColCount,
+                        px, x.Stride,
+                        ppiv);
+                    if (info != LapackInfo.None)
+                    {
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                    }
+
+                    info = Lapack.Sgetri(
+                        MatrixLayout.ColMajor,
+                        x.RowCount,
+                        px, x.Stride,
+                        ppiv);
+                    if (info != LapackInfo.None)
+                    {
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<int>.Shared.Return(piv);
+            }
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix inversion.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
+        /// </remarks>
         public static unsafe void Inverse(Mat<double> x, Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -642,6 +712,76 @@ namespace NumFlat
                     }
 
                     info = Lapack.Dgetri(
+                        MatrixLayout.ColMajor,
+                        x.RowCount,
+                        px, x.Stride,
+                        ppiv);
+                    if (info != LapackInfo.None)
+                    {
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<int>.Shared.Return(piv);
+            }
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix inversion.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
+        /// </remarks>
+        public static unsafe void Inverse(Mat<Complex> x, Mat<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`x` must be a square matrix.");
+            }
+
+            if (destination.RowCount != x.RowCount)
+            {
+                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+            }
+
+            if (destination.ColCount != x.ColCount)
+            {
+                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+            }
+
+            x.CopyTo(destination);
+
+            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            try
+            {
+                fixed (Complex* px = x.Memory.Span)
+                fixed (int* ppiv = piv)
+                {
+                    var info = Lapack.Zgetrf(
+                        MatrixLayout.ColMajor,
+                        x.RowCount, x.ColCount,
+                        px, x.Stride,
+                        ppiv);
+                    if (info != LapackInfo.None)
+                    {
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                    }
+
+                    info = Lapack.Zgetri(
                         MatrixLayout.ColMajor,
                         x.RowCount,
                         px, x.Stride,

@@ -47,6 +47,36 @@ namespace NumFlat
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{float}, Mat{float})"/> instead.
+        /// </remarks>
+        public static Mat<float> Inverse(this Mat<float> x)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`x` must be a square matrix.");
+            }
+
+            var result = new Mat<float>(x.RowCount, x.ColCount);
+            Mat.Inverse(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns>
+        /// The inverted matrix.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{double}, Mat{double})"/> instead.
         /// </remarks>
         public static Mat<double> Inverse(this Mat<double> x)
@@ -59,6 +89,36 @@ namespace NumFlat
             }
 
             var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.Inverse(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns>
+        /// The inverted matrix.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{Complex}, Mat{Complex})"/> instead.
+        /// </remarks>
+        public static Mat<Complex> Inverse(this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`x` must be a square matrix.");
+            }
+
+            var result = new Mat<Complex>(x.RowCount, x.ColCount);
             Mat.Inverse(x, result);
             return result;
         }
