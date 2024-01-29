@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides extension methods for <see cref="Mat{T}"/>.
     /// </summary>
-    public static class MatrixEx
+    public static class MatEx
     {
         /// <summary>
         /// Computes a matrix transposition, X^T.
