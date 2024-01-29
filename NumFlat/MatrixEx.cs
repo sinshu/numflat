@@ -55,7 +55,7 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("The matrix must be square.");
             }
 
             var result = new Mat<float>(x.RowCount, x.ColCount);
@@ -85,7 +85,7 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("The matrix must be square.");
             }
 
             var result = new Mat<double>(x.RowCount, x.ColCount);
@@ -115,7 +115,7 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("The matrix must be square.");
             }
 
             var result = new Mat<Complex>(x.RowCount, x.ColCount);
