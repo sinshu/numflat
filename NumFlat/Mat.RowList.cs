@@ -13,7 +13,7 @@ namespace NumFlat
             private readonly int stride;
             private readonly Memory<T> memory;
 
-            internal RowList(ref Mat<T> mat)
+            internal RowList(in Mat<T> mat)
             {
                 this.rowCount = mat.rowCount;
                 this.colCount = mat.colCount;

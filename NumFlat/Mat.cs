@@ -3,6 +3,12 @@ using System.Numerics;
 
 namespace NumFlat
 {
+    /// <summary>
+    /// Reperesents a matrix.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of elements in the matrix.
+    /// </typeparam>
     public partial struct Mat<T> where T : unmanaged, INumberBase<T>
     {
         private readonly int rowCount;
@@ -10,6 +16,30 @@ namespace NumFlat
         private readonly int stride;
         private readonly Memory<T> memory;
 
+        /// <summary>
+        /// Creates a new matrix.
+        /// </summary>
+        /// <param name="rowCount">
+        /// The number of rows.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns.
+        /// </param>
+        /// <param name="stride">
+        /// The stride of the columns.
+        /// This value indicates the difference between the starting index of adjacent columns in the <paramref name="memory"/>.
+        /// If the length of the <paramref name="memory"/> matches <paramref name="rowCount"/> * <paramref name="colCount"/> and
+        /// the elements are arranged consecutively without gaps in the <paramref name="memory"/>, then this value matches rowCount.
+        /// </param>
+        /// <param name="memory">
+        /// The storage of the elements in the matrix.
+        /// The length of the <paramref name="memory"/> must match
+        /// <paramref name="stride"/> * (<paramref name="colCount"/> - 1) + <paramref name="rowCount"/>.
+        /// </param>
+        /// <remarks>
+        /// This constructor does not allocate heap memory.
+        /// The given <paramref name="memory"/> is directly used as the storage of the matrix.
+        /// </remarks>
         public Mat(int rowCount, int colCount, int stride, Memory<T> memory)
         {
             if (rowCount <= 0)
@@ -38,10 +68,28 @@ namespace NumFlat
             this.memory = memory;
         }
 
+        /// <summary>
+        /// Creates a new matrix.
+        /// </summary>
+        /// <param name="rowCount">
+        /// The number of rows.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns.
+        /// </param>
+        /// <remarks>
+        /// This constructor allocates heap memory to store the elements in the matrix.
+        /// </remarks>
         public Mat(int rowCount, int colCount) : this(rowCount, colCount, rowCount, new T[rowCount * colCount])
         {
         }
 
+        /// <summary>
+        /// Fills the elements of the matrix with a specified value.
+        /// </summary>
+        /// <param name="value">
+        /// The value to assign to each element of the matrix.
+        /// </param>
         public void Fill(T value)
         {
             var span = memory.Span;
@@ -59,12 +107,37 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Zero-clears the elements of the matrix.
+        /// </summary>
         public void Clear()
         {
             Fill(default);
         }
 
-        public Mat<T> Submatrix(int startRow, int startCol, int rowCount, int colCount)
+        /// <summary>
+        /// Gets a submatrix from the matrix.
+        /// </summary>
+        /// <param name="startRow">
+        /// The starting row position of the submatrix in the matrix.
+        /// </param>
+        /// <param name="startCol">
+        /// The starting column position of the submatrix in the matrix.
+        /// </param>
+        /// <param name="rowCount">
+        /// The number of rows of the submatrix.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns of the submatrix.
+        /// </param>
+        /// <returns>
+        /// The specified submatrix in the matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate heap memory.
+        /// The returned submatrix will be a view of the original matrix.
+        /// </remarks>
+        public readonly Mat<T> Submatrix(int startRow, int startCol, int rowCount, int colCount)
         {
             if (startRow < 0)
             {
@@ -101,7 +174,16 @@ namespace NumFlat
             return new Mat<T>(rowCount, colCount, stride, memory);
         }
 
-        public void CopyTo(Mat<T> destination)
+        /// <summary>
+        /// Copies the elements of the matrix into another matrix.
+        /// </summary>
+        /// <param name="destination">
+        /// The destination matrix.
+        /// </param>
+        /// <remarks>
+        /// The dimensions of the matrices must match.
+        /// </remarks>
+        public readonly void CopyTo(Mat<T> destination)
         {
             if (destination.rowCount != this.rowCount)
             {
@@ -133,7 +215,16 @@ namespace NumFlat
             }
         }
 
-        public T[,] ToArray()
+        /// <summary>
+        /// Converts the matrix to a 2D array.
+        /// </summary>
+        /// <returns>
+        /// The 2D array converted from the matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new 2D array which is independent from the storage of the matrix.
+        /// </remarks>
+        public readonly T[,] ToArray()
         {
             var array = new T[rowCount, colCount];
             for (var row = 0; row < rowCount; row++)
@@ -148,17 +239,52 @@ namespace NumFlat
             return array;
         }
 
+        /// <summary>
+        /// Gets or sets the element at the specified position in the matrix.
+        /// </summary>
+        /// <param name="row">
+        /// The row index of the element.
+        /// </param>
+        /// <param name="col">
+        /// The column index of the element.
+        /// </param>
+        /// <returns>
+        /// The specified element.
+        /// </returns>
         public T this[int row, int col]
         {
-            get => memory.Span[stride * col + row];
+            readonly get => memory.Span[stride * col + row];
             set => memory.Span[stride * col + row] = value;
         }
 
-        public int RowCount => rowCount;
-        public int ColCount => colCount;
-        public int Stride => stride;
-        public Memory<T> Memory => memory;
-        public RowList Rows => new RowList(ref this);
-        public ColList Cols => new ColList(ref this);
+        /// <summary>
+        /// Gets the number of rows.
+        /// </summary>
+        public readonly int RowCount => rowCount;
+
+        /// <summary>
+        /// Gets the number of columns.
+        /// </summary>
+        public readonly int ColCount => colCount;
+
+        /// <summary>
+        /// Gets the stride value for the storage.
+        /// </summary>
+        public readonly int Stride => stride;
+
+        /// <summary>
+        /// Gets the storage of the matrix.
+        /// </summary>
+        public readonly Memory<T> Memory => memory;
+
+        /// <summary>
+        /// Gets the list of rows.
+        /// </summary>
+        public readonly RowList Rows => new RowList(in this);
+
+        /// <summary>
+        /// Gets the list of columns.
+        /// </summary>
+        public readonly ColList Cols => new ColList(in this);
     }
 }
