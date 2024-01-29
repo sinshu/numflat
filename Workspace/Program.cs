@@ -8,7 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var mat = new Mat<double>(20, 20);
+        var mat = new Mat<double>(20, 30);
         for (var row = 0; row < mat.RowCount; row++)
         {
             for (var col = 0; col < mat.ColCount; col++)

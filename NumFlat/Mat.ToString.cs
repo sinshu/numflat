@@ -26,10 +26,10 @@ namespace NumFlat
         {
             if (rowCount == 0 || colCount == 0)
             {
-                return "DenseMatrix Empty-" + typeof(T).Name;
+                return $"DenseMatrix Empty-{typeof(T).Name}";
             }
 
-            var header = "DenseMatrix " + rowCount + "x" + colCount + "-" + typeof(T).Name;
+            var header = $"DenseMatrix {rowCount}x{colCount}-{typeof(T).Name}";
             if (colCount <= 2 * threshold)
             {
                 var infos = Cols.Select(col => GetStringInfoFromSingleCol(col, format)).ToArray();
