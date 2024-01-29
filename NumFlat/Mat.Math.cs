@@ -26,6 +26,7 @@ namespace NumFlat
         /// The destination of the result of the matrix addition.
         /// </param>
         /// <remarks>
+        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Add<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -77,6 +78,7 @@ namespace NumFlat
         /// The destination of the result of the matrix subtraction.
         /// </param>
         /// <remarks>
+        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Sub<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -125,6 +127,7 @@ namespace NumFlat
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-scalar multiplication.
+        /// The dimensions of <paramref name="destination"/> must match <paramref name="x"/>.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -171,6 +174,7 @@ namespace NumFlat
         /// The destination of the result of the pointwise-multiplication.
         /// </param>
         /// <remarks>
+        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void PointwiseMul<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -221,6 +225,7 @@ namespace NumFlat
         /// The destination of the result of the pointwise-division.
         /// </param>
         /// <remarks>
+        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void PointwiseDiv<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -264,9 +269,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
+        /// `y.Count` must match `x.ColCount`.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
+        /// `destination.Count` must match `x.RowCount`.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -312,9 +319,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
+        /// `y.Count` must match `x.ColCount`.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
+        /// `destination.Count` must match `x.RowCount`.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -360,9 +369,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
+        /// `y.Count` must match `x.ColCount`.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
+        /// `destination.Count` must match `x.RowCount`.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
