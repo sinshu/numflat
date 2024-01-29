@@ -4,12 +4,40 @@ using System.Numerics;
 
 namespace NumFlat
 {
+    /// <summary>
+    /// Represents a vector.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of elements in the vector.
+    /// </typeparam>
     public partial struct Vec<T> : IReadOnlyList<T> where T : unmanaged, INumberBase<T>
     {
         private readonly int count;
         private readonly int stride;
         private readonly Memory<T> memory;
 
+        /// <summary>
+        /// Creates a new vector.
+        /// </summary>
+        /// <param name="count">
+        /// The number of elements in the vector.
+        /// </param>
+        /// <param name="stride">
+        /// The stride of the elements.
+        /// This value indicates the difference between the index of adjacent elements in the <paramref name="memory"/>.
+        /// If the length of the <paramref name="memory"/> matches <paramref name="count"/>
+        /// and the elements are arranged consecutively without gaps in the <paramref name="memory"/>,
+        /// then this value is 1.
+        /// </param>
+        /// <param name="memory">
+        /// The storage of the elements in the vector.
+        /// The length of the <paramref name="memory"/> must match
+        /// <paramref name="stride"/> * (<paramref name="count"/> - 1) + 1`.
+        /// </param>
+        /// <remarks>
+        /// This constructor does not allocate heap memory.
+        /// The given <paramref name="memory"/> is directly used as the storage of the vector.
+        /// </remarks>
         public Vec(int count, int stride, Memory<T> memory)
         {
             if (count <= 0)
@@ -32,14 +60,39 @@ namespace NumFlat
             this.memory = memory;
         }
 
+        /// <summary>
+        /// Creates a zero vector.
+        /// </summary>
+        /// <param name="count">
+        /// The number of elements in the vector.
+        /// </param>
+        /// <remarks>
+        /// This constructor allocates heap memory to store the elements in the vector.
+        /// </remarks>
         public Vec(int count) : this(count, 1, new T[count])
         {
         }
 
+        /// <summary>
+        /// Creates a vector from specified elements.
+        /// </summary>
+        /// <param name="memory">
+        /// The storage of the elements in the vector.
+        /// </param>
+        /// <remarks>
+        /// This constructor does not allocate heap memory.
+        /// The given <paramref name="memory"/> is directly used as the storage of the vector.
+        /// </remarks>
         public Vec(Memory<T> memory) : this(memory.Length, 1, memory)
         {
         }
 
+        /// <summary>
+        /// Fills the elements of the vector with a specified value.
+        /// </summary>
+        /// <param name="value">
+        /// The value to assign to each element of the vector.
+        /// </param>
         public void Fill(T value)
         {
             var span = memory.Span;
@@ -51,12 +104,31 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Zero-clears the elements of the vector.
+        /// </summary>
         public void Clear()
         {
             Fill(default);
         }
 
-        public Vec<T> Subvector(int startIndex, int count)
+        /// <summary>
+        /// Gets a subvector from the vector.
+        /// </summary>
+        /// <param name="startIndex">
+        /// The starting position of the subvector in the vector.
+        /// </param>
+        /// <param name="count">
+        /// The number of elements of the subvector.
+        /// </param>
+        /// <returns>
+        /// The specified subvector in the vector.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate heap memory.
+        /// The returned subvector will be a view of the original vector.
+        /// </remarks>
+        public readonly Vec<T> Subvector(int startIndex, int count)
         {
             if (startIndex < 0)
             {
@@ -78,7 +150,16 @@ namespace NumFlat
             return new Vec<T>(count, stride, memory);
         }
 
-        public void CopyTo(Vec<T> destination)
+        /// <summary>
+        /// Copies the elements of the vector into another vector.
+        /// </summary>
+        /// <param name="destination">
+        /// The destination vector.
+        /// </param>
+        /// <remarks>
+        /// The length of the vectors must match.
+        /// </remarks>
+        public readonly void CopyTo(Vec<T> destination)
         {
             if (destination.count != this.count)
             {
@@ -97,9 +178,18 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Gets or sets the element at the specified position in the vector.
+        /// </summary>
+        /// <param name="index">
+        /// The index of the element.
+        /// </param>
+        /// <returns>
+        /// The specified element.
+        /// </returns>
         public T this[int index]
         {
-            get
+            readonly get
             {
                 if ((uint)index >= count)
                 {
@@ -120,8 +210,19 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// The number of elements in the vector.
+        /// </summary>
         public int Count => count;
+
+        /// <summary>
+        /// Gets the stride value for the storage.
+        /// </summary>
         public int Stride => stride;
+
+        /// <summary>
+        /// Gets the storage of the matrix.
+        /// </summary>
         public Memory<T> Memory => memory;
     }
 }
