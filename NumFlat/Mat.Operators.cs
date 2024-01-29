@@ -6,6 +6,22 @@ namespace NumFlat
 {
     public partial struct Mat<T>
     {
+        /// <summary>
+        /// Computes a matrix addition, X + Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Add{T}(Mat{T}, Mat{T}, Mat{T})"/> instead.
+        /// </remarks>
         public static Mat<T> operator +(Mat<T> x, Mat<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -17,6 +33,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a matrix subtraction, X - Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Sub{T}(Mat{T}, Mat{T}, Mat{T})"/> instead.
+        /// </remarks>
         public static Mat<T> operator -(Mat<T> x, Mat<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -28,6 +60,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a matrix-and-scalar multiplication, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix-and-scalar multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// </remarks>
         public static Mat<T> operator *(Mat<T> x, T y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -37,6 +85,22 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a scalar-and-matrix multiplication, x * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <returns>
+        /// The result of the scalar-and-matri multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// </remarks>
         public static Mat<T> operator *(T x, Mat<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -46,6 +110,23 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Computes a matrix-and-vector multiplication, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// This vector is interpreted as a column vector.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix-and-vector multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Vec{double}, Vec{double})"/> instead.
+        /// </remarks>
         public static Vec<T> operator *(Mat<T> x, Vec<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -86,6 +167,22 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix multiplication.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double})"/> instead.
+        /// </remarks>
         public static Mat<T> operator *(Mat<T> x, Mat<T> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));

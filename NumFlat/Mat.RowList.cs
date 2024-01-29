@@ -6,6 +6,9 @@ namespace NumFlat
 {
     public partial struct Mat<T>
     {
+        /// <summary>
+        /// Provides a view of the matrix as a list of row vectors.
+        /// </summary>
         public struct RowList : IReadOnlyList<Vec<T>>
         {
             private readonly int rowCount;
@@ -21,6 +24,15 @@ namespace NumFlat
                 this.memory = mat.memory;
             }
 
+            /// <summary>
+            /// Gets the row vector at the specified row index.
+            /// </summary>
+            /// <param name="index">
+            /// The row index.
+            /// </param>
+            /// <returns>
+            /// The row vector.
+            /// </returns>
             public Vec<T> this[int index]
             {
                 get
@@ -34,14 +46,23 @@ namespace NumFlat
                 }
             }
 
+            /// <summary>
+            /// Gets the number of row vectors.
+            /// </summary>
             public int Count => rowCount;
 
+            /// <summary>
+            /// <inheritdoc/>
+            /// </summary>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(ref this);
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
 
 
 
+            /// <summary>
+            /// Enumerates the row vectors.
+            /// </summary>
             public struct Enumerator : IEnumerator<Vec<T>>, IEnumerator
             {
                 private readonly int rowCount;
@@ -61,10 +82,16 @@ namespace NumFlat
                     this.current = default;
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public void Dispose()
                 {
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public bool MoveNext()
                 {
                     row++;
@@ -80,6 +107,9 @@ namespace NumFlat
                     }
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public Vec<T> Current => current;
 
                 object? IEnumerator.Current

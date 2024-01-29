@@ -5,8 +5,29 @@ using OpenBlasSharp;
 
 namespace NumFlat
 {
+    /// <summary>
+    /// Provides low-level matrix operations.
+    /// </summary>
     public static class Mat
     {
+        /// <summary>
+        /// Computes a matrix addition, X + Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix addition.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Add<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -39,6 +60,25 @@ namespace NumFlat
             }
         }
 
+
+        /// <summary>
+        /// Computes a matrix subtraction, X - Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix subtraction.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Sub<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -71,6 +111,24 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix-and-scalar multiplication, X * y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix-and-scalar multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Mul<T>(Mat<T> x, T y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -97,6 +155,24 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a pointwise-multiplication of matrices, X .* Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pointwise-multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void PointwiseMul<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -129,6 +205,24 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a pointwise-division of matrices, X ./ Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pointwise-division.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void PointwiseDiv<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -161,6 +255,22 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix-and-vector multiplication, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// This vector is interpreted as a column vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix-and-vector multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<float> x, Vec<float> y, Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -193,6 +303,22 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix-and-vector multiplication, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// This vector is interpreted as a column vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix-and-vector multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -225,6 +351,22 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix-and-vector multiplication, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// This vector is interpreted as a column vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix-and-vector multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<Complex> x, Vec<Complex> y, Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -260,6 +402,21 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -291,6 +448,21 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -322,6 +494,21 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix multiplication, X * Y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix multiplication.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static unsafe void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -356,6 +543,20 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix transposition, X^T.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix transposition.
+        /// </param>
+        /// <remarks>
+        /// Since in-place transposition is not supported,
+        /// <paramref name="x"/> and <paramref name="destination"/> must be different.
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -387,6 +588,21 @@ namespace NumFlat
             }
         }
 
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix inversion.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
+        /// </remarks>
         public static unsafe void Inverse(Mat<double> x, Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
@@ -415,26 +631,24 @@ namespace NumFlat
                 fixed (double* px = x.Memory.Span)
                 fixed (int* ppiv = piv)
                 {
-                    var info1 = Lapack.Dgetrf(
+                    var info = Lapack.Dgetrf(
                         MatrixLayout.ColMajor,
                         x.RowCount, x.ColCount,
                         px, x.Stride,
                         ppiv);
-
-                    if (info1 != LapackInfo.None)
+                    if (info != LapackInfo.None)
                     {
-                        throw new Exception();
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
                     }
 
-                    var info2 = Lapack.Dgetri(
+                    info = Lapack.Dgetri(
                         MatrixLayout.ColMajor,
                         x.RowCount,
                         px, x.Stride,
                         ppiv);
-
-                    if (info2 != LapackInfo.None)
+                    if (info != LapackInfo.None)
                     {
-                        throw new Exception();
+                        throw new InvalidOperationException("The matrix is ill-conditioned.");
                     }
                 }
             }

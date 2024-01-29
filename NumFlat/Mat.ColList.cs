@@ -6,6 +6,9 @@ namespace NumFlat
 {
     public partial struct Mat<T>
     {
+        /// <summary>
+        /// Provides a view of the matrix as a list of column vectors.
+        /// </summary>
         public struct ColList : IReadOnlyList<Vec<T>>
         {
             private readonly int rowCount;
@@ -21,6 +24,15 @@ namespace NumFlat
                 this.memory = mat.memory;
             }
 
+            /// <summary>
+            /// Gets the column vector at the specified column index.
+            /// </summary>
+            /// <param name="index">
+            /// The column index.
+            /// </param>
+            /// <returns>
+            /// The column vector.
+            /// </returns>
             public Vec<T> this[int index]
             {
                 get
@@ -34,14 +46,23 @@ namespace NumFlat
                 }
             }
 
+            /// <summary>
+            /// Gets the number of column vectors.
+            /// </summary>
             public int Count => colCount;
 
+            /// <summary>
+            /// <inheritdoc/>
+            /// </summary>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(ref this);
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
 
 
 
+            /// <summary>
+            /// Enumerates the column vectors.
+            /// </summary>
             public struct Enumerator : IEnumerator<Vec<T>>, IEnumerator
             {
                 private readonly int rowCount;
@@ -59,10 +80,16 @@ namespace NumFlat
                     this.current = default;
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public void Dispose()
                 {
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public bool MoveNext()
                 {
                     offset += stride;
@@ -78,6 +105,9 @@ namespace NumFlat
                     }
                 }
 
+                /// <summary>
+                /// <inheritdoc/>
+                /// </summary>
                 public Vec<T> Current => current;
 
                 object? IEnumerator.Current

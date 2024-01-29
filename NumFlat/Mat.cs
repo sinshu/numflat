@@ -278,12 +278,12 @@ namespace NumFlat
         public readonly Memory<T> Memory => memory;
 
         /// <summary>
-        /// Gets the list of rows.
+        /// Gets the view of the matrix as a list of row vectors.
         /// </summary>
         public readonly RowList Rows => new RowList(in this);
 
         /// <summary>
-        /// Gets the list of columns.
+        /// Gets the view of the matrix as a list of column vectors.
         /// </summary>
         public readonly ColList Cols => new ColList(in this);
     }

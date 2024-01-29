@@ -15,13 +15,25 @@ namespace NumFlat
         private const int maxVisibleRowCount = 10;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// Format the matrix as a string suitable for display on a console.
         /// </summary>
+        /// <returns>
+        /// The formatted string.
+        /// </returns>
         public override string ToString()
         {
             return ToString("G6");
         }
 
+        /// <summary>
+        /// Format the matrix as a string suitable for display on a console.
+        /// </summary>
+        /// <param name="format">
+        /// The format to use.
+        /// </param>
+        /// <returns>
+        /// The formatted string.
+        /// </returns>
         public string ToString(string format)
         {
             if (rowCount == 0 || colCount == 0)
