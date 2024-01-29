@@ -8,15 +8,22 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var mat = new Mat<double>(20, 30);
-        for (var row = 0; row < mat.RowCount; row++)
+        var x = new Mat<float>(3, 5);
+        var y = new Mat<float>(3, 5);
+        for (var row = 0; row < x.RowCount; row++)
         {
-            for (var col = 0; col < mat.ColCount; col++)
+            for (var col = 0; col < x.ColCount; col++)
             {
-                mat[row, col] = row + col / 100.0;
+                x[row, col] = row + col / 100.0F;
+                y[row, col] = row + col;
             }
         }
 
-        Console.WriteLine(mat);
+        Console.WriteLine(x);
+        Console.WriteLine(y);
+
+        var destination = new Mat<float>(5, 5);
+        Mat.Mul(x, true, y, false, destination);
+        Console.WriteLine(destination);
     }
 }

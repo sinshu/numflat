@@ -428,20 +428,20 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
+        public static void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
+        {
+            Mul(x, false, y, false, destination);
+        }
+
+        public static unsafe void Mul(Mat<float> x, bool transposeX, Mat<float> y, bool transposeY, Mat<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.RowCount != x.ColCount)
-            {
-                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
-            }
-
-            var m = x.RowCount;
-            var n = y.ColCount;
-            var k = x.ColCount;
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
@@ -449,7 +449,7 @@ namespace NumFlat
             {
                 Blas.Sgemm(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans, OpenBlasSharp.Transpose.NoTrans,
+                    transX, transY,
                     m, n, k,
                     1.0F,
                     px, x.Stride,
@@ -807,6 +807,40 @@ namespace NumFlat
             {
                 ArrayPool<int>.Shared.Return(piv);
             }
+        }
+
+        private static (int m, int n, int k) GetMulArgs<T>(ref Mat<T> x, bool transposeX, ref Mat<T> y, bool transposeY, ref Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            var xRowCount = (count: x.RowCount, name: "x.RowCount");
+            var xColCount = (count: x.ColCount, name: "x.ColCount");
+            var yRowCount = (count: y.RowCount, name: "y.RowCount");
+            var yColCount = (count: y.ColCount, name: "y.ColCount");
+
+            if (transposeX)
+            {
+                (xRowCount, xColCount) = (xColCount, xRowCount);
+            }
+
+            if (transposeY)
+            {
+                (yRowCount, yColCount) = (yColCount, yRowCount);
+            }
+
+            if (yRowCount.count != xColCount.count)
+            {
+                throw new ArgumentException($"`{yRowCount.name}` must match `{xColCount.name}`.");
+            }
+
+            var m = xRowCount;
+            var n = yColCount;
+            var k = xColCount;
+
+            if (destination.RowCount != m.count || destination.ColCount != n.count)
+            {
+                throw new ArgumentException($"The dimensions of `destination` must match `{m.name}` x `{n.name}`.");
+            }
+
+            return (m.count, n.count, k.count);
         }
     }
 }
