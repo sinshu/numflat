@@ -23,6 +23,8 @@ namespace NumFlat
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.Transpose{T}(Mat{T}, Mat{T})"/> instead.
+        /// To efficiently perform matrix multiplication with matrix transposition,
+        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/> instead.
         /// </remarks>
         public static Mat<T> Transpose<T>(this Mat<T> x) where T : unmanaged, INumberBase<T>
         {

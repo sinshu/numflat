@@ -669,6 +669,8 @@ namespace NumFlat
         /// <remarks>
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
+        /// To efficiently perform matrix multiplication with matrix transposition,
+        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/> instead.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
