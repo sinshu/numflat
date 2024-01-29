@@ -61,7 +61,6 @@ namespace NumFlat
             }
         }
 
-
         /// <summary>
         /// Computes a matrix subtraction, X - Y.
         /// </summary>
