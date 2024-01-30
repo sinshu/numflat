@@ -666,11 +666,11 @@ namespace NumFlat
         /// The destination of the result of the matrix transposition.
         /// </param>
         /// <remarks>
+        /// This method does not allocate managed heap memory.
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
         /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/>.
-        /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
@@ -714,9 +714,9 @@ namespace NumFlat
         /// </param>
         /// <remarks>
         /// The dimensions of the matrices must match.
+        /// This method does not allocate managed heap memory.
         /// To efficiently perform matrix multiplication with matrix conjugation,
         /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
-        /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Conjugate(Mat<Complex> x, Mat<Complex> destination)
         {
@@ -754,11 +754,11 @@ namespace NumFlat
         /// The destination of the result of the Hermitian transposition.
         /// </param>
         /// <remarks>
+        /// This method does not allocate managed heap memory.
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
         /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
-        /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void ConjugateTranspose(Mat<Complex> x, Mat<Complex> destination)
         {
