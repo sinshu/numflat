@@ -288,5 +288,32 @@ namespace NumFlat
                 return Blas.Zdotu(x.Count, px, x.Stride, py, y.Stride);
             }
         }
+
+        /// <summary>
+        /// Conjugates the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector to be conjugated.
+        /// </param>
+        /// <param name="destination">
+        /// The conjugated complex vector.
+        /// </param>
+        public static void Conjugate(Vec<Complex> x, Vec<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px].Conjugate();
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
     }
 }
