@@ -176,5 +176,22 @@ namespace NumFlatTest
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 3, 2, 4)]
+        [TestCase(3, 1, 1, 1)]
+        [TestCase(3, 3, 2, 4)]
+        [TestCase(5, 1, 2, 3)]
+        [TestCase(11, 7, 2, 5)]
+        public void ConjugateDotProduct(int count, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
+            var actual = Vec.ConjugateDotProduct(x, y);
+
+            var expected = x.Zip(y, (val1, val2) => val1.Conjugate() * val2).Aggregate((sum, next) => sum + next);
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
     }
 }
