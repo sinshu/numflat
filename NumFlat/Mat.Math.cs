@@ -418,22 +418,22 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix X.
         /// </param>
-        /// <param name="transposeX">
-        /// If true, the matrix X is treated as transposed.
-        /// </param>
         /// <param name="y">
         /// The matrix Y.
-        /// </param>
-        /// <param name="transposeY">
-        /// If true, the matrix Y is treated as transposed.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix multiplication.
         /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
+        /// <param name="transposeY">
+        /// If true, the matrix Y is treated as transposed.
+        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<float> x, bool transposeX, Mat<float> y, bool transposeY, Mat<float> destination)
+        public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination, bool transposeX, bool transposeY)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -471,36 +471,16 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the result of the matrix multiplication.
         /// </param>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static void Mul(Mat<float> x, Mat<float> y, Mat<float> destination)
-        {
-            Mul(x, false, y, false, destination);
-        }
-
-        /// <summary>
-        /// Computes a matrix multiplication, X * Y.
-        /// </summary>
-        /// <param name="x">
-        /// The matrix X.
-        /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.
-        /// </param>
-        /// <param name="y">
-        /// The matrix Y.
         /// </param>
         /// <param name="transposeY">
         /// If true, the matrix Y is treated as transposed.
         /// </param>
-        /// <param name="destination">
-        /// The destination of the result of the matrix multiplication.
-        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<double> x, bool transposeX, Mat<double> y, bool transposeY, Mat<double> destination)
+        public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination, bool transposeX, bool transposeY)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -538,28 +518,11 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the result of the matrix multiplication.
         /// </param>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static void Mul(Mat<double> x, Mat<double> y, Mat<double> destination)
-        {
-            Mul(x, false, y, false, destination);
-        }
-
-        /// <summary>
-        /// Computes a matrix multiplication, X * Y.
-        /// </summary>
-        /// <param name="x">
-        /// The matrix X.
-        /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.
         /// </param>
         /// <param name="conjugateX">
         /// If true, the matrix X is treated as conjugated.
-        /// </param>
-        /// <param name="y">
-        /// The matrix Y.
         /// </param>
         /// <param name="transposeY">
         /// If true, the matrix Y is treated as transposed.
@@ -567,13 +530,10 @@ namespace NumFlat
         /// <param name="conjugateY">
         /// If true, the matrix Y is treated as conjugated.
         /// </param>
-        /// <param name="destination">
-        /// The destination of the result of the matrix multiplication.
-        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<Complex> x, bool transposeX, bool conjugateX, Mat<Complex> y, bool transposeY, bool conjugateY, Mat<Complex> destination)
+        public static unsafe void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination, bool transposeX, bool conjugateX, bool transposeY, bool conjugateY)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -611,52 +571,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix multiplication, X * Y.
-        /// </summary>
-        /// <param name="x">
-        /// The matrix X.
-        /// </param>
-        /// <param name="transposeX">
-        /// If true, the matrix X is treated as transposed.
-        /// </param>
-        /// <param name="y">
-        /// The matrix Y.
-        /// </param>
-        /// <param name="transposeY">
-        /// If true, the matrix Y is treated as transposed.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the result of the matrix multiplication.
-        /// </param>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static void Mul(Mat<Complex> x, bool transposeX, Mat<Complex> y, bool transposeY, Mat<Complex> destination)
-        {
-            Mul(x, transposeX, false, y, transposeY, false, destination);
-        }
-
-        /// <summary>
-        /// Computes a matrix multiplication, X * Y.
-        /// </summary>
-        /// <param name="x">
-        /// The matrix X.
-        /// </param>
-        /// <param name="y">
-        /// The matrix Y.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the result of the matrix multiplication.
-        /// </param>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination)
-        {
-            Mul(x, false, false, y, false, false, destination);
-        }
-
-        /// <summary>
         /// Computes a matrix transposition, X^T.
         /// </summary>
         /// <param name="x">
@@ -670,7 +584,7 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/>.
+        /// use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/>.
         /// </remarks>
         public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
@@ -716,7 +630,7 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static void Conjugate(Mat<Complex> x, Mat<Complex> destination)
         {
@@ -758,7 +672,7 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static void ConjugateTranspose(Mat<Complex> x, Mat<Complex> destination)
         {

@@ -220,7 +220,7 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe float DotProduct(Vec<float> x, Vec<float> y)
+        public static unsafe float Dot(Vec<float> x, Vec<float> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -248,7 +248,7 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe double DotProduct(Vec<double> x, Vec<double> y)
+        public static unsafe double Dot(Vec<double> x, Vec<double> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -270,13 +270,16 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// </param>
+        /// <param name="conjugateX">
+        /// If true, the vector x is treated as conjugated.
+        /// </param>
         /// <returns>
         /// The result of the dot product.
         /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe Complex DotProduct(Vec<Complex> x, Vec<Complex> y)
+        public static unsafe Complex Dot(Vec<Complex> x, Vec<Complex> y, bool conjugateX)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
@@ -285,7 +288,82 @@ namespace NumFlat
             fixed (Complex* px = x.Memory.Span)
             fixed (Complex* py = y.Memory.Span)
             {
-                return Blas.Zdotu(x.Count, px, x.Stride, py, y.Stride);
+                if (conjugateX)
+                {
+                    return Blas.Zdotc(x.Count, px, x.Stride, py, y.Stride);
+                }
+                else
+                {
+                    return Blas.Zdotu(x.Count, px, x.Stride, py, y.Stride);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <param name="destination">
+        /// The result of outer dot product.
+        /// </param>
+        /// <param name="conjugateY">
+        /// If true, the vector y is treated as conjugated.
+        /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static unsafe void Outer(Vec<Complex> x, Vec<Complex> y, Mat<Complex> destination, bool conjugateY)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (destination.RowCount != x.Count)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+            }
+
+            if (destination.ColCount != y.Count)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+            }
+
+            var one = Complex.One;
+
+            destination.Clear();
+
+            fixed (Complex* px = x.Memory.Span)
+            fixed (Complex* py = y.Memory.Span)
+            fixed (Complex* pd = destination.Memory.Span)
+            {
+                if (conjugateY)
+                {
+                    Blas.Zgerc(
+                        Order.ColMajor,
+                        destination.RowCount, destination.ColCount,
+                        &one,
+                        px, x.Stride,
+                        py, y.Stride,
+                        pd, destination.Stride);
+                }
+                else
+                {
+                    Blas.Zgeru(
+                        Order.ColMajor,
+                        destination.RowCount, destination.ColCount,
+                        &one,
+                        px, x.Stride,
+                        py, y.Stride,
+                        pd, destination.Stride);
+                }
             }
         }
 
@@ -313,34 +391,6 @@ namespace NumFlat
                 sd[pd] = sx[px].Conjugate();
                 px += x.Stride;
                 pd += destination.Stride;
-            }
-        }
-
-        /// <summary>
-        /// Computes a dot product of complex vectors, x^H * y.
-        /// </summary>
-        /// <param name="x">
-        /// The vector x.
-        /// </param>
-        /// <param name="y">
-        /// The vector y.
-        /// </param>
-        /// <returns>
-        /// The result of the dot product.
-        /// </returns>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static unsafe Complex ConjugateDotProduct(Vec<Complex> x, Vec<Complex> y)
-        {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
-
-            fixed (Complex* px = x.Memory.Span)
-            fixed (Complex* py = y.Memory.Span)
-            {
-                return Blas.Zdotc(x.Count, px, x.Stride, py, y.Stride);
             }
         }
     }

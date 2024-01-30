@@ -108,49 +108,49 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 3, 2, 4)]
-        [TestCase(3, 1, 1, 1)]
-        [TestCase(3, 3, 2, 4)]
-        [TestCase(5, 1, 2, 3)]
-        [TestCase(11, 7, 2, 5)]
-        public void DotProductSingle(int count, int xStride, int yStride, int dstStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 3, 2)]
+        [TestCase(5, 1, 2)]
+        [TestCase(11, 7, 2)]
+        public void DotProductSingle(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorSingle(42, count, xStride);
             var y = Utilities.CreateRandomVectorSingle(57, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.Dot(x, y);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
         }
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 3, 2, 4)]
-        [TestCase(3, 1, 1, 1)]
-        [TestCase(3, 3, 2, 4)]
-        [TestCase(5, 1, 2, 3)]
-        [TestCase(11, 7, 2, 5)]
-        public void DotProductDouble(int count, int xStride, int yStride, int dstStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 3, 2)]
+        [TestCase(5, 1, 2)]
+        [TestCase(11, 7, 2)]
+        public void DotProductDouble(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.Dot(x, y);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 3, 2, 4)]
-        [TestCase(3, 1, 1, 1)]
-        [TestCase(3, 3, 2, 4)]
-        [TestCase(5, 1, 2, 3)]
-        [TestCase(11, 7, 2, 5)]
-        public void DotProductComplex(int count, int xStride, int yStride, int dstStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 3, 2)]
+        [TestCase(5, 1, 2)]
+        [TestCase(11, 7, 2)]
+        public void DotProductComplex(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
-            var actual = Vec.DotProduct(x, y);
+            var actual = Vec.Dot(x, y, false);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Aggregate((sum, next) => sum + next);
             Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
@@ -177,21 +177,91 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 3, 2, 4)]
-        [TestCase(3, 1, 1, 1)]
-        [TestCase(3, 3, 2, 4)]
-        [TestCase(5, 1, 2, 3)]
-        [TestCase(11, 7, 2, 5)]
-        public void ConjugateDotProduct(int count, int xStride, int yStride, int dstStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 3, 2)]
+        [TestCase(5, 1, 2)]
+        [TestCase(11, 7, 2)]
+        public void ConjugateDotProduct(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
-            var actual = Vec.ConjugateDotProduct(x, y);
+            var actual = Vec.Dot(x, y, true);
 
             var expected = x.Zip(y, (val1, val2) => val1.Conjugate() * val2).Aggregate((sum, next) => sum + next);
             Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
             Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 2, 1, 3, 4)]
+        [TestCase(2, 1, 2, 1, 2)]
+        [TestCase(2, 3, 2, 4, 5)]
+        [TestCase(3, 1, 3, 1, 3)]
+        [TestCase(3, 3, 3, 4, 5)]
+        [TestCase(2, 1, 3, 1, 4)]
+        [TestCase(2, 3, 3, 4, 5)]
+        [TestCase(3, 1, 2, 1, 3)]
+        [TestCase(3, 3, 2, 4, 5)]
+        public void OuterProductComplex(int xCount, int xStride, int yCount, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, x.Count, y.Count, dstStride);
+            Vec.Outer(x, y, destination, false);
+
+            var mx = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(x.ToArray());
+            var my = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(y.ToArray());
+            var md = mx.OuterProduct(my);
+
+            for (var row = 0; row < md.RowCount; row++)
+            {
+                for (var col = 0; col < md.ColumnCount; col++)
+                {
+                    var expected = md[row, col];
+                    var actual = destination[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 2, 1, 3, 4)]
+        [TestCase(2, 1, 2, 1, 2)]
+        [TestCase(2, 3, 2, 4, 5)]
+        [TestCase(3, 1, 3, 1, 3)]
+        [TestCase(3, 3, 3, 4, 5)]
+        [TestCase(2, 1, 3, 1, 4)]
+        [TestCase(2, 3, 3, 4, 5)]
+        [TestCase(3, 1, 2, 1, 3)]
+        [TestCase(3, 3, 2, 4, 5)]
+        public void ConjugateOuterProductComplex(int xCount, int xStride, int yCount, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, x.Count, y.Count, dstStride);
+            Vec.Outer(x, y, destination, true);
+
+            var mx = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(x.ToArray());
+            var my = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(y.ToArray()).Conjugate();
+            var md = mx.OuterProduct(my);
+
+            for (var row = 0; row < md.RowCount; row++)
+            {
+                for (var col = 0; col < md.ColumnCount; col++)
+                {
+                    var expected = md[row, col];
+                    var actual = destination[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixDouble(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixDouble(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
-            Mat.Mul(x, y, destination);
+            Mat.Mul(x, y, destination, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -56,7 +56,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixDouble(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixDouble(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
-            Mat.Mul(x, false, y, true, destination);
+            Mat.Mul(x, y, destination, false, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -88,7 +88,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixDouble(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixDouble(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
-            Mat.Mul(x, true, y, false, destination);
+            Mat.Mul(x, y, destination, true, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -120,7 +120,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixDouble(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixDouble(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
-            Mat.Mul(x, true, y, true, destination);
+            Mat.Mul(x, y, destination, true, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());

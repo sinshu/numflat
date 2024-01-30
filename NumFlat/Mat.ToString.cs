@@ -21,7 +21,7 @@ namespace NumFlat
         /// </returns>
         public override string ToString()
         {
-            return ToString("G6", null);
+            return ToString(null, null);
         }
 
         /// <summary>
@@ -41,6 +41,11 @@ namespace NumFlat
             if (rowCount == 0 || colCount == 0)
             {
                 return $"DenseMatrix Empty-{typeof(T).Name}";
+            }
+
+            if (format == null)
+            {
+                format = "G6";
             }
 
             var header = $"DenseMatrix {rowCount}x{colCount}-{typeof(T).Name}";

@@ -80,13 +80,13 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        public static float DotProduct(this Vec<float> x, Vec<float> y)
+        public static float Dot(this Vec<float> x, Vec<float> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
-            return Vec.DotProduct(x, y);
+            return Vec.Dot(x, y);
         }
 
         /// <summary>
@@ -101,13 +101,13 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        public static double DotProduct(this Vec<double> x, Vec<double> y)
+        public static double Dot(this Vec<double> x, Vec<double> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
-            return Vec.DotProduct(x, y);
+            return Vec.Dot(x, y);
         }
 
         /// <summary>
@@ -122,13 +122,37 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        public static Complex DotProduct(this Vec<Complex> x, Vec<Complex> y)
+        public static Complex Dot(this Vec<Complex> x, Vec<Complex> y)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
-            return Vec.DotProduct(x, y);
+            return Vec.Dot(x, y, false);
+        }
+
+        /// <summary>
+        /// Computes a dot product of vectors, x^T * y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <param name="conjugateX">
+        /// If true, the vector x is treated as conjugated.
+        /// </param>
+        /// <returns>
+        /// The result of the dot product.
+        /// </returns>
+        public static Complex Dot(this Vec<Complex> x, Vec<Complex> y, bool conjugateX)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+
+            return Vec.Dot(x, y, conjugateX);
         }
 
         /// <summary>
@@ -145,27 +169,6 @@ namespace NumFlat
             var result = new Vec<Complex>(x.Count);
             Vec.Conjugate(x, result);
             return result;
-        }
-
-        /// <summary>
-        /// Computes a dot product of complex vectors, x^H * y.
-        /// </summary>
-        /// <param name="x">
-        /// The vector x.
-        /// </param>
-        /// <param name="y">
-        /// The vector y.
-        /// </param>
-        /// <returns>
-        /// The result of the dot product.
-        /// </returns>
-        public static Complex ConjugateDotProduct(this Vec<Complex> x, Vec<Complex> y)
-        {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
-
-            return Vec.ConjugateDotProduct(x, y);
         }
     }
 }

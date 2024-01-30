@@ -24,7 +24,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.Transpose{T}(Mat{T}, Mat{T})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/>.
+        /// use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/>.
         /// </remarks>
         public static Mat<T> Transpose<T>(this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
@@ -48,7 +48,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.Conjugate(Mat{Complex}, Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static Mat<Complex> Conjugate(this Mat<Complex> x)
         {
@@ -72,7 +72,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.ConjugateTranspose(Mat{Complex}, Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static Mat<Complex> ConjugateTranspose(this Mat<Complex> x)
         {

@@ -181,7 +181,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Mat<T> operator *(Mat<T> x, Mat<T> y)
         {
@@ -198,7 +198,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<float>>(ref x);
                 var uy = Unsafe.As<Mat<T>, Mat<float>>(ref y);
                 var result = new Mat<float>(x.rowCount, y.colCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false, false);
                 return Unsafe.As<Mat<float>, Mat<T>>(ref result);
             }
             else if (typeof(T) == typeof(double))
@@ -206,7 +206,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<double>>(ref x);
                 var uy = Unsafe.As<Mat<T>, Mat<double>>(ref y);
                 var result = new Mat<double>(x.rowCount, y.colCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false, false);
                 return Unsafe.As<Mat<double>, Mat<T>>(ref result);
             }
             else if (typeof(T) == typeof(Complex))
@@ -214,7 +214,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<Complex>>(ref x);
                 var uy = Unsafe.As<Mat<T>, Mat<Complex>>(ref y);
                 var result = new Mat<Complex>(x.rowCount, y.colCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false, false, false, false);
                 return Unsafe.As<Mat<Complex>, Mat<T>>(ref result);
             }
             else

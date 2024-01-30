@@ -24,7 +24,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination);
+            Mat.Mul(x, y, destination, false, false, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -57,7 +57,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, false, y, true, destination);
+            Mat.Mul(x, y, destination, false, false, true, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -90,7 +90,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, true, y, false, destination);
+            Mat.Mul(x, y, destination, true, false, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -123,7 +123,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, true, y, true, destination);
+            Mat.Mul(x, y, destination, true, false, true, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -156,7 +156,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, false, true, y, false, true, destination);
+            Mat.Mul(x, y, destination, false, true, false, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -189,7 +189,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, true, true, y, true, true, destination);
+            Mat.Mul(x, y, destination, true, true, true, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -222,7 +222,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, false, false, y, true, true, destination);
+            Mat.Mul(x, y, destination, false, false, true, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
@@ -255,7 +255,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, true, true, y, false, false, destination);
+            Mat.Mul(x, y, destination, true, true, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
             var my = DenseMatrix.OfArray(y.ToArray());
