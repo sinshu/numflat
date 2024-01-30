@@ -9,7 +9,7 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the matrix.
     /// </typeparam>
-    public partial struct Mat<T> where T : unmanaged, INumberBase<T>
+    public partial struct Mat<T> : IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int rowCount;
         private readonly int colCount;

@@ -22,19 +22,22 @@ namespace NumFlat
         /// </returns>
         public override string ToString()
         {
-            return ToString("G6");
+            return ToString("G6", null);
         }
 
         /// <summary>
         /// Format the matrix as a string suitable for display on a console.
         /// </summary>
         /// <param name="format">
-        /// The format to use.
+        /// <inheritdoc/>
+        /// </param>
+        /// <param name="provider">
+        /// <inheritdoc/>
         /// </param>
         /// <returns>
         /// The formatted string.
         /// </returns>
-        public string ToString(string format)
+        public string ToString(string? format, IFormatProvider? provider)
         {
             if (rowCount == 0 || colCount == 0)
             {
@@ -44,17 +47,17 @@ namespace NumFlat
             var header = $"DenseMatrix {rowCount}x{colCount}-{typeof(T).Name}";
             if (colCount <= 2 * threshold)
             {
-                var infos = Cols.Select(col => GetStringInfoFromSingleCol(col, format)).ToArray();
+                var infos = Cols.Select(col => GetStringInfoFromSingleCol(col, format, provider)).ToArray();
                 return BuildString(header, infos);
             }
             else
             {
-                var left = Cols.Take(threshold).Select(col => GetStringInfoFromSingleCol(col, format)).ToList();
-                var right = Cols.TakeLast(threshold).Select(col => GetStringInfoFromSingleCol(col, format)).ToList();
+                var left = Cols.Take(threshold).Select(col => GetStringInfoFromSingleCol(col, format, provider)).ToList();
+                var right = Cols.TakeLast(threshold).Select(col => GetStringInfoFromSingleCol(col, format, provider)).ToList();
 
                 foreach (var col in Cols.Skip(threshold).SkipLast(threshold))
                 {
-                    left.Add(GetStringInfoFromSingleCol(col, format));
+                    left.Add(GetStringInfoFromSingleCol(col, format, provider));
 
                     var visibleColCount = left.Count + right.Count;
                     int charCount;
@@ -88,18 +91,18 @@ namespace NumFlat
             }
         }
 
-        private static (int width, string[] values) GetStringInfoFromSingleCol(Vec<T> col, string format)
+        private static (int width, string[] values) GetStringInfoFromSingleCol(Vec<T> col, string? format, IFormatProvider? provider)
         {
             if (col.Count <= maxVisibleRowCount)
             {
-                var array = col.Select(x => x.ToString(format, null)).ToArray();
+                var array = col.Select(x => x.ToString(format, provider)).ToArray();
                 var maxLength = array.Select(s => s.Length).Max();
                 return (maxLength, array);
             }
             else
             {
-                var upper = col.Take(maxVisibleRowCount - threshold).Select(x => x.ToString(format, null));
-                var lower = col.TakeLast(threshold).Select(x => x.ToString(format, null));
+                var upper = col.Take(maxVisibleRowCount - threshold).Select(x => x.ToString(format, provider));
+                var lower = col.TakeLast(threshold).Select(x => x.ToString(format, provider));
                 var array = upper.Append(omit).Concat(lower).ToArray();
                 var maxLength = array.Select(s => s.Length).Max();
                 return (maxLength, array);
