@@ -111,7 +111,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an inner product of vectors, x^T * y.
+        /// Computes an dot product of vectors, x^T * y.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -120,7 +120,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the inner product.
+        /// The result of the dot product.
         /// </returns>
         public static T operator *(Vec<T> x, Vec<T> y)
         {
@@ -132,26 +132,26 @@ namespace NumFlat
             {
                 var ux = Unsafe.As<Vec<T>, Vec<float>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<float>>(ref y);
-                var result = Vec.InnerProduct(ux, uy);
+                var result = Vec.DotProduct(ux, uy);
                 return Unsafe.As<float, T>(ref result);
             }
             else if (typeof(T) == typeof(double))
             {
                 var ux = Unsafe.As<Vec<T>, Vec<double>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<double>>(ref y);
-                var result = Vec.InnerProduct(ux, uy);
+                var result = Vec.DotProduct(ux, uy);
                 return Unsafe.As<double, T>(ref result);
             }
             else if (typeof(T) == typeof(Complex))
             {
                 var ux = Unsafe.As<Vec<T>, Vec<Complex>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<Complex>>(ref y);
-                var result = Vec.InnerProduct(ux, uy);
+                var result = Vec.DotProduct(ux, uy);
                 return Unsafe.As<Complex, T>(ref result);
             }
             else
             {
-                throw new NotSupportedException($"Inner product for the type `{typeof(T).Name}` is not supported.");
+                throw new NotSupportedException($"dot product for the type `{typeof(T).Name}` is not supported.");
             }
         }
     }
