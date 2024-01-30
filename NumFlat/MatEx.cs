@@ -24,7 +24,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use <see cref="Mat.Transpose{T}(Mat{T}, Mat{T})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/> instead.
+        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/>.
         /// </remarks>
         public static Mat<T> Transpose<T>(this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
@@ -32,6 +32,54 @@ namespace NumFlat
 
             var result = new Mat<T>(x.ColCount, x.RowCount);
             Mat.Transpose(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Conjugates the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix to be conjugated.
+        /// </param>
+        /// <returns>
+        /// The conjugated complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Conjugate(Mat{Complex}, Mat{Complex})"/> instead.
+        /// To efficiently perform matrix multiplication with matrix conjugation,
+        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// </remarks>
+        public static Mat<Complex> Conjugate(this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<Complex>(x.RowCount, x.ColCount);
+            Mat.Conjugate(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes the Hermitian transpose of a complex matrix, X^H.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix to be transposed.
+        /// </param>
+        /// <returns>
+        /// The transposed matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.ConjugateTranspose(Mat{Complex}, Mat{Complex})"/> instead.
+        /// To efficiently perform matrix multiplication with matrix transposition,
+        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// </remarks>
+        public static Mat<Complex> ConjugateTranspose(this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<Complex>(x.ColCount, x.RowCount);
+            Mat.ConjugateTranspose(x, result);
             return result;
         }
 

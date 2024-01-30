@@ -669,7 +669,7 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/> instead.
+        /// use <see cref="Mat.Mul(Mat{double}, bool, Mat{double}, bool, Mat{double})"/>.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -697,6 +697,94 @@ namespace NumFlat
                 while (pd < end)
                 {
                     sd[pd] = sx[px];
+                    px += x.Stride;
+                    pd++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Conjugates the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix to be conjugated.
+        /// </param>
+        /// <param name="destination">
+        /// The conjugated complex matrix.
+        /// </param>
+        /// <remarks>
+        /// The dimensions of the matrices must match.
+        /// To efficiently perform matrix multiplication with matrix conjugation,
+        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Conjugate(Mat<Complex> x, Mat<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px].Conjugate();
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Computes the Hermitian transpose of a complex matrix, X^H.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix to be transposed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the Hermitian transposition.
+        /// </param>
+        /// <remarks>
+        /// Since in-place transposition is not supported,
+        /// <paramref name="x"/> and <paramref name="destination"/> must be different.
+        /// To efficiently perform matrix multiplication with matrix transposition,
+        /// use <see cref="Mat.Mul(Mat{Complex}, bool, bool, Mat{Complex}, bool, bool, Mat{Complex})"/>.
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void ConjugateTranspose(Mat<Complex> x, Mat<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (destination.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("`destination.RowCount` must match `x.ColCount`.");
+            }
+
+            if (destination.ColCount != x.RowCount)
+            {
+                throw new ArgumentException("`destination.ColCount` must match `x.RowCount`.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            for (var col = 0; col < destination.ColCount; col++)
+            {
+                var px = col;
+                var pd = destination.Stride * col;
+                var end = pd + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px].Conjugate();
                     px += x.Stride;
                     pd++;
                 }
@@ -939,9 +1027,14 @@ namespace NumFlat
             var n = yColCount;
             var k = xColCount;
 
-            if (destination.RowCount != m.count || destination.ColCount != n.count)
+            if (destination.RowCount != m.count)
             {
-                throw new ArgumentException($"The dimensions of `destination` must match `{m.name}` x `{n.name}`.");
+                throw new ArgumentException($"The dimensions of `destination` must match `{m.name}`.");
+            }
+
+            if (destination.ColCount != n.count)
+            {
+                throw new ArgumentException($"The dimensions of `destination` must match `{n.name}`.");
             }
 
             return (m.count, n.count, k.count);

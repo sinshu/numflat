@@ -33,6 +33,54 @@ namespace NumFlatTest
             }
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void Conjugate(int rowCount, int colCount, int xStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var destination = x.Conjugate();
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(x[row, col].Conjugate() == destination[row, col]);
+                }
+            }
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void ConjugateTranspose(int rowCount, int colCount, int xStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var destination = x.ConjugateTranspose();
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(x[row, col].Conjugate() == destination[col, row]);
+                }
+            }
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(3, 3)]

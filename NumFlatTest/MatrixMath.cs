@@ -206,6 +206,62 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 1, 3, 3)]
+        [TestCase(3, 1, 4, 4)]
+        [TestCase(1, 3, 1, 1)]
+        [TestCase(1, 3, 6, 5)]
+        [TestCase(3, 2, 3, 3)]
+        [TestCase(3, 2, 4, 4)]
+        [TestCase(2, 3, 2, 2)]
+        [TestCase(2, 3, 6, 5)]
+        public void Conjugate(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, rowCount, colCount, dstStride);
+            Mat.Conjugate(x, destination);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(x[row, col].Conjugate() == destination[row, col]);
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 1, 3, 1)]
+        [TestCase(3, 1, 3, 4)]
+        [TestCase(1, 3, 1, 3)]
+        [TestCase(1, 3, 2, 5)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(4, 5, 8, 7)]
+        [TestCase(9, 6, 11, 7)]
+        public void ConjugateTranspose(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, colCount, rowCount, dstStride);
+            Mat.ConjugateTranspose(x, destination);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(x[row, col].Conjugate() == destination[col, row]);
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(2, 2, 2)]
         [TestCase(3, 3, 3)]
