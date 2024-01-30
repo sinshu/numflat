@@ -32,7 +32,7 @@ namespace NumFlat
         /// <param name="memory">
         /// The storage of the elements in the vector.
         /// The length of the <paramref name="memory"/> must match
-        /// <paramref name="stride"/> * (<paramref name="count"/> - 1) + 1`.
+        /// <paramref name="stride"/> * (<paramref name="count"/> - 1) + 1'.
         /// </param>
         /// <remarks>
         /// This constructor does not allocate heap memory.
@@ -42,17 +42,17 @@ namespace NumFlat
         {
             if (count <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "`count` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(count), "'count' must be a positive value.");
             }
 
             if (stride <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "`stride` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(count), "'stride' must be a positive value.");
             }
 
             if (memory.Length != stride * (count - 1) + 1)
             {
-                throw new ArgumentException("`memory.Length` must match `stride * (count - 1) + 1`.");
+                throw new ArgumentException("'memory.Length' must match 'stride * (count - 1) + 1'.");
             }
 
             this.count = count;
@@ -132,17 +132,17 @@ namespace NumFlat
         {
             if (startIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), "`startIndex` must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "'startIndex' must be a non-negative value.");
             }
 
             if (count <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "`count` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(count), "'count' must be a positive value.");
             }
 
             if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("`startIndex + count` must be less than or equal to `Vec<T>.Count`.");
+                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to 'Vec<T>.Count'.");
             }
 
             var stride = this.stride;
@@ -163,7 +163,7 @@ namespace NumFlat
         {
             if (destination.count != this.count)
             {
-                throw new ArgumentException("`destination.Count` must match `Vec<T>.Count`.");
+                throw new ArgumentException("'destination.Count' must match 'Vec<T>.Count'.");
             }
 
             var st = this.memory.Span;
@@ -193,7 +193,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("`index` must be within `Vec<T>.Count`.");
+                    throw new IndexOutOfRangeException("'index' must be within 'Vec<T>.Count'.");
                 }
 
                 return memory.Span[stride * index];
@@ -203,7 +203,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("`index` must be within `Vec<T>.Count`.");
+                    throw new IndexOutOfRangeException("'index' must be within 'Vec<T>.Count'.");
                 }
 
                 memory.Span[stride * index] = value;

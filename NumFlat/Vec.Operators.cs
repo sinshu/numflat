@@ -151,7 +151,7 @@ namespace NumFlat
             }
             else
             {
-                throw new NotSupportedException($"dot product for the type `{typeof(T).Name}` is not supported.");
+                throw new NotSupportedException($"dot product for the type '{typeof(T).Name}' is not supported.");
             }
         }
     }

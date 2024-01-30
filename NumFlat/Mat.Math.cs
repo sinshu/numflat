@@ -268,11 +268,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
-        /// `y.Count` must match `x.ColCount`.
+        /// 'y.Count' must match 'x.ColCount'.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
-        /// `destination.Count` must match `x.RowCount`.
+        /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -285,12 +285,12 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
             }
 
             if (destination.Count != x.RowCount)
             {
-                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
             }
 
             fixed (float* px = x.Memory.Span)
@@ -318,11 +318,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
-        /// `y.Count` must match `x.ColCount`.
+        /// 'y.Count' must match 'x.ColCount'.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
-        /// `destination.Count` must match `x.RowCount`.
+        /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -335,12 +335,12 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
             }
 
             if (destination.Count != x.RowCount)
             {
-                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
             }
 
             fixed (double* px = x.Memory.Span)
@@ -368,11 +368,11 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
-        /// `y.Count` must match `x.ColCount`.
+        /// 'y.Count' must match 'x.ColCount'.
         /// </param>
         /// <param name="destination">
         /// The destination of the result of the matrix-and-vector multiplication.
-        /// `destination.Count` must match `x.RowCount`.
+        /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -385,12 +385,12 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
             }
 
             if (destination.Count != x.RowCount)
             {
-                throw new ArgumentException("`destination.Count` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
             }
 
             var one = Complex.One;
@@ -679,12 +679,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `x.ColCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'x.ColCount'.");
             }
 
             if (destination.ColCount != x.RowCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'x.RowCount'.");
             }
 
             var sx = x.Memory.Span;
@@ -767,12 +767,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `x.ColCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'x.ColCount'.");
             }
 
             if (destination.ColCount != x.RowCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'x.RowCount'.");
             }
 
             var sx = x.Memory.Span;
@@ -813,17 +813,17 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("'x' must be a square matrix.");
             }
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);
@@ -841,7 +841,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
                     }
 
                     info = Lapack.Sgetri(
@@ -851,7 +851,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetri), (int)info);
                     }
                 }
             }
@@ -883,17 +883,17 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("'x' must be a square matrix.");
             }
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);
@@ -911,7 +911,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
                     }
 
                     info = Lapack.Dgetri(
@@ -921,7 +921,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetri), (int)info);
                     }
                 }
             }
@@ -953,17 +953,17 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("`x` must be a square matrix.");
+                throw new ArgumentException("'x' must be a square matrix.");
             }
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `x.RowCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `x.ColCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);
@@ -981,7 +981,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetrf), (int)info);
                     }
 
                     info = Lapack.Zgetri(
@@ -991,7 +991,7 @@ namespace NumFlat
                         ppiv);
                     if (info != LapackInfo.None)
                     {
-                        throw new InvalidOperationException("The matrix is ill-conditioned.");
+                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetri), (int)info);
                     }
                 }
             }
@@ -1020,7 +1020,7 @@ namespace NumFlat
 
             if (yRowCount.count != xColCount.count)
             {
-                throw new ArgumentException($"`{yRowCount.name}` must match `{xColCount.name}`.");
+                throw new ArgumentException($"'{yRowCount.name}' must match '{xColCount.name}'.");
             }
 
             var m = xRowCount;
@@ -1029,12 +1029,12 @@ namespace NumFlat
 
             if (destination.RowCount != m.count)
             {
-                throw new ArgumentException($"The dimensions of `destination` must match `{m.name}`.");
+                throw new ArgumentException($"The dimensions of 'destination' must match '{m.name}'.");
             }
 
             if (destination.ColCount != n.count)
             {
-                throw new ArgumentException($"The dimensions of `destination` must match `{n.name}`.");
+                throw new ArgumentException($"The dimensions of 'destination' must match '{n.name}'.");
             }
 
             return (m.count, n.count, k.count);

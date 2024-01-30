@@ -134,7 +134,7 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("`y.Count` must match `x.ColCount`.");
+                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
             }
 
             if (typeof(T) == typeof(float))
@@ -163,7 +163,7 @@ namespace NumFlat
             }
             else
             {
-                throw new NotSupportedException($"Matrix multiplication for the type `{typeof(T).Name}` is not supported.");
+                throw new NotSupportedException($"Matrix multiplication for the type '{typeof(T).Name}' is not supported.");
             }
         }
 
@@ -190,7 +190,7 @@ namespace NumFlat
 
             if (x.colCount != y.rowCount)
             {
-                throw new ArgumentException("`y.RowCount` must match `x.ColCount`.");
+                throw new ArgumentException("'y.RowCount' must match 'x.ColCount'.");
             }
 
             if (typeof(T) == typeof(float))
@@ -219,7 +219,7 @@ namespace NumFlat
             }
             else
             {
-                throw new NotSupportedException($"Matrix multiplication for the type `{typeof(T).Name}` is not supported.");
+                throw new NotSupportedException($"Matrix multiplication for the type '{typeof(T).Name}' is not supported.");
             }
         }
     }

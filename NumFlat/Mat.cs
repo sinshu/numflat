@@ -45,22 +45,22 @@ namespace NumFlat
         {
             if (rowCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "`rowCount` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "'rowCount' must be a positive value.");
             }
 
             if (colCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "`colCount` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "'colCount' must be a positive value.");
             }
 
             if (stride < rowCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(stride), "`stride` must be greater than or equal to `rowCount`.");
+                throw new ArgumentOutOfRangeException(nameof(stride), "'stride' must be greater than or equal to 'rowCount'.");
             }
 
             if (memory.Length != stride * (colCount - 1) + rowCount)
             {
-                throw new ArgumentException("`memory.Length` must match `stride * (colCount - 1) + rowCount`.");
+                throw new ArgumentException("'memory.Length' must match 'stride * (colCount - 1) + rowCount'.");
             }
 
             this.rowCount = rowCount;
@@ -142,32 +142,32 @@ namespace NumFlat
         {
             if (startRow < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startRow), "`startRow` must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startRow), "'startRow' must be a non-negative value.");
             }
 
             if (startCol < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startCol), "`startCol` must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startCol), "'startCol' must be a non-negative value.");
             }
 
             if (rowCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "`rowCount` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "'rowCount' must be a positive value.");
             }
 
             if (colCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(colCount), "`colCount` must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(colCount), "'colCount' must be a positive value.");
             }
 
             if (startRow + rowCount > this.rowCount)
             {
-                throw new ArgumentOutOfRangeException("`startRow + rowCount` must be less than or equal to `Vec<T>.RowCount`.");
+                throw new ArgumentOutOfRangeException("'startRow + rowCount' must be less than or equal to 'Vec<T>.RowCount'.");
             }
 
             if (startCol + colCount > this.colCount)
             {
-                throw new ArgumentOutOfRangeException("`startCol + colCount` must be less than or equal to `Vec<T>.ColCount`.");
+                throw new ArgumentOutOfRangeException("'startCol + colCount' must be less than or equal to 'Vec<T>.ColCount'.");
             }
 
             var stride = this.stride;
@@ -188,12 +188,12 @@ namespace NumFlat
         {
             if (destination.rowCount != this.rowCount)
             {
-                throw new ArgumentException("`destination.RowCount` must match `Mat<T>.RowCount`.");
+                throw new ArgumentException("'destination.RowCount' must match 'Mat<T>.RowCount'.");
             }
 
             if (destination.colCount != this.colCount)
             {
-                throw new ArgumentException("`destination.ColCount` must match `Mat<T>.ColCount`.");
+                throw new ArgumentException("'destination.ColCount' must match 'Mat<T>.ColCount'.");
             }
 
             var st = this.memory.Span;
