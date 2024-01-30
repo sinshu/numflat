@@ -940,7 +940,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the result of the matrix inversion.
         /// </param>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
