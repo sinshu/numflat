@@ -311,6 +311,106 @@ namespace NumFlat
         /// <param name="destination">
         /// The result of outer dot product.
         /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static unsafe void Outer(Vec<float> x, Vec<float> y, Mat<float> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (destination.RowCount != x.Count)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+            }
+
+            if (destination.ColCount != y.Count)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+            }
+
+            destination.Clear();
+
+            fixed (float* px = x.Memory.Span)
+            fixed (float* py = y.Memory.Span)
+            fixed (float* pd = destination.Memory.Span)
+            {
+                Blas.Sger(
+                    Order.ColMajor,
+                    destination.RowCount, destination.ColCount,
+                    1.0F,
+                    px, x.Stride,
+                    py, y.Stride,
+                    pd, destination.Stride);
+            }
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <param name="destination">
+        /// The result of outer dot product.
+        /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static unsafe void Outer(Vec<double> x, Vec<double> y, Mat<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+
+            if (destination.RowCount != x.Count)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+            }
+
+            if (destination.ColCount != y.Count)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+            }
+
+            destination.Clear();
+
+            fixed (double* px = x.Memory.Span)
+            fixed (double* py = y.Memory.Span)
+            fixed (double* pd = destination.Memory.Span)
+            {
+                Blas.Dger(
+                    Order.ColMajor,
+                    destination.RowCount, destination.ColCount,
+                    1.0,
+                    px, x.Stride,
+                    py, y.Stride,
+                    pd, destination.Stride);
+            }
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <param name="destination">
+        /// The result of outer dot product.
+        /// </param>
         /// <param name="conjugateY">
         /// If true, the vector y is treated as conjugated.
         /// </param>

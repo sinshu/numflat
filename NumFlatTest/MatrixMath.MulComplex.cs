@@ -19,7 +19,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_NN(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_NN(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -52,7 +52,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_NT(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_NT(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
@@ -85,7 +85,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 10, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_TN(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_TN(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -118,7 +118,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 10, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_TT(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_TT(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
@@ -151,7 +151,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_CC(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_CC(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -184,7 +184,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 10, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_HH(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_HH(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
@@ -217,7 +217,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_NH(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_NH(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
@@ -250,7 +250,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 10, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulMatMat_HN(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat_HN(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -282,14 +282,101 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 1, 6)]
         [TestCase(7, 3, 7, 1, 1)]
         [TestCase(7, 4, 7, 2, 5)]
-        public void MulMatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        public void Mul_MatVec_N(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
             var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
-            Mat.Mul(x, y, destination);
+            Mat.Mul(x, y, destination, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
+            var my = DenseVector.OfArray(y.ToArray());
+            var md = mx * my;
+
+            var expected = md.ToArray();
+            var actual = destination.ToArray();
+            for (var i = 0; i < destination.Count; i++)
+            {
+                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
+                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 5)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(3, 3, 3, 7, 6)]
+        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(7, 3, 7, 1, 1)]
+        [TestCase(7, 4, 7, 2, 5)]
+        public void Mul_MatVec_T(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, rowCount, yStride);
+            var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
+            Mat.Mul(x, y, destination, true, false);
+
+            var mx = DenseMatrix.OfArray(x.ToArray()).Transpose();
+            var my = DenseVector.OfArray(y.ToArray());
+            var md = mx * my;
+
+            var expected = md.ToArray();
+            var actual = destination.ToArray();
+            for (var i = 0; i < destination.Count; i++)
+            {
+                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
+                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 5)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(3, 3, 3, 7, 6)]
+        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(7, 3, 7, 1, 1)]
+        [TestCase(7, 4, 7, 2, 5)]
+        public void Mul_MatVec_C(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
+            var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
+            Mat.Mul(x, y, destination, false, true);
+
+            var mx = DenseMatrix.OfArray(x.ToArray()).Conjugate();
+            var my = DenseVector.OfArray(y.ToArray());
+            var md = mx * my;
+
+            var expected = md.ToArray();
+            var actual = destination.ToArray();
+            for (var i = 0; i < destination.Count; i++)
+            {
+                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
+                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 5)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(3, 3, 3, 7, 6)]
+        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(7, 3, 7, 1, 1)]
+        [TestCase(7, 4, 7, 2, 5)]
+        public void Mul_MatVec_H(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorComplex(57, rowCount, yStride);
+            var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
+            Mat.Mul(x, y, destination, true, true);
+
+            var mx = DenseMatrix.OfArray(x.ToArray()).ConjugateTranspose();
             var my = DenseVector.OfArray(y.ToArray());
             var md = mx * my;
 
@@ -312,7 +399,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void MulOperatorMatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Operator_MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
@@ -341,7 +428,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 1, 6)]
         [TestCase(7, 3, 7, 1, 1)]
         [TestCase(7, 4, 7, 2, 5)]
-        public void MulOperatorMatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);

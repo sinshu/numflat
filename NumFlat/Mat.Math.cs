@@ -274,24 +274,44 @@ namespace NumFlat
         /// The destination of the result of the matrix-and-vector multiplication.
         /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<float> x, Vec<float> y, Vec<float> destination)
+        public static unsafe void Mul(Mat<float> x, Vec<float> y, Vec<float> destination, bool transposeX)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.Count != x.ColCount)
+            if (transposeX)
             {
-                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                if (y.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                }
+
+                if (destination.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                }
+            }
+            else
+            {
+                if (y.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                }
+
+                if (destination.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                }
             }
 
-            if (destination.Count != x.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
-            }
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
@@ -299,7 +319,7 @@ namespace NumFlat
             {
                 Blas.Sgemv(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans,
+                    transX,
                     x.RowCount, x.ColCount,
                     1.0F,
                     px, x.Stride,
@@ -324,24 +344,44 @@ namespace NumFlat
         /// The destination of the result of the matrix-and-vector multiplication.
         /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination)
+        public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination, bool transposeX)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.Count != x.ColCount)
+            if (transposeX)
             {
-                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                if (y.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                }
+
+                if (destination.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                }
+            }
+            else
+            {
+                if (y.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                }
+
+                if (destination.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                }
             }
 
-            if (destination.Count != x.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
-            }
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
 
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
@@ -349,7 +389,7 @@ namespace NumFlat
             {
                 Blas.Dgemv(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans,
+                    transX,
                     x.RowCount, x.ColCount,
                     1.0,
                     px, x.Stride,
@@ -374,23 +414,50 @@ namespace NumFlat
         /// The destination of the result of the matrix-and-vector multiplication.
         /// 'destination.Count' must match 'x.RowCount'.
         /// </param>
+        /// <param name="transposeX">
+        /// If true, the matrix X is treated as transposed.
+        /// </param>
+        /// <param name="conjugateX">
+        /// If true, the matrix X is treated as conjugated.
+        /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<Complex> x, Vec<Complex> y, Vec<Complex> destination)
+        public static unsafe void Mul(Mat<Complex> x, Vec<Complex> y, Vec<Complex> destination, bool transposeX, bool conjugateX)
         {
             ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
             ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
             ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
 
-            if (y.Count != x.ColCount)
+            if (transposeX)
             {
-                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                if (y.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                }
+
+                if (destination.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                }
+            }
+            else
+            {
+                if (y.Count != x.ColCount)
+                {
+                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                }
+
+                if (destination.Count != x.RowCount)
+                {
+                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                }
             }
 
-            if (destination.Count != x.RowCount)
+            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            if (conjugateX)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                transX = transX == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
             }
 
             var one = Complex.One;
@@ -402,7 +469,7 @@ namespace NumFlat
             {
                 Blas.Zgemv(
                     Order.ColMajor,
-                    OpenBlasSharp.Transpose.NoTrans,
+                    transX,
                     x.RowCount, x.ColCount,
                     &one,
                     px, x.Stride,

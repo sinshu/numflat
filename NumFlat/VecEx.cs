@@ -119,27 +119,6 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// </param>
-        /// <returns>
-        /// The result of the dot product.
-        /// </returns>
-        public static Complex Dot(this Vec<Complex> x, Vec<Complex> y)
-        {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
-
-            return Vec.Dot(x, y, false);
-        }
-
-        /// <summary>
-        /// Computes a dot product of vectors, x^T * y.
-        /// </summary>
-        /// <param name="x">
-        /// The vector x.
-        /// </param>
-        /// <param name="y">
-        /// The vector y.
-        /// </param>
         /// <param name="conjugateX">
         /// If true, the vector x is treated as conjugated.
         /// </param>
@@ -153,6 +132,87 @@ namespace NumFlat
             ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
 
             return Vec.Dot(x, y, conjugateX);
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Outer(Vec{float}, Vec{float}, Mat{float})"/> instead.
+        /// </remarks>
+        public static Mat<float> Outer(this Vec<float> x, Vec<float> y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+
+            var result = new Mat<float>(x.Count, y.Count);
+            Vec.Outer(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Outer(Vec{double}, Vec{double}, Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> Outer(this Vec<double> x, Vec<double> y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+
+            var result = new Mat<double>(x.Count, y.Count);
+            Vec.Outer(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes an outer product of vectors, x * y^T.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <param name="conjugateY">
+        /// If true, the vector y is treated as conjugated.
+        /// </param>
+        /// <returns>
+        /// The result of the outer product.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Outer(Vec{Complex}, Vec{Complex}, Mat{Complex}, bool)"/> instead.
+        /// </remarks>
+        public static Mat<Complex> Outer(this Vec<Complex> x, Vec<Complex> y, bool conjugateY)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+
+            var result = new Mat<Complex>(x.Count, y.Count);
+            Vec.Outer(x, y, result, conjugateY);
+            return result;
         }
 
         /// <summary>

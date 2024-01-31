@@ -125,7 +125,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Vec{double}, Vec{double})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Vec<T> operator *(Mat<T> x, Vec<T> y)
         {
@@ -142,7 +142,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<float>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<float>>(ref y);
                 var result = new Vec<float>(x.rowCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false);
                 return Unsafe.As<Vec<float>, Vec<T>>(ref result);
             }
             else if (typeof(T) == typeof(double))
@@ -150,7 +150,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<double>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<double>>(ref y);
                 var result = new Vec<double>(x.rowCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false);
                 return Unsafe.As<Vec<double>, Vec<T>>(ref result);
             }
             else if (typeof(T) == typeof(Complex))
@@ -158,7 +158,7 @@ namespace NumFlat
                 var ux = Unsafe.As<Mat<T>, Mat<Complex>>(ref x);
                 var uy = Unsafe.As<Vec<T>, Vec<Complex>>(ref y);
                 var result = new Vec<Complex>(x.rowCount);
-                Mat.Mul(ux, uy, result);
+                Mat.Mul(ux, uy, result, false, false);
                 return Unsafe.As<Vec<Complex>, Vec<T>>(ref result);
             }
             else
