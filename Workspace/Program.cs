@@ -20,6 +20,7 @@ public class Program
             new []{ 1.0, 2.0, 3.0 },
             new []{ 4.0, 5.0, 6.0 },
             new []{ 7.0, 8.0, 9.0 },
+            new []{ 10.0, 11.0, 12.0 },
         };
 
         Console.WriteLine(arr.RowsToMatrix());
