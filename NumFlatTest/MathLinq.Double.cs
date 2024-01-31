@@ -10,21 +10,25 @@ namespace NumFlatTest
 {
     public class MathLinqDouble
     {
-        [TestCase(3, 1)]
-        [TestCase(3, 10)]
-        [TestCase(5, 20)]
-        public void Mean(int dim, int count)
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 1, 4)]
+        [TestCase(3, 10, 1)]
+        [TestCase(3, 10, 2)]
+        [TestCase(5, 20, 3)]
+        public void Mean(int dim, int count, int dstStride)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetMean(data);
 
-            var actual = new Vec<double>(dim);
+            var actual = Utilities.CreateRandomVectorDouble(0, dim, dstStride);
             data.Select(x => x.ToVector()).Mean(actual);
 
             for (var i = 0; i < dim; i++)
             {
                 Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
             }
+
+            Utilities.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(3, 1)]
@@ -42,17 +46,20 @@ namespace NumFlatTest
             }
         }
 
-        [TestCase(3, 1, 0)]
-        [TestCase(3, 10, 1)]
-        [TestCase(5, 20, 2)]
-        public void Covariance(int dim, int count, int ddot)
+        [TestCase(3, 1, 0, 1, 3)]
+        [TestCase(3, 1, 0, 2, 4)]
+        [TestCase(3, 10, 1, 1, 3)]
+        [TestCase(3, 10, 1, 4, 7)]
+        [TestCase(5, 20, 2, 1, 5)]
+        [TestCase(5, 20, 2, 5, 6)]
+        public void Covariance(int dim, int count, int ddot, int meanStride, int covStride)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
 
-            var mean = new Vec<double>(dim);
+            var mean = Utilities.CreateRandomVectorDouble(0, dim, meanStride);
             data.Select(x => x.ToVector()).Mean(mean);
-            var actual = new Mat<double>(dim, dim);
+            var actual = Utilities.CreateRandomMatrixDouble(0, dim, dim, covStride);
             data.Select(x => x.ToVector()).Covariance(mean, actual, ddot);
 
             for (var row = 0; row < dim; row++)
@@ -62,6 +69,9 @@ namespace NumFlatTest
                     Assert.That(actual[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
                 }
             }
+
+            Utilities.FailIfOutOfRangeWrite(mean);
+            Utilities.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(3, 1, 0)]
