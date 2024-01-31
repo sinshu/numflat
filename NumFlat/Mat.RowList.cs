@@ -54,7 +54,7 @@ namespace NumFlat
             /// <summary>
             /// <inheritdoc/>
             /// </summary>
-            public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(ref this);
+            public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
 
@@ -72,7 +72,7 @@ namespace NumFlat
                 private int row;
                 private Vec<T> current;
 
-                internal Enumerator(ref Mat<T>.RowList rows)
+                internal Enumerator(in Mat<T>.RowList rows)
                 {
                     this.rowCount = rows.rowCount;
                     this.colCount = rows.colCount;

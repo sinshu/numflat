@@ -20,13 +20,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Add{T}(Vec{T}, Vec{T}, Vec{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Vec.Add{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
-        public static Vec<T> operator +(Vec<T> x, Vec<T> y)
+        public static Vec<T> operator +(in Vec<T> x, in Vec<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             var result = new Vec<T>(x.count);
             Vec.Add(x, y, result);
@@ -47,13 +47,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Sub{T}(Vec{T}, Vec{T}, Vec{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Vec.Sub{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
-        public static Vec<T> operator -(Vec<T> x, Vec<T> y)
+        public static Vec<T> operator -(in Vec<T> x, in Vec<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             var result = new Vec<T>(x.count);
             Vec.Sub(x, y, result);
@@ -74,39 +74,14 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Mul{T}(Vec{T}, T, Vec{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
         /// </remarks>
-        public static Vec<T> operator *(Vec<T> x, T y)
+        public static Vec<T> operator *(in Vec<T> x, T y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Vec<T>(x.count);
             Vec.Mul(x, y, result);
-            return result;
-        }
-
-        /// <summary>
-        /// Computes a vector-and-scalar division, x * y.
-        /// </summary>
-        /// <param name="x">
-        /// The vector x.
-        /// </param>
-        /// <param name="y">
-        /// The scalar y.
-        /// </param>
-        /// <returns>
-        /// The result of the vector-and-scalar division.
-        /// </returns>
-        /// <remarks>
-        /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Div{T}(Vec{T}, T, Vec{T})"/> instead.
-        /// </remarks>
-        public static Vec<T> operator /(Vec<T> x, T y)
-        {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-
-            var result = new Vec<T>(x.count);
-            Vec.Div(x, y, result);
             return result;
         }
 
@@ -124,11 +99,11 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Mul{T}(Vec{T}, T, Vec{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
         /// </remarks>
-        public static Vec<T> operator *(T x, Vec<T> y)
+        public static Vec<T> operator *(T x, in Vec<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
 
             var result = new Vec<T>(y.count);
             Vec.Mul(y, x, result);
@@ -149,9 +124,9 @@ namespace NumFlat
         /// </returns>
         public static T operator *(Vec<T> x, Vec<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             if (typeof(T) == typeof(float))
             {
@@ -178,6 +153,31 @@ namespace NumFlat
             {
                 throw new NotSupportedException($"dot product for the type '{typeof(T).Name}' is not supported.");
             }
+        }
+
+        /// <summary>
+        /// Computes a vector-and-scalar division, x * y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The result of the vector-and-scalar division.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Div{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator /(in Vec<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<T>(x.count);
+            Vec.Div(x, y, result);
+            return result;
         }
     }
 }

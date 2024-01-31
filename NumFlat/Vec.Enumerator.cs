@@ -9,7 +9,7 @@ namespace NumFlat
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public IEnumerator<T> GetEnumerator() => new Enumerator(ref this);
+        public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)this).GetEnumerator();
 
@@ -25,7 +25,7 @@ namespace NumFlat
             private int position;
             private T current;
 
-            internal Enumerator(ref Vec<T> vector)
+            internal Enumerator(in Vec<T> vector)
             {
                 this.stride = vector.stride;
                 this.memory = vector.memory;

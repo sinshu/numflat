@@ -20,7 +20,7 @@ namespace NumFlat
         public static void Mean(this IEnumerable<Vec<double>> xs, Vec<double> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             destination.Clear();
 
@@ -106,8 +106,8 @@ namespace NumFlat
         public static unsafe void Covariance(this IEnumerable<Vec<double>> xs, Vec<double> mean, Mat<double> destination, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfEmpty(ref mean, nameof(mean));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != mean.Count)
             {

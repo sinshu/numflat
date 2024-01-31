@@ -27,12 +27,12 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Add<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Add<T>(in Vec<T> x, in Vec<T> y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -67,12 +67,12 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Sub<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Sub<T>(in Vec<T> x, in Vec<T> y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -107,11 +107,11 @@ namespace NumFlat
         /// /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Mul<T>(Vec<T> x, T y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Mul<T>(in Vec<T> x, T y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -143,11 +143,11 @@ namespace NumFlat
         /// /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Div<T>(Vec<T> x, T y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Div<T>(in Vec<T> x, T y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -179,12 +179,12 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void PointwiseMul<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseMul<T>(in Vec<T> x, in Vec<T> y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -219,12 +219,12 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void PointwiseDiv<T>(Vec<T> x, Vec<T> y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseDiv<T>(in Vec<T> x, in Vec<T> y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -256,11 +256,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe float Dot(Vec<float> x, Vec<float> y)
+        public static unsafe float Dot(in Vec<float> x, in Vec<float> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
@@ -284,11 +284,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe double Dot(Vec<double> x, Vec<double> y)
+        public static unsafe double Dot(in Vec<double> x, in Vec<double> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
@@ -315,11 +315,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe Complex Dot(Vec<Complex> x, Vec<Complex> y, bool conjugateX)
+        public static unsafe Complex Dot(in Vec<Complex> x, in Vec<Complex> y, bool conjugateX)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             fixed (Complex* px = x.Memory.Span)
             fixed (Complex* py = y.Memory.Span)
@@ -353,11 +353,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Outer(Vec<float> x, Vec<float> y, Mat<float> destination)
+        public static unsafe void Outer(in Vec<float> x, in Vec<float> y, in Mat<float> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != x.Count)
             {
@@ -403,11 +403,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Outer(Vec<double> x, Vec<double> y, Mat<double> destination)
+        public static unsafe void Outer(in Vec<double> x, in Vec<double> y, in Mat<double> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != x.Count)
             {
@@ -456,11 +456,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Outer(Vec<Complex> x, Vec<Complex> y, Mat<Complex> destination, bool conjugateY)
+        public static unsafe void Outer(in Vec<Complex> x, in Vec<Complex> y, in Mat<Complex> destination, bool conjugateY)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != x.Count)
             {
@@ -512,11 +512,11 @@ namespace NumFlat
         /// <param name="destination">
         /// The conjugated complex vector.
         /// </param>
-        public static void Conjugate(Vec<Complex> x, Vec<Complex> destination)
+        public static void Conjugate(in Vec<Complex> x, in Vec<Complex> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;

@@ -9,7 +9,7 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the matrix.
     /// </typeparam>
-    public partial struct Mat<T> : IFormattable where T : unmanaged, INumberBase<T>
+    public readonly partial struct Mat<T> : IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int rowCount;
         private readonly int colCount;
@@ -184,7 +184,7 @@ namespace NumFlat
         /// <remarks>
         /// The dimensions of the matrices must match.
         /// </remarks>
-        public readonly void CopyTo(Mat<T> destination)
+        public readonly void CopyTo(in Mat<T> destination)
         {
             if (destination.rowCount != this.rowCount)
             {

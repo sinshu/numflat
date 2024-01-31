@@ -29,12 +29,12 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Add<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Add<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -80,12 +80,12 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Sub<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Sub<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -131,11 +131,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Mul<T>(Mat<T> x, T y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Mul<T>(in Mat<T> x, T y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -176,11 +176,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void Div<T>(Mat<T> x, T y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Div<T>(in Mat<T> x, T y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -221,12 +221,12 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void PointwiseMul<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseMul<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -272,12 +272,12 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static void PointwiseDiv<T>(Mat<T> x, Mat<T> y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void PointwiseDiv<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, y, destination);
 
             var sx = x.Memory.Span;
             var sy = y.Memory.Span;
@@ -325,11 +325,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<float> x, Vec<float> y, Vec<float> destination, bool transposeX)
+        public static unsafe void Mul(in Mat<float> x, in Vec<float> y, in Vec<float> destination, bool transposeX)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (transposeX)
             {
@@ -395,11 +395,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<double> x, Vec<double> y, Vec<double> destination, bool transposeX)
+        public static unsafe void Mul(in Mat<double> x, in Vec<double> y, in Vec<double> destination, bool transposeX)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (transposeX)
             {
@@ -468,11 +468,11 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<Complex> x, Vec<Complex> y, Vec<Complex> destination, bool transposeX, bool conjugateX)
+        public static unsafe void Mul(in Mat<Complex> x, in Vec<Complex> y, in Vec<Complex> destination, bool transposeX, bool conjugateX)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (transposeX)
             {
@@ -545,15 +545,15 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<float> x, Mat<float> y, Mat<float> destination, bool transposeX, bool transposeY)
+        public static unsafe void Mul(in Mat<float> x, in Mat<float> y, in Mat<float> destination, bool transposeX, bool transposeY)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
             var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
+            var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
@@ -592,15 +592,15 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<double> x, Mat<double> y, Mat<double> destination, bool transposeX, bool transposeY)
+        public static unsafe void Mul(in Mat<double> x, in Mat<double> y, in Mat<double> destination, bool transposeX, bool transposeY)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
             var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
+            var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
 
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
@@ -645,15 +645,15 @@ namespace NumFlat
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
-        public static unsafe void Mul(Mat<Complex> x, Mat<Complex> y, Mat<Complex> destination, bool transposeX, bool conjugateX, bool transposeY, bool conjugateY)
+        public static unsafe void Mul(in Mat<Complex> x, in Mat<Complex> y, in Mat<Complex> destination, bool transposeX, bool conjugateX, bool transposeY, bool conjugateY)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
             var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var (m, n, k) = GetMulArgs(ref x, transposeX, ref y, transposeY, ref destination);
+            var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
             if (conjugateX)
             {
                 transX = transX == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
@@ -696,12 +696,12 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
         /// </remarks>
-        public static void Transpose<T>(Mat<T> x, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        public static void Transpose<T>(in Mat<T> x, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != x.ColCount)
             {
@@ -742,13 +742,13 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
-        public static void Conjugate(Mat<Complex> x, Mat<Complex> destination)
+        public static void Conjugate(in Mat<Complex> x, in Mat<Complex> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -784,12 +784,12 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
-        public static void ConjugateTranspose(Mat<Complex> x, Mat<Complex> destination)
+        public static void ConjugateTranspose(in Mat<Complex> x, in Mat<Complex> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.RowCount != x.ColCount)
             {
@@ -832,10 +832,10 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
         /// </remarks>
-        public static unsafe void Inverse(Mat<float> x, Mat<float> destination)
+        public static unsafe void Inverse(in Mat<float> x, in Mat<float> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (x.RowCount != x.ColCount)
             {
@@ -902,10 +902,10 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
         /// </remarks>
-        public static unsafe void Inverse(Mat<double> x, Mat<double> destination)
+        public static unsafe void Inverse(in Mat<double> x, in Mat<double> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (x.RowCount != x.ColCount)
             {
@@ -972,10 +972,10 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
         /// </remarks>
-        public static unsafe void Inverse(Mat<Complex> x, Mat<Complex> destination)
+        public static unsafe void Inverse(in Mat<Complex> x, in Mat<Complex> destination)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (x.RowCount != x.ColCount)
             {
@@ -1027,7 +1027,7 @@ namespace NumFlat
             }
         }
 
-        private static (int m, int n, int k) GetMulArgs<T>(ref Mat<T> x, bool transposeX, ref Mat<T> y, bool transposeY, ref Mat<T> destination) where T : unmanaged, INumberBase<T>
+        private static (int m, int n, int k) GetMulArgs<T>(in Mat<T> x, bool transposeX, in Mat<T> y, bool transposeY, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             var xRowCount = (count: x.RowCount, name: "x.RowCount");
             var xColCount = (count: x.ColCount, name: "x.ColCount");

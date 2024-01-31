@@ -19,9 +19,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public SingularValueDecompositionSingle(Mat<float> a)
+        public SingularValueDecompositionSingle(in Mat<float> a)
         {
-            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             var s = new Vec<float>(Math.Min(a.RowCount, a.ColCount));
             var u = new Mat<float>(a.RowCount, a.RowCount);
@@ -51,12 +51,12 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The SVD computation did not converge.
         /// </exception>
-        public static unsafe void Decompose(Mat<float> a, Vec<float> s, Mat<float> u, Mat<float> vt)
+        public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
         {
-            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
-            ThrowHelper.ThrowIfEmpty(ref s, nameof(s));
-            ThrowHelper.ThrowIfEmpty(ref u, nameof(u));
-            ThrowHelper.ThrowIfEmpty(ref vt, nameof(vt));
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(s, nameof(s));
+            ThrowHelper.ThrowIfEmpty(u, nameof(u));
+            ThrowHelper.ThrowIfEmpty(vt, nameof(vt));
 
             if (s.Count != Math.Min(a.RowCount, a.ColCount))
             {

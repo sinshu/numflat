@@ -17,9 +17,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="SingularValueDecompositionSingle"/>.
         /// </returns>
-        public static SingularValueDecompositionSingle Svd(this Mat<float> a)
+        public static SingularValueDecompositionSingle Svd(in this Mat<float> a)
         {
-            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new SingularValueDecompositionSingle(a);
         }
@@ -33,9 +33,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="SingularValueDecompositionDouble"/>.
         /// </returns>
-        public static SingularValueDecompositionDouble Svd(this Mat<double> a)
+        public static SingularValueDecompositionDouble Svd(in this Mat<double> a)
         {
-            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new SingularValueDecompositionDouble(a);
         }
@@ -49,9 +49,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="SingularValueDecompositionComplex"/>.
         /// </returns>
-        public static SingularValueDecompositionComplex Svd(this Mat<Complex> a)
+        public static SingularValueDecompositionComplex Svd(in this Mat<Complex> a)
         {
-            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new SingularValueDecompositionComplex(a);
         }

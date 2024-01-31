@@ -20,13 +20,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Add{T}(Mat{T}, Mat{T}, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Add{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
-        public static Mat<T> operator +(Mat<T> x, Mat<T> y)
+        public static Mat<T> operator +(in Mat<T> x, in Mat<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             var result = new Mat<T>(x.rowCount, x.colCount);
             Mat.Add(x, y, result);
@@ -47,13 +47,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Sub{T}(Mat{T}, Mat{T}, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Sub{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
-        public static Mat<T> operator -(Mat<T> x, Mat<T> y)
+        public static Mat<T> operator -(in Mat<T> x, in Mat<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(ref x, ref y);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
 
             var result = new Mat<T>(x.rowCount, x.colCount);
             Mat.Sub(x, y, result);
@@ -74,11 +74,11 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
-        public static Mat<T> operator *(Mat<T> x, T y)
+        public static Mat<T> operator *(in Mat<T> x, T y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Mat<T>(x.rowCount, x.colCount);
             Mat.Mul(x, y, result);
@@ -99,11 +99,11 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
-        public static Mat<T> operator *(T x, Mat<T> y)
+        public static Mat<T> operator *(T x, in Mat<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
 
             var result = new Mat<T>(y.rowCount, y.colCount);
             Mat.Mul(y, x, result);
@@ -125,12 +125,12 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Vec<T> operator *(Mat<T> x, Vec<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
 
             if (y.Count != x.ColCount)
             {
@@ -181,12 +181,12 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Mat<T> operator *(Mat<T> x, Mat<T> y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(ref y, nameof(y));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
 
             if (x.colCount != y.rowCount)
             {
@@ -237,11 +237,11 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Div{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
-        public static Mat<T> operator /(Mat<T> x, T y)
+        public static Mat<T> operator /(in Mat<T> x, T y)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Mat<T>(x.rowCount, x.colCount);
             Mat.Div(x, y, result);

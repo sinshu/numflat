@@ -22,13 +22,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.Transpose{T}(Mat{T}, Mat{T})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Transpose{T}(in Mat{T}, in Mat{T})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{double}, Mat{double}, Mat{double}, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
         /// </remarks>
-        public static Mat<T> Transpose<T>(this Mat<T> x) where T : unmanaged, INumberBase<T>
+        public static Mat<T> Transpose<T>(in this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Mat<T>(x.ColCount, x.RowCount);
             Mat.Transpose(x, result);
@@ -46,13 +46,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.Conjugate(Mat{Complex}, Mat{Complex})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Conjugate(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
-        public static Mat<Complex> Conjugate(this Mat<Complex> x)
+        public static Mat<Complex> Conjugate(in this Mat<Complex> x)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Mat<Complex>(x.RowCount, x.ColCount);
             Mat.Conjugate(x, result);
@@ -70,13 +70,13 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.ConjugateTranspose(Mat{Complex}, Mat{Complex})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.ConjugateTranspose(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(Mat{Complex}, Mat{Complex}, Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
-        public static Mat<Complex> ConjugateTranspose(this Mat<Complex> x)
+        public static Mat<Complex> ConjugateTranspose(in this Mat<Complex> x)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var result = new Mat<Complex>(x.ColCount, x.RowCount);
             Mat.ConjugateTranspose(x, result);
@@ -97,11 +97,11 @@ namespace NumFlat
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{float}, Mat{float})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{float}, in Mat{float})"/> instead.
         /// </remarks>
-        public static Mat<float> Inverse(this Mat<float> x)
+        public static Mat<float> Inverse(in this Mat<float> x)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             if (x.RowCount != x.ColCount)
             {
@@ -127,11 +127,11 @@ namespace NumFlat
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{double}, Mat{double})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{double}, in Mat{double})"/> instead.
         /// </remarks>
-        public static Mat<double> Inverse(this Mat<double> x)
+        public static Mat<double> Inverse(in this Mat<double> x)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             if (x.RowCount != x.ColCount)
             {
@@ -157,11 +157,11 @@ namespace NumFlat
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use <see cref="Mat.Inverse(Mat{Complex}, Mat{Complex})"/> instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// </remarks>
-        public static Mat<Complex> Inverse(this Mat<Complex> x)
+        public static Mat<Complex> Inverse(in this Mat<Complex> x)
         {
-            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             if (x.RowCount != x.ColCount)
             {

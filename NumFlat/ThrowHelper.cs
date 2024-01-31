@@ -13,7 +13,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfEmpty<T>(ref Vec<T> v, string name) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfEmpty<T>(in Vec<T> v, string name) where T : unmanaged, INumberBase<T>
         {
             if (v.Count == 0)
             {
@@ -21,7 +21,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfEmpty<T>(ref Mat<T> m, string name) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfEmpty<T>(in Mat<T> m, string name) where T : unmanaged, INumberBase<T>
         {
             if (m.RowCount == 0 || m.ColCount == 0)
             {
@@ -29,7 +29,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfDifferentSize<T>(ref Vec<T> v1, ref Vec<T> v2) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfDifferentSize<T>(in Vec<T> v1, in Vec<T> v2) where T : unmanaged, INumberBase<T>
         {
             if (v1.Count != v2.Count)
             {
@@ -37,7 +37,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfDifferentSize<T>(ref Vec<T> v1, ref Vec<T> v2, ref Vec<T> v3) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfDifferentSize<T>(in Vec<T> v1, in Vec<T> v2, in Vec<T> v3) where T : unmanaged, INumberBase<T>
         {
             if (v1.Count != v2.Count || v1.Count != v3.Count)
             {
@@ -45,7 +45,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfDifferentSize<T>(ref Mat<T> m1, ref Mat<T> m2) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfDifferentSize<T>(in Mat<T> m1, in Mat<T> m2) where T : unmanaged, INumberBase<T>
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount)
             {
@@ -53,7 +53,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfDifferentSize<T>(ref Mat<T> m1, ref Mat<T> m2, ref Mat<T> m3) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfDifferentSize<T>(in Mat<T> m1, in Mat<T> m2, in Mat<T> m3) where T : unmanaged, INumberBase<T>
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount || m1.RowCount != m3.RowCount || m1.ColCount != m3.ColCount)
             {

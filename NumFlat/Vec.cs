@@ -12,7 +12,7 @@ namespace NumFlat
     /// The type of elements in the vector.
     /// </typeparam>
     [CollectionBuilder(typeof(VectorBuilder), nameof(VectorBuilder.Create))]
-    public partial struct Vec<T> : IReadOnlyList<T>, IFormattable where T : unmanaged, INumberBase<T>
+    public readonly partial struct Vec<T> : IReadOnlyList<T>, IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int count;
         private readonly int stride;
@@ -161,7 +161,7 @@ namespace NumFlat
         /// <remarks>
         /// The length of the vectors must match.
         /// </remarks>
-        public readonly void CopyTo(Vec<T> destination)
+        public readonly void CopyTo(in Vec<T> destination)
         {
             if (destination.count != this.count)
             {
