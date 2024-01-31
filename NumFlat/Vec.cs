@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace NumFlat
 {
@@ -10,6 +11,7 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the vector.
     /// </typeparam>
+    [CollectionBuilder(typeof(VectorBuilder), nameof(VectorBuilder.Create))]
     public partial struct Vec<T> : IReadOnlyList<T>, IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int count;
