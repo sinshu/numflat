@@ -222,5 +222,30 @@ namespace NumFlat
                 throw new NotSupportedException($"Matrix multiplication for the type '{typeof(T).Name}' is not supported.");
             }
         }
+
+        /// <summary>
+        /// Computes a matrix-and-scalar division, X * y.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The result of the matrix-and-scalar division.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(Mat{T}, T, Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> operator /(Mat<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<T>(x.rowCount, x.colCount);
+            Mat.Div(x, y, result);
+            return result;
+        }
     }
 }
