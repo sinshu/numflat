@@ -9,7 +9,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MatrixMathMulDouble
+    public class MatrixMath_MulDouble
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]

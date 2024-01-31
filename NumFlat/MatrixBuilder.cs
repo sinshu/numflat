@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NumFlat
 {
@@ -45,6 +46,29 @@ namespace NumFlat
             }
 
             return destination;
+        }
+
+        public static Mat<T> ToDiagonalMatrix<T>(this IEnumerable<T> elements) where T : unmanaged, INumberBase<T>
+        {
+            var array = elements.ToArray();
+            var mat = new Mat<T>(array.Length, array.Length);
+            for (var i = 0; i < array.Length; i++)
+            {
+                mat[i, i] = array[i];
+            }
+            return mat;
+        }
+
+        public static Mat<T> ToDiagonalMatrix<T>(this IEnumerable<T> elements, int rowCount, int colCount) where T : unmanaged, INumberBase<T>
+        {
+            var mat = new Mat<T>(rowCount, colCount);
+            var i = 0;
+            foreach (var element in elements)
+            {
+                mat[i, i] = element;
+                i++;
+            }
+            return mat;
         }
 
         /// <summary>
