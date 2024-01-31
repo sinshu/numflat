@@ -17,14 +17,16 @@ public class Program
 
         var arr = new double[][]
         {
-            new []{ 1.0, 2.0, 3.0 },
-            new []{ 4.0, 5.0, 6.0 },
-            new []{ 7.0, 8.0, 9.0 },
-            new []{ 10.0, 11.0, 12.0 },
+            new double[] { 1, 2, 3 },
+            new double[] { 0, 1, 2 },
+            new double[] { 0, 0, 1 },
         };
 
-        Console.WriteLine(arr.RowsToMatrix());
-        Console.WriteLine(arr.ColsToMatrix());
+        var mat = arr.RowsToMatrix();
+        Console.WriteLine(mat);
+        var inv = mat.Inverse();
+        Console.WriteLine(mat);
+        Console.WriteLine(inv);
     }
 
     private static void VectorExample1()

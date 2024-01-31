@@ -854,16 +854,16 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
             try
             {
-                fixed (float* px = x.Memory.Span)
+                fixed (float* pd = destination.Memory.Span)
                 fixed (int* ppiv = piv)
                 {
                     var info = Lapack.Sgetrf(
                         MatrixLayout.ColMajor,
-                        x.RowCount, x.ColCount,
-                        px, x.Stride,
+                        destination.RowCount, destination.ColCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
@@ -872,8 +872,8 @@ namespace NumFlat
 
                     info = Lapack.Sgetri(
                         MatrixLayout.ColMajor,
-                        x.RowCount,
-                        px, x.Stride,
+                        destination.RowCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
@@ -924,16 +924,16 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
             try
             {
-                fixed (double* px = x.Memory.Span)
+                fixed (double* pd = destination.Memory.Span)
                 fixed (int* ppiv = piv)
                 {
                     var info = Lapack.Dgetrf(
                         MatrixLayout.ColMajor,
-                        x.RowCount, x.ColCount,
-                        px, x.Stride,
+                        destination.RowCount, destination.ColCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
@@ -942,8 +942,8 @@ namespace NumFlat
 
                     info = Lapack.Dgetri(
                         MatrixLayout.ColMajor,
-                        x.RowCount,
-                        px, x.Stride,
+                        destination.RowCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
@@ -994,16 +994,16 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(x.RowCount);
+            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
             try
             {
-                fixed (Complex* px = x.Memory.Span)
+                fixed (Complex* pd = destination.Memory.Span)
                 fixed (int* ppiv = piv)
                 {
                     var info = Lapack.Zgetrf(
                         MatrixLayout.ColMajor,
-                        x.RowCount, x.ColCount,
-                        px, x.Stride,
+                        destination.RowCount, destination.ColCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
@@ -1012,8 +1012,8 @@ namespace NumFlat
 
                     info = Lapack.Zgetri(
                         MatrixLayout.ColMajor,
-                        x.RowCount,
-                        px, x.Stride,
+                        destination.RowCount,
+                        pd, destination.Stride,
                         ppiv);
                     if (info != LapackInfo.None)
                     {
