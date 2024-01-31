@@ -251,5 +251,45 @@ namespace NumFlatTest
                 Assert.That(x[i].Conjugate() == destination[i]);
             }
         }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
+        public void ToRowMatrix(int count, int xStride)
+        {
+            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
+            var destination = x.ToRowMatrix();
+
+            Assert.That(destination.RowCount == 1);
+            Assert.That(destination.ColCount == x.Count);
+
+            for (var i = 0; i < x.Count; i++)
+            {
+                Assert.That(destination[0, i] == x[i]);
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
+        public void ToColMatrix(int count, int xStride)
+        {
+            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
+            var destination = x.ToColMatrix();
+
+            Assert.That(destination.RowCount == x.Count);
+            Assert.That(destination.ColCount == 1);
+
+            for (var i = 0; i < x.Count; i++)
+            {
+                Assert.That(destination[i, 0] == x[i]);
+            }
+        }
     }
 }

@@ -230,8 +230,52 @@ namespace NumFlat
         /// </remarks>
         public static Vec<Complex> Conjugate(this Vec<Complex> x)
         {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
             var result = new Vec<Complex>(x.Count);
             Vec.Conjugate(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Converts the vector to a single-row matrix.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector to be converted.
+        /// </param>
+        /// <returns>
+        /// This method allocates a new matrix which is independent from the original vector.
+        /// </returns>
+        public static Mat<T> ToRowMatrix<T>(this Vec<T> x) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<T>(1, x.Count);
+            x.CopyTo(result.Rows[0]);
+            return result;
+        }
+
+        /// <summary>
+        /// Converts the vector to a single-column matrix.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector to be converted.
+        /// </param>
+        /// <returns>
+        /// This method allocates a new matrix which is independent from the original vector.
+        /// </returns>
+        public static Mat<T> ToColMatrix<T>(this Vec<T> x) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Mat<T>(x.Count, 1);
+            x.CopyTo(result.Cols[0]);
             return result;
         }
     }
