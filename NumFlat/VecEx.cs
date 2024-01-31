@@ -224,6 +224,10 @@ namespace NumFlat
         /// <returns>
         /// The conjugated complex vector.
         /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Conjugate(Vec{Complex}, Vec{Complex})"/> instead.
+        /// </remarks>
         public static Vec<Complex> Conjugate(this Vec<Complex> x)
         {
             var result = new Vec<Complex>(x.Count);
