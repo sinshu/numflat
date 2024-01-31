@@ -8,7 +8,7 @@ using System.Xml.Linq;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides LINQ-like methods for matrices and vectors.
+    /// Provides LINQ-like operators for matrices and vectors.
     /// </summary>
     public static class MathLinq
     {
