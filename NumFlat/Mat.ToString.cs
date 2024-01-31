@@ -38,17 +38,17 @@ namespace NumFlat
         /// </returns>
         public string ToString(string? format, IFormatProvider? provider)
         {
-            if (rowCount == 0 || colCount == 0)
-            {
-                return $"DenseMatrix Empty-{typeof(T).Name}";
-            }
-
             if (format == null)
             {
                 format = "G6";
             }
 
-            var header = $"DenseMatrix {rowCount}x{colCount}-{typeof(T).Name}";
+            if (rowCount == 0 || colCount == 0)
+            {
+                return $"Matrix Empty-{typeof(T).Name}";
+            }
+
+            var header = $"Matrix {rowCount}x{colCount}-{typeof(T).Name}";
             if (colCount <= 2 * threshold)
             {
                 var infos = Cols.Select(col => GetStringInfoFromSingleCol(col, format, provider)).ToArray();

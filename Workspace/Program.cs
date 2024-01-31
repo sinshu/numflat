@@ -36,5 +36,19 @@ public class Program
         var fm = new Mat<Complex>(fv.Count, fv.Count);
         Vec.Outer(fv, fv, fm, false);
         Console.WriteLine(fm.ToString());
+
+
+        var ccc = 500;
+        var random = new Random();
+        var testF = new Vec<double>(ccc);
+        var testM = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(ccc);
+        for (var i = 0; i < testF.Count; i++)
+        {
+            var d = 300 * (random.NextDouble() - 0.5);
+            testF[i] = d;
+            testM[i] = d;
+        }
+        Console.WriteLine(testF);
+        Console.WriteLine(testM);
     }
 }

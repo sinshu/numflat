@@ -10,7 +10,7 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the vector.
     /// </typeparam>
-    public partial struct Vec<T> : IReadOnlyList<T> where T : unmanaged, INumberBase<T>
+    public partial struct Vec<T> : IReadOnlyList<T>, IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int count;
         private readonly int stride;
