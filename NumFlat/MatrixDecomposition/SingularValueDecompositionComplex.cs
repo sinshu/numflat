@@ -127,16 +127,16 @@ namespace NumFlat
         /// <summary>
         /// The diagonal elements of the matrix S.
         /// </summary>
-        public Vec<double> S => s;
+        public ref readonly Vec<double> S => ref s;
 
         /// <summary>
         /// The matrix U.
         /// </summary>
-        public Mat<Complex> U => u;
+        public ref readonly Mat<Complex> U => ref u;
 
         /// <summary>
         /// The matrix V^T.
         /// </summary>
-        public Mat<Complex> VT => vt;
+        public ref readonly Mat<Complex> VT => ref vt;
     }
 }

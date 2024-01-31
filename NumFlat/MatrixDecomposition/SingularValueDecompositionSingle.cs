@@ -126,16 +126,16 @@ namespace NumFlat
         /// <summary>
         /// The diagonal elements of the matrix S.
         /// </summary>
-        public Vec<float> S => s;
+        public ref readonly Vec<float> S => ref s;
 
         /// <summary>
         /// The matrix U.
         /// </summary>
-        public Mat<float> U => u;
+        public ref readonly Mat<float> U => ref u;
 
         /// <summary>
         /// The matrix V^T.
         /// </summary>
-        public Mat<float> VT => vt;
+        public ref readonly Mat<float> VT => ref vt;
     }
 }
