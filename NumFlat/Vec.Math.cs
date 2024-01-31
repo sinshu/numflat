@@ -126,6 +126,42 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a vector-and-scalar division, x / y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the vector-and-scalar division.
+        /// </param>
+        /// /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Div<T>(Vec<T> x, T y, Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px] / y;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
         /// Computes a pointwise-multiplication of vectors, x .* y.
         /// </summary>
         /// <typeparam name="T">

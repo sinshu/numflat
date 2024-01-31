@@ -68,6 +68,25 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
+        [TestCase(1, 1, 1.5, 1)]
+        [TestCase(1, 3, 2.3, 4)]
+        [TestCase(3, 1, 0.1, 1)]
+        [TestCase(3, 3, 0.7, 4)]
+        [TestCase(5, 1, 3.5, 3)]
+        [TestCase(11, 7, 7.9, 5)]
+        public void Div(int count, int xStride, double y, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var destination = Utilities.CreateRandomVectorDouble(0, count, dstStride);
+            Vec.Div(x, y, destination);
+
+            var expected = x.Select(value => value / y).ToArray();
+            var actual = destination.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 3, 2, 4)]
         [TestCase(3, 1, 1, 1)]

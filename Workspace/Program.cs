@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
@@ -8,18 +10,20 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var x = new Mat<float>(3, 5);
-        var y = new Mat<float>(3, 5);
-        for (var row = 0; row < x.RowCount; row++)
+        var random = new Random(42);
+        var dim = 4;
+        var n = 10;
+        var xs = new List<Vec<double>>();
+        for (var i = 0; i < n; i++)
         {
-            for (var col = 0; col < x.ColCount; col++)
-            {
-                x[row, col] = row + col / 100.0F;
-                y[row, col] = row + col;
-            }
+            var elements = Enumerable.Range(0, dim).Select(i => random.NextDouble());
+            var x = elements.ToVector();
+            xs.Add(x);
         }
 
-        Vec<double> t = [1, 2, 3];
-        Console.WriteLine(t);
+        var dst = new Mat<double>(dim, dim);
+        var mean = new Vec<double>(dim);
+        MathLinq.Covariance(xs, mean, dst, 1);
+        Console.WriteLine(dst);
     }
 }

@@ -158,6 +158,51 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a matrix-and-scalar division, X * y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the matrix-and-scalar division.
+        /// The dimensions of <paramref name="destination"/> must match <paramref name="x"/>.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Div<T>(Mat<T> x, T y, Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(ref destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(ref x, ref destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px] / y;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        /// <summary>
         /// Computes a pointwise-multiplication of matrices, X .* Y.
         /// </summary>
         /// <typeparam name="T">
