@@ -5,6 +5,14 @@ namespace NumFlat
 {
     internal static class ThrowHelper
     {
+        internal static void ThrowIfNull<T>(T obj, string name) where T : class
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(name);
+            }
+        }
+
         internal static void ThrowIfEmpty<T>(ref Vec<T> v, string name) where T : unmanaged, INumberBase<T>
         {
             if (v.Count == 0)
