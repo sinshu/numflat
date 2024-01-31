@@ -67,7 +67,7 @@ namespace NumFlat
                 {
                     if (x.Count == 0)
                     {
-                        new ArgumentException("The vectors must not be empty.");
+                        new ArgumentException("Zero-length vectors are not allowed.");
                     }
 
                     destination = new Vec<double>(x.Count);

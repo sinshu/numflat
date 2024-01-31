@@ -14,6 +14,16 @@ public class Program
         VectorExample2();
         VectorExample3();
         VectorExample4();
+
+        var arr = new double[][]
+        {
+            new []{ 1.0, 2.0, 3.0 },
+            new []{ 4.0, 5.0, 6.0 },
+            new []{ 7.0, 8.0, 9.0 },
+        };
+
+        Console.WriteLine(arr.RowsToMatrix());
+        Console.WriteLine(arr.ColsToMatrix());
     }
 
     private static void VectorExample1()
