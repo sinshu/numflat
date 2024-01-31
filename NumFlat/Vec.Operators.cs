@@ -86,6 +86,31 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a vector-and-scalar division, x * y.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The result of the vector-and-scalar division.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Div{T}(Vec{T}, T, Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator /(Vec<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(ref x, nameof(x));
+
+            var result = new Vec<T>(x.count);
+            Vec.Div(x, y, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a scalar-and-vector multiplication, x * y.
         /// </summary>
         /// <param name="x">

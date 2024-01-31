@@ -218,14 +218,14 @@ namespace NumFlatTest
             }
         }
 
-        [TestCase(1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 3, 4, 5)]
-        [TestCase(2, 2, 2, 1, 1)]
-        [TestCase(3, 3, 3, 7, 6)]
-        [TestCase(2, 3, 3, 1, 6)]
-        [TestCase(7, 3, 7, 1, 1)]
-        [TestCase(7, 4, 7, 2, 5)]
-        public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4)]
+        [TestCase(2, 2, 2, 1)]
+        [TestCase(3, 3, 3, 7)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(7, 3, 7, 1)]
+        [TestCase(7, 4, 7, 2)]
+        public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, colCount, yStride);

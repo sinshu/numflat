@@ -71,21 +71,21 @@ namespace NumFlatTest
             }
         }
 
-        [TestCase(1, 1, 1, 2.5, 1)]
-        [TestCase(1, 1, 3, 4.1, 5)]
-        [TestCase(2, 2, 2, 2.3, 2)]
-        [TestCase(2, 2, 3, 5.4, 7)]
-        [TestCase(3, 3, 3, 3.2, 3)]
-        [TestCase(3, 3, 5, 4.0, 8)]
-        [TestCase(1, 3, 1, 1.3, 1)]
-        [TestCase(1, 3, 5, 0.2, 1)]
-        [TestCase(3, 1, 3, 0.4, 3)]
-        [TestCase(3, 1, 7, 0.7, 7)]
-        [TestCase(2, 3, 2, 4.6, 3)]
-        [TestCase(2, 3, 4, 0.3, 5)]
-        [TestCase(3, 2, 3, 4.6, 6)]
-        [TestCase(3, 2, 6, 0.4, 3)]
-        public void Mul1(int rowCount, int colCount, int xStride, double y, int dstStride)
+        [TestCase(1, 1, 1, 2.5)]
+        [TestCase(1, 1, 3, 4.1)]
+        [TestCase(2, 2, 2, 2.3)]
+        [TestCase(2, 2, 3, 5.4)]
+        [TestCase(3, 3, 3, 3.2)]
+        [TestCase(3, 3, 5, 4.0)]
+        [TestCase(1, 3, 1, 1.3)]
+        [TestCase(1, 3, 5, 0.2)]
+        [TestCase(3, 1, 3, 0.4)]
+        [TestCase(3, 1, 7, 0.7)]
+        [TestCase(2, 3, 2, 4.6)]
+        [TestCase(2, 3, 4, 0.3)]
+        [TestCase(3, 2, 3, 4.6)]
+        [TestCase(3, 2, 6, 0.4)]
+        public void Mul1(int rowCount, int colCount, int xStride, double y)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
             var destination = x * y;
@@ -101,21 +101,21 @@ namespace NumFlatTest
             }
         }
 
-        [TestCase(1, 1, 1, 2.5, 1)]
-        [TestCase(1, 1, 3, 4.1, 5)]
-        [TestCase(2, 2, 2, 2.3, 2)]
-        [TestCase(2, 2, 3, 5.4, 7)]
-        [TestCase(3, 3, 3, 3.2, 3)]
-        [TestCase(3, 3, 5, 4.0, 8)]
-        [TestCase(1, 3, 1, 1.3, 1)]
-        [TestCase(1, 3, 5, 0.2, 1)]
-        [TestCase(3, 1, 3, 0.4, 3)]
-        [TestCase(3, 1, 7, 0.7, 7)]
-        [TestCase(2, 3, 2, 4.6, 3)]
-        [TestCase(2, 3, 4, 0.3, 5)]
-        [TestCase(3, 2, 3, 4.6, 6)]
-        [TestCase(3, 2, 6, 0.4, 3)]
-        public void Mul2(int rowCount, int colCount, int xStride, double y, int dstStride)
+        [TestCase(1, 1, 1, 2.5)]
+        [TestCase(1, 1, 3, 4.1)]
+        [TestCase(2, 2, 2, 2.3)]
+        [TestCase(2, 2, 3, 5.4)]
+        [TestCase(3, 3, 3, 3.2)]
+        [TestCase(3, 3, 5, 4.0)]
+        [TestCase(1, 3, 1, 1.3)]
+        [TestCase(1, 3, 5, 0.2)]
+        [TestCase(3, 1, 3, 0.4)]
+        [TestCase(3, 1, 7, 0.7)]
+        [TestCase(2, 3, 2, 4.6)]
+        [TestCase(2, 3, 4, 0.3)]
+        [TestCase(3, 2, 3, 4.6)]
+        [TestCase(3, 2, 6, 0.4)]
+        public void Mul2(int rowCount, int colCount, int xStride, double y)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
             var destination = y * x;
