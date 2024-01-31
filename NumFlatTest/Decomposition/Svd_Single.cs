@@ -6,7 +6,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Svd_Double
+    public class Svd_Single
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 2, 5)]
@@ -18,12 +18,12 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3, 7, 5)]
         public void Test(int m, int n, int aStride, int sStride, int uStride, int vtStride)
         {
-            var a = Utilities.CreateRandomMatrixDouble(42, m, n, aStride);
-            var s = Utilities.CreateRandomVectorDouble(57, Math.Min(m, n), sStride);
-            var u = Utilities.CreateRandomMatrixDouble(66, m, m, uStride);
-            var vt = Utilities.CreateRandomMatrixDouble(77, n, n, vtStride);
+            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
+            var s = Utilities.CreateRandomVectorSingle(57, Math.Min(m, n), sStride);
+            var u = Utilities.CreateRandomMatrixSingle(66, m, m, uStride);
+            var vt = Utilities.CreateRandomMatrixSingle(77, n, n, vtStride);
 
-            SingularValueDecompositionDouble.Decompose(a, s, u, vt);
+            SingularValueDecompositionSingle.Decompose(a, s, u, vt);
 
             var reconstructed = u * s.ToDiagonalMatrix(m, n) * vt;
             for (var row = 0; row < reconstructed.RowCount; row++)
@@ -32,7 +32,7 @@ namespace NumFlatTest
                 {
                     var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -55,7 +55,7 @@ namespace NumFlatTest
         [TestCase(4, 3, 6)]
         public void ExtensionMethod(int m, int n, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixDouble(42, m, n, aStride);
+            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
             var svd = a.Svd();
 
             var reconstructed = svd.U * svd.S.ToDiagonalMatrix(m, n) * svd.VT;
@@ -65,7 +65,7 @@ namespace NumFlatTest
                 {
                     var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -73,7 +73,7 @@ namespace NumFlatTest
             CheckUnitary(svd.VT);
         }
 
-        private static void CheckUnitary(Mat<double> mat)
+        private static void CheckUnitary(Mat<float> mat)
         {
             var identity = mat * mat.Transpose();
             for (var row = 0; row < identity.RowCount; row++)
@@ -82,11 +82,11 @@ namespace NumFlatTest
                 {
                     if (row == col)
                     {
-                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-12));
+                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-6));
                     }
                     else
                     {
-                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-12));
+                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-6));
                     }
                 }
             }
