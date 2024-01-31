@@ -48,27 +48,81 @@ namespace NumFlat
             return destination;
         }
 
+        /// <summary>
+        /// Create a new matrix from the specified diagonal elements.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="elements">
+        /// The diagonal elements in the matrix.
+        /// </param>
+        /// <returns>
+        /// A new matrix that contains the specified diagonal elements.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original storage.
+        /// </remarks>
         public static Mat<T> ToDiagonalMatrix<T>(this IEnumerable<T> elements) where T : unmanaged, INumberBase<T>
         {
+            ThrowHelper.ThrowIfNull(elements, nameof(elements));
+
             var array = elements.ToArray();
-            var mat = new Mat<T>(array.Length, array.Length);
+            if (array.Length == 0)
+            {
+                throw new ArgumentException("One or more elements are required.");
+            }
+
+            var matrix = new Mat<T>(array.Length, array.Length);
             for (var i = 0; i < array.Length; i++)
             {
-                mat[i, i] = array[i];
+                matrix[i, i] = array[i];
             }
-            return mat;
+
+            return matrix;
         }
 
+        /// <summary>
+        /// Create a new matrix from the specified diagonal elements.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="elements">
+        /// The diagonal elements in the matrix.
+        /// </param>
+        /// <param name="rowCount">
+        /// The number of rows of the matrix.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns of the matrix.
+        /// </param>
+        /// <returns>
+        /// A new matrix that contains the specified diagonal elements.
+        /// </returns>
+        /// <remarks>
+        /// The number of elements must be less than or equal to 'Min(rowCount, colCount)'.
+        /// This method allocates a new matrix which is independent from the original storage.
+        /// </remarks>
         public static Mat<T> ToDiagonalMatrix<T>(this IEnumerable<T> elements, int rowCount, int colCount) where T : unmanaged, INumberBase<T>
         {
-            var mat = new Mat<T>(rowCount, colCount);
+            ThrowHelper.ThrowIfNull(elements, nameof(elements));
+
+            var matrix = new Mat<T>(rowCount, colCount);
+            var limit = Math.Min(rowCount, colCount);
             var i = 0;
             foreach (var element in elements)
             {
-                mat[i, i] = element;
+                if (i == limit)
+                {
+                    throw new ArgumentException("Too many elements for the size of the matrix.");
+                }
+
+                matrix[i, i] = element;
                 i++;
             }
-            return mat;
+
+            return matrix;
         }
 
         /// <summary>

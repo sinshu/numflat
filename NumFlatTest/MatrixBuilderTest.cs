@@ -91,5 +91,66 @@ namespace NumFlatTest
                 }
             }
         }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(5)]
+        public void ToDiagonalMatrix(int count)
+        {
+            var random = new Random(42);
+            var expected = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+
+            var actual = expected.ToDiagonalMatrix();
+            Assert.That(actual.RowCount == count);
+            Assert.That(actual.ColCount == count);
+
+            for (var row = 0; row < count; row++)
+            {
+                for (var col = 0; col < count; col++)
+                {
+                    if (row == col)
+                    {
+                        Assert.That(actual[row, col] == expected[row]);
+                    }
+                    else
+                    {
+                        Assert.That(actual[row, col] == 0);
+                    }
+                }
+            }
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(3, 2, 2)]
+        [TestCase(2, 3, 2)]
+        [TestCase(5, 4, 3)]
+        [TestCase(4, 5, 2)]
+        [TestCase(4, 3, 0)]
+        public void ToDiagonalMatrix2(int rowCount, int colCount, int elementCount)
+        {
+            var random = new Random(42);
+            var expected = Enumerable.Range(0, elementCount).Select(i => random.NextDouble()).ToArray();
+
+            var actual = expected.ToDiagonalMatrix(rowCount, colCount);
+            Assert.That(actual.RowCount == rowCount);
+            Assert.That(actual.ColCount == colCount);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    if (row == col && row < elementCount)
+                    {
+                        Assert.That(actual[row, col] == expected[row]);
+                    }
+                    else
+                    {
+                        Assert.That(actual[row, col] == 0);
+                    }
+                }
+            }
+        }
     }
 }

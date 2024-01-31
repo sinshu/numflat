@@ -4,8 +4,53 @@ using OpenBlasSharp;
 
 namespace NumFlat
 {
+    /// <summary>
+    /// Provides singular value decomposition (SVD).
+    /// </summary>
     public class SingularValueDecompositionDouble
     {
+        private Vec<double> s;
+        private Mat<double> u;
+        private Mat<double> vt;
+
+        /// <summary>
+        /// Decomposes the matrix A with SVD.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A to be decomposed.
+        /// </param>
+        public SingularValueDecompositionDouble(Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
+
+            var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
+            var u = new Mat<double>(a.RowCount, a.RowCount);
+            var vt = new Mat<double>(a.ColCount, a.ColCount);
+            Decompose(a, s, u, vt);
+
+            this.s = s;
+            this.u = u;
+            this.vt = vt;
+        }
+
+        /// <summary>
+        /// Decomposes the matrix A with SVD.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A to be decomposed.
+        /// </param>
+        /// <param name="s">
+        /// The destination of the diagonal elements of the matrix S.
+        /// </param>
+        /// <param name="u">
+        /// The destination of the the matrix U.
+        /// </param>
+        /// <param name="vt">
+        /// The destination of the the matrix V^T.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
         public static unsafe void Decompose(Mat<double> a, Vec<double> s, Mat<double> u, Mat<double> vt)
         {
             ThrowHelper.ThrowIfEmpty(ref a, nameof(a));
@@ -77,5 +122,20 @@ namespace NumFlat
                 ArrayPool<double>.Shared.Return(work);
             }
         }
+
+        /// <summary>
+        /// The diagonal elements of the matrix S.
+        /// </summary>
+        public Vec<double> S => s;
+
+        /// <summary>
+        /// The matrix U.
+        /// </summary>
+        public Mat<double> U => u;
+
+        /// <summary>
+        /// The matrix V^T.
+        /// </summary>
+        public Mat<double> VT => vt;
     }
 }
