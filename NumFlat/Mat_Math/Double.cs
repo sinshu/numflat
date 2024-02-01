@@ -124,6 +124,58 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the determinant of a matrix, det(X).
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns>
+        /// The determinant of the matrix.
+        /// </returns>
+        public static unsafe double Determinant(in Mat<double> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("'x' must be a square matrix.");
+            }
+
+            var xLength = x.RowCount * x.ColCount;
+            using var xBuffer = MemoryPool<double>.Shared.Rent(xLength);
+            var xCopy = new Mat<double>(x.RowCount, x.ColCount, x.RowCount, xBuffer.Memory.Slice(0, xLength));
+            x.CopyTo(xCopy);
+
+            using var pivBuffer = MemoryPool<int>.Shared.Rent(xCopy.RowCount);
+            var piv = pivBuffer.Memory.Span;
+
+            fixed (double* px = xCopy.Memory.Span)
+            fixed (int* ppiv = piv)
+            {
+                var info = Lapack.Dgetrf(
+                    MatrixLayout.ColMajor,
+                    xCopy.RowCount, xCopy.ColCount,
+                    px, xCopy.Stride,
+                    ppiv);
+            }
+
+            var determinant = 1.0;
+            for (var i = 0; i < xCopy.RowCount; i++)
+            {
+                if (piv[i] - 1 == i)
+                {
+                    determinant *= xCopy[i, i];
+                }
+                else
+                {
+                    determinant *= -xCopy[i, i];
+                }
+            }
+
+            return determinant;
+        }
+
+        /// <summary>
         /// Computes a matrix inversion, X^-1.
         /// </summary>
         /// <param name="x">
@@ -151,9 +203,11 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var piv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            using var pivBuffer = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            var piv = pivBuffer.Memory.Span;
+
             fixed (double* pd = destination.Memory.Span)
-            fixed (int* ppiv = piv.Memory.Span)
+            fixed (int* ppiv = piv)
             {
                 var info = Lapack.Dgetrf(
                     MatrixLayout.ColMajor,

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using NUnit.Framework;
 using NumFlat;
 
@@ -9,6 +11,30 @@ namespace NumFlatTest
 {
     public class Mat_Math_DoubleTest
     {
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(3, 4)]
+        [TestCase(4, 6)]
+        [TestCase(5, 6)]
+        public void Determinant(int n, int xStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, n, n, xStride);
+            var actual = Mat.Determinant(x);
+
+            var mathNet = new DenseMatrix(n, n);
+            for (var row = 0; row < n; row++)
+            {
+                for (var col = 0; col < n; col++)
+                {
+                    mathNet[row, col] = x[row, col];
+                }
+            }
+            var expected = mathNet.Determinant();
+
+            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(2, 2, 2)]
         [TestCase(3, 3, 3)]
