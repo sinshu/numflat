@@ -238,5 +238,22 @@ namespace NumFlatTest
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(3, 3)]
+        [TestCase(3, 5)]
+        [TestCase(10, 11)]
+        public void Trace(int n, int xStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, n, n, xStride);
+            var actual = x.Trace();
+
+            var expected = Utilities.ToMathNet(x).Trace();
+
+            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+        }
     }
 }

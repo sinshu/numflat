@@ -305,6 +305,9 @@ namespace NumFlat
         /// <summary>
         /// Computes a matrix transposition, X^T.
         /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
         /// <param name="x">
         /// The matrix X.
         /// </param>
@@ -347,6 +350,34 @@ namespace NumFlat
                     pd++;
                 }
             }
+        }
+
+        /// <summary>
+        /// Computes the trace of a matrix, tr(X).
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns></returns>
+        public static T Trace<T>(this in Mat<T> x) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (x.RowCount != x.ColCount)
+            {
+                throw new ArgumentException("'x' must be a square matrix.");
+            }
+
+            var trace = T.Zero;
+            for (var i = 0; i < x.RowCount; i++)
+            {
+                trace += x[i, i];
+            }
+
+            return trace;
         }
 
         private static (int m, int n, int k) GetMulArgs<T>(in Mat<T> x, bool transposeX, in Mat<T> y, bool transposeY, in Mat<T> destination) where T : unmanaged, INumberBase<T>

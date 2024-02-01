@@ -359,5 +359,18 @@ namespace NumFlatTest
                 offset += matrix.Stride;
             }
         }
+
+        public static MathNet.Numerics.LinearAlgebra.Matrix<double> ToMathNet(Mat<double> x)
+        {
+            var mathNet = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(x.RowCount, x.ColCount);
+            for (var col = 0; col < x.ColCount; col++)
+            {
+                for (var row = 0; row < x.RowCount; row++)
+                {
+                    mathNet[row, col] = x[row, col];
+                }
+            }
+            return mathNet;
+        }
     }
 }
