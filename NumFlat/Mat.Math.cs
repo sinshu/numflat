@@ -836,20 +836,11 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             if (x.RowCount != x.ColCount)
             {
                 throw new ArgumentException("'x' must be a square matrix.");
-            }
-
-            if (destination.RowCount != x.RowCount)
-            {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
-            }
-
-            if (destination.ColCount != x.ColCount)
-            {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);
@@ -899,20 +890,11 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             if (x.RowCount != x.ColCount)
             {
                 throw new ArgumentException("'x' must be a square matrix.");
-            }
-
-            if (destination.RowCount != x.RowCount)
-            {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
-            }
-
-            if (destination.ColCount != x.ColCount)
-            {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);
@@ -962,20 +944,11 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
 
             if (x.RowCount != x.ColCount)
             {
                 throw new ArgumentException("'x' must be a square matrix.");
-            }
-
-            if (destination.RowCount != x.RowCount)
-            {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
-            }
-
-            if (destination.ColCount != x.ColCount)
-            {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
             }
 
             x.CopyTo(destination);

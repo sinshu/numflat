@@ -188,12 +188,12 @@ namespace NumFlat
         {
             if (destination.rowCount != this.rowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'Mat<T>.RowCount'.");
+                throw new ArgumentException("'destination.RowCount' must match 'source.RowCount'.");
             }
 
             if (destination.colCount != this.colCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'Mat<T>.ColCount'.");
+                throw new ArgumentException("'destination.ColCount' must match 'source.ColCount'.");
             }
 
             var st = this.memory.Span;

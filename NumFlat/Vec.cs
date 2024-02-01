@@ -144,7 +144,7 @@ namespace NumFlat
 
             if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to 'Vec<T>.Count'.");
+                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to 'source.Count'.");
             }
 
             var stride = this.stride;
@@ -165,7 +165,7 @@ namespace NumFlat
         {
             if (destination.count != this.count)
             {
-                throw new ArgumentException("'destination.Count' must match 'Vec<T>.Count'.");
+                throw new ArgumentException("'destination.Count' must match 'source.Count'.");
             }
 
             var st = this.memory.Span;
@@ -195,7 +195,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("'index' must be within 'Vec<T>.Count'.");
+                    throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");
                 }
 
                 return memory.Span[stride * index];
@@ -205,7 +205,7 @@ namespace NumFlat
             {
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("'index' must be within 'Vec<T>.Count'.");
+                    throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");
                 }
 
                 memory.Span[stride * index] = value;
