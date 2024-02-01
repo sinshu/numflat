@@ -34,7 +34,7 @@ namespace NumFlat
         /// <param name="memory">
         /// The storage of the elements in the vector.
         /// The length of the <paramref name="memory"/> must match
-        /// <paramref name="stride"/> * (<paramref name="count"/> - 1) + 1'.
+        /// '<paramref name="stride"/> * (<paramref name="count"/> - 1) + 1'.
         /// </param>
         /// <remarks>
         /// This constructor does not allocate heap memory.

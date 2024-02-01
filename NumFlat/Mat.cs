@@ -35,7 +35,7 @@ namespace NumFlat
         /// <param name="memory">
         /// The storage of the elements in the matrix.
         /// The length of the <paramref name="memory"/> must match
-        /// <paramref name="stride"/> * (<paramref name="colCount"/> - 1) + <paramref name="rowCount"/>.
+        /// '<paramref name="stride"/> * (<paramref name="colCount"/> - 1) + <paramref name="rowCount"/>'.
         /// </param>
         /// <remarks>
         /// This constructor does not allocate heap memory.

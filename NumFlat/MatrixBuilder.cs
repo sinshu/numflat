@@ -101,7 +101,7 @@ namespace NumFlat
         /// A new matrix that contains the specified diagonal elements.
         /// </returns>
         /// <remarks>
-        /// The number of elements must be less than or equal to 'Min(rowCount, colCount)'.
+        /// The number of elements must be less than or equal to 'min(<paramref name="rowCount"/>, <paramref name="colCount"/>)'.
         /// This method allocates a new matrix which is independent from the original storage.
         /// </remarks>
         public static Mat<T> ToDiagonalMatrix<T>(this IEnumerable<T> elements, int rowCount, int colCount) where T : unmanaged, INumberBase<T>
