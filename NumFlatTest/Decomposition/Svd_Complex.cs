@@ -24,7 +24,7 @@ namespace NumFlatTest
             var u = Utilities.CreateRandomMatrixComplex(66, m, m, uStride);
             var vt = Utilities.CreateRandomMatrixComplex(77, n, n, vtStride);
 
-            SingularValueDecompositionComplex.Decompose(a, s, u, vt);
+            SvdComplex.Decompose(a, s, u, vt);
 
             var reconstructed = u * s.Select(e => (Complex)e).ToDiagonalMatrix(m, n) * vt;
             for (var row = 0; row < reconstructed.RowCount; row++)

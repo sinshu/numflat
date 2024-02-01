@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Buffers;
-using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
 {
     /// <summary>
-    /// Provides singular value decomposition (SVD).
+    /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SingularValueDecompositionComplex
+    public class SvdDouble
     {
         private Vec<double> s;
-        private Mat<Complex> u;
-        private Mat<Complex> vt;
+        private Mat<double> u;
+        private Mat<double> vt;
 
         /// <summary>
         /// Decomposes the matrix A with SVD.
@@ -20,13 +19,13 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public SingularValueDecompositionComplex(in Mat<Complex> a)
+        public SvdDouble(in Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
-            var u = new Mat<Complex>(a.RowCount, a.RowCount);
-            var vt = new Mat<Complex>(a.ColCount, a.ColCount);
+            var u = new Mat<double>(a.RowCount, a.RowCount);
+            var vt = new Mat<double>(a.ColCount, a.ColCount);
             Decompose(a, s, u, vt);
 
             this.s = s;
@@ -52,7 +51,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The SVD computation did not converge.
         /// </exception>
-        public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> s, in Mat<Complex> u, in Mat<Complex> vt)
+        public static unsafe void Decompose(in Mat<double> a, in Vec<double> s, in Mat<double> u, in Mat<double> vt)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(s, nameof(s));
@@ -85,8 +84,8 @@ namespace NumFlat
             //
 
             var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<Complex>.Shared.Rent(aLength);
-            var aCopy = new Mat<Complex>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            using var aBuffer = MemoryPool<double>.Shared.Rent(aLength);
+            var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
             a.CopyTo(aCopy);
 
             var sLength = Math.Min(a.RowCount, a.ColCount);
@@ -95,13 +94,13 @@ namespace NumFlat
 
             using var work = MemoryPool<double>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
 
-            fixed (Complex* pa = aCopy.Memory.Span)
+            fixed (double* pa = aCopy.Memory.Span)
             fixed (double* ps = sCopy.Memory.Span)
-            fixed (Complex* pu = u.Memory.Span)
-            fixed (Complex* pvt = vt.Memory.Span)
+            fixed (double* pu = u.Memory.Span)
+            fixed (double* pvt = vt.Memory.Span)
             fixed (double* pwork = work.Memory.Span)
             {
-                var info = Lapack.Zgesvd(
+                var info = Lapack.Dgesvd(
                     MatrixLayout.ColMajor,
                     'A', 'A',
                     aCopy.RowCount, aCopy.ColCount,
@@ -112,7 +111,7 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Zgesvd), (int)info);
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
                 }
             }
 
@@ -127,11 +126,11 @@ namespace NumFlat
         /// <summary>
         /// The matrix U.
         /// </summary>
-        public ref readonly Mat<Complex> U => ref u;
+        public ref readonly Mat<double> U => ref u;
 
         /// <summary>
         /// The matrix V^T.
         /// </summary>
-        public ref readonly Mat<Complex> VT => ref vt;
+        public ref readonly Mat<double> VT => ref vt;
     }
 }

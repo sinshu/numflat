@@ -9,51 +9,51 @@ namespace NumFlat
     public static class MatrixDecomposition
     {
         /// <summary>
-        /// Compute the SVD.
+        /// Computes the SVD.
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SingularValueDecompositionSingle"/>.
+        /// An instance of <see cref="SvdSingle"/>.
         /// </returns>
-        public static SingularValueDecompositionSingle Svd(in this Mat<float> a)
+        public static SvdSingle Svd(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SingularValueDecompositionSingle(a);
+            return new SvdSingle(a);
         }
 
         /// <summary>
-        /// Compute the SVD.
+        /// Computes the SVD.
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SingularValueDecompositionDouble"/>.
+        /// An instance of <see cref="SvdDouble"/>.
         /// </returns>
-        public static SingularValueDecompositionDouble Svd(in this Mat<double> a)
+        public static SvdDouble Svd(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SingularValueDecompositionDouble(a);
+            return new SvdDouble(a);
         }
 
         /// <summary>
-        /// Compute the SVD.
+        /// Computes the SVD.
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SingularValueDecompositionComplex"/>.
+        /// An instance of <see cref="SvdComplex"/>.
         /// </returns>
-        public static SingularValueDecompositionComplex Svd(in this Mat<Complex> a)
+        public static SvdComplex Svd(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SingularValueDecompositionComplex(a);
+            return new SvdComplex(a);
         }
     }
 }

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Buffers;
-using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
 {
     /// <summary>
-    /// Provides singular value decomposition (SVD).
+    /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SingularValueDecompositionDouble
+    public class SvdSingle
     {
-        private Vec<double> s;
-        private Mat<double> u;
-        private Mat<double> vt;
+        private Vec<float> s;
+        private Mat<float> u;
+        private Mat<float> vt;
 
         /// <summary>
         /// Decomposes the matrix A with SVD.
@@ -20,13 +19,13 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public SingularValueDecompositionDouble(in Mat<double> a)
+        public SvdSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
-            var u = new Mat<double>(a.RowCount, a.RowCount);
-            var vt = new Mat<double>(a.ColCount, a.ColCount);
+            var s = new Vec<float>(Math.Min(a.RowCount, a.ColCount));
+            var u = new Mat<float>(a.RowCount, a.RowCount);
+            var vt = new Mat<float>(a.ColCount, a.ColCount);
             Decompose(a, s, u, vt);
 
             this.s = s;
@@ -52,7 +51,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The SVD computation did not converge.
         /// </exception>
-        public static unsafe void Decompose(in Mat<double> a, in Vec<double> s, in Mat<double> u, in Mat<double> vt)
+        public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(s, nameof(s));
@@ -85,23 +84,23 @@ namespace NumFlat
             //
 
             var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<double>.Shared.Rent(aLength);
-            var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            using var aBuffer = MemoryPool<float>.Shared.Rent(aLength);
+            var aCopy = new Mat<float>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
             a.CopyTo(aCopy);
 
             var sLength = Math.Min(a.RowCount, a.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var sCopy = new Vec<double>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
+            var sCopy = new Vec<float>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
 
-            using var work = MemoryPool<double>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+            using var work = MemoryPool<float>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
 
-            fixed (double* pa = aCopy.Memory.Span)
-            fixed (double* ps = sCopy.Memory.Span)
-            fixed (double* pu = u.Memory.Span)
-            fixed (double* pvt = vt.Memory.Span)
-            fixed (double* pwork = work.Memory.Span)
+            fixed (float* pa = aCopy.Memory.Span)
+            fixed (float* ps = sCopy.Memory.Span)
+            fixed (float* pu = u.Memory.Span)
+            fixed (float* pvt = vt.Memory.Span)
+            fixed (float* pwork = work.Memory.Span)
             {
-                var info = Lapack.Dgesvd(
+                var info = Lapack.Sgesvd(
                     MatrixLayout.ColMajor,
                     'A', 'A',
                     aCopy.RowCount, aCopy.ColCount,
@@ -112,7 +111,7 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Sgesvd), (int)info);
                 }
             }
 
@@ -122,16 +121,16 @@ namespace NumFlat
         /// <summary>
         /// The diagonal elements of the matrix S.
         /// </summary>
-        public ref readonly Vec<double> S => ref s;
+        public ref readonly Vec<float> S => ref s;
 
         /// <summary>
         /// The matrix U.
         /// </summary>
-        public ref readonly Mat<double> U => ref u;
+        public ref readonly Mat<float> U => ref u;
 
         /// <summary>
         /// The matrix V^T.
         /// </summary>
-        public ref readonly Mat<double> VT => ref vt;
+        public ref readonly Mat<float> VT => ref vt;
     }
 }
