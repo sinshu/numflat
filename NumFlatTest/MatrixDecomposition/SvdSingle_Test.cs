@@ -33,6 +33,30 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 4, 3)]
+        [TestCase(3, 4, 5)]
+        [TestCase(4, 3, 4)]
+        [TestCase(4, 3, 6)]
+        public void GetSingularValues_ExtensionMethod(int m, int n, int aStride)
+        {
+            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
+            var actual = a.GetSingularValues();
+
+            var expected = a.Svd().S;
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-6));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(a);
+            Utilities.FailIfOutOfRangeWrite(actual);
+        }
+
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 2, 5)]
         [TestCase(2, 2, 2, 1, 2, 2)]

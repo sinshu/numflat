@@ -9,6 +9,60 @@ namespace NumFlat
     public static class MatrixDecomposition
     {
         /// <summary>
+        /// Gets the singular values of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <returns>
+        /// The diagonal elements of the matrix S.
+        /// </returns>
+        public static Vec<float> GetSingularValues(in this Mat<float> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            var s = new Vec<float>(Math.Min(a.RowCount, a.ColCount));
+            SvdSingle.GetSingularValues(a, s);
+            return s;
+        }
+
+        /// <summary>
+        /// Gets the singular values of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <returns>
+        /// The diagonal elements of the matrix S.
+        /// </returns>
+        public static Vec<double> GetSingularValues(in this Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
+            SvdDouble.GetSingularValues(a, s);
+            return s;
+        }
+
+        /// <summary>
+        /// Gets the singular values of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <returns>
+        /// The diagonal elements of the matrix S.
+        /// </returns>
+        public static Vec<double> GetSingularValues(in this Mat<Complex> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
+            SvdComplex.GetSingularValues(a, s);
+            return s;
+        }
+
+        /// <summary>
         /// Computes the SVD.
         /// </summary>
         /// <param name="a">
