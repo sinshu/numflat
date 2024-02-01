@@ -22,14 +22,7 @@ namespace NumFlatTest
             var x = Utilities.CreateRandomMatrixDouble(42, n, n, xStride);
             var actual = Mat.Determinant(x);
 
-            var mathNet = new DenseMatrix(n, n);
-            for (var row = 0; row < n; row++)
-            {
-                for (var col = 0; col < n; col++)
-                {
-                    mathNet[row, col] = x[row, col];
-                }
-            }
+            var mathNet = Utilities.ToMathNet(x);
             var expected = mathNet.Determinant();
 
             Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));

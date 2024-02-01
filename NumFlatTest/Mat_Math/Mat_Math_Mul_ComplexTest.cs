@@ -26,8 +26,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, false, false, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -59,8 +59,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, false, true, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my.Transpose();
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -92,8 +92,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, false, false, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx.Transpose() * my;
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -125,8 +125,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, false, true, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx.Transpose() * my.Transpose();
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -158,8 +158,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, true, false, true);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx.Conjugate() * my.Conjugate();
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -191,8 +191,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, true, true, true);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx.ConjugateTranspose() * my.ConjugateTranspose();
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -224,8 +224,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, false, true, true);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my.ConjugateTranspose();
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -257,8 +257,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, true, false, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx.ConjugateTranspose() * my;
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -289,8 +289,8 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
             Mat.Mul(x, y, destination, false, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseVector.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
             var expected = md.ToArray();
@@ -318,9 +318,9 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
             Mat.Mul(x, y, destination, true, false);
 
-            var mx = DenseMatrix.OfArray(x.ToArray()).Transpose();
-            var my = DenseVector.OfArray(y.ToArray());
-            var md = mx * my;
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var md = mx.Transpose() * my;
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
@@ -347,9 +347,9 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
             Mat.Mul(x, y, destination, false, true);
 
-            var mx = DenseMatrix.OfArray(x.ToArray()).Conjugate();
-            var my = DenseVector.OfArray(y.ToArray());
-            var md = mx * my;
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var md = mx.Conjugate() * my;
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
@@ -376,9 +376,9 @@ namespace NumFlatTest
             var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
             Mat.Mul(x, y, destination, true, true);
 
-            var mx = DenseMatrix.OfArray(x.ToArray()).ConjugateTranspose();
-            var my = DenseVector.OfArray(y.ToArray());
-            var md = mx * my;
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var md = mx.ConjugateTranspose() * my;
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
@@ -405,8 +405,8 @@ namespace NumFlatTest
             var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
             var destination = x * y;
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseMatrix.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
             for (var row = 0; row < destination.RowCount; row++)
@@ -434,8 +434,8 @@ namespace NumFlatTest
             var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
             var destination = x * y;
 
-            var mx = DenseMatrix.OfArray(x.ToArray());
-            var my = DenseVector.OfArray(y.ToArray());
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
             var expected = md.ToArray();
