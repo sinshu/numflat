@@ -8,6 +8,31 @@ namespace NumFlatTest
 {
     public class SvdDouble_Test
     {
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4)]
+        [TestCase(2, 2, 2, 1)]
+        [TestCase(2, 2, 4, 2)]
+        [TestCase(3, 4, 3, 1)]
+        [TestCase(3, 4, 5, 5)]
+        [TestCase(4, 3, 4, 1)]
+        [TestCase(4, 3, 6, 3)]
+        public void GetSingularValues(int m, int n, int aStride, int sStride)
+        {
+            var a = Utilities.CreateRandomMatrixDouble(42, m, n, aStride);
+            var actual = Utilities.CreateRandomVectorDouble(57, Math.Min(m, n), sStride);
+            SvdDouble.GetSingularValues(a, actual);
+
+            var expected = a.Svd().S;
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(a);
+            Utilities.FailIfOutOfRangeWrite(actual);
+        }
+
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 2, 5)]
         [TestCase(2, 2, 2, 1, 2, 2)]

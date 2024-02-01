@@ -34,6 +34,72 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Gets the singular values of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="s">
+        /// The destination of the diagonal elements of the matrix S.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
+        public static unsafe void GetSingularValues(in Mat<double> a, in Vec<double> s)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(s, nameof(s));
+
+            if (s.Count != Math.Min(a.RowCount, a.ColCount))
+            {
+                throw new ArgumentException("'s.Count' must match 'Min(a.RowCount, a.ColCount)'.");
+            }
+
+            //
+            // Need to copy 'a' and 's' here.
+            //
+            //   a: LAPACK SVD will destroy 'a'.
+            //      We have to copy original 'a' to preserve the original content.
+            //
+            //   s: Write buffer for 's' must be contiguous. Given Vec might not be so.
+            //      Creating Vec for 's' with stride = 1 to ensure contiguity.
+            //
+
+            var aLength = a.RowCount * a.ColCount;
+            using var aBuffer = MemoryPool<double>.Shared.Rent(aLength);
+            var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            a.CopyTo(aCopy);
+
+            var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var sCopy = new Vec<double>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+
+            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
+            var work = workBuffer.Memory.Span;
+
+            fixed (double* pa = aCopy.Memory.Span)
+            fixed (double* ps = sCopy.Memory.Span)
+            fixed (double* pwork = work)
+            {
+                var info = Lapack.Dgesvd(
+                    MatrixLayout.ColMajor,
+                    'N', 'N',
+                    aCopy.RowCount, aCopy.ColCount,
+                    pa, aCopy.Stride,
+                    ps,
+                    null, 1,
+                    null, 1,
+                    pwork);
+                if (info != LapackInfo.None)
+                {
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
+                }
+            }
+
+            sCopy.CopyTo(s);
+        }
+
+        /// <summary>
         /// Decomposes the matrix A with SVD.
         /// </summary>
         /// <param name="a">
@@ -88,11 +154,11 @@ namespace NumFlat
             var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
             a.CopyTo(aCopy);
 
-            var sLength = Math.Min(a.RowCount, a.ColCount);
+            var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
             using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
             var sCopy = new Vec<double>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
 
-            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
             var work = workBuffer.Memory.Span;
 
             fixed (double* pa = aCopy.Memory.Span)
