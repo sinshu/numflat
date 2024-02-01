@@ -92,13 +92,14 @@ namespace NumFlat
             using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
             var sCopy = new Vec<float>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
 
-            using var work = MemoryPool<float>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+            using var workBuffer = MemoryPool<float>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+            var work = workBuffer.Memory.Span;
 
             fixed (float* pa = aCopy.Memory.Span)
             fixed (float* ps = sCopy.Memory.Span)
             fixed (float* pu = u.Memory.Span)
             fixed (float* pvt = vt.Memory.Span)
-            fixed (float* pwork = work.Memory.Span)
+            fixed (float* pwork = work)
             {
                 var info = Lapack.Sgesvd(
                     MatrixLayout.ColMajor,
