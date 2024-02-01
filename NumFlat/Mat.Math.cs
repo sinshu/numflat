@@ -854,36 +854,29 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
-            try
+            using var piv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            fixed (float* pd = destination.Memory.Span)
+            fixed (int* ppiv = piv.Memory.Span)
             {
-                fixed (float* pd = destination.Memory.Span)
-                fixed (int* ppiv = piv)
+                var info = Lapack.Sgetrf(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount, destination.ColCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
                 {
-                    var info = Lapack.Sgetrf(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
-                    }
-
-                    info = Lapack.Sgetri(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetri), (int)info);
-                    }
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
                 }
-            }
-            finally
-            {
-                ArrayPool<int>.Shared.Return(piv);
+
+                info = Lapack.Sgetri(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
+                {
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetri), (int)info);
+                }
             }
         }
 
@@ -924,36 +917,29 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
-            try
+            using var piv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            fixed (double* pd = destination.Memory.Span)
+            fixed (int* ppiv = piv.Memory.Span)
             {
-                fixed (double* pd = destination.Memory.Span)
-                fixed (int* ppiv = piv)
+                var info = Lapack.Dgetrf(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount, destination.ColCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
                 {
-                    var info = Lapack.Dgetrf(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
-                    }
-
-                    info = Lapack.Dgetri(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetri), (int)info);
-                    }
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
                 }
-            }
-            finally
-            {
-                ArrayPool<int>.Shared.Return(piv);
+
+                info = Lapack.Dgetri(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
+                {
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetri), (int)info);
+                }
             }
         }
 
@@ -994,36 +980,29 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            var piv = ArrayPool<int>.Shared.Rent(destination.RowCount);
-            try
+            using var piv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            fixed (Complex* pd = destination.Memory.Span)
+            fixed (int* ppiv = piv.Memory.Span)
             {
-                fixed (Complex* pd = destination.Memory.Span)
-                fixed (int* ppiv = piv)
+                var info = Lapack.Zgetrf(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount, destination.ColCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
                 {
-                    var info = Lapack.Zgetrf(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetrf), (int)info);
-                    }
-
-                    info = Lapack.Zgetri(
-                        MatrixLayout.ColMajor,
-                        destination.RowCount,
-                        pd, destination.Stride,
-                        ppiv);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetri), (int)info);
-                    }
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetrf), (int)info);
                 }
-            }
-            finally
-            {
-                ArrayPool<int>.Shared.Return(piv);
+
+                info = Lapack.Zgetri(
+                    MatrixLayout.ColMajor,
+                    destination.RowCount,
+                    pd, destination.Stride,
+                    ppiv);
+                if (info != LapackInfo.None)
+                {
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetri), (int)info);
+                }
             }
         }
 

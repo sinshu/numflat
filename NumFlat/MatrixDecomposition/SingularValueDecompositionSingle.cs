@@ -79,48 +79,43 @@ namespace NumFlat
             //   a: LAPACK SVD will destroy 'a'.
             //      We have to copy original 'a' to preserve the original content.
             //
-            //   s: Write buffer for 's' must be contiguous. Given Vec<double> might not be so.
-            //      Creating Vec<double> for 's' with stride = 1 to ensure contiguity.
+            //   s: Write buffer for 's' must be contiguous. Given Vec might not be so.
+            //      Creating Vec for 's' with stride = 1 to ensure contiguity.
             //
 
             var aLength = a.RowCount * a.ColCount;
-            var aBuffer = ArrayPool<float>.Shared.Rent(aLength);
+            using var aBuffer = MemoryPool<float>.Shared.Rent(aLength);
+            var aCopy = new Mat<float>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            a.CopyTo(aCopy);
+
             var sLength = Math.Min(a.RowCount, a.ColCount);
-            var sBuffer = ArrayPool<float>.Shared.Rent(sLength);
-            var work = ArrayPool<float>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
-            try
+            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
+            var sCopy = new Vec<float>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+
+            using var work = MemoryPool<float>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+
+            fixed (float* pa = aCopy.Memory.Span)
+            fixed (float* ps = sCopy.Memory.Span)
+            fixed (float* pu = u.Memory.Span)
+            fixed (float* pvt = vt.Memory.Span)
+            fixed (float* pwork = work.Memory.Span)
             {
-                var aCopy = new Mat<float>(a.RowCount, a.ColCount, a.RowCount, ((Memory<float>)aBuffer).Slice(0, aLength));
-                a.CopyTo(aCopy);
-                var sCopy = new Vec<float>(sLength, 1, ((Memory<float>)sBuffer).Slice(0, sLength));
-                fixed (float* pa = aCopy.Memory.Span)
-                fixed (float* ps = sCopy.Memory.Span)
-                fixed (float* pu = u.Memory.Span)
-                fixed (float* pvt = vt.Memory.Span)
-                fixed (float* pwork = work)
+                var info = Lapack.Sgesvd(
+                    MatrixLayout.ColMajor,
+                    'A', 'A',
+                    aCopy.RowCount, aCopy.ColCount,
+                    pa, aCopy.Stride,
+                    ps,
+                    pu, u.Stride,
+                    pvt, vt.Stride,
+                    pwork);
+                if (info != LapackInfo.None)
                 {
-                    var info = Lapack.Sgesvd(
-                        MatrixLayout.ColMajor,
-                        'A', 'A',
-                        aCopy.RowCount, aCopy.ColCount,
-                        pa, aCopy.Stride,
-                        ps,
-                        pu, u.Stride,
-                        pvt, vt.Stride,
-                        pwork);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Sgesvd), (int)info);
-                    }
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
                 }
-                sCopy.CopyTo(s);
             }
-            finally
-            {
-                ArrayPool<float>.Shared.Return(aBuffer);
-                ArrayPool<float>.Shared.Return(sBuffer);
-                ArrayPool<float>.Shared.Return(work);
-            }
+
+            sCopy.CopyTo(s);
         }
 
         /// <summary>

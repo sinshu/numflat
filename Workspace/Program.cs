@@ -27,6 +27,9 @@ public class Program
         var inv = mat.Inverse();
         Console.WriteLine(mat);
         Console.WriteLine(inv);
+
+        using var mem = System.Buffers.MemoryPool<int>.Shared.Rent(30);
+        Console.WriteLine(mem.Memory.Length);
     }
 
     private static void VectorExample1()

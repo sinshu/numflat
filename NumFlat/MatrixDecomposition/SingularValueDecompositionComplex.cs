@@ -80,48 +80,43 @@ namespace NumFlat
             //   a: LAPACK SVD will destroy 'a'.
             //      We have to copy original 'a' to preserve the original content.
             //
-            //   s: Write buffer for 's' must be contiguous. Given Vec<double> might not be so.
-            //      Creating Vec<double> for 's' with stride = 1 to ensure contiguity.
+            //   s: Write buffer for 's' must be contiguous. Given Vec might not be so.
+            //      Creating Vec for 's' with stride = 1 to ensure contiguity.
             //
 
             var aLength = a.RowCount * a.ColCount;
-            var aBuffer = ArrayPool<Complex>.Shared.Rent(aLength);
+            using var aBuffer = MemoryPool<Complex>.Shared.Rent(aLength);
+            var aCopy = new Mat<Complex>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            a.CopyTo(aCopy);
+
             var sLength = Math.Min(a.RowCount, a.ColCount);
-            var sBuffer = ArrayPool<double>.Shared.Rent(sLength);
-            var work = ArrayPool<double>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
-            try
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var sCopy = new Vec<double>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+
+            using var work = MemoryPool<double>.Shared.Rent(Math.Min(a.RowCount, a.ColCount) - 1);
+
+            fixed (Complex* pa = aCopy.Memory.Span)
+            fixed (double* ps = sCopy.Memory.Span)
+            fixed (Complex* pu = u.Memory.Span)
+            fixed (Complex* pvt = vt.Memory.Span)
+            fixed (double* pwork = work.Memory.Span)
             {
-                var aCopy = new Mat<Complex>(a.RowCount, a.ColCount, a.RowCount, ((Memory<Complex>)aBuffer).Slice(0, aLength));
-                a.CopyTo(aCopy);
-                var sCopy = new Vec<double>(sLength, 1, ((Memory<double>)sBuffer).Slice(0, sLength));
-                fixed (Complex* pa = aCopy.Memory.Span)
-                fixed (double* ps = sCopy.Memory.Span)
-                fixed (Complex* pu = u.Memory.Span)
-                fixed (Complex* pvt = vt.Memory.Span)
-                fixed (double* pwork = work)
+                var info = Lapack.Zgesvd(
+                    MatrixLayout.ColMajor,
+                    'A', 'A',
+                    aCopy.RowCount, aCopy.ColCount,
+                    pa, aCopy.Stride,
+                    ps,
+                    pu, u.Stride,
+                    pvt, vt.Stride,
+                    pwork);
+                if (info != LapackInfo.None)
                 {
-                    var info = Lapack.Zgesvd(
-                        MatrixLayout.ColMajor,
-                        'A', 'A',
-                        aCopy.RowCount, aCopy.ColCount,
-                        pa, aCopy.Stride,
-                        ps,
-                        pu, u.Stride,
-                        pvt, vt.Stride,
-                        pwork);
-                    if (info != LapackInfo.None)
-                    {
-                        throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
-                    }
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
                 }
-                sCopy.CopyTo(s);
             }
-            finally
-            {
-                ArrayPool<Complex>.Shared.Return(aBuffer);
-                ArrayPool<double>.Shared.Return(sBuffer);
-                ArrayPool<double>.Shared.Return(work);
-            }
+
+            sCopy.CopyTo(s);
         }
 
         /// <summary>
