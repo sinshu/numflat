@@ -126,39 +126,33 @@ namespace NumFlat
 
             var one = Complex.One;
 
+            var centeredLength = mean.Count;
+            using var centeredBuffer = MemoryPool<Complex>.Shared.Rent(centeredLength);
+            var centered = new Vec<Complex>(centeredBuffer.Memory.Slice(0, centeredLength));
+
             destination.Clear();
-
             var count = 0;
-            var buffer = ArrayPool<Complex>.Shared.Rent(mean.Count);
-            try
-            {
-                Memory<Complex> memory = buffer;
-                var centered = new Vec<Complex>(memory.Slice(0, mean.Count));
-                fixed (Complex* pd = destination.Memory.Span)
-                fixed (Complex* pc = centered.Memory.Span)
-                {
-                    foreach (var x in xs)
-                    {
-                        if (x.Count != mean.Count)
-                        {
-                            throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
-                        }
 
-                        Vec.Sub(x, mean, centered);
-                        Blas.Zgerc(
-                            Order.ColMajor,
-                            destination.RowCount, destination.ColCount,
-                            &one,
-                            pc, centered.Stride,
-                            pc, centered.Stride,
-                            pd, destination.Stride);
-                        count++;
-                    }
-                }
-            }
-            finally
+            fixed (Complex* pd = destination.Memory.Span)
+            fixed (Complex* pc = centered.Memory.Span)
             {
-                ArrayPool<Complex>.Shared.Return(buffer);
+                foreach (var x in xs)
+                {
+                    if (x.Count != mean.Count)
+                    {
+                        throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
+                    }
+
+                    Vec.Sub(x, mean, centered);
+                    Blas.Zgerc(
+                        Order.ColMajor,
+                        destination.RowCount, destination.ColCount,
+                        &one,
+                        pc, centered.Stride,
+                        pc, centered.Stride,
+                        pd, destination.Stride);
+                    count++;
+                }
             }
 
             if (count - ddot <= 0)

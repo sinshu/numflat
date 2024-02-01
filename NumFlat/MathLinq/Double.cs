@@ -123,39 +123,33 @@ namespace NumFlat
                 throw new ArgumentException("'ddot' must be a non-negative integer.");
             }
 
+            var centeredLength = mean.Count;
+            using var centeredBuffer = MemoryPool<double>.Shared.Rent(centeredLength);
+            var centered = new Vec<double>(centeredBuffer.Memory.Slice(0, centeredLength));
+
             destination.Clear();
-
             var count = 0;
-            var buffer = ArrayPool<double>.Shared.Rent(mean.Count);
-            try
-            {
-                Memory<double> memory = buffer;
-                var centered = new Vec<double>(memory.Slice(0, mean.Count));
-                fixed (double* pd = destination.Memory.Span)
-                fixed (double* pc = centered.Memory.Span)
-                {
-                    foreach (var x in xs)
-                    {
-                        if (x.Count != mean.Count)
-                        {
-                            throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
-                        }
 
-                        Vec.Sub(x, mean, centered);
-                        Blas.Dger(
-                            Order.ColMajor,
-                            destination.RowCount, destination.ColCount,
-                            1.0,
-                            pc, centered.Stride,
-                            pc, centered.Stride,
-                            pd, destination.Stride);
-                        count++;
-                    }
-                }
-            }
-            finally
+            fixed (double* pd = destination.Memory.Span)
+            fixed (double* pc = centered.Memory.Span)
             {
-                ArrayPool<double>.Shared.Return(buffer);
+                foreach (var x in xs)
+                {
+                    if (x.Count != mean.Count)
+                    {
+                        throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
+                    }
+
+                    Vec.Sub(x, mean, centered);
+                    Blas.Dger(
+                        Order.ColMajor,
+                        destination.RowCount, destination.ColCount,
+                        1.0,
+                        pc, centered.Stride,
+                        pc, centered.Stride,
+                        pd, destination.Stride);
+                    count++;
+                }
             }
 
             if (count - ddot <= 0)
