@@ -97,6 +97,11 @@ namespace NumFlat
         /// </param>
         public void Fill(T value)
         {
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+            }
+
             var span = memory.Span;
             var position = 0;
             while (position < span.Length)
@@ -111,6 +116,11 @@ namespace NumFlat
         /// </summary>
         public void Clear()
         {
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+            }
+
             Fill(default);
         }
 
@@ -132,6 +142,11 @@ namespace NumFlat
         /// </remarks>
         public readonly Vec<T> Subvector(int startIndex, int count)
         {
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+            }
+
             if (startIndex < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), "'startIndex' must be a non-negative value.");
@@ -163,6 +178,11 @@ namespace NumFlat
         /// </remarks>
         public readonly void CopyTo(in Vec<T> destination)
         {
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+            }
+
             if (destination.count != this.count)
             {
                 throw new ArgumentException("'destination.Count' must match 'source.Count'.");
@@ -193,6 +213,11 @@ namespace NumFlat
         {
             readonly get
             {
+                if (count == 0)
+                {
+                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                }
+
                 if ((uint)index >= count)
                 {
                     throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");
@@ -203,6 +228,11 @@ namespace NumFlat
 
             set
             {
+                if (count == 0)
+                {
+                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                }
+
                 if ((uint)index >= count)
                 {
                     throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");

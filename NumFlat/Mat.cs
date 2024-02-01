@@ -93,6 +93,11 @@ namespace NumFlat
         /// </param>
         public void Fill(T value)
         {
+            if (rowCount == 0 || colCount == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+            }
+
             var span = memory.Span;
             var offset = 0;
             while (offset < span.Length)
@@ -113,6 +118,11 @@ namespace NumFlat
         /// </summary>
         public void Clear()
         {
+            if (rowCount == 0 || colCount == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+            }
+
             Fill(default);
         }
 
@@ -140,6 +150,11 @@ namespace NumFlat
         /// </remarks>
         public readonly Mat<T> Submatrix(int startRow, int startCol, int rowCount, int colCount)
         {
+            if (rowCount == 0 || colCount == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+            }
+
             if (startRow < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(startRow), "'startRow' must be a non-negative value.");
@@ -186,6 +201,11 @@ namespace NumFlat
         /// </remarks>
         public readonly void CopyTo(in Mat<T> destination)
         {
+            if (rowCount == 0 || colCount == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+            }
+
             if (destination.rowCount != this.rowCount)
             {
                 throw new ArgumentException("'destination.RowCount' must match 'source.RowCount'.");
@@ -227,6 +247,11 @@ namespace NumFlat
         /// </remarks>
         public readonly T[,] ToArray()
         {
+            if (rowCount == 0 || colCount == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+            }
+
             var array = new T[rowCount, colCount];
             for (var row = 0; row < rowCount; row++)
             {
@@ -254,8 +279,45 @@ namespace NumFlat
         /// </returns>
         public T this[int row, int col]
         {
-            readonly get => memory.Span[stride * col + row];
-            set => memory.Span[stride * col + row] = value;
+            readonly get
+            {
+                if (rowCount == 0 || colCount == 0)
+                {
+                    throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                }
+
+                if ((uint)row >= rowCount)
+                {
+                    throw new IndexOutOfRangeException("'row' must be within 'source.RowCount'.");
+                }
+
+                if ((uint)col >= colCount)
+                {
+                    throw new IndexOutOfRangeException("'col' must be within 'source.ColCount'.");
+                }
+
+                return memory.Span[stride * col + row];
+            }
+
+            set
+            {
+                if (rowCount == 0 || colCount == 0)
+                {
+                    throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                }
+
+                if ((uint)row >= rowCount)
+                {
+                    throw new IndexOutOfRangeException("'row' must be within 'source.RowCount'.");
+                }
+
+                if ((uint)col >= colCount)
+                {
+                    throw new IndexOutOfRangeException("'col' must be within 'source.ColCount'.");
+                }
+
+                memory.Span[stride * col + row] = value;
+            }
         }
 
         /// <summary>
