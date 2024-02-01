@@ -9,9 +9,9 @@ namespace NumFlat
     /// </summary>
     public class SvdDouble
     {
-        private Vec<double> s;
-        private Mat<double> u;
-        private Mat<double> vt;
+        private readonly Vec<double> s;
+        private readonly Mat<double> u;
+        private readonly Mat<double> vt;
 
         /// <summary>
         /// Decomposes the matrix A with SVD.
