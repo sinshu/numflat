@@ -227,7 +227,7 @@ namespace NumFlat
             var colCount = cache.Count;
             if (colCount == 0)
             {
-                throw new ArgumentException("'rows' must contain at least one row.");
+                throw new ArgumentException("'cols' must contain at least one column.");
             }
 
             var destination = new Mat<T>(rowCount, colCount);
