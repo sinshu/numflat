@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Vector
+    public class Vec_Test
     {
         [TestCase(1)]
         [TestCase(2)]

@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class VectorExtensions
+    public class VecEx_Test
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]
@@ -49,7 +49,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotSingle(int count, int xStride, int yStride)
+        public void Dot_Single(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorSingle(42, count, xStride);
             var y = Utilities.CreateRandomVectorSingle(57, count, yStride);
@@ -65,7 +65,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotDouble(int count, int xStride, int yStride)
+        public void Dot_Double(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
@@ -81,7 +81,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotComplex_N(int count, int xStride, int yStride)
+        public void Dot_Complex_N(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
@@ -98,7 +98,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotComplex_C(int count, int xStride, int yStride)
+        public void Dot_Complex_C(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
@@ -119,7 +119,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 4)]
         [TestCase(3, 1, 2, 1)]
         [TestCase(3, 3, 2, 4)]
-        public void OuterSingle(int xCount, int xStride, int yCount, int yStride)
+        public void Outer_Single(int xCount, int xStride, int yCount, int yStride)
         {
             var x = Utilities.CreateRandomVectorSingle(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorSingle(57, yCount, yStride);
@@ -150,7 +150,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 4)]
         [TestCase(3, 1, 2, 1)]
         [TestCase(3, 3, 2, 4)]
-        public void OuterDouble(int xCount, int xStride, int yCount, int yStride)
+        public void Outer_Double(int xCount, int xStride, int yCount, int yStride)
         {
             var x = Utilities.CreateRandomVectorDouble(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, yCount, yStride);
@@ -181,7 +181,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 4)]
         [TestCase(3, 1, 2, 1)]
         [TestCase(3, 3, 2, 4)]
-        public void OuterComplex_N(int xCount, int xStride, int yCount, int yStride)
+        public void Outer_Complex_N(int xCount, int xStride, int yCount, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
@@ -213,7 +213,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 4)]
         [TestCase(3, 1, 2, 1)]
         [TestCase(3, 3, 2, 4)]
-        public void OuterComplex_C(int xCount, int xStride, int yCount, int yStride)
+        public void Outer_Complex_C(int xCount, int xStride, int yCount, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);

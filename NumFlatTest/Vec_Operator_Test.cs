@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class VectorOperators
+    public class Vec_Operator_Test
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]
@@ -49,7 +49,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 0.7)]
         [TestCase(5, 1, 3.5)]
         [TestCase(11, 7, 7.9)]
-        public void Mul1(int count, int xStride, double y)
+        public void Mul_VecScalar(int count, int xStride, double y)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var destination = x * y;
@@ -65,7 +65,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 0.7)]
         [TestCase(5, 1, 3.5)]
         [TestCase(11, 7, 7.9)]
-        public void Mul2(int count, int xStride, double y)
+        public void Mul_ScalarVec(int count, int xStride, double y)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var destination = y * x;
@@ -97,7 +97,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotProductSingle(int count, int xStride, int yStride)
+        public void Dot_Single(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorSingle(42, count, xStride);
             var y = Utilities.CreateRandomVectorSingle(57, count, yStride);
@@ -113,7 +113,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotProductDouble(int count, int xStride, int yStride)
+        public void Dot_Double(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
@@ -129,7 +129,7 @@ namespace NumFlatTest
         [TestCase(3, 3, 2)]
         [TestCase(5, 1, 2)]
         [TestCase(11, 7, 2)]
-        public void DotProductComplex(int count, int xStride, int yStride)
+        public void Dot_Complex(int count, int xStride, int yStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, count, yStride);

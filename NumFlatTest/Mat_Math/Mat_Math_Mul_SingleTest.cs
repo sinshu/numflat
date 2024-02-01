@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Single;
 using NUnit.Framework;
 using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MatrixMath_MulDouble
+    public class Mat_Math_Mul_SingleTest
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]
@@ -21,9 +21,9 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10, 10)]
         public void Mul_MatMat_NN(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, m, k, xStride);
+            var y = Utilities.CreateRandomMatrixSingle(57, k, n, yStride);
+            var destination = Utilities.CreateRandomMatrixSingle(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -36,7 +36,7 @@ namespace NumFlatTest
                 {
                     var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -53,9 +53,9 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10, 10)]
         public void Mul_MatMat_NT(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, m, k, xStride);
+            var y = Utilities.CreateRandomMatrixSingle(57, n, k, yStride);
+            var destination = Utilities.CreateRandomMatrixSingle(0, m, n, dstStride);
             Mat.Mul(x, y, destination, false, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -68,7 +68,7 @@ namespace NumFlatTest
                 {
                     var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -85,9 +85,9 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10, 10)]
         public void Mul_MatMat_TN(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, k, m, xStride);
+            var y = Utilities.CreateRandomMatrixSingle(57, k, n, yStride);
+            var destination = Utilities.CreateRandomMatrixSingle(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -100,7 +100,7 @@ namespace NumFlatTest
                 {
                     var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -117,9 +117,9 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10, 10)]
         public void Mul_MatMat_TT(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, k, m, xStride);
+            var y = Utilities.CreateRandomMatrixSingle(57, n, k, yStride);
+            var destination = Utilities.CreateRandomMatrixSingle(0, m, n, dstStride);
             Mat.Mul(x, y, destination, true, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -132,7 +132,7 @@ namespace NumFlatTest
                 {
                     var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
 
@@ -148,9 +148,9 @@ namespace NumFlatTest
         [TestCase(7, 4, 7, 2, 5)]
         public void Mul_MatVec_N(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, colCount, yStride);
-            var destination = Utilities.CreateRandomVectorDouble(0, rowCount, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorSingle(57, colCount, yStride);
+            var destination = Utilities.CreateRandomVectorSingle(0, rowCount, dstStride);
             Mat.Mul(x, y, destination, false);
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -159,7 +159,7 @@ namespace NumFlatTest
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
@@ -173,9 +173,9 @@ namespace NumFlatTest
         [TestCase(7, 4, 7, 2, 5)]
         public void Mul_MatVec_T(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, rowCount, yStride);
-            var destination = Utilities.CreateRandomVectorDouble(0, colCount, dstStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorSingle(57, rowCount, yStride);
+            var destination = Utilities.CreateRandomVectorSingle(0, colCount, dstStride);
             Mat.Mul(x, y, destination, true);
 
             var mx = DenseMatrix.OfArray(x.ToArray()).Transpose();
@@ -184,7 +184,7 @@ namespace NumFlatTest
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
@@ -199,8 +199,8 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10)]
         public void Operator_MatMat(int m, int n, int k, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, k, n, yStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, m, k, xStride);
+            var y = Utilities.CreateRandomMatrixSingle(57, k, n, yStride);
             var destination = x * y;
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -213,7 +213,7 @@ namespace NumFlatTest
                 {
                     var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
                 }
             }
         }
@@ -227,8 +227,8 @@ namespace NumFlatTest
         [TestCase(7, 4, 7, 2)]
         public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, colCount, yStride);
+            var x = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomVectorSingle(57, colCount, yStride);
             var destination = x * y;
 
             var mx = DenseMatrix.OfArray(x.ToArray());
@@ -237,7 +237,7 @@ namespace NumFlatTest
 
             var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
         }
     }
 }

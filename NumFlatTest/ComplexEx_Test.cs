@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class ComplexExtensions
+    public class ComplexEx_Test
     {
         [TestCase(0.0, 0.0)]
         [TestCase(1.0, 0.0)]

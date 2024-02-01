@@ -11,7 +11,7 @@ using MVector = MathNet.Numerics.LinearAlgebra.Vector<System.Numerics.Complex>;
 
 namespace NumFlatTest
 {
-    public class MathLinq_Complex
+    public class MathLinq_ComplexTest
     {
         [TestCase(3, 1, 1)]
         [TestCase(3, 1, 4)]
@@ -38,7 +38,7 @@ namespace NumFlatTest
         [TestCase(3, 1)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void Mean_Simple(int dim, int count)
+        public void Mean_ExtensionMethod(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetMean(data);
@@ -83,7 +83,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void Covariance_Simple1(int dim, int count, int ddot)
+        public void Covariance_ExtensionMethod_OneArg(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
@@ -103,7 +103,7 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void Covariance_Simple2(int dim, int count)
+        public void Covariance_ExtensionMethod_NoArg(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, 1);
@@ -123,7 +123,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void MeanAndCovariance1(int dim, int count, int ddot)
+        public void MeanAndCovariance_OneArg(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
@@ -150,7 +150,7 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void MeanAndCovariance2(int dim, int count)
+        public void MeanAndCovariance_NoArg(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);

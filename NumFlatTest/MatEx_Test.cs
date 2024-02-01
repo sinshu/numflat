@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MatrixExtensions
+    public class MatEx_Test
     {
         [TestCase(1, 1, 1)]
         [TestCase(2, 2, 2)]
@@ -86,7 +86,7 @@ namespace NumFlatTest
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void InverseSingle(int n, int xStride)
+        public void Inverse_Single(int n, int xStride)
         {
             var x = Utilities.CreateRandomMatrixSingle(42, n, n, xStride);
             var destination = x.Inverse();
@@ -113,7 +113,7 @@ namespace NumFlatTest
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void InverseDouble(int n, int xStride)
+        public void Inverse_Double(int n, int xStride)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, n, n, xStride);
             var destination = x.Inverse();
@@ -140,7 +140,7 @@ namespace NumFlatTest
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void InverseComplex(int n, int xStride)
+        public void Inverse_Complex(int n, int xStride)
         {
             var x = Utilities.CreateRandomMatrixComplex(42, n, n, xStride);
             var destination = x.Inverse();

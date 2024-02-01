@@ -7,13 +7,13 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MatrixBuilderTest
+    public class MatrixBuilder_Test
     {
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(2, 4)]
         [TestCase(5, 3)]
-        public void Array2DToMatrix(int rowCount, int colCount)
+        public void ToMatrix(int rowCount, int colCount)
         {
             var random = new Random(42);
             var expected = new double[rowCount, colCount];
@@ -96,7 +96,7 @@ namespace NumFlatTest
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(5)]
-        public void ToDiagonalMatrix(int count)
+        public void ToDiagonalMatrix_NoArg(int count)
         {
             var random = new Random(42);
             var expected = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
@@ -128,7 +128,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3)]
         [TestCase(4, 5, 2)]
         [TestCase(4, 3, 0)]
-        public void ToDiagonalMatrix2(int rowCount, int colCount, int elementCount)
+        public void ToDiagonalMatrix_OneArg(int rowCount, int colCount, int elementCount)
         {
             var random = new Random(42);
             var expected = Enumerable.Range(0, elementCount).Select(i => random.NextDouble()).ToArray();

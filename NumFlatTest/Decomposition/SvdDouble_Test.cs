@@ -6,7 +6,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Svd_Double
+    public class SvdDouble_Test
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 2, 5)]
@@ -16,7 +16,7 @@ namespace NumFlatTest
         [TestCase(3, 4, 5, 5, 7, 6)]
         [TestCase(4, 3, 4, 1, 4, 3)]
         [TestCase(4, 3, 6, 3, 7, 5)]
-        public void Test(int m, int n, int aStride, int sStride, int uStride, int vtStride)
+        public void Decompose(int m, int n, int aStride, int sStride, int uStride, int vtStride)
         {
             var a = Utilities.CreateRandomMatrixDouble(42, m, n, aStride);
             var s = Utilities.CreateRandomVectorDouble(57, Math.Min(m, n), sStride);

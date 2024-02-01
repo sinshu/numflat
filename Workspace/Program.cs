@@ -34,6 +34,8 @@ public class Program
 
     private static void VectorExample1()
     {
+        Console.WriteLine("=== VectorExample 1 ===");
+
         // Creat a new vector.
         Vec<double> vector = [1, 2, 3];
 
@@ -44,10 +46,14 @@ public class Program
 
         // Show the vector.
         Console.WriteLine(vector);
+
+        Console.WriteLine();
     }
 
     private static void VectorExample2()
     {
+        Console.WriteLine("=== VectorExample 2 ===");
+
         var array = new double[] { 1, 2, 3 };
         var enumerable = Enumerable.Range(0, 3).Select(i => i + 1.0);
 
@@ -56,10 +62,17 @@ public class Program
 
         // Create a vector from an enumerable.
         var vectorFromEnumerable = enumerable.ToVector();
+
+        Console.WriteLine("vectorFromArray: " + vectorFromArray);
+        Console.WriteLine("vectorFromEnumerable: " + vectorFromEnumerable);
+
+        Console.WriteLine();
     }
 
     private static void VectorExample3()
     {
+        Console.WriteLine("=== VectorExample 3 ===");
+
         // Creat a new vector.
         Vec<double> vector = [1, 2, 3];
 
@@ -71,10 +84,14 @@ public class Program
 
         // Show the original vector.
         Console.WriteLine(vector);
+
+        Console.WriteLine();
     }
 
     private static void VectorExample4()
     {
+        Console.WriteLine("=== VectorExample 4 ===");
+
         // Creat new vectors.
         Vec<double> x = [1, 2, 3];
         Vec<double> y = [4, 5, 6];
@@ -97,10 +114,20 @@ public class Program
         // Pointwise division.
         var pd = x.PointwiseDiv(y);
 
-        // Dot product.
+        // Dot product (returns a scalar).
         var dot = x * y;
 
-        // Outer product.
+        // Outer product (returns a matrix).
         var outer = x.Outer(y);
+
+        Console.WriteLine("add: " + add);
+        Console.WriteLine("sub: " + sub);
+        Console.WriteLine("sm: " + sm);
+        Console.WriteLine("sd: " + sd);
+        Console.WriteLine("pm: " + pm);
+        Console.WriteLine("pd: " + pd);
+        Console.WriteLine("dot: " + dot);
+        Console.WriteLine("outer: " + outer);
+        Console.WriteLine();
     }
 }

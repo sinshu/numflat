@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Matrix
+    public class Mat_Test
     {
         [TestCase(1, 1)]
         [TestCase(2, 2)]

@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MatrixOperators
+    public class Mat_Operators_Test
     {
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]
@@ -85,7 +85,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 0.3)]
         [TestCase(3, 2, 3, 4.6)]
         [TestCase(3, 2, 6, 0.4)]
-        public void Mul1(int rowCount, int colCount, int xStride, double y)
+        public void Mul_MatScalar(int rowCount, int colCount, int xStride, double y)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
             var destination = x * y;
@@ -115,7 +115,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 0.3)]
         [TestCase(3, 2, 3, 4.6)]
         [TestCase(3, 2, 6, 0.4)]
-        public void Mul2(int rowCount, int colCount, int xStride, double y)
+        public void Mul_ScalarMat(int rowCount, int colCount, int xStride, double y)
         {
             var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
             var destination = y * x;
