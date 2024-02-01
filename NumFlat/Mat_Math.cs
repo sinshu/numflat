@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Buffers;
 using System.Numerics;
-using OpenBlasSharp;
 
 namespace NumFlat
 {
@@ -304,18 +302,6 @@ namespace NumFlat
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// Computes a matrix transposition, X^T.
         /// </summary>
@@ -362,14 +348,6 @@ namespace NumFlat
                 }
             }
         }
-
-
-
-
-
-
-
-
 
         private static (int m, int n, int k) GetMulArgs<T>(in Mat<T> x, bool transposeX, in Mat<T> y, bool transposeY, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
