@@ -260,6 +260,71 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix.
+        /// </param>
+        /// <returns>
+        /// The rank of the matrix.
+        /// </returns>
+        public static int Rank(this in Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var sLength = Math.Min(x.RowCount, x.ColCount);
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            SvdComplex.GetSingularValues(x, s);
+
+            var tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+
+            var rank = 0;
+            foreach (var value in s)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
+
+        /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <returns>
+        /// The rank of the matrix.
+        /// </returns>
+        public static int Rank(this in Mat<Complex> x, double tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var sLength = Math.Min(x.RowCount, x.ColCount);
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            SvdComplex.GetSingularValues(x, s);
+
+            var rank = 0;
+            foreach (var value in s)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
+
+        /// <summary>
         /// Conjugates the complex matrix.
         /// </summary>
         /// <param name="x">

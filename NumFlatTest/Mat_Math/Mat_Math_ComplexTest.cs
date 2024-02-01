@@ -68,6 +68,34 @@ namespace NumFlatTest
             Utilities.FailIfOutOfRangeWrite(destination);
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Rank_Zero(int n)
+        {
+            var x = new Mat<Complex>(n, n);
+            Assert.That(x.Rank() == 0);
+            Assert.That(x.Rank(1.0E-12) == 0);
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Rank_OneOrMore(int n)
+        {
+            for (var rank = 1; rank <= n; rank++)
+            {
+                var src = Utilities.CreateRandomMatrixComplex(42, rank, n, rank);
+                var x = src * src.ConjugateTranspose();
+                Assert.That(x.Rank() == rank);
+                Assert.That(x.Rank(1.0E-12) == rank);
+            }
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 2, 2, 2)]
         [TestCase(2, 2, 4, 3)]

@@ -64,5 +64,33 @@ namespace NumFlatTest
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Rank_Zero(int n)
+        {
+            var x = new Mat<float>(n, n);
+            Assert.That(x.Rank() == 0);
+            Assert.That(x.Rank(1.0E-6F) == 0);
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Rank_OneOrMore(int n)
+        {
+            for (var rank = 1; rank <= n; rank++)
+            {
+                var src = Utilities.CreateRandomMatrixSingle(42, rank, n, rank);
+                var x = src * src.Transpose();
+                Assert.That(x.Rank() == rank);
+                Assert.That(x.Rank(1.0E-6F) == rank);
+            }
+        }
     }
 }

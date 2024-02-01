@@ -230,5 +230,70 @@ namespace NumFlat
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix.
+        /// </param>
+        /// <returns>
+        /// The rank of the matrix.
+        /// </returns>
+        public static int Rank(this in Mat<float> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var sLength = Math.Min(x.RowCount, x.ColCount);
+            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
+            var s = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
+            SvdSingle.GetSingularValues(x, s);
+
+            var tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+
+            var rank = 0;
+            foreach (var value in s)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
+
+        /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <returns>
+        /// The rank of the matrix.
+        /// </returns>
+        public static int Rank(this in Mat<float> x, float tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var sLength = Math.Min(x.RowCount, x.ColCount);
+            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
+            var s = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
+            SvdSingle.GetSingularValues(x, s);
+
+            var rank = 0;
+            foreach (var value in s)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
     }
 }
