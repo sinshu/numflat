@@ -95,7 +95,7 @@ namespace NumFlat
         /// <param name="value">
         /// The value to assign to each element of the vector.
         /// </param>
-        public void Fill(T value)
+        public readonly void Fill(T value)
         {
             if (count == 0)
             {
@@ -114,7 +114,7 @@ namespace NumFlat
         /// <summary>
         /// Zero-clears the elements of the vector.
         /// </summary>
-        public void Clear()
+        public readonly void Clear()
         {
             if (count == 0)
             {

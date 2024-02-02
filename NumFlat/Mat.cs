@@ -91,7 +91,7 @@ namespace NumFlat
         /// <param name="value">
         /// The value to assign to each element of the matrix.
         /// </param>
-        public void Fill(T value)
+        public readonly void Fill(T value)
         {
             if (rowCount == 0 || colCount == 0)
             {
@@ -116,7 +116,7 @@ namespace NumFlat
         /// <summary>
         /// Zero-clears the elements of the matrix.
         /// </summary>
-        public void Clear()
+        public readonly void Clear()
         {
             if (rowCount == 0 || colCount == 0)
             {
