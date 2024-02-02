@@ -174,6 +174,53 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double})"/>' instead.
+        /// </remarks>
+        public static Mat<double> PseudoInverse(in this Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            var result = new Mat<double>(a.ColCount, a.RowCount);
+            Mat.PseudoInverse(a, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double})"/>' instead.
+        /// </remarks>
+        public static Mat<double> PseudoInverse(in this Mat<double> a, double tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            var result = new Mat<double>(a.ColCount, a.RowCount);
+            Mat.PseudoInverse(a, result, tolerance);
+            return result;
+        }
+
+        /// <summary>
         /// Applies a function to each value of the source matrix.
         /// </summary>
         /// <typeparam name="TSource">

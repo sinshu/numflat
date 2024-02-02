@@ -240,13 +240,16 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<double> x)
+        public static int Rank(this in Mat<double> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -255,7 +258,10 @@ namespace NumFlat
             var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
             SvdDouble.GetSingularValues(x, s);
 
-            var tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            if (double.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            }
 
             var rank = 0;
             foreach (var value in s)
@@ -275,34 +281,120 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
-        /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
-        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<double> x, double tolerance)
+        public static int Rank(this in Mat<double> x)
         {
-            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            return x.Rank(double.NaN);
+        }
 
-            var sLength = Math.Min(x.RowCount, x.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
-            SvdDouble.GetSingularValues(x, s);
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<double> a, in Mat<double> destination, double tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            var rank = 0;
-            foreach (var value in s)
+            if (destination.RowCount != a.ColCount)
             {
-                if (value > tolerance)
-                {
-                    rank++;
-                }
+                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
             }
 
-            return rank;
+            if (destination.ColCount != a.RowCount)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+            }
+
+            var sLength = Math.Min(a.RowCount, a.ColCount);
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+
+            var uLength = a.RowCount * a.RowCount;
+            using var uBuffer = MemoryPool<double>.Shared.Rent(uLength);
+            var u = new Mat<double>(a.RowCount, a.RowCount, a.RowCount, uBuffer.Memory.Slice(0, uLength));
+
+            var vtLength = a.ColCount * a.ColCount;
+            using var vtBuffer = MemoryPool<double>.Shared.Rent(vtLength);
+            var vt = new Mat<double>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
+
+            SvdDouble.Decompose(a, s, u, vt);
+
+            if (double.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
+            }
+
+            var tmpLength = a.ColCount * a.RowCount;
+            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
+            var tmp = new Mat<double>(a.ColCount, a.RowCount, a.ColCount, tmpBuffer.Memory.Slice(0, tmpLength));
+            tmp.Clear();
+
+            if (a.RowCount >= a.ColCount)
+            {
+                var tmpCols = tmp.Cols;
+                var vtRows = vt.Rows;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        Vec.Div(vtRows[i], s[i], tmpCols[i]);
+                    }
+                }
+                Mat.Mul(tmp, u, destination, false, true);
+            }
+            else
+            {
+                var tmpRows = tmp.Rows;
+                var uCols = u.Cols;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        Vec.Div(uCols[i], s[i], tmpRows[i]);
+                    }
+                }
+                Mat.Mul(vt, tmp, destination, true, false);
+            }
+        }
+
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<double> a, in Mat<double> destination)
+        {
+            PseudoInverse(a, destination, double.NaN);
         }
     }
 }

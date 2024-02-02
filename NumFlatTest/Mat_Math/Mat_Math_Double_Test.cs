@@ -85,5 +85,65 @@ namespace NumFlatTest
                 Assert.That(x.Rank(1.0E-12) == rank);
             }
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(3, 2, 5, 4)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 7, 4)]
+        [TestCase(4, 7, 5, 9)]
+        public void PseudoInverse_Arg3(int rowCount, int colCount, int aStride, int dstStride)
+        {
+            var a = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, aStride);
+            var resultArg2 = Utilities.CreateRandomMatrixDouble(0, colCount, rowCount, dstStride);
+            Mat.PseudoInverse(a, resultArg2, 1.0E-12);
+
+            var ma = Utilities.ToMathNet(a);
+            var expected = ma.PseudoInverse();
+
+            for (var row = 0; row < expected.RowCount; row++)
+            {
+                for (var col = 0; col < expected.ColumnCount; col++)
+                {
+                    Assert.That(resultArg2[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(resultArg2);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(3, 2, 5, 4)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 7, 4)]
+        [TestCase(4, 7, 5, 9)]
+        public void PseudoInverse_Arg2(int rowCount, int colCount, int aStride, int dstStride)
+        {
+            var a = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, aStride);
+            var destination = Utilities.CreateRandomMatrixDouble(0, colCount, rowCount, dstStride);
+            Mat.PseudoInverse(a, destination);
+
+            var ma = Utilities.ToMathNet(a);
+            var expected = ma.PseudoInverse();
+
+            for (var row = 0; row < expected.RowCount; row++)
+            {
+                for (var col = 0; col < expected.ColumnCount; col++)
+                {
+                    Assert.That(destination[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
     }
 }

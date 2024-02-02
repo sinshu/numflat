@@ -164,6 +164,35 @@ namespace NumFlatTest
             }
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 5)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(6, 3, 7)]
+        [TestCase(4, 7, 5)]
+        public void PseudoInverse_Double(int rowCount, int colCount, int aStride)
+        {
+            var a = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, aStride);
+            var actual1 = a.PseudoInverse(1.0E-12);
+            var actual2 = a.PseudoInverse();
+
+            var ma = Utilities.ToMathNet(a);
+            var expected = ma.PseudoInverse();
+
+            for (var row = 0; row < expected.RowCount; row++)
+            {
+                for (var col = 0; col < expected.ColumnCount; col++)
+                {
+                    Assert.That(actual1[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
+                    Assert.That(actual2[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
+                }
+            }
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 5)]
         [TestCase(2, 2, 2, 2)]
