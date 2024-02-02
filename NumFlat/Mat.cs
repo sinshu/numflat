@@ -28,9 +28,9 @@ namespace NumFlat
         /// <param name="stride">
         /// The stride of the columns.
         /// This value indicates the difference between the starting index of adjacent columns in the <paramref name="memory"/>.
-        /// If the length of the <paramref name="memory"/> matches <paramref name="rowCount"/> * <paramref name="colCount"/>
+        /// If the length of the <paramref name="memory"/> matches '<paramref name="rowCount"/> * <paramref name="colCount"/>'
         /// and the elements are arranged consecutively without gaps in the <paramref name="memory"/>,
-        /// then this value matches <paramref name="rowCount"/>.
+        /// then this value matches '<paramref name="rowCount"/>'.
         /// </param>
         /// <param name="memory">
         /// The storage of the elements in the matrix.

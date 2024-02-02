@@ -69,7 +69,7 @@ namespace NumFlat
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SvdSingle"/>.
+        /// An instance of '<see cref="SvdSingle"/>'.
         /// </returns>
         public static SvdSingle Svd(in this Mat<float> a)
         {
@@ -85,7 +85,7 @@ namespace NumFlat
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SvdDouble"/>.
+        /// An instance of '<see cref="SvdDouble"/>'.
         /// </returns>
         public static SvdDouble Svd(in this Mat<double> a)
         {
@@ -101,7 +101,7 @@ namespace NumFlat
         /// The matrix to be decomposed with SVD.
         /// </param>
         /// <returns>
-        /// An instance of <see cref="SvdComplex"/>.
+        /// An instance of '<see cref="SvdComplex"/>'.
         /// </returns>
         public static SvdComplex Svd(in this Mat<Complex> a)
         {

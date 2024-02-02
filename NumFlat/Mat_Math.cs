@@ -319,7 +319,7 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
+        /// use '<see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>'.
         /// </remarks>
         public static void Transpose<T>(in Mat<T> x, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {

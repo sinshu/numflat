@@ -20,7 +20,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Add{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
+        /// To avoid the allocation, use '<see cref="Vec.Add{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
         /// </remarks>
         public static Vec<T> operator +(in Vec<T> x, in Vec<T> y)
         {
@@ -47,7 +47,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Sub{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
+        /// To avoid the allocation, use '<see cref="Vec.Sub{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
         /// </remarks>
         public static Vec<T> operator -(in Vec<T> x, in Vec<T> y)
         {
@@ -74,7 +74,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// To avoid the allocation, use '<see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/>' instead.
         /// </remarks>
         public static Vec<T> operator *(in Vec<T> x, T y)
         {
@@ -99,7 +99,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// To avoid the allocation, use '<see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/>' instead.
         /// </remarks>
         public static Vec<T> operator *(T x, in Vec<T> y)
         {
@@ -169,7 +169,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use <see cref="Vec.Div{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// To avoid the allocation, use '<see cref="Vec.Div{T}(in Vec{T}, T, in Vec{T})"/>' instead.
         /// </remarks>
         public static Vec<T> operator /(in Vec<T> x, T y)
         {

@@ -45,6 +45,9 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The SVD computation did not converge.
         /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static unsafe void GetSingularValues(in Mat<float> a, in Vec<float> s)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -117,6 +120,9 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The SVD computation did not converge.
         /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

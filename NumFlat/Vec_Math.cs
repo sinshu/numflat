@@ -503,6 +503,9 @@ namespace NumFlat
         /// <param name="destination">
         /// The conjugated complex vector.
         /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Conjugate(in Vec<Complex> x, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));

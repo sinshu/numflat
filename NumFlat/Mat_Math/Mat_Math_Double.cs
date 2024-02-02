@@ -132,6 +132,9 @@ namespace NumFlat
         /// <returns>
         /// The determinant of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static unsafe double Determinant(in Mat<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -188,7 +191,7 @@ namespace NumFlat
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
-        /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
         public static unsafe void Inverse(in Mat<double> x, in Mat<double> destination)
         {
@@ -240,6 +243,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static int Rank(this in Mat<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -275,6 +281,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static int Rank(this in Mat<double> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));

@@ -160,6 +160,9 @@ namespace NumFlat
         /// <returns>
         /// The determinant of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static unsafe Complex Determinant(in Mat<Complex> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -216,7 +219,7 @@ namespace NumFlat
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
-        /// This method internally uses <see cref="ArrayPool{T}.Shared"/> to allocate buffer.
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
         public static unsafe void Inverse(in Mat<Complex> x, in Mat<Complex> destination)
         {
@@ -268,6 +271,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static int Rank(this in Mat<Complex> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -303,6 +309,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static int Rank(this in Mat<Complex> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -337,7 +346,7 @@ namespace NumFlat
         /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use '<see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>'.
         /// </remarks>
         public static void Conjugate(in Mat<Complex> x, in Mat<Complex> destination)
         {
@@ -379,7 +388,7 @@ namespace NumFlat
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
+        /// use '<see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>'.
         /// </remarks>
         public static void ConjugateTranspose(in Mat<Complex> x, in Mat<Complex> destination)
         {
