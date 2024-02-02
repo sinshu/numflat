@@ -277,9 +277,9 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public T this[int row, int col]
+        public readonly T this[int row, int col]
         {
-            readonly get
+            get
             {
                 if (rowCount == 0 || colCount == 0)
                 {
@@ -341,12 +341,12 @@ namespace NumFlat
         public readonly Memory<T> Memory => memory;
 
         /// <summary>
-        /// Gets the view of the matrix as a list of row vectors.
+        /// Gets a view of the matrix as a list of row vectors.
         /// </summary>
         public readonly RowList Rows => new RowList(in this);
 
         /// <summary>
-        /// Gets the view of the matrix as a list of column vectors.
+        /// Gets a view of the matrix as a list of column vectors.
         /// </summary>
         public readonly ColList Cols => new ColList(in this);
     }

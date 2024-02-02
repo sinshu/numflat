@@ -209,9 +209,9 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public T this[int index]
+        public readonly T this[int index]
         {
-            readonly get
+            get
             {
                 if (count == 0)
                 {
