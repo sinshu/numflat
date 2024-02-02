@@ -36,7 +36,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] + y[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -70,7 +70,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] - y[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -103,7 +103,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] * y;
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -136,7 +136,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] / y;
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -170,7 +170,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] * y[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -204,7 +204,7 @@ namespace NumFlatTest
                 {
                     var expected = x[row, col] / y[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -253,7 +253,7 @@ namespace NumFlatTest
 
             var expected = Utilities.ToMathNet(x).Trace();
 
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
     }
 }

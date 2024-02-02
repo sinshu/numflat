@@ -34,10 +34,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -67,10 +67,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -100,10 +100,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -133,10 +133,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -166,10 +166,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -199,10 +199,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -232,10 +232,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -265,10 +265,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -293,12 +293,12 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
+            var expected = md.ToArray();
             for (var i = 0; i < destination.Count; i++)
             {
-                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
-                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
@@ -322,12 +322,12 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx.Transpose() * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
+            var expected = md.ToArray();
             for (var i = 0; i < destination.Count; i++)
             {
-                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
-                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
@@ -351,12 +351,12 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx.Conjugate() * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
+            var expected = md.ToArray();
             for (var i = 0; i < destination.Count; i++)
             {
-                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
-                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
@@ -380,12 +380,12 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx.ConjugateTranspose() * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
+            var expected = md.ToArray();
             for (var i = 0; i < destination.Count; i++)
             {
-                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
-                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
@@ -413,10 +413,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
         }
@@ -438,12 +438,12 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
+            var expected = md.ToArray();
             for (var i = 0; i < destination.Count; i++)
             {
-                Assert.That(expected[i].Real, Is.EqualTo(actual[i].Real).Within(1.0E-12));
-                Assert.That(expected[i].Imaginary, Is.EqualTo(actual[i].Imaginary).Within(1.0E-12));
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
             }
         }
     }

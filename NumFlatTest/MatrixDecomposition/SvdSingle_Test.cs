@@ -26,7 +26,7 @@ namespace NumFlatTest
 
             for (var i = 0; i < expected.Count; i++)
             {
-                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-6));
+                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-6));
             }
 
             Utilities.FailIfOutOfRangeWrite(a);
@@ -50,7 +50,7 @@ namespace NumFlatTest
 
             for (var i = 0; i < expected.Count; i++)
             {
-                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-6));
+                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-6));
             }
 
             Utilities.FailIfOutOfRangeWrite(a);
@@ -79,9 +79,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < reconstructed.ColCount; col++)
                 {
-                    var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
+                    var expected = a[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
                 }
             }
 
@@ -112,9 +112,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < reconstructed.ColCount; col++)
                 {
-                    var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-6));
+                    var expected = a[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
                 }
             }
 

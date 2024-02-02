@@ -34,9 +34,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -66,9 +66,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -98,9 +98,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -130,9 +130,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
 
@@ -157,9 +157,9 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            var expected = md.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
@@ -182,9 +182,9 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx.Transpose() * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            var expected = md.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
@@ -211,9 +211,9 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < destination.ColCount; col++)
                 {
-                    var expected = md[row, col];
                     var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+                    var expected = md[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
                 }
             }
         }
@@ -235,9 +235,9 @@ namespace NumFlatTest
             var my = Utilities.ToMathNet(y);
             var md = mx * my;
 
-            var expected = md.ToArray();
             var actual = destination.ToArray();
-            Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
+            var expected = md.ToArray();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
     }
 }

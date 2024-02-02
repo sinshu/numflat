@@ -25,8 +25,8 @@ namespace NumFlatTest
             var mathNet = Utilities.ToMathNet(x);
             var expected = mathNet.Determinant();
 
-            Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-            Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
         }
 
         [TestCase(1, 1, 1)]

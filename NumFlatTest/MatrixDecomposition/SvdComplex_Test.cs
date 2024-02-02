@@ -27,7 +27,7 @@ namespace NumFlatTest
 
             for (var i = 0; i < expected.Count; i++)
             {
-                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-12));
+                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(a);
@@ -51,7 +51,7 @@ namespace NumFlatTest
 
             for (var i = 0; i < expected.Count; i++)
             {
-                Assert.That(expected[i], Is.EqualTo(actual[i]).Within(1.0E-12));
+                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
             }
 
             Utilities.FailIfOutOfRangeWrite(a);
@@ -80,10 +80,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < reconstructed.ColCount; col++)
                 {
-                    var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = a[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
@@ -114,10 +114,10 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < reconstructed.ColCount; col++)
                 {
-                    var expected = a[row, col];
                     var actual = reconstructed[row, col];
-                    Assert.That(expected.Real, Is.EqualTo(actual.Real).Within(1.0E-12));
-                    Assert.That(expected.Imaginary, Is.EqualTo(actual.Imaginary).Within(1.0E-12));
+                    var expected = a[row, col];
+                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
                 }
             }
 
