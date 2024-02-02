@@ -11,7 +11,7 @@ using MVector = MathNet.Numerics.LinearAlgebra.Vector<System.Numerics.Complex>;
 
 namespace NumFlatTest
 {
-    public class MathLinq_ComplexTest
+    public class MathLinq_Complex_Test
     {
         [TestCase(3, 1, 1)]
         [TestCase(3, 1, 4)]

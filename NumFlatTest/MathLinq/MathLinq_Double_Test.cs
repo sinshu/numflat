@@ -8,7 +8,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MathLinq_DoubleTest
+    public class MathLinq_Double_Test
     {
         [TestCase(3, 1, 1)]
         [TestCase(3, 1, 4)]
