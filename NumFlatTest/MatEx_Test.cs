@@ -163,5 +163,34 @@ namespace NumFlatTest
                 }
             }
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 3, 7)]
+        [TestCase(3, 3, 3, 3)]
+        [TestCase(3, 3, 5, 8)]
+        [TestCase(1, 3, 1, 1)]
+        [TestCase(1, 3, 5, 1)]
+        [TestCase(3, 1, 3, 3)]
+        [TestCase(3, 1, 7, 7)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 5)]
+        [TestCase(3, 2, 3, 6)]
+        [TestCase(3, 2, 6, 3)]
+        public void Map(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
+            var destination = x.Map(value => new Complex(0, -value));
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(destination[row, col].Real == 0);
+                    Assert.That(destination[row, col].Imaginary == -x[row, col]);
+                }
+            }
+        }
     }
 }

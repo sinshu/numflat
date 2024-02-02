@@ -380,6 +380,57 @@ namespace NumFlat
             return trace;
         }
 
+        /// <summary>
+        /// Applies a function to each value of the source matrix.
+        /// </summary>
+        /// <typeparam name="TSource">
+        /// The source type.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// The destination type.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source matrix.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        /// <param name="destination">
+        /// The destination matrix where the results of the function application are stored.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Map<TSource, TResult>(in Mat<TSource> source, Func<TSource, TResult> func, in Mat<TResult> destination) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (source.RowCount != destination.RowCount || source.ColCount != destination.ColCount)
+            {
+                throw new ArgumentException("The matrices must be the same dimensions.");
+            }
+
+            var ss = source.Memory.Span;
+            var sd = destination.Memory.Span;
+            var os = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var ps = os;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = func(ss[ps]);
+                    ps++;
+                    pd++;
+                }
+                os += source.Stride;
+                od += destination.Stride;
+            }
+        }
+
         private static (int m, int n, int k) GetMulArgs<T>(in Mat<T> x, bool transposeX, in Mat<T> y, bool transposeY, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
             var xRowCount = (count: x.RowCount, name: "x.RowCount");

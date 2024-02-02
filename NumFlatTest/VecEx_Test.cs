@@ -225,5 +225,23 @@ namespace NumFlatTest
                 Assert.That(destination[i, 0] == x[i]);
             }
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 4)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 3, 4)]
+        [TestCase(5, 1, 3)]
+        [TestCase(11, 7, 5)]
+        public void Map(int count, int xStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var destination = x.Map(value => new Complex(0, -value));
+
+            for (var i = 0; i < count; i++)
+            {
+                Assert.That(destination[i].Real == 0);
+                Assert.That(destination[i].Imaginary == -x[i]);
+            }
+        }
     }
 }

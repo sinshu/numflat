@@ -172,5 +172,33 @@ namespace NumFlat
             Mat.Inverse(x, result);
             return result;
         }
+
+        /// <summary>
+        /// Applies a function to each value of the source matrix.
+        /// </summary>
+        /// <typeparam name="TSource">
+        /// The source type.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// The destination type.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source matrix.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        /// <returns>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use '<see cref="Mat.Map{TSource, TResult}(in Mat{TSource}, Func{TSource, TResult}, in Mat{TResult})"/>' instead.
+        /// </returns>
+        public static Mat<TResult> Map<TSource, TResult>(this in Mat<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+
+            var result = new Mat<TResult>(source.RowCount, source.ColCount);
+            Mat.Map(source, func, result);
+            return result;
+        }
     }
 }

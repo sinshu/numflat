@@ -212,5 +212,33 @@ namespace NumFlat
             x.CopyTo(result.Cols[0]);
             return result;
         }
+
+        /// <summary>
+        /// Applies a function to each value of the source vector.
+        /// </summary>
+        /// <typeparam name="TSource">
+        /// The source type.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// The destination type.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source vector.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        /// <returns>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use '<see cref="Vec.Map{TSource, TResult}(in Vec{TSource}, Func{TSource, TResult}, in Vec{TResult})"/>' instead.
+        /// </returns>
+        public static Vec<TResult> Map<TSource, TResult>(in this Vec<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+
+            var result = new Vec<TResult>(source.Count);
+            Vec.Map(source, func, result);
+            return result;
+        }
     }
 }

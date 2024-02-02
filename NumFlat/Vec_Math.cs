@@ -523,5 +523,48 @@ namespace NumFlat
                 pd += destination.Stride;
             }
         }
+
+        /// <summary>
+        /// Applies a function to each value of the source vector.
+        /// </summary>
+        /// <typeparam name="TSource">
+        /// The source type.
+        /// </typeparam>
+        /// <typeparam name="TResult">
+        /// The destination type.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source vector.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        /// <param name="destination">
+        /// The destination vector where the results of the function application are stored.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Map<TSource, TResult>(in Vec<TSource> source, Func<TSource, TResult> func, in Vec<TResult> destination) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (source.Count != destination.Count)
+            {
+                throw new ArgumentException("The vectors must be the same length.");
+            }
+
+            var ss = source.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ps = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = func(ss[ps]);
+                ps += source.Stride;
+                pd += destination.Stride;
+            }
+        }
     }
 }
