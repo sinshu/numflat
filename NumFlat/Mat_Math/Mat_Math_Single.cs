@@ -304,5 +304,110 @@ namespace NumFlat
 
             return rank;
         }
+
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<float> a, in Mat<float> destination, float tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.RowCount != a.ColCount)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
+            }
+
+            if (destination.ColCount != a.RowCount)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+            }
+
+            var sLength = Math.Min(a.RowCount, a.ColCount);
+            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
+            var s = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
+
+            var uLength = a.RowCount * a.RowCount;
+            using var uBuffer = MemoryPool<float>.Shared.Rent(uLength);
+            var u = new Mat<float>(a.RowCount, a.RowCount, a.RowCount, uBuffer.Memory.Slice(0, uLength));
+
+            var vtLength = a.ColCount * a.ColCount;
+            using var vtBuffer = MemoryPool<float>.Shared.Rent(vtLength);
+            var vt = new Mat<float>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
+
+            SvdSingle.Decompose(a, s, u, vt);
+
+            if (float.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
+            }
+
+            var tmpLength = a.ColCount * a.RowCount;
+            using var tmpBuffer = MemoryPool<float>.Shared.Rent(tmpLength);
+            var tmp = new Mat<float>(a.ColCount, a.RowCount, a.ColCount, tmpBuffer.Memory.Slice(0, tmpLength));
+            tmp.Clear();
+
+            if (a.RowCount >= a.ColCount)
+            {
+                var tmpCols = tmp.Cols;
+                var vtRows = vt.Rows;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        Vec.Div(vtRows[i], s[i], tmpCols[i]);
+                    }
+                }
+                Mat.Mul(tmp, u, destination, false, true);
+            }
+            else
+            {
+                var tmpRows = tmp.Rows;
+                var uCols = u.Cols;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        Vec.Div(uCols[i], s[i], tmpRows[i]);
+                    }
+                }
+                Mat.Mul(vt, tmp, destination, true, false);
+            }
+        }
+
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed in computing SVD.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<float> a, in Mat<float> destination)
+        {
+            PseudoInverse(a, destination, float.NaN);
+        }
     }
 }
