@@ -124,6 +124,42 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a dot product of matrices, dot(X, Y).
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <returns>
+        /// The result of the dot product.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static Vec<double> Dot(in this Mat<double> x, in Mat<double> y, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            if (destination.Count != x.ColCount)
+            {
+                throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+            }
+
+            var xCols = x.Cols;
+            var yCols = y.Cols;
+            for (var i = 0; i < destination.Count; i++)
+            {
+                destination[i] = xCols[i].Dot(yCols[i]);
+            }
+
+            return destination;
+        }
+
+        /// <summary>
         /// Computes the determinant of a matrix, det(X).
         /// </summary>
         /// <param name="x">

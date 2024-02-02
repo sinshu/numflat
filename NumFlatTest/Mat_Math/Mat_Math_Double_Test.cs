@@ -9,8 +9,19 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Mat_Math_DoubleTest
+    public class Mat_Math_Double_Test
     {
+        [TestCase(1, 1, 1, 1, 1)]
+        public void Dot(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        {
+            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
+            var y = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, yStride);
+            var destination = Utilities.CreateRandomVectorDouble(0, colCount, dstStride);
+            var actual = Mat.Dot(x, y, destination);
+
+            // TODO
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(3, 3)]

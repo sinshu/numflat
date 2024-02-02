@@ -253,10 +253,7 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static unsafe float Dot(in Vec<float> x, in Vec<float> y)
+        public static unsafe float Dot(this in Vec<float> x, in Vec<float> y)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
@@ -281,10 +278,7 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static unsafe double Dot(in Vec<double> x, in Vec<double> y)
+        public static unsafe double Dot(this in Vec<double> x, in Vec<double> y)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
@@ -312,10 +306,7 @@ namespace NumFlat
         /// <returns>
         /// The result of the dot product.
         /// </returns>
-        /// <remarks>
-        /// This method does not allocate managed heap memory.
-        /// </remarks>
-        public static unsafe Complex Dot(in Vec<Complex> x, in Vec<Complex> y, bool conjugateX)
+        public static unsafe Complex Dot(this in Vec<Complex> x, in Vec<Complex> y, bool conjugateX)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));

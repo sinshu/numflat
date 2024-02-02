@@ -9,7 +9,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Mat_Math_Mul_ComplexTest
+    public class Mat_Math_Complex_Mul_Test
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]
