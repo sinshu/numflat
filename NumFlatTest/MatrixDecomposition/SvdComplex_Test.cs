@@ -125,6 +125,71 @@ namespace NumFlatTest
             CheckUnitary(svd.VT);
         }
 
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 2, 4, 3)]
+        [TestCase(2, 2, 2, 1, 1)]
+        [TestCase(2, 2, 4, 9, 3)]
+        [TestCase(3, 3, 3, 1, 1)]
+        [TestCase(3, 3, 4, 2, 2)]
+        [TestCase(3, 2, 3, 1, 1)]
+        [TestCase(3, 2, 4, 5, 2)]
+        [TestCase(2, 3, 2, 1, 1)]
+        [TestCase(2, 3, 5, 2, 3)]
+        [TestCase(6, 3, 7, 4, 2)]
+        [TestCase(3, 7, 4, 3, 3)]
+        public void Solve_Arg2(int m, int n, int aStride, int bStride, int dstStride)
+        {
+            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
+            var b = Utilities.CreateRandomVectorComplex(57, a.RowCount, bStride);
+            var svd = a.Svd();
+            var destination = Utilities.CreateRandomVectorComplex(66, a.ColCount, dstStride);
+            svd.Solve(b, destination);
+
+            var ma = Utilities.ToMathNet(a);
+            var mb = Utilities.ToMathNet(b);
+            var msvd = ma.Svd();
+            var expected = msvd.Solve(mb);
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(destination[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(destination[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 2, 4)]
+        [TestCase(2, 2, 2, 1)]
+        [TestCase(2, 2, 4, 9)]
+        [TestCase(3, 3, 3, 1)]
+        [TestCase(3, 3, 4, 2)]
+        [TestCase(3, 2, 3, 1)]
+        [TestCase(3, 2, 4, 5)]
+        [TestCase(2, 3, 2, 1)]
+        [TestCase(2, 3, 5, 2)]
+        [TestCase(6, 3, 7, 4)]
+        [TestCase(3, 7, 4, 3)]
+        public void Solve_Arg1(int m, int n, int aStride, int bStride)
+        {
+            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
+            var b = Utilities.CreateRandomVectorComplex(57, a.RowCount, bStride);
+            var svd = a.Svd();
+            var actual = svd.Solve(b);
+
+            var ma = Utilities.ToMathNet(a);
+            var mb = Utilities.ToMathNet(b);
+            var msvd = ma.Svd();
+            var expected = msvd.Solve(mb);
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
+                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
+            }
+        }
+
         private static void CheckUnitary(Mat<Complex> mat)
         {
             var identity = mat * mat.ConjugateTranspose();

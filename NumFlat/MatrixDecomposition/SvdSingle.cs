@@ -75,7 +75,7 @@ namespace NumFlat
 
             var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
             using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
-            var sCopy = new Vec<float>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+            var sCopy = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
 
             using var workBuffer = MemoryPool<float>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
             var work = workBuffer.Memory.Span;
@@ -162,7 +162,7 @@ namespace NumFlat
 
             var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
             using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
-            var sCopy = new Vec<float>(sLength, 1, sBuffer.Memory.Slice(0, sLength));
+            var sCopy = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
 
             using var workBuffer = MemoryPool<float>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
             var work = workBuffer.Memory.Span;
@@ -189,6 +189,70 @@ namespace NumFlat
             }
 
             sCopy.CopyTo(s);
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the vector x.
+        /// </param>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public void Solve(in Vec<float> b, in Vec<float> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (b.Count != u.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'U.RowCount'.");
+            }
+
+            if (destination.Count != vt.RowCount)
+            {
+                throw new ArgumentException("'destination.Count' must match 'VT.RowCount'.");
+            }
+
+            var tmpLength = vt.RowCount;
+            using var tmpBuffer = MemoryPool<float>.Shared.Rent(tmpLength);
+            var tmp = new Vec<float>(tmpBuffer.Memory.Slice(0, tmpLength));
+            tmp.Clear();
+
+            var ts = tmp.Subvector(0, s.Count);
+            Mat.Mul(u.Submatrix(0, 0, u.RowCount, s.Count), b, ts, true);
+            Vec.PointwiseDiv(ts, s, ts);
+            Mat.Mul(vt, tmp, destination, true);
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <returns>
+        /// The vector x.
+        /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public Vec<float> Solve(in Vec<float> b)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            if (b.Count != u.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'U.RowCount'.");
+            }
+
+            var x = new Vec<float>(vt.RowCount);
+            Solve(b, x);
+            return x;
         }
 
         /// <summary>
