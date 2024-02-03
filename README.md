@@ -475,7 +475,7 @@ Matrix 3x3-Double
     - ⬜ Norm
 * ⬜ Matrix Decomposition
     - ✅ LU
-    - ⬜ QR
+    - ✅ QR
     - ⬜ Cholesky
     - ✅ SVD
     - ⬜ EVD
