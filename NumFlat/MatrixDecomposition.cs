@@ -63,6 +63,22 @@ namespace NumFlat
         /// The matrix to be decomposed using QR decomposition.
         /// </param>
         /// <returns>
+        /// An instance of '<see cref="QrSingle"/>'.
+        /// </returns>
+        public static QrSingle Qr(in this Mat<float> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new QrSingle(a);
+        }
+
+        /// <summary>
+        /// Computes the QR decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using QR decomposition.
+        /// </param>
+        /// <returns>
         /// An instance of '<see cref="QrDouble"/>'.
         /// </returns>
         public static QrDouble Qr(in this Mat<double> a)
@@ -70,6 +86,22 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new QrDouble(a);
+        }
+
+        /// <summary>
+        /// Computes the QR decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using QR decomposition.
+        /// </param>
+        /// <returns>
+        /// An instance of '<see cref="QrComplex"/>'.
+        /// </returns>
+        public static QrComplex Qr(in this Mat<Complex> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new QrComplex(a);
         }
 
         /// <summary>
