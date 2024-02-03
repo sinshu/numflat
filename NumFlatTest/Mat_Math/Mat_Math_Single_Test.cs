@@ -124,8 +124,8 @@ namespace NumFlatTest
         public void PseudoInverse_Arg3(int rowCount, int colCount, int aStride, int dstStride)
         {
             var a = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, aStride);
-            var resultArg2 = Utilities.CreateRandomMatrixSingle(0, colCount, rowCount, dstStride);
-            Mat.PseudoInverse(a, resultArg2, 1.0E-6F);
+            var destination = Utilities.CreateRandomMatrixSingle(0, colCount, rowCount, dstStride);
+            Mat.PseudoInverse(a, destination, 1.0E-6F);
 
             var ma = Utilities.ToMathNet(a);
             var expected = ma.PseudoInverse();
@@ -134,11 +134,11 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < expected.ColumnCount; col++)
                 {
-                    Assert.That(resultArg2[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
+                    Assert.That(destination[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
                 }
             }
 
-            Utilities.FailIfOutOfRangeWrite(resultArg2);
+            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1)]

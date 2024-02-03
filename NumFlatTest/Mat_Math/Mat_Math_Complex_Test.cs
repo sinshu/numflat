@@ -108,6 +108,114 @@ namespace NumFlatTest
         }
 
         [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(3, 2, 5, 4)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 7, 4)]
+        [TestCase(4, 7, 5, 9)]
+        public void PseudoInverse_Arg3(int rowCount, int colCount, int aStride, int dstStride)
+        {
+            var a = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, aStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, colCount, rowCount, dstStride);
+            Mat.PseudoInverse(a, destination, 1.0E-12);
+
+            var ma = Utilities.ToMathNet(a);
+            var expected = ma.PseudoInverse();
+
+            for (var row = 0; row < expected.RowCount; row++)
+            {
+                for (var col = 0; col < expected.ColumnCount; col++)
+                {
+                    Assert.That(destination[row, col].Real, Is.EqualTo(expected[row, col].Real).Within(1.0E-12));
+                    Assert.That(destination[row, col].Imaginary, Is.EqualTo(expected[row, col].Imaginary).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 2)]
+        [TestCase(3, 2, 5, 4)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 7, 4)]
+        [TestCase(4, 7, 5, 9)]
+        public void PseudoInverse_Arg2(int rowCount, int colCount, int aStride, int dstStride)
+        {
+            var a = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, aStride);
+            var destination = Utilities.CreateRandomMatrixComplex(0, colCount, rowCount, dstStride);
+            Mat.PseudoInverse(a, destination);
+
+            var ma = Utilities.ToMathNet(a);
+            var expected = ma.PseudoInverse();
+
+            for (var row = 0; row < expected.RowCount; row++)
+            {
+                for (var col = 0; col < expected.ColumnCount; col++)
+                {
+                    Assert.That(destination[row, col].Real, Is.EqualTo(expected[row, col].Real).Within(1.0E-12));
+                    Assert.That(destination[row, col].Imaginary, Is.EqualTo(expected[row, col].Imaginary).Within(1.0E-12));
+                }
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [Test]
+        public void PseudoInverse_Tolerance()
+        {
+            var a = new Complex[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }
+            .ToMatrix();
+
+            var result1 = new Complex[,]
+            {
+                { -0.63888889, -0.16666667, 0.30555556 },
+                { -0.05555556, 0.00000000, 0.05555556 },
+                { 0.52777778, 0.16666667, -0.19444444 },
+            }
+            .ToMatrix();
+
+            var result2 = new Complex[,]
+            {
+                { 0.00611649, 0.0148213, 0.02352611 },
+                { 0.0072985, 0.01768552, 0.02807254 },
+                { 0.00848052, 0.02054974, 0.03261896 },
+            }
+            .ToMatrix();
+
+            {
+                var pinv = a.PseudoInverse(0.5);
+                var error = (pinv - result1).Cols.SelectMany(col => col).Select(Complex.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+
+            {
+                var pinv = a.PseudoInverse(5);
+                var error = (pinv - result2).Cols.SelectMany(col => col).Select(Complex.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+
+            {
+                var pinv = a.PseudoInverse(20);
+                var error = pinv.Cols.SelectMany(col => col).Select(Complex.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+        }
+
+        [TestCase(1, 1, 1, 1)]
         [TestCase(2, 2, 2, 2)]
         [TestCase(2, 2, 4, 3)]
         [TestCase(3, 1, 3, 3)]

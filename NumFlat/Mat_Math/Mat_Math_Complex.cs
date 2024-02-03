@@ -329,6 +329,113 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<Complex> a, in Mat<Complex> destination, double tolerance)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.RowCount != a.ColCount)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
+            }
+
+            if (destination.ColCount != a.RowCount)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+            }
+
+            var sLength = Math.Min(a.RowCount, a.ColCount);
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+
+            var uLength = a.RowCount * a.RowCount;
+            using var uBuffer = MemoryPool<Complex>.Shared.Rent(uLength);
+            var u = new Mat<Complex>(a.RowCount, a.RowCount, a.RowCount, uBuffer.Memory.Slice(0, uLength));
+
+            var vtLength = a.ColCount * a.ColCount;
+            using var vtBuffer = MemoryPool<Complex>.Shared.Rent(vtLength);
+            var vt = new Mat<Complex>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
+
+            SvdComplex.Decompose(a, s, u, vt);
+
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
+            if (double.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
+            }
+
+            var tmpLength = a.ColCount * a.RowCount;
+            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
+            var tmp = new Mat<Complex>(a.ColCount, a.RowCount, a.ColCount, tmpBuffer.Memory.Slice(0, tmpLength));
+            tmp.Clear();
+
+            if (a.RowCount >= a.ColCount)
+            {
+                var tmpCols = tmp.Cols;
+                var vtRows = vt.Rows;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        ConjugateDiv(vtRows[i], s[i], tmpCols[i]);
+                    }
+                }
+                Mat.Mul(tmp, u, destination, false, false, true, true);
+            }
+            else
+            {
+                var tmpRows = tmp.Rows;
+                var uCols = u.Cols;
+                for (var i = 0; i < s.Count; i++)
+                {
+                    if (s[i] > tolerance)
+                    {
+                        ConjugateDiv(uCols[i], s[i], tmpRows[i]);
+                    }
+                }
+                Mat.Mul(vt, tmp, destination, true, true, false, false);
+            }
+        }
+
+        /// <summary>
+        /// Computes a pseudo inverse of the matrix A.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the result of the pseudo inversion.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
+        public static void PseudoInverse(in Mat<Complex> a, in Mat<Complex> destination)
+        {
+            // Set NaN to tolerance to set the tolerance automatically.
+            PseudoInverse(a, destination, double.NaN);
+        }
+
+        /// <summary>
         /// Conjugates the complex matrix.
         /// </summary>
         /// <param name="x">
@@ -413,6 +520,20 @@ namespace NumFlat
                     px += x.Stride;
                     pd++;
                 }
+            }
+        }
+
+        private static void ConjugateDiv(in Vec<Complex> x, double y, in Vec<Complex> destination)
+        {
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px].Conjugate() / y;
+                px += x.Stride;
+                pd += destination.Stride;
             }
         }
     }
