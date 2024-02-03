@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NumFlat;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace NumFlatTest
 {
@@ -37,6 +38,8 @@ namespace NumFlatTest
                 }
             }
 
+            CheckUnitary(q);
+
             Utilities.FailIfOutOfRangeWrite(q);
             Utilities.FailIfOutOfRangeWrite(r);
         }
@@ -64,6 +67,27 @@ namespace NumFlatTest
                     var actual = reconstructed[row, col];
                     var expected = a[row, col];
                     Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+                }
+            }
+
+            CheckUnitary(qr.Q);
+        }
+
+        private static void CheckUnitary(Mat<double> mat)
+        {
+            var identity = mat.Transpose() * mat;
+            for (var row = 0; row < identity.RowCount; row++)
+            {
+                for (var col = 0; col < identity.ColCount; col++)
+                {
+                    if (row == col)
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-12));
+                    }
+                    else
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-12));
+                    }
                 }
             }
         }
