@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides extension methods for <see cref="Mat{T}"/>.
     /// </summary>
-    public static class MatEx
+    public static class MatrixExtension
     {
         /// <summary>
         /// Computes a pointwise-multiplication of matrices, X .* Y.

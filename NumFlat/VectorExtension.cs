@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides extension methods for <see cref="Vec{T}"/>.
     /// </summary>
-    public static class VecEx
+    public static class VectorExtension
     {
         /// <summary>
         /// Computes a pointwise-multiplication of vectors, x .* y.
