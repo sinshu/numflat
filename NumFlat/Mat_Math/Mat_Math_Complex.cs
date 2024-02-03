@@ -274,6 +274,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
@@ -313,6 +316,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>

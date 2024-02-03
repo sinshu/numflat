@@ -246,6 +246,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
@@ -285,6 +288,9 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The SVD computation did not converge.
+        /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
@@ -307,7 +313,7 @@ namespace NumFlat
         /// Singular values below this threshold will be ignored.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// The SVD computation did not converge.
         /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
@@ -390,7 +396,7 @@ namespace NumFlat
         /// The destination of the result of the pseudo inversion.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// The SVD computation did not converge.
         /// </exception>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
