@@ -19,7 +19,7 @@ public static class VectorExamples
         Console.WriteLine("=== VectorExample 1 ===");
         Console.WriteLine();
 
-        // Creat a new vector.
+        // Create a new vector.
         Vec<double> vector = [1, 2, 3];
 
         // Show the vector.
@@ -52,7 +52,7 @@ public static class VectorExamples
         Console.WriteLine("=== VectorExample 3 ===");
         Console.WriteLine();
 
-        // Creat a new vector.
+        // Create a new vector.
         var vector = new Vec<double>(3);
 
         // Element-wise access.

@@ -26,7 +26,7 @@ A new vector can be created by listing elements inside `[]`.
 
 #### Code
 ```cs
-// Creat a new vector.
+// Create a new vector.
 Vec<double> vector = [1, 2, 3];
 
 // Show the vector.
@@ -76,7 +76,7 @@ Elements in a vector can be accessed or modified through the indexer.
 
 #### Code
 ```cs
-// Creat a new vector.
+// Create a new vector.
 var vector = new Vec<double>(3);
 
 // Element-wise access.
