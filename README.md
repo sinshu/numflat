@@ -376,6 +376,42 @@ Matrix 3x3-Double
 1  3  7
 ```
 
+### QR decomposition
+
+The QR decomposition can be obtained by calling the extension method `Qr()`.
+
+#### Code
+```cs
+// Some matrix.
+var x = new double[,]
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 },
+}
+.ToMatrix();
+
+// Do QR decomposition.
+var qr = x.Qr();
+
+// Decomposed matrices.
+var q = qr.Q;
+var r = qr.R;
+
+// Reconstruct the matrix.
+var reconstructed = q * r;
+
+// Show the reconstructed matrix.
+Console.WriteLine(reconstructed);
+```
+#### Output
+```console
+Matrix 3x3-Double
+1  2  3
+4  5  6
+7  8  9
+```
+
 ### Singular value decomposition
 
 The singular value decomposition can be obtained by calling the extension method `Svd()`.

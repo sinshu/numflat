@@ -13,6 +13,7 @@ public static class MatrixExamples
         Example4();
         Example5();
         Example6();
+        Example7();
         Example9();
     }
 
@@ -207,6 +208,37 @@ public static class MatrixExamples
 
         // Reconstruct the matrix.
         var reconstructed = p * l * u;
+
+        // Show the reconstructed matrix.
+        Console.WriteLine(reconstructed);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example7()
+    {
+        Console.WriteLine("=== MatrixExample 7 ===");
+        Console.WriteLine();
+
+        // Some matrix.
+        var x = new double[,]
+        {
+            { 1, 2, 3 },
+            { 4, 5, 6 },
+            { 7, 8, 9 },
+        }
+        .ToMatrix();
+
+        // Do QR decomposition.
+        var qr = x.Qr();
+
+        // Decomposed matrices.
+        var q = qr.Q;
+        var r = qr.R;
+
+        // Reconstruct the matrix.
+        var reconstructed = q * r;
 
         // Show the reconstructed matrix.
         Console.WriteLine(reconstructed);
