@@ -438,7 +438,7 @@ Matrix 3x3-Double
     - ✅ Pseudo-inverse
     - ⬜ Norm
 * ⬜ Matrix Decomposition
-    - ⬜ LU
+    - ✅ LU
     - ⬜ QR
     - ⬜ Cholesky
     - ✅ SVD

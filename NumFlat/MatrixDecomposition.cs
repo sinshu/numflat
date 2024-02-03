@@ -117,6 +117,22 @@ namespace NumFlat
         /// The matrix to be decomposed using LU decomposition.
         /// </param>
         /// <returns>
+        /// An instance of '<see cref="LuSingle"/>'.
+        /// </returns>
+        public static LuSingle Lu(in this Mat<float> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new LuSingle(a);
+        }
+
+        /// <summary>
+        /// Computes the LU decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using LU decomposition.
+        /// </param>
+        /// <returns>
         /// An instance of '<see cref="LuDouble"/>'.
         /// </returns>
         public static LuDouble Lu(in this Mat<double> a)
@@ -124,6 +140,22 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new LuDouble(a);
+        }
+
+        /// <summary>
+        /// Computes the LU decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using LU decomposition.
+        /// </param>
+        /// <returns>
+        /// An instance of '<see cref="LuComplex"/>'.
+        /// </returns>
+        public static LuComplex Lu(in this Mat<Complex> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new LuComplex(a);
         }
     }
 }
