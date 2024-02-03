@@ -359,8 +359,8 @@ var lu = x.Lu();
 
 // Decomposed matrices.
 var p = lu.GetP();
-var l = lu.L;
-var u = lu.U;
+var l = lu.GetL();
+var u = lu.GetU();
 
 // Reconstruct the matrix.
 var reconstructed = p * l * u;
