@@ -163,5 +163,51 @@ namespace NumFlatTest
 
             Utilities.FailIfOutOfRangeWrite(destination);
         }
+
+        [Test]
+        public void PseudoInverse_Tolerance()
+        {
+            var a = new double[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }
+            .ToMatrix();
+
+            var result1 = new double[,]
+            {
+                { -0.63888889, -0.16666667, 0.30555556 },
+                { -0.05555556, 0.00000000, 0.05555556 },
+                { 0.52777778, 0.16666667, -0.19444444 },
+            }
+            .ToMatrix();
+
+            var result2 = new double[,]
+            {
+                { 0.00611649, 0.0148213, 0.02352611 },
+                { 0.0072985, 0.01768552, 0.02807254 },
+                { 0.00848052, 0.02054974, 0.03261896 },
+            }
+            .ToMatrix();
+
+            {
+                var pinv = a.PseudoInverse(0.5);
+                var error = (pinv - result1).Cols.SelectMany(col => col).Select(Math.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+
+            {
+                var pinv = a.PseudoInverse(5);
+                var error = (pinv - result2).Cols.SelectMany(col => col).Select(Math.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+
+            {
+                var pinv = a.PseudoInverse(20);
+                var error = pinv.Cols.SelectMany(col => col).Select(Math.Abs).Max();
+                Assert.That(error < 1.0E-6);
+            }
+        }
     }
 }
