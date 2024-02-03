@@ -20,7 +20,7 @@ public static class MatrixExamples
         Console.WriteLine("=== MatrixExample 1 ===");
         Console.WriteLine();
 
-        // Creat a new matrix.
+        // The source array.
         var array = new double[,]
         {
             { 1, 2, 3 },
@@ -28,6 +28,7 @@ public static class MatrixExamples
             { 7, 8, 9 },
         };
 
+        // Creat a new matrix.
         var matrix = array.ToMatrix();
 
         // Show the matrix.

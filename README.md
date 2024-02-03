@@ -164,7 +164,7 @@ Matrices can be generated from 2D arrays.
 
 #### Code
 ```cs
-// Creat a new matrix.
+// The source array.
 var array = new double[,]
 {
     { 1, 2, 3 },
@@ -172,6 +172,7 @@ var array = new double[,]
     { 7, 8, 9 },
 };
 
+// Creat a new matrix.
 var matrix = array.ToMatrix();
 
 // Show the matrix.
