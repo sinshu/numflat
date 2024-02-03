@@ -136,10 +136,10 @@ public static class MatrixExamples
         x.Fill(3);
 
         // Create a submatrix of the matrix.
-        var sub = x.Submatrix(1, 1, 3, 3);
+        var sub = x.Submatrix(2, 2, 3, 3);
 
         // Modify the subvector.
-        sub[1, 1] = 100;
+        sub[0, 0] = 100;
 
         // Show the original matrix.
         Console.WriteLine(x);

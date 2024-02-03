@@ -140,10 +140,10 @@ A subvector can be created from a vector. The subvector acts as a view of the or
 Vec<double> x = [3, 3, 3, 3, 3];
 
 // Create a subvector of the vector.
-var sub = x.Subvector(1, 3);
+var sub = x.Subvector(2, 3);
 
 // Modify the subvector.
-sub[1] = 100;
+sub[0] = 100;
 
 // Show the original vector.
 Console.WriteLine(x);
@@ -283,15 +283,15 @@ A submatrix can be created from a matrix. The submatrix acts as a view of the or
 
 #### Code
 ```cs
-// Some matrix.
+// Creat a new matrix.
 var x = new Mat<double>(5, 5);
 x.Fill(3);
 
 // Create a submatrix of the matrix.
-var sub = x.Submatrix(1, 1, 3, 3);
+var sub = x.Submatrix(2, 2, 3, 3);
 
-// Modify the submatrix.
-sub[1, 1] = 100;
+// Modify the subvector.
+sub[0, 0] = 100;
 
 // Show the original matrix.
 Console.WriteLine(x);
