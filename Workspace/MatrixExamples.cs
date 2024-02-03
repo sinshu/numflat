@@ -11,6 +11,8 @@ public static class MatrixExamples
         Example2();
         Example3();
         Example4();
+        Example5();
+        Example6();
     }
 
     public static void Example1()
@@ -141,6 +143,71 @@ public static class MatrixExamples
 
         // Show the original matrix.
         Console.WriteLine(x);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example5()
+    {
+        Console.WriteLine("=== MatrixExample 5 ===");
+        Console.WriteLine();
+
+        // Some matrix.
+        var x = new double[,]
+        {
+            { 1, 2, 3 },
+            { 4, 5, 6 },
+            { 7, 8, 9 },
+        }
+        .ToMatrix();
+
+        // Create a view of a row of the matrix.
+        Vec<double> row = x.Rows[1];
+
+        // Create a view of a column of the matrix.
+        Vec<double> col = x.Cols[2];
+
+        // The mean vector of the row vectors.
+        var rowMean = x.Rows.Mean();
+
+        // The covariance matrix of the column vectors.
+        var colCov = x.Cols.Covariance();
+
+        // Enumerate all the values in column-major order.
+        var values = x.Cols.SelectMany(col => col);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example6()
+    {
+        Console.WriteLine("=== MatrixExample 6 ===");
+        Console.WriteLine();
+
+        // Some matrix.
+        var x = new double[,]
+        {
+            { 1, 2, 3 },
+            { 4, 5, 6 },
+            { 7, 8, 9 },
+        }
+        .ToMatrix();
+
+        // Do SVD.
+        var svd = x.Svd();
+
+        // Decomposed matrices.
+        var s = svd.S;
+        var u = svd.U;
+        var vt = svd.VT;
+
+        // Reconstruct the matrix.
+        var reconstructed = u * s.ToDiagonalMatrix() * vt;
+
+        // Show the reconstructed matrix.
+        Console.WriteLine(reconstructed);
 
         Console.WriteLine();
         Console.WriteLine();

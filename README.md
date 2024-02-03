@@ -290,7 +290,7 @@ x.Fill(3);
 // Create a submatrix of the matrix.
 var sub = x.Submatrix(1, 1, 3, 3);
 
-// Modify the subvector.
+// Modify the submatrix.
 sub[1, 1] = 100;
 
 // Show the original matrix.
@@ -306,3 +306,70 @@ Matrix 5x5-Double
 3  3    3  3  3
 ```
 
+### Treat matrix as a set of vectors
+
+Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties. Similar to a submatrix, changes to the view will affect the original matrix.
+
+#### Code
+```cs
+// Some matrix.
+var x = new double[,]
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 },
+}
+.ToMatrix();
+
+// Create a view of a row of the matrix.
+Vec<double> row = x.Rows[1];
+
+// Create a view of a column of the matrix.
+Vec<double> col = x.Cols[2];
+
+// The mean vector of the row vectors.
+var rowMean = x.Rows.Mean();
+
+// The covariance matrix of the column vectors.
+var colCov = x.Cols.Covariance();
+
+// Enumerate all the values in column-major order.
+var values = x.Cols.SelectMany(col => col);
+```
+
+### Singular value decomposition
+
+The singular value decomposition can be obtained by calling the extension method `Svd()`.
+
+#### Code
+```cs
+// Some matrix.
+var x = new double[,]
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 },
+}
+.ToMatrix();
+
+// Do SVD.
+var svd = x.Svd();
+
+// Decomposed matrices.
+var s = svd.S;
+var u = svd.U;
+var vt = svd.VT;
+
+// Reconstruct the matrix.
+var reconstructed = u * s.ToDiagonalMatrix() * vt;
+
+// Show the reconstructed matrix.
+Console.WriteLine(reconstructed);
+```
+#### Output
+```console
+Matrix 3x3-Double
+1  2  3
+4  5  6
+7  8  9
+```
