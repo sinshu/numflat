@@ -22,24 +22,104 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            this.lapackDecomposed = new Mat<double>(a.RowCount, a.ColCount);
-            this.lapackPiv = new int[Math.Min(a.RowCount, a.ColCount)];
+            lapackDecomposed = new Mat<double>(a.RowCount, a.ColCount);
+            lapackPiv = new int[Math.Min(a.RowCount, a.ColCount)];
 
-            a.CopyTo(this.lapackDecomposed);
+            a.CopyTo(lapackDecomposed);
 
-            fixed (double* pd = lapackDecomposed.Memory.Span)
+            fixed (double* pld = lapackDecomposed.Memory.Span)
             fixed (int* ppiv = lapackPiv)
             {
                 var info = Lapack.Dgetrf(
                     MatrixLayout.ColMajor,
                     lapackDecomposed.RowCount, lapackDecomposed.ColCount,
-                    pd, lapackDecomposed.Stride,
+                    pld, lapackDecomposed.Stride,
                     ppiv);
                 if (info != LapackInfo.None)
                 {
                     throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
                 }
             }
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the vector x.
+        /// </param>
+        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
+        {
+            if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
+            {
+                throw new InvalidOperationException("This method does not support non-square matrices.");
+            }
+
+            if (b.Count != lapackDecomposed.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+            }
+
+            if (destination.Count != lapackDecomposed.RowCount)
+            {
+                throw new ArgumentException("'destination.Count' must match 'a.RowCount'.");
+            }
+
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            var tmpLength = lapackDecomposed.RowCount;
+            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
+            var tmp = new Vec<double>(tmpBuffer.Memory.Slice(0, tmpLength));
+            b.CopyTo(tmp);
+
+            fixed (double* pld = lapackDecomposed.Memory.Span)
+            fixed (int* ppiv = lapackPiv)
+            fixed (double* ptmp = tmp.Memory.Span)
+            {
+                var info = Lapack.Dgetrs(
+                    MatrixLayout.ColMajor,
+                    'N',
+                    lapackDecomposed.RowCount,
+                    1,
+                    pld, lapackDecomposed.Stride,
+                    ppiv,
+                    ptmp, tmpLength);
+
+            }
+
+            tmp.CopyTo(destination);
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <returns>
+        /// The vector x.
+        /// </returns>
+        public Vec<double> Solve(in Vec<double> b)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
+            {
+                throw new InvalidOperationException("This method does not support non-square matrices.");
+            }
+
+            if (b.Count != lapackDecomposed.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+            }
+
+            var x = new Vec<double>(lapackDecomposed.RowCount);
+            Solve(b, x);
+            return x;
         }
 
         /// <summary>
