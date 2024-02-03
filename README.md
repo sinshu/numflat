@@ -373,3 +373,60 @@ Matrix 3x3-Double
 4  5  6
 7  8  9
 ```
+
+
+
+## Todo
+
+* ✅ OpenBLAS wrapper (see [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp))
+* ⬜ Vector operations
+    - ✅ Indexer
+    - ✅ Subvector
+    - ✅ Copy, fill, clear
+    - ✅ Arithmetic operations
+    - ✅ Dot and outer products
+    - ⬜ Norm and normalization
+* ⬜ Matrix operations
+    - ✅ Indexer
+    - ✅ Submatrix
+    - ✅ Copy, fill, clear
+    - ✅ Arithmetic operations
+    - ✅ Transposition
+    - ✅ Trace
+    - ✅ Determinant
+    - ✅ Rank
+    - ✅ Inversion
+    - ✅ Pseudo-inverse
+    - ⬜ Norm
+* ⬜ Matrix Decomposition
+    - ⬜ LU
+    - ⬜ QR
+    - ⬜ Cholesky
+    - ✅ SVD
+    - ⬜ EVD
+    - ⬜ GEVD
+* ⬜ LINQ-like operations
+    - ✅ Mean
+    - ✅ Covariance
+    - ⬜ Higher-order statistics
+* ⬜ Multivariate analysis
+    - ⬜ Linear regression
+    - ⬜ PCA
+    - ⬜ LDA
+* ⬜ Clustering
+    - ⬜ k-means
+    - ⬜ GMM
+* ⬜ DSP
+    - ⬜ FFT
+    - ⬜ Filtering
+
+
+
+## License
+
+NumFlat depends on the following libraries.
+
+* [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS) ([BSD-3-Clause license](https://github.com/OpenMathLib/OpenBLAS/blob/develop/LICENSE))
+* [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp) ([BSD-3-Clause license](https://github.com/sinshu/OpenBlasSharp/blob/main/LICENSE.txt))
+
+NumFlat is available under [the MIT license](LICENSE.txt).
