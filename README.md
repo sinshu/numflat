@@ -410,6 +410,8 @@ Matrix 3x3-Double
 * ⬜ LINQ-like operations
     - ✅ Mean
     - ✅ Covariance
+    - ⬜ Weighted mean
+    - ⬜ Weighted covariance
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
