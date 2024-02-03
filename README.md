@@ -186,3 +186,37 @@ Matrix 3x3-Double
 20  21  22
 ```
 
+### Matrix arithmetic
+
+Basic operations on matrices are provided through operator overloading and extension methods.
+
+#### Code
+```cs
+// Some vectors.
+Vec<double> x = [1, 2, 3];
+Vec<double> y = [4, 5, 6];
+
+// Addition.
+var add = x + y;
+
+// Subtraction.
+var sub = x - y;
+
+// Multiplication by a scalar.
+var mul = x * 3;
+
+// Division by a scalar.
+var div = x / 3;
+
+// Pointwise multiplication.
+var pm = x.PointwiseMul(y);
+
+// Pointwise division.
+var pd = x.PointwiseDiv(y);
+
+// Dot product.
+var dot = x * y;
+
+// Outer product.
+var outer = x.Outer(y);
+```
