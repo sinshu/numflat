@@ -9,6 +9,60 @@ namespace NumFlat
     public static class MatEx
     {
         /// <summary>
+        /// Computes a pointwise-multiplication of matrices, X .* Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use '<see cref="Mat.PointwiseMul{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// </remarks>
+        public static Mat<T> PointwiseMul<T>(this in Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            var result = new Mat<T>(x.RowCount, x.ColCount);
+            Mat.PointwiseMul(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise-division of matrices, X ./ Y.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The matrix Y.
+        /// </param>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use '<see cref="Mat.PointwiseDiv{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// </remarks>
+        public static Mat<T> PointwiseDiv<T>(this in Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            var result = new Mat<T>(x.RowCount, x.ColCount);
+            Mat.PointwiseDiv(x, y, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a matrix transposition, X^T.
         /// </summary>
         /// <typeparam name="T">
