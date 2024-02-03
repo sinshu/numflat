@@ -43,6 +43,7 @@ Vector 3-Double
 ### Create a new vector from `IEnumerable<T>`
 
 Vectors can also be created from objects that implement `IEnumerable<T>`.
+Since the vector itself is an `IEnumerable<T>`, it is also possible to call LINQ methods on the vector if needed.
 
 #### Code
 ```cs
@@ -309,7 +310,7 @@ Matrix 5x5-Double
 
 ### Treat matrix as a set of vectors
 
-Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties. Similar to a submatrix, changes to the view will affect the original matrix.
+Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties. Similar to a submatrix, changes to the view will affect the original matrix. These properties implement `IEnumerable<Vec<T>>`, allowing for LINQ methods to be called on collections of vectors.
 
 #### Code
 ```cs
