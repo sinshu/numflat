@@ -417,6 +417,8 @@ Matrix 3x3-Double
     - ⬜ Linear regression
     - ⬜ PCA
     - ⬜ LDA
+    - ⬜ ICA
+    - ⬜ NMF
 * ⬜ Clustering
     - ⬜ k-means
     - ⬜ GMM
