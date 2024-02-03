@@ -258,6 +258,7 @@ namespace NumFlat
             var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
             SvdDouble.GetSingularValues(x, s);
 
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
                 tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
@@ -289,6 +290,7 @@ namespace NumFlat
         /// </remarks>
         public static int Rank(this in Mat<double> x)
         {
+            // Set NaN to tolerance to set the tolerance automatically.
             return x.Rank(double.NaN);
         }
 
@@ -339,6 +341,7 @@ namespace NumFlat
 
             SvdDouble.Decompose(a, s, u, vt);
 
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
                 tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
@@ -394,6 +397,7 @@ namespace NumFlat
         /// </remarks>
         public static void PseudoInverse(in Mat<double> a, in Mat<double> destination)
         {
+            // Set NaN to tolerance to set the tolerance automatically.
             PseudoInverse(a, destination, double.NaN);
         }
     }

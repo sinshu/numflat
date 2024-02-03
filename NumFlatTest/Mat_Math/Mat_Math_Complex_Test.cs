@@ -89,6 +89,24 @@ namespace NumFlatTest
             }
         }
 
+        [Test]
+        public void Rank_Tolerance()
+        {
+            var a = new Complex[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }
+            .ToMatrix();
+
+            Assert.True(a.Rank() == 2);
+            Assert.True(a.Rank(5) == 1);
+            Assert.True(a.Rank(10) == 1);
+            Assert.True(a.Rank(15) == 1);
+            Assert.True(a.Rank(20) == 0);
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 2, 2, 2)]
         [TestCase(2, 2, 4, 3)]

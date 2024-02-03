@@ -240,13 +240,16 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<float> x)
+        public static int Rank(this in Mat<float> x, float tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -255,7 +258,11 @@ namespace NumFlat
             var s = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
             SvdSingle.GetSingularValues(x, s);
 
-            var tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
+            if (float.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            }
 
             var rank = 0;
             foreach (var value in s)
@@ -275,34 +282,16 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
-        /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
-        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<float> x, float tolerance)
+        public static int Rank(this in Mat<float> x)
         {
-            ThrowHelper.ThrowIfEmpty(x, nameof(x));
-
-            var sLength = Math.Min(x.RowCount, x.ColCount);
-            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
-            var s = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
-            SvdSingle.GetSingularValues(x, s);
-
-            var rank = 0;
-            foreach (var value in s)
-            {
-                if (value > tolerance)
-                {
-                    rank++;
-                }
-            }
-
-            return rank;
+            // Set NaN to tolerance to set the tolerance automatically.
+            return Rank(x, float.NaN);
         }
 
         /// <summary>
@@ -352,6 +341,7 @@ namespace NumFlat
 
             SvdSingle.Decompose(a, s, u, vt);
 
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (float.IsNaN(tolerance))
             {
                 tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
@@ -407,6 +397,7 @@ namespace NumFlat
         /// </remarks>
         public static void PseudoInverse(in Mat<float> a, in Mat<float> destination)
         {
+            // Set NaN to tolerance to set the tolerance automatically.
             PseudoInverse(a, destination, float.NaN);
         }
     }

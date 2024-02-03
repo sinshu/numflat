@@ -268,13 +268,16 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be ignored.
+        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<Complex> x)
+        public static int Rank(this in Mat<Complex> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -283,7 +286,11 @@ namespace NumFlat
             var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
             SvdComplex.GetSingularValues(x, s);
 
-            var tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
+            if (double.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+            }
 
             var rank = 0;
             foreach (var value in s)
@@ -303,34 +310,16 @@ namespace NumFlat
         /// <param name="x">
         /// The matrix.
         /// </param>
-        /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
-        /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<Complex> x, double tolerance)
+        public static int Rank(this in Mat<Complex> x)
         {
-            ThrowHelper.ThrowIfEmpty(x, nameof(x));
-
-            var sLength = Math.Min(x.RowCount, x.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
-            SvdComplex.GetSingularValues(x, s);
-
-            var rank = 0;
-            foreach (var value in s)
-            {
-                if (value > tolerance)
-                {
-                    rank++;
-                }
-            }
-
-            return rank;
+            // Set NaN to tolerance to set the tolerance automatically.
+            return Rank(x, double.NaN);
         }
 
         /// <summary>
