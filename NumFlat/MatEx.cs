@@ -24,7 +24,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use '<see cref="Mat.PointwiseMul{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
         /// </remarks>
-        public static Mat<T> PointwiseMul<T>(this in Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
+        public static Mat<T> PointwiseMul<T>(in this Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
@@ -51,7 +51,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use '<see cref="Mat.PointwiseDiv{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
         /// </remarks>
-        public static Mat<T> PointwiseDiv<T>(this in Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
+        public static Mat<T> PointwiseDiv<T>(in this Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
@@ -387,7 +387,7 @@ namespace NumFlat
         /// This method allocates a new matrix which is independent from the original matrix.
         /// To avoid the allocation, use '<see cref="Mat.Map{TSource, TResult}(in Mat{TSource}, Func{TSource, TResult}, in Mat{TResult})"/>' instead.
         /// </returns>
-        public static Mat<TResult> Map<TSource, TResult>(this in Mat<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
+        public static Mat<TResult> Map<TSource, TResult>(in this Mat<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
 

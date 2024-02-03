@@ -112,10 +112,10 @@ var add = x + y;
 var sub = x - y;
 
 // Multiplication by a scalar.
-var mul = x * 3;
+var ms = x * 3;
 
 // Division by a scalar.
-var div = x / 3;
+var ds = x / 3;
 
 // Pointwise multiplication.
 var pm = x.PointwiseMul(y);
@@ -128,6 +128,34 @@ var dot = x * y;
 
 // Outer product.
 var outer = x.Outer(y);
+```
+
+### Subvector
+
+A subvector can be created from a vector. The subvector acts as a view of the original vector, and changes to the subvector will affect the original vector.
+
+#### Code
+```cs
+// Some vector.
+Vec<double> x = [3, 3, 3, 3, 3];
+
+// Create a subvector of the vector.
+var sub = x.Subvector(1, 3);
+
+// Modify the subvector.
+sub[1] = 100;
+
+// Show the original vector.
+Console.WriteLine(x);
+```
+#### Output
+```console
+Vector 5-Double
+  3
+  3
+100
+  3
+  3
 ```
 
 ### Creating matrix
@@ -192,9 +220,22 @@ Basic operations on matrices are provided through operator overloading and exten
 
 #### Code
 ```cs
-// Some vectors.
-Vec<double> x = [1, 2, 3];
-Vec<double> y = [4, 5, 6];
+// Some matrices.
+var x = new double[,]
+{
+    { 1, 2, 3 },
+    { 0, 1, 2 },
+    { 0, 0, 1 },
+}
+.ToMatrix();
+
+var y = new double[,]
+{
+    { 1, 0, 0 },
+    { 2, 1, 0 },
+    { 3, 2, 1 },
+}
+.ToMatrix();
 
 // Addition.
 var add = x + y;
@@ -202,11 +243,14 @@ var add = x + y;
 // Subtraction.
 var sub = x - y;
 
+// Multiplication.
+var mul = x * y;
+
 // Multiplication by a scalar.
-var mul = x * 3;
+var ms = x * 3;
 
 // Division by a scalar.
-var div = x / 3;
+var ds = x / 3;
 
 // Pointwise multiplication.
 var pm = x.PointwiseMul(y);
@@ -214,9 +258,51 @@ var pm = x.PointwiseMul(y);
 // Pointwise division.
 var pd = x.PointwiseDiv(y);
 
-// Dot product.
-var dot = x * y;
+// Transposition.
+var transposed = x.Transpose();
 
-// Outer product.
-var outer = x.Outer(y);
+// Trace.
+var trace = x.Trace();
+
+// Determinant.
+var determinant = x.Determinant();
+
+// Rank.
+var rank = x.Rank();
+
+// Inverse.
+var inverse = x.Inverse();
+
+// Pseudo-inverse.
+var pseudoInverse = x.PseudoInverse();
 ```
+
+### Submatrix
+
+A submatrix can be created from a matrix. The submatrix acts as a view of the original matrix, and changes to the submatrix will affect the original matrix.
+
+#### Code
+```cs
+// Some matrix.
+var x = new Mat<double>(5, 5);
+x.Fill(3);
+
+// Create a submatrix of the matrix.
+var sub = x.Submatrix(1, 1, 3, 3);
+
+// Modify the subvector.
+sub[1, 1] = 100;
+
+// Show the original matrix.
+Console.WriteLine(x);
+```
+#### Output
+```console
+Matrix 5x5-Double
+3  3    3  3  3
+3  3    3  3  3
+3  3  100  3  3
+3  3    3  3  3
+3  3    3  3  3
+```
+

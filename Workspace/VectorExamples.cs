@@ -11,6 +11,7 @@ public static class VectorExamples
         Example2();
         Example3();
         Example4();
+        Example5();
     }
 
     public static void Example1()
@@ -82,10 +83,10 @@ public static class VectorExamples
         var sub = x - y;
 
         // Multiplication by a scalar.
-        var mul = x * 3;
+        var ms = x * 3;
 
         // Division by a scalar.
-        var div = x / 3;
+        var ds = x / 3;
 
         // Pointwise multiplication.
         var pm = x.PointwiseMul(y);
@@ -98,6 +99,27 @@ public static class VectorExamples
 
         // Outer product.
         var outer = x.Outer(y);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example5()
+    {
+        Console.WriteLine("=== VectorExample 5 ===");
+        Console.WriteLine();
+
+        // Some vector.
+        Vec<double> x = [3, 3, 3, 3, 3];
+
+        // Create a subvector of the vector.
+        var sub = x.Subvector(1, 3);
+
+        // Modify the subvector.
+        sub[1] = 100;
+
+        // Show the original vector.
+        Console.WriteLine(x);
 
         Console.WriteLine();
         Console.WriteLine();

@@ -135,7 +135,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static unsafe double Determinant(in Mat<double> x)
+        public static unsafe double Determinant(in this Mat<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -252,7 +252,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<double> x, double tolerance)
+        public static int Rank(in this Mat<double> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -294,7 +294,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<double> x)
+        public static int Rank(in this Mat<double> x)
         {
             // Set NaN to tolerance to set the tolerance automatically.
             return x.Rank(double.NaN);

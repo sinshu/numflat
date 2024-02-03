@@ -252,7 +252,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<float> x, float tolerance)
+        public static int Rank(in this Mat<float> x, float tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -294,7 +294,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static int Rank(this in Mat<float> x)
+        public static int Rank(in this Mat<float> x)
         {
             // Set NaN to tolerance to set the tolerance automatically.
             return Rank(x, float.NaN);

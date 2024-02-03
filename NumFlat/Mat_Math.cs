@@ -362,7 +362,7 @@ namespace NumFlat
         /// The matrix X.
         /// </param>
         /// <returns></returns>
-        public static T Trace<T>(this in Mat<T> x) where T : unmanaged, INumberBase<T>
+        public static T Trace<T>(in this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 

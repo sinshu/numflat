@@ -10,6 +10,7 @@ public static class MatrixExamples
         Example1();
         Example2();
         Example3();
+        Example4();
     }
 
     public static void Example1()
@@ -67,16 +68,16 @@ public static class MatrixExamples
         var x = new double[,]
         {
             { 1, 2, 3 },
-            { 4, 5, 6 },
-            { 7, 8, 9 },
+            { 0, 1, 2 },
+            { 0, 0, 1 },
         }
         .ToMatrix();
 
         var y = new double[,]
         {
-            { 1, 4, 7 },
-            { 2, 5, 8 },
-            { 3, 6, 9 },
+            { 1, 0, 0 },
+            { 2, 1, 0 },
+            { 3, 2, 1 },
         }
         .ToMatrix();
 
@@ -86,17 +87,60 @@ public static class MatrixExamples
         // Subtraction.
         var sub = x - y;
 
+        // Multiplication.
+        var mul = x * y;
+
         // Multiplication by a scalar.
-        var mul = x * 3;
+        var ms = x * 3;
 
         // Division by a scalar.
-        var div = x / 3;
+        var ds = x / 3;
 
         // Pointwise multiplication.
         var pm = x.PointwiseMul(y);
 
         // Pointwise division.
         var pd = x.PointwiseDiv(y);
+
+        // Transposition.
+        var transposed = x.Transpose();
+
+        // Trace.
+        var trace = x.Trace();
+
+        // Determinant.
+        var determinant = x.Determinant();
+
+        // Rank.
+        var rank = x.Rank();
+
+        // Inverse.
+        var inverse = x.Inverse();
+
+        // Pseudo-inverse.
+        var pseudoInverse = x.PseudoInverse();
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example4()
+    {
+        Console.WriteLine("=== MatrixExample 4 ===");
+        Console.WriteLine();
+
+        // Creat a new matrix.
+        var x = new Mat<double>(5, 5);
+        x.Fill(3);
+
+        // Create a submatrix of the matrix.
+        var sub = x.Submatrix(1, 1, 3, 3);
+
+        // Modify the subvector.
+        sub[1, 1] = 100;
+
+        // Show the original matrix.
+        Console.WriteLine(x);
 
         Console.WriteLine();
         Console.WriteLine();
