@@ -52,6 +52,9 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the vector x.
         /// </param>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
@@ -61,12 +64,12 @@ namespace NumFlat
 
             if (b.Count != lapackDecomposed.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
             }
 
             if (destination.Count != lapackDecomposed.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("'destination.Count' must match 'L.RowCount'.");
             }
 
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
@@ -104,6 +107,9 @@ namespace NumFlat
         /// <returns>
         /// The vector x.
         /// </returns>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
@@ -129,6 +135,9 @@ namespace NumFlat
         /// <returns>
         /// The matrix L.
         /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix.
+        /// </remarks>
         public Mat<Complex> GetL()
         {
             var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
@@ -154,6 +163,9 @@ namespace NumFlat
         /// <returns>
         /// The matrix U.
         /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix.
+        /// </remarks>
         public Mat<Complex> GetU()
         {
             var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);

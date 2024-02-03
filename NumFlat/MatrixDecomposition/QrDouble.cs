@@ -47,6 +47,9 @@ namespace NumFlat
         /// <param name="r">
         /// The matrix R.
         /// </param>
+        /// <remarks>
+        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
+        /// </remarks>
         public static unsafe void Decompose(in Mat<double> a, in Mat<double> q, in Mat<double> r)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -106,6 +109,69 @@ namespace NumFlat
                     pq, q.Stride,
                     ptau);
             }
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the vector x.
+        /// </param>
+        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (b.Count != q.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'Q.RowCount'.");
+            }
+
+            if (destination.Count != r.RowCount)
+            {
+                throw new ArgumentException("'destination.Count' must match 'R.RowCount'.");
+            }
+
+            Mat.Mul(q, b, destination, true);
+
+            fixed (double* pr = r.Memory.Span)
+            fixed (double* pd = destination.Memory.Span)
+            {
+                Blas.Dtrsv(
+                    Order.ColMajor,
+                    Uplo.Upper,
+                    Transpose.NoTrans,
+                    Diag.NonUnit,
+                    r.RowCount,
+                    pr, r.Stride,
+                    pd, destination.Stride);
+            }
+        }
+
+        /// <summary>
+        /// Compute a vector x from b, where Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The vector b.
+        /// </param>
+        /// <returns>
+        /// The vector x.
+        /// </returns>
+        public unsafe Vec<double> Solve(in Vec<double> b)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            if (b.Count != q.RowCount)
+            {
+                throw new ArgumentException("'b.Count' must match 'Q.RowCount'.");
+            }
+
+            var x = new Vec<double>(r.RowCount);
+            Solve(b, x);
+            return x;
         }
 
         /// <summary>
