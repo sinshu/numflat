@@ -13,6 +13,7 @@ public static class MatrixExamples
         Example4();
         Example5();
         Example6();
+        Example9();
     }
 
     public static void Example1()
@@ -191,6 +192,38 @@ public static class MatrixExamples
         var x = new double[,]
         {
             { 1, 2, 3 },
+            { 1, 4, 9 },
+            { 1, 3, 7 },
+        }
+        .ToMatrix();
+
+        // Do LU decomposition.
+        var lu = x.Lu();
+
+        // Decomposed matrices.
+        var p = lu.GetP();
+        var l = lu.L;
+        var u = lu.U;
+
+        // Reconstruct the matrix.
+        var reconstructed = p * l * u;
+
+        // Show the reconstructed matrix.
+        Console.WriteLine(reconstructed);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example9()
+    {
+        Console.WriteLine("=== MatrixExample 9 ===");
+        Console.WriteLine();
+
+        // Some matrix.
+        var x = new double[,]
+        {
+            { 1, 2, 3 },
             { 4, 5, 6 },
             { 7, 8, 9 },
         }
@@ -200,12 +233,12 @@ public static class MatrixExamples
         var svd = x.Svd();
 
         // Decomposed matrices.
-        var s = svd.S;
+        var s = svd.S.ToDiagonalMatrix();
         var u = svd.U;
         var vt = svd.VT;
 
         // Reconstruct the matrix.
-        var reconstructed = u * s.ToDiagonalMatrix() * vt;
+        var reconstructed = u * s * vt;
 
         // Show the reconstructed matrix.
         Console.WriteLine(reconstructed);

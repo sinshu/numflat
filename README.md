@@ -339,6 +339,43 @@ var colCov = x.Cols.Covariance();
 var values = x.Cols.SelectMany(col => col);
 ```
 
+### LU decomposition
+
+The LU decomposition can be obtained by calling the extension method `Lu()`.
+
+#### Code
+```cs
+// Some matrix.
+var x = new double[,]
+{
+    { 1, 2, 3 },
+    { 1, 4, 9 },
+    { 1, 3, 7 },
+}
+.ToMatrix();
+
+// Do LU decomposition.
+var lu = x.Lu();
+
+// Decomposed matrices.
+var p = lu.GetP();
+var l = lu.L;
+var u = lu.U;
+
+// Reconstruct the matrix.
+var reconstructed = p * l * u;
+
+// Show the reconstructed matrix.
+Console.WriteLine(reconstructed);
+```
+#### Output
+```console
+Matrix 3x3-Double
+1  2  3
+1  4  9
+1  3  7
+```
+
 ### Singular value decomposition
 
 The singular value decomposition can be obtained by calling the extension method `Svd()`.
@@ -358,12 +395,12 @@ var x = new double[,]
 var svd = x.Svd();
 
 // Decomposed matrices.
-var s = svd.S;
+var s = svd.S.ToDiagonalMatrix();
 var u = svd.U;
 var vt = svd.VT;
 
 // Reconstruct the matrix.
-var reconstructed = u * s.ToDiagonalMatrix() * vt;
+var reconstructed = u * s * vt;
 
 // Show the reconstructed matrix.
 Console.WriteLine(reconstructed);

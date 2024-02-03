@@ -66,7 +66,7 @@ namespace NumFlat
         /// Computes the SVD.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed with SVD.
+        /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SvdSingle"/>'.
@@ -82,7 +82,7 @@ namespace NumFlat
         /// Computes the SVD.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed with SVD.
+        /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SvdDouble"/>'.
@@ -98,7 +98,7 @@ namespace NumFlat
         /// Computes the SVD.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed with SVD.
+        /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SvdComplex"/>'.
@@ -108,6 +108,22 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             return new SvdComplex(a);
+        }
+
+        /// <summary>
+        /// Computes the LU decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using LU decomposition.
+        /// </param>
+        /// <returns>
+        /// An instance of '<see cref="LuDouble"/>'.
+        /// </returns>
+        public static LuDouble Lu(in this Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new LuDouble(a);
         }
     }
 }

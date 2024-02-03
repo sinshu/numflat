@@ -14,7 +14,7 @@ namespace NumFlat
         private readonly Mat<float> vt;
 
         /// <summary>
-        /// Decomposes the matrix A with SVD.
+        /// Decomposes the matrix A using SVD.
         /// </summary>
         /// <param name="a">
         /// The matrix A to be decomposed.
@@ -37,7 +37,7 @@ namespace NumFlat
         /// Gets the singular values of the matrix A.
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix A to be decomposed.
         /// </param>
         /// <param name="s">
         /// The destination of the diagonal elements of the matrix S.
@@ -103,7 +103,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Decomposes the matrix A with SVD.
+        /// Decomposes the matrix A using SVD.
         /// </summary>
         /// <param name="a">
         /// The matrix A to be decomposed.
