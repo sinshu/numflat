@@ -64,6 +64,9 @@ namespace NumFlat
                 throw new InvalidOperationException("This method does not support non-square matrices.");
             }
 
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
             if (b.Count != lapackDecomposed.RowCount)
             {
                 throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
@@ -73,9 +76,6 @@ namespace NumFlat
             {
                 throw new ArgumentException("'destination.Count' must match 'L.RowCount'.");
             }
-
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             var tmpLength = lapackDecomposed.RowCount;
             using var tmpBuffer = MemoryPool<float>.Shared.Rent(tmpLength);

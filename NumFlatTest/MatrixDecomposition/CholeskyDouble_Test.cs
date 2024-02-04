@@ -18,9 +18,7 @@ namespace NumFlatTest
         [TestCase(5, 8, 6)]
         public void Decompose(int n, int aStride, int lStride)
         {
-            var source = CreateHermitianMatrix(42, n);
-            var a = Utilities.CreateRandomMatrixDouble(0, n, n, aStride);
-            source.CopyTo(a);
+            var a = CreateHermitianMatrix(42, n, aStride);
             var destination = Utilities.CreateRandomMatrixDouble(0, n, n, lStride);
 
             CholeskyDouble.Decompose(a, destination);
@@ -50,9 +48,7 @@ namespace NumFlatTest
         [TestCase(5, 8)]
         public void ExtensionMethod(int n, int aStride)
         {
-            var source = CreateHermitianMatrix(42, n);
-            var a = Utilities.CreateRandomMatrixDouble(0, n, n, aStride);
-            source.CopyTo(a);
+            var a = CreateHermitianMatrix(42, n, aStride);
             var chol = a.Cholesky();
 
             var reconstructed = chol.L * chol.L.Transpose();
@@ -68,10 +64,63 @@ namespace NumFlatTest
             }
         }
 
-        private static Mat<double> CreateHermitianMatrix(int seed, int n)
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 2, 3)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 3, 3, 3)]
+        [TestCase(3, 3, 4, 4)]
+        [TestCase(4, 4, 4, 4)]
+        [TestCase(4, 4, 6, 5)]
+        [TestCase(5, 5, 5, 5)]
+        [TestCase(5, 5, 8, 7)]
+        public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
+            var a = CreateHermitianMatrix(42, n, aStride);
+            var b = Utilities.CreateRandomVectorDouble(57, n, bStride);
+            var chol = a.Cholesky();
+            var destination = Utilities.CreateRandomVectorDouble(66, n, dstStride);
+            chol.Solve(b, destination);
+
+            var expected = a.Svd().Solve(b);
+
+            for (var i = 0; i < n; i++)
+            {
+                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+            }
+
+            Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 2, 3)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 3, 3, 3)]
+        [TestCase(3, 3, 4, 4)]
+        [TestCase(4, 4, 4, 4)]
+        [TestCase(4, 4, 6, 5)]
+        [TestCase(5, 5, 5, 5)]
+        [TestCase(5, 5, 8, 7)]
+        public void Solve_Arg1(int n, int aStride, int bStride, int dstStride)
+        {
+            var a = CreateHermitianMatrix(42, n, aStride);
+            var b = Utilities.CreateRandomVectorDouble(57, n, bStride);
+            var chol = a.Cholesky();
+            var destination = chol.Solve(b);
+
+            var expected = a.Svd().Solve(b);
+
+            for (var i = 0; i < n; i++)
+            {
+                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+            }
+        }
+
+        private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)
+        {
+            var mat = Utilities.CreateRandomMatrixDouble(seed, n, n, stride);
             var random = new Random(seed);
-            var mat = new Mat<double>(n, n);
             for (var col = 0; col < n; col++)
             {
                 for (var row = col; row < n; row++)
