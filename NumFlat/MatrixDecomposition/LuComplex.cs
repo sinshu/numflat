@@ -19,6 +19,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public unsafe LuComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

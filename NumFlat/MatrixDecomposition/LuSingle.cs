@@ -18,6 +18,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public unsafe LuSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
