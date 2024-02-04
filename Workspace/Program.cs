@@ -22,9 +22,7 @@ public class Program
         .ToMatrix();
         Console.WriteLine(test);
 
-        var destination = new Mat<double>(3, 3);
-
-        CholeskyDouble.Decompose(test, destination);
+        var destination = new CholeskyDouble(test).L;
 
         Console.WriteLine(test);
         Console.WriteLine(destination);

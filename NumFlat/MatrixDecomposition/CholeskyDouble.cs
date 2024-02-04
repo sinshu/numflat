@@ -9,6 +9,29 @@ namespace NumFlat
     /// </summary>
     public class CholeskyDouble
     {
+        private Mat<double> l;
+
+        /// <summary>
+        /// Decomposes the matrix A using Cholesky decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix A to be decomposed.
+        /// </param>
+        public CholeskyDouble(in Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            if (a.RowCount != a.ColCount)
+            {
+                throw new ArgumentException("The matrix 'a' must be a square matrix.");
+            }
+
+            var l = new Mat<double>(a.RowCount, a.ColCount);
+            Decompose(a, l);
+
+            this.l = l;
+        }
+
         /// <summary>
         /// Decomposes the matrix A using Cholesky decomposition.
         /// </summary>
@@ -53,5 +76,10 @@ namespace NumFlat
                 lCols[col].Subvector(0, col).Clear();
             }
         }
+
+        /// <summary>
+        /// The matrix L.
+        /// </summary>
+        public ref readonly Mat<double> L => ref l;
     }
 }
