@@ -6,6 +6,18 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>NumFlat</Title>
+    <Version>0.1.0</Version>
+    <Authors>Nobuaki Tanaka</Authors>
+    <Description>A numerical computation library for C#</Description>
+    <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>math;numerics;lapack;blas;openblas</PackageTags>
+    <PackageReleaseNotes>https://github.com/sinshu/numflat/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,6 +27,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <IsAotCompatible>True</IsAotCompatible>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenBlasSharp" Version="0.3.2" />
