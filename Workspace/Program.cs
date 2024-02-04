@@ -12,20 +12,5 @@ public class Program
     {
         VectorExamples.Run();
         MatrixExamples.Run();
-
-        var test = new double[,]
-        {
-            {  3.0,  0.1, -0.2 },
-            {  0.1,  2.5,  0.1 },
-            { -0.2,  0.1,  3.1 },
-        }
-        .ToMatrix();
-        Console.WriteLine(test);
-
-        var destination = new CholeskyDouble(test).L;
-
-        Console.WriteLine(test);
-        Console.WriteLine(destination);
-        Console.WriteLine(destination * destination.Transpose());
     }
 }

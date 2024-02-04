@@ -105,6 +105,22 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the Cholesky decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed using Cholesky decomposition.
+        /// </param>
+        /// <returns>
+        /// An instance of '<see cref="CholeskyDouble"/>'.
+        /// </returns>
+        public static CholeskyDouble Cholesky(in this Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new CholeskyDouble(a);
+        }
+
+        /// <summary>
         /// Gets the singular values of the matrix A.
         /// </summary>
         /// <param name="a">

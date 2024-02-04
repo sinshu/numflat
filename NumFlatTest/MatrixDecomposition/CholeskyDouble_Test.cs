@@ -25,11 +25,7 @@ namespace NumFlatTest
 
             CholeskyDouble.Decompose(a, destination);
 
-            Console.WriteLine(a);
-
             var reconstructed = destination * destination.Transpose();
-
-            Console.WriteLine(reconstructed);
 
             for (var row = 0; row < reconstructed.RowCount; row++)
             {
@@ -42,6 +38,34 @@ namespace NumFlatTest
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(3, 3)]
+        [TestCase(3, 5)]
+        [TestCase(5, 5)]
+        [TestCase(5, 8)]
+        public void ExtensionMethod(int n, int aStride)
+        {
+            var source = CreateHermitianMatrix(42, n);
+            var a = Utilities.CreateRandomMatrixDouble(0, n, n, aStride);
+            source.CopyTo(a);
+            var chol = a.Cholesky();
+
+            var reconstructed = chol.L * chol.L.Transpose();
+
+            for (var row = 0; row < reconstructed.RowCount; row++)
+            {
+                for (var col = 0; col < reconstructed.ColCount; col++)
+                {
+                    var actual = reconstructed[row, col];
+                    var expected = a[row, col];
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+                }
+            }
         }
 
         private static Mat<double> CreateHermitianMatrix(int seed, int n)

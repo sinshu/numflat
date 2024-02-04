@@ -14,6 +14,7 @@ public static class MatrixExamples
         Example5();
         Example6();
         Example7();
+        Example8();
         Example9();
     }
 
@@ -242,6 +243,36 @@ public static class MatrixExamples
 
         // Reconstruct the matrix.
         var reconstructed = q * r;
+
+        // Show the reconstructed matrix.
+        Console.WriteLine(reconstructed);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example8()
+    {
+        Console.WriteLine("=== MatrixExample 8 ===");
+        Console.WriteLine();
+
+        // Some matrix.
+        var x = new double[,]
+        {
+            { 3, 2, 1 },
+            { 2, 3, 2 },
+            { 1, 2, 3 },
+        }
+        .ToMatrix();
+
+        // Do Cholesky decomposition.
+        var cholesky = x.Cholesky();
+
+        // Decomposed matrix.
+        var l = cholesky.L;
+
+        // Reconstruct the matrix.
+        var reconstructed = l * l.Transpose();
 
         // Show the reconstructed matrix.
         Console.WriteLine(reconstructed);

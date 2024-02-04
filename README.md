@@ -423,6 +423,41 @@ Matrix 3x3-Double
 7  8  9
 ```
 
+### Cholesky decomposition
+
+The Cholesky decomposition can be obtained by calling the extension method `Cholesky()`.
+
+#### Code
+```cs
+// Some matrix.
+var x = new double[,]
+{
+    { 3, 2, 1 },
+    { 2, 3, 2 },
+    { 1, 2, 3 },
+}
+.ToMatrix();
+
+// Do Cholesky decomposition.
+var cholesky = x.Cholesky();
+
+// Decomposed matrix.
+var l = cholesky.L;
+
+// Reconstruct the matrix.
+var reconstructed = l * l.Transpose();
+
+// Show the reconstructed matrix.
+Console.WriteLine(reconstructed);
+```
+#### Output
+```console
+Matrix 3x3-Double
+1  2  3
+4  5  6
+7  8  9
+```
+
 ### Singular value decomposition
 
 The singular value decomposition can be obtained by calling the extension method `Svd()`.
