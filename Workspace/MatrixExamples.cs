@@ -166,19 +166,22 @@ public static class MatrixExamples
         .ToMatrix();
 
         // Create a view of a row of the matrix.
-        Vec<double> row = x.Rows[1];
+        Vec<double> row = x.Rows[0];
 
         // Create a view of a column of the matrix.
-        Vec<double> col = x.Cols[2];
+        Vec<double> col = x.Cols[1];
+
+        // Convert a matrix to a row-major jagged array.
+        var array = x.Rows.Select(row => row.ToArray()).ToArray();
+
+        // Enumerate all the elements in column-major order.
+        var elements = x.Cols.SelectMany(col => col);
 
         // The mean vector of the row vectors.
         var rowMean = x.Rows.Mean();
 
         // The covariance matrix of the column vectors.
         var colCov = x.Cols.Covariance();
-
-        // Enumerate all the values in column-major order.
-        var values = x.Cols.SelectMany(col => col);
 
         Console.WriteLine();
         Console.WriteLine();

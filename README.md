@@ -1,6 +1,8 @@
 # NumFlat
 
-The purpose of this project is to provide a convenient C# wrapper for [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS). It aims to allow numerical computations related to linear algebra to be performed naturally in C# code.
+NumFlat is a numerical computation library for C#.
+The goal of this project is to create an easy-to-use C# wrapper for [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS).
+It aims to enable writing numerical computation processes related to linear algebra in natural C# code.
 
 
 
@@ -12,9 +14,12 @@ To be prepared 😖
 
 ## Overview
 
-NumFlat provides types named `Vec<T>` and `Mat<T>` for representing vectors and matrices. These type names are intentionally chosen to avoid confusion with vector and matrix types from the `System.Numerics` namespace.
+NumFlat provides types named `Vec<T>` and `Mat<T>` for representing vectors and matrices.
+These type names are intentionally chosen to avoid confusion with vector and matrix types from the `System.Numerics` namespace.
 
-`Vec<T>` and `Mat<T>` can hold numerical types that implement the `INumberBase<T>` interface. The primary supported types are `float`, `double`, and `Complex`. Other types can be used as well, but support beyond simple arithmetic operations is not provided.
+`Vec<T>` and `Mat<T>` can hold numerical types that implement the `INumberBase<T>` interface.
+The primary supported types are `float`, `double`, and `Complex`.
+Other types can be used as well, but support beyond simple arithmetic operations is not provided.
 
 
 
@@ -133,7 +138,8 @@ var outer = x.Outer(y);
 
 ### Subvector
 
-A subvector can be created from a vector. The subvector acts as a view of the original vector, and changes to the subvector will affect the original vector.
+A subvector can be created from a vector.
+The subvector acts as a view of the original vector, and changes to the subvector will affect the original vector.
 
 #### Code
 ```cs
@@ -310,7 +316,9 @@ Matrix 5x5-Double
 
 ### Treat matrix as a set of vectors
 
-Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties. Similar to a submatrix, changes to the view will affect the original matrix. These properties implement `IEnumerable<Vec<T>>`, allowing for LINQ methods to be called on collections of vectors.
+Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties.
+Similar to a submatrix, changes to the view will affect the original matrix.
+These properties implement `IEnumerable<Vec<T>>`, allowing for LINQ methods to be called on collections of vectors.
 
 #### Code
 ```cs
@@ -324,19 +332,22 @@ var x = new double[,]
 .ToMatrix();
 
 // Create a view of a row of the matrix.
-Vec<double> row = x.Rows[1];
+Vec<double> row = x.Rows[0];
 
 // Create a view of a column of the matrix.
-Vec<double> col = x.Cols[2];
+Vec<double> col = x.Cols[1];
+
+// Convert a matrix to a row-major jagged array.
+var array = x.Rows.Select(row => row.ToArray()).ToArray();
+
+// Enumerate all the elements in column-major order.
+var elements = x.Cols.SelectMany(col => col);
 
 // The mean vector of the row vectors.
 var rowMean = x.Rows.Mean();
 
 // The covariance matrix of the column vectors.
 var colCov = x.Cols.Covariance();
-
-// Enumerate all the values in column-major order.
-var values = x.Cols.SelectMany(col => col);
 ```
 
 ### LU decomposition
