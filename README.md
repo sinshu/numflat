@@ -9,7 +9,7 @@ It aims to enable writing numerical computation processes related to linear alge
 ## Overview
 
 NumFlat provides types named `Vec<T>` and `Mat<T>` for representing vectors and matrices.
-These type names are intentionally chosen to avoid confusion with vector and matrix types from the `System.Numerics` namespace.
+These type names are intentionally chosen to avoid confusion with vector and matrix types (like `Vector<T>`) from the `System.Numerics` namespace.
 
 `Vec<T>` and `Mat<T>` can hold numerical types that implement the `INumberBase<T>` interface.
 The primary supported types are `float`, `double`, and `Complex`.
