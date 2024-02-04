@@ -8,7 +8,27 @@ It aims to enable writing numerical computation processes related to linear alge
 
 ## Installation
 
-To be prepared 😖
+[The NuGet package](https://www.nuget.org/packages/NumFlat) is available.
+
+```ps1
+Install-Package NumFlat
+```
+
+This package does not include the native binary for OpenBLAS.
+[The `OpenBlasSharp.Windows` package](https://www.nuget.org/packages/OpenBlasSharp.Windows) provides the native binary for Windows.
+
+```ps1
+Install-Package OpenBlasSharp.Windows
+```
+
+Or, [download the compiled binary](https://github.com/OpenMathLib/OpenBLAS/releases) and put `libopenblas.dll` in the same directory as the executable file.
+Binaries for both x86 and x64 architectures are supported, but [the ILP64 build with the `x64-64` suffix](https://github.com/OpenMathLib/OpenBLAS/blob/develop/docs/distributing.md#ilp64-interface-builds) is not supported.
+
+All the classes are in the `NumFlat` namespace.
+
+```cs
+using NumFlat;
+```
 
 
 
