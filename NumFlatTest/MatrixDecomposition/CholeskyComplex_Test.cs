@@ -136,7 +136,7 @@ namespace NumFlatTest
                     }
                     else
                     {
-                        mat[row, col] = Utilities.NextDouble(random);
+                        mat[row, col] = Utilities.NextComplex(random);
                         mat[col, row] = mat[row, col].Conjugate();
                     }
                 }
