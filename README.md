@@ -522,7 +522,7 @@ Matrix 3x3-Double
 * ⬜ Matrix Decomposition
     - ✅ LU
     - ✅ QR
-    - ⬜ Cholesky
+    - ✅ Cholesky
     - ✅ SVD
     - ⬜ EVD
     - ⬜ GEVD
