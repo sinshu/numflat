@@ -6,7 +6,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class CholeskyDouble_Test
+    public class CholeskySingle_Test
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 2, 3)]
@@ -19,9 +19,9 @@ namespace NumFlatTest
         public void Decompose(int n, int aStride, int lStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var destination = Utilities.CreateRandomMatrixDouble(0, n, n, lStride);
+            var destination = Utilities.CreateRandomMatrixSingle(0, n, n, lStride);
 
-            CholeskyDouble.Decompose(a, destination);
+            CholeskySingle.Decompose(a, destination);
 
             var reconstructed = destination * destination.Transpose();
 
@@ -31,7 +31,7 @@ namespace NumFlatTest
                 {
                     var actual = reconstructed[row, col];
                     var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
                 }
             }
 
@@ -59,7 +59,7 @@ namespace NumFlatTest
                 {
                     var actual = reconstructed[row, col];
                     var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
                 }
             }
         }
@@ -77,16 +77,16 @@ namespace NumFlatTest
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = Utilities.CreateRandomVectorDouble(57, n, bStride);
+            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
             var chol = a.Cholesky();
-            var destination = Utilities.CreateRandomVectorDouble(66, n, dstStride);
+            var destination = Utilities.CreateRandomVectorSingle(66, n, dstStride);
             chol.Solve(b, destination);
 
             var expected = a.Svd().Solve(b);
 
             for (var i = 0; i < n; i++)
             {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
             }
 
             Utilities.FailIfOutOfRangeWrite(destination);
@@ -105,7 +105,7 @@ namespace NumFlatTest
         public void Solve_Arg1(int n, int aStride, int bStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = Utilities.CreateRandomVectorDouble(57, n, bStride);
+            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
             var chol = a.Cholesky();
             var destination = chol.Solve(b);
 
@@ -113,13 +113,13 @@ namespace NumFlatTest
 
             for (var i = 0; i < n; i++)
             {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
             }
         }
 
-        private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)
+        private static Mat<float> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = Utilities.CreateRandomMatrixDouble(seed, n, n, stride);
+            var mat = Utilities.CreateRandomMatrixSingle(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -127,11 +127,11 @@ namespace NumFlatTest
                 {
                     if (row == col)
                     {
-                        mat[row, col] = 2 + 2 * random.NextDouble();
+                        mat[row, col] = 2 + 2 * random.NextSingle();
                     }
                     else
                     {
-                        mat[row, col] = Utilities.NextDouble(random);
+                        mat[row, col] = Utilities.NextSingle(random);
                         mat[col, row] = mat[row, col];
                     }
                 }
