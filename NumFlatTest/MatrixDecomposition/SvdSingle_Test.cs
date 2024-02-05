@@ -55,8 +55,6 @@ namespace NumFlatTest
             var expected = Utilities.ToMathNet(a).Svd().S;
 
             NumAssert.AreSame(expected, actual, 1.0E-6F);
-
-            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1, 1, 1, 1)]
@@ -179,8 +177,6 @@ namespace NumFlatTest
             }
 
             NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
-
-            Utilities.FailIfOutOfRangeWrite(actual);
         }
 
         private static void CheckUnitary(Mat<float> mat)

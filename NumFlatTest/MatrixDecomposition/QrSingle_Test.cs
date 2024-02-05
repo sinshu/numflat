@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
@@ -20,27 +21,22 @@ namespace NumFlatTest
         [TestCase(8, 3, 9, 9, 9)]
         public void Decompose(int m, int n, int aStride, int qStride, int rStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
-            var q = Utilities.CreateRandomMatrixSingle(57, m, n, qStride);
-            var r = Utilities.CreateRandomMatrixSingle(66, n, n, rStride);
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+            var q = TestMatrix.RandomSingle(57, m, n, qStride);
+            var r = TestMatrix.RandomSingle(66, n, n, rStride);
 
-            QrSingle.Decompose(a, q, r);
+            using (a.EnsureUnchanged())
+            {
+                QrSingle.Decompose(a, q, r);
+            }
 
             var reconstructed = q * r;
-            for (var row = 0; row < reconstructed.RowCount; row++)
-            {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
-            }
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
 
             CheckUnitary(q);
 
-            Utilities.FailIfOutOfRangeWrite(q);
-            Utilities.FailIfOutOfRangeWrite(r);
+            TestMatrix.FailIfOutOfRangeWrite(q);
+            TestMatrix.FailIfOutOfRangeWrite(r);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
@@ -55,19 +51,16 @@ namespace NumFlatTest
         [TestCase(8, 3, 9, 9, 9)]
         public void ExtensionMethod(int m, int n, int aStride, int qStride, int rStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
-            var qr = a.Qr();
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+
+            QrSingle qr;
+            using (a.EnsureUnchanged())
+            {
+                qr = a.Qr();
+            }
 
             var reconstructed = qr.Q * qr.R;
-            for (var row = 0; row < reconstructed.RowCount; row++)
-            {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
-            }
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
 
             CheckUnitary(qr.Q);
         }
@@ -83,20 +76,22 @@ namespace NumFlatTest
         [TestCase(6, 3, 7, 4, 2)]
         public void Solve_Arg2(int m, int n, int aStride, int bStride, int dstStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, a.RowCount, bStride);
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var qr = a.Qr();
-            var destination = Utilities.CreateRandomVectorSingle(66, a.ColCount, dstStride);
-            qr.Solve(b, destination);
+
+            var actual = TestVector.RandomSingle(66, a.ColCount, dstStride);
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                qr.Solve(b, actual);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < expected.Count; i++)
-            {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            Utilities.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -110,36 +105,27 @@ namespace NumFlatTest
         [TestCase(6, 3, 7, 4)]
         public void Solve_Arg1(int m, int n, int aStride, int bStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, a.RowCount, bStride);
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var qr = a.Qr();
-            var destination = qr.Solve(b);
+
+            Vec<float> actual;
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                actual = qr.Solve(b);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < expected.Count; i++)
-            {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
         }
 
         private static void CheckUnitary(Mat<float> mat)
         {
-            var identity = mat.Transpose() * mat;
-            for (var row = 0; row < identity.RowCount; row++)
-            {
-                for (var col = 0; col < identity.ColCount; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-6));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-6));
-                    }
-                }
-            }
+            var actual = mat.Transpose() * mat;
+            var expected = MatrixBuilder.Identity<float>(actual.RowCount);
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
         }
     }
 }
