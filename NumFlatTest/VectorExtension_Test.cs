@@ -19,11 +19,17 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
-            var destination = x.PointwiseMul(y);
 
-            var expected = x.Zip(y, (val1, val2) => val1 * val2).ToArray();
-            var actual = destination.ToArray();
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            var expected = x.Zip(y, (val1, val2) => val1 * val2).ToVector();
+
+            Vec<double> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
+            {
+                actual = x.PointwiseMul(y);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1)]
@@ -36,11 +42,17 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
             var y = Utilities.CreateRandomVectorNonZeroDouble(57, count, yStride);
-            var destination = x.PointwiseDiv(y);
 
-            var expected = x.Zip(y, (val1, val2) => val1 / val2).ToArray();
-            var actual = destination.ToArray();
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            var expected = x.Zip(y, (val1, val2) => val1 / val2).ToVector();
+
+            Vec<double> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
+            {
+                actual = x.PointwiseDiv(y);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -57,21 +69,19 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorSingle(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorSingle(57, yCount, yStride);
-            var destination = x.Outer(y);
 
-            var mx = new MathNet.Numerics.LinearAlgebra.Single.DenseVector(x.ToArray());
-            var my = new MathNet.Numerics.LinearAlgebra.Single.DenseVector(y.ToArray());
-            var md = mx.OuterProduct(my);
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var expected = mx.OuterProduct(my);
 
-            for (var row = 0; row < md.RowCount; row++)
+            Mat<float> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
             {
-                for (var col = 0; col < md.ColumnCount; col++)
-                {
-                    var expected = md[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
+                actual = x.Outer(y);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -88,21 +98,19 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorDouble(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorDouble(57, yCount, yStride);
-            var destination = x.Outer(y);
 
-            var mx = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(x.ToArray());
-            var my = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(y.ToArray());
-            var md = mx.OuterProduct(my);
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var expected = mx.OuterProduct(my);
 
-            for (var row = 0; row < md.RowCount; row++)
+            Mat<double> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
             {
-                for (var col = 0; col < md.ColumnCount; col++)
-                {
-                    var expected = md[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
-                }
+                actual = x.Outer(y);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -119,22 +127,19 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
-            var destination = x.Outer(y, false);
 
-            var mx = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(x.ToArray());
-            var my = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(y.ToArray());
-            var md = mx.OuterProduct(my);
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var expected = mx.OuterProduct(my);
 
-            for (var row = 0; row < md.RowCount; row++)
+            Mat<Complex> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
             {
-                for (var col = 0; col < md.ColumnCount; col++)
-                {
-                    var expected = md[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
+                actual = x.Outer(y, false);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -151,22 +156,19 @@ namespace NumFlatTest
         {
             var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
             var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
-            var destination = x.Outer(y, true);
 
-            var mx = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(x.ToArray());
-            var my = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(y.ToArray()).Conjugate();
-            var md = mx.OuterProduct(my);
+            var mx = Utilities.ToMathNet(x);
+            var my = Utilities.ToMathNet(y);
+            var expected = mx.OuterProduct(my.Conjugate());
 
-            for (var row = 0; row < md.RowCount; row++)
+            Mat<Complex> actual;
+            using (x.EnsureNoChange())
+            using (y.EnsureNoChange())
             {
-                for (var col = 0; col < md.ColumnCount; col++)
-                {
-                    var expected = md[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
+                actual = x.Outer(y, true);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1)]
@@ -178,12 +180,16 @@ namespace NumFlatTest
         public void Conjugate(int count, int xStride)
         {
             var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
-            var destination = x.Conjugate();
 
-            for (var i = 0; i < count; i++)
+            var expected = x.Select(value => value.Conjugate()).ToVector();
+
+            Vec<Complex> actual;
+            using (x.EnsureNoChange())
             {
-                Assert.That(x[i].Conjugate() == destination[i]);
+                actual = x.Conjugate();
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1)]
@@ -194,16 +200,18 @@ namespace NumFlatTest
         [TestCase(5, 7)]
         public void ToRowMatrix(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
-            var destination = x.ToRowMatrix();
+            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
 
-            Assert.That(destination.RowCount == 1);
-            Assert.That(destination.ColCount == x.Count);
-
-            for (var i = 0; i < x.Count; i++)
+            Mat<double> actual;
+            using (x.EnsureNoChange())
             {
-                Assert.That(destination[0, i] == x[i]);
+                actual = x.ToRowMatrix();
             }
+
+            Assert.That(actual.RowCount, Is.EqualTo(1));
+            Assert.That(actual.ColCount, Is.EqualTo(x.Count));
+
+            NumAssert.AreSame(x, actual.Rows[0], 0);
         }
 
         [TestCase(1, 1)]
@@ -214,16 +222,18 @@ namespace NumFlatTest
         [TestCase(5, 7)]
         public void ToColMatrix(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
-            var destination = x.ToColMatrix();
+            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
 
-            Assert.That(destination.RowCount == x.Count);
-            Assert.That(destination.ColCount == 1);
-
-            for (var i = 0; i < x.Count; i++)
+            Mat<double> actual;
+            using (x.EnsureNoChange())
             {
-                Assert.That(destination[i, 0] == x[i]);
+                actual = x.ToColMatrix();
             }
+
+            Assert.That(actual.RowCount, Is.EqualTo(x.Count));
+            Assert.That(actual.ColCount, Is.EqualTo(1));
+
+            NumAssert.AreSame(x, actual.Cols[0], 0);
         }
 
         [TestCase(1, 1, 1)]
@@ -235,13 +245,16 @@ namespace NumFlatTest
         public void Map(int count, int xStride, int dstStride)
         {
             var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var destination = x.Map(value => new Complex(0, -value));
 
-            for (var i = 0; i < count; i++)
+            var expected = x.Select(value => new Complex(0, -value)).ToVector();
+
+            Vec <Complex> actual;
+            using (x.EnsureNoChange())
             {
-                Assert.That(destination[i].Real == 0);
-                Assert.That(destination[i].Imaginary == -x[i]);
+                actual = x.Map(value => new Complex(0, -value));
             }
+
+            NumAssert.AreSame(expected, actual, 0);
         }
     }
 }

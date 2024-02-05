@@ -12,17 +12,17 @@ namespace NumFlatTest
         [Test]
         public void Create()
         {
-            var source = new int[] { 1, 2, 3 };
-            var vector = VectorBuilder.Create<int>(source);
-            CollectionAssert.AreEqual(source, vector.ToArray());
+            var expected = new int[] { 1, 2, 3 };
+            var actual = VectorBuilder.Create<int>(expected).ToArray();
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [Test]
         public void ToVector()
         {
-            var source = new int[] { 1, 2, 3 };
-            var vector = source.ToVector();
-            CollectionAssert.AreEqual(source, vector.ToArray());
+            var expected = new int[] { 1, 2, 3 };
+            var actual = expected.ToVector().ToArray();
+            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }
