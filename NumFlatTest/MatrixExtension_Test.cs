@@ -57,7 +57,7 @@ namespace NumFlatTest
         public void PointwiseDiv(int rowCount, int colCount, int xStride, int yStride)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
-            var y = TestMatrix.RandomDouble(57, rowCount, colCount, yStride);
+            var y = TestMatrix.NonZeroRandomDouble(57, rowCount, colCount, yStride);
 
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseDiv(yCol).AsEnumerable()).ColsToMatrix();
 

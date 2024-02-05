@@ -30,6 +30,29 @@ namespace NumFlatTest
             return new Mat<float>(rowCount, colCount, stride, memory);
         }
 
+        public static Mat<float> NonZeroRandomSingle(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new float[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = float.NaN;
+            }
+
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = Utilities.NextSingleNonZero(random);
+                }
+            }
+
+            return new Mat<float>(rowCount, colCount, stride, memory);
+        }
+
         public static Mat<double> RandomDouble(int seed, int rowCount, int colCount, int stride)
         {
             var random = new Random(seed);
@@ -53,6 +76,29 @@ namespace NumFlatTest
             return new Mat<double>(rowCount, colCount, stride, memory);
         }
 
+        public static Mat<double> NonZeroRandomDouble(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new double[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = double.NaN;
+            }
+
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = Utilities.NextDoubleNonZero(random);
+                }
+            }
+
+            return new Mat<double>(rowCount, colCount, stride, memory);
+        }
+
         public static Mat<Complex> RandomComplex(int seed, int rowCount, int colCount, int stride)
         {
             var random = new Random(seed);
@@ -70,6 +116,29 @@ namespace NumFlatTest
                 {
                     var position = offset + i;
                     memory[position] = Utilities.NextComplex(random);
+                }
+            }
+
+            return new Mat<Complex>(rowCount, colCount, stride, memory);
+        }
+
+        public static Mat<Complex> NonZeroRandomComplex(int seed, int rowCount, int colCount, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new Complex[stride * (colCount - 1) + rowCount];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = Complex.NaN;
+            }
+
+            for (var col = 0; col < colCount; col++)
+            {
+                var offset = stride * col;
+                for (var i = 0; i < rowCount; i++)
+                {
+                    var position = offset + i;
+                    memory[position] = Utilities.NextComplexNonZero(random);
                 }
             }
 
