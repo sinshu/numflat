@@ -7,11 +7,11 @@ namespace NumFlat
     /// <summary>
     /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SvdSingle
+    public class SingularValueDecompositionDouble
     {
-        private readonly Vec<float> s;
-        private readonly Mat<float> u;
-        private readonly Mat<float> vt;
+        private readonly Vec<double> s;
+        private readonly Mat<double> u;
+        private readonly Mat<double> vt;
 
         /// <summary>
         /// Decomposes the matrix A using SVD.
@@ -19,13 +19,13 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public SvdSingle(in Mat<float> a)
+        public SingularValueDecompositionDouble(in Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            var s = new Vec<float>(Math.Min(a.RowCount, a.ColCount));
-            var u = new Mat<float>(a.RowCount, a.RowCount);
-            var vt = new Mat<float>(a.ColCount, a.ColCount);
+            var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
+            var u = new Mat<double>(a.RowCount, a.RowCount);
+            var vt = new Mat<double>(a.ColCount, a.ColCount);
             Decompose(a, s, u, vt);
 
             this.s = s;
@@ -48,7 +48,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static unsafe void GetSingularValues(in Mat<float> a, in Vec<float> s)
+        public static unsafe void GetSingularValues(in Mat<double> a, in Vec<double> s)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(s, nameof(s));
@@ -69,22 +69,22 @@ namespace NumFlat
             //
 
             var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<float>.Shared.Rent(aLength);
-            var aCopy = new Mat<float>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            using var aBuffer = MemoryPool<double>.Shared.Rent(aLength);
+            var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
             a.CopyTo(aCopy);
 
             var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
-            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
-            var sCopy = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var sCopy = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
 
-            using var workBuffer = MemoryPool<float>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
+            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
             var work = workBuffer.Memory.Span;
 
-            fixed (float* pa = aCopy.Memory.Span)
-            fixed (float* ps = sCopy.Memory.Span)
-            fixed (float* pwork = work)
+            fixed (double* pa = aCopy.Memory.Span)
+            fixed (double* ps = sCopy.Memory.Span)
+            fixed (double* pwork = work)
             {
-                var info = Lapack.Sgesvd(
+                var info = Lapack.Dgesvd(
                     MatrixLayout.ColMajor,
                     'N', 'N',
                     aCopy.RowCount, aCopy.ColCount,
@@ -95,7 +95,7 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Sgesvd), (int)info);
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
                 }
             }
 
@@ -123,7 +123,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
+        public static unsafe void Decompose(in Mat<double> a, in Vec<double> s, in Mat<double> u, in Mat<double> vt)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(s, nameof(s));
@@ -156,24 +156,24 @@ namespace NumFlat
             //
 
             var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<float>.Shared.Rent(aLength);
-            var aCopy = new Mat<float>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
+            using var aBuffer = MemoryPool<double>.Shared.Rent(aLength);
+            var aCopy = new Mat<double>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
             a.CopyTo(aCopy);
 
             var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
-            using var sBuffer = MemoryPool<float>.Shared.Rent(sLength);
-            var sCopy = new Vec<float>(sBuffer.Memory.Slice(0, sLength));
+            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
+            var sCopy = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
 
-            using var workBuffer = MemoryPool<float>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
+            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
             var work = workBuffer.Memory.Span;
 
-            fixed (float* pa = aCopy.Memory.Span)
-            fixed (float* ps = sCopy.Memory.Span)
-            fixed (float* pu = u.Memory.Span)
-            fixed (float* pvt = vt.Memory.Span)
-            fixed (float* pwork = work)
+            fixed (double* pa = aCopy.Memory.Span)
+            fixed (double* ps = sCopy.Memory.Span)
+            fixed (double* pu = u.Memory.Span)
+            fixed (double* pvt = vt.Memory.Span)
+            fixed (double* pwork = work)
             {
-                var info = Lapack.Sgesvd(
+                var info = Lapack.Dgesvd(
                     MatrixLayout.ColMajor,
                     'A', 'A',
                     aCopy.RowCount, aCopy.ColCount,
@@ -184,7 +184,7 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Sgesvd), (int)info);
+                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Dgesvd), (int)info);
                 }
             }
 
@@ -203,7 +203,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public void Solve(in Vec<float> b, in Vec<float> destination)
+        public void Solve(in Vec<double> b, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -219,8 +219,8 @@ namespace NumFlat
             }
 
             var tmpLength = vt.RowCount;
-            using var tmpBuffer = MemoryPool<float>.Shared.Rent(tmpLength);
-            var tmp = new Vec<float>(tmpBuffer.Memory.Slice(0, tmpLength));
+            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
+            var tmp = new Vec<double>(tmpBuffer.Memory.Slice(0, tmpLength));
             tmp.Clear();
 
             var ts = tmp.Subvector(0, s.Count);
@@ -241,7 +241,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public Vec<float> Solve(in Vec<float> b)
+        public Vec<double> Solve(in Vec<double> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -250,7 +250,7 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match 'U.RowCount'.");
             }
 
-            var x = new Vec<float>(vt.RowCount);
+            var x = new Vec<double>(vt.RowCount);
             Solve(b, x);
             return x;
         }
@@ -258,16 +258,16 @@ namespace NumFlat
         /// <summary>
         /// The diagonal elements of the matrix S.
         /// </summary>
-        public ref readonly Vec<float> S => ref s;
+        public ref readonly Vec<double> S => ref s;
 
         /// <summary>
         /// The matrix U.
         /// </summary>
-        public ref readonly Mat<float> U => ref u;
+        public ref readonly Mat<double> U => ref u;
 
         /// <summary>
         /// The matrix V^T.
         /// </summary>
-        public ref readonly Mat<float> VT => ref vt;
+        public ref readonly Mat<double> VT => ref vt;
     }
 }

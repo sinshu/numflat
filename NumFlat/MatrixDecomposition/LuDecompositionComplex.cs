@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -7,9 +8,9 @@ namespace NumFlat
     /// <summary>
     /// Provides the LU decomposition.
     /// </summary>
-    public class LuDouble
+    public class LuDecompositionComplex
     {
-        private Mat<double> lapackDecomposed;
+        private Mat<Complex> lapackDecomposed;
         private int[] lapackPiv;
 
         /// <summary>
@@ -21,26 +22,26 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        public unsafe LuDouble(in Mat<double> a)
+        public unsafe LuDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            lapackDecomposed = new Mat<double>(a.RowCount, a.ColCount);
+            lapackDecomposed = new Mat<Complex>(a.RowCount, a.ColCount);
             lapackPiv = new int[Math.Min(a.RowCount, a.ColCount)];
 
             a.CopyTo(lapackDecomposed);
 
-            fixed (double* pld = lapackDecomposed.Memory.Span)
+            fixed (Complex* pld = lapackDecomposed.Memory.Span)
             fixed (int* ppiv = lapackPiv)
             {
-                var info = Lapack.Dgetrf(
+                var info = Lapack.Zgetrf(
                     MatrixLayout.ColMajor,
                     lapackDecomposed.RowCount, lapackDecomposed.ColCount,
                     pld, lapackDecomposed.Stride,
                     ppiv);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zgetrf), (int)info);
                 }
             }
         }
@@ -57,7 +58,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
+        public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
             {
@@ -78,15 +79,15 @@ namespace NumFlat
             }
 
             var tmpLength = lapackDecomposed.RowCount;
-            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
-            var tmp = new Vec<double>(tmpBuffer.Memory.Slice(0, tmpLength));
+            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
+            var tmp = new Vec<Complex>(tmpBuffer.Memory.Slice(0, tmpLength));
             b.CopyTo(tmp);
 
-            fixed (double* pld = lapackDecomposed.Memory.Span)
+            fixed (Complex* pld = lapackDecomposed.Memory.Span)
             fixed (int* ppiv = lapackPiv)
-            fixed (double* ptmp = tmp.Memory.Span)
+            fixed (Complex* ptmp = tmp.Memory.Span)
             {
-                var info = Lapack.Dgetrs(
+                var info = Lapack.Zgetrs(
                     MatrixLayout.ColMajor,
                     'N',
                     lapackDecomposed.RowCount,
@@ -112,7 +113,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public Vec<double> Solve(in Vec<double> b)
+        public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -126,7 +127,7 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
             }
 
-            var x = new Vec<double>(lapackDecomposed.RowCount);
+            var x = new Vec<Complex>(lapackDecomposed.RowCount);
             Solve(b, x);
             return x;
         }
@@ -140,11 +141,11 @@ namespace NumFlat
         /// <remarks>
         /// This method allocates a new matrix.
         /// </remarks>
-        public Mat<double> GetL()
+        public Mat<Complex> GetL()
         {
             var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
 
-            var l = new Mat<double>(lapackDecomposed.RowCount, min);
+            var l = new Mat<Complex>(lapackDecomposed.RowCount, min);
             for (var i = 0; i < min; i++)
             {
                 var lCol = l.Cols[i];
@@ -168,11 +169,11 @@ namespace NumFlat
         /// <remarks>
         /// This method allocates a new matrix.
         /// </remarks>
-        public Mat<double> GetU()
+        public Mat<Complex> GetU()
         {
             var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
 
-            var u = new Mat<double>(min, lapackDecomposed.ColCount);
+            var u = new Mat<Complex>(min, lapackDecomposed.ColCount);
             for (var i = 0; i < min; i++)
             {
                 var uRow = u.Rows[i];
@@ -216,14 +217,11 @@ namespace NumFlat
         /// <returns>
         /// The permutation matrix.
         /// </returns>
-        /// <remarks>
-        /// This method allocates a new matrix.
-        /// </remarks>
-        public Mat<double> GetP()
+        public Mat<Complex> GetP()
         {
             var permutation = GetPermutation();
 
-            var p = new Mat<double>(permutation.Length, permutation.Length);
+            var p = new Mat<Complex>(permutation.Length, permutation.Length);
             for (var i = 0; i < permutation.Length; i++)
             {
                 p[permutation[i], i] = 1;

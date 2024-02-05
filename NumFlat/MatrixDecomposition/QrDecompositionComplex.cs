@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -7,10 +8,10 @@ namespace NumFlat
     /// <summary>
     /// Provides the QR decomposition.
     /// </summary>
-    public class QrSingle
+    public class QrDecompositionComplex
     {
-        private Mat<float> q;
-        private Mat<float> r;
+        private Mat<Complex> q;
+        private Mat<Complex> r;
 
         /// <summary>
         /// Decomposes the matrix A using QR decomposition.
@@ -18,7 +19,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public QrSingle(in Mat<float> a)
+        public QrDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -27,8 +28,8 @@ namespace NumFlat
                 throw new ArgumentException("'a.RowCount' must be greater than or equal to 'a.ColCount'.");
             }
 
-            var q = new Mat<float>(a.RowCount, a.ColCount);
-            var r = new Mat<float>(a.ColCount, a.ColCount);
+            var q = new Mat<Complex>(a.RowCount, a.ColCount);
+            var r = new Mat<Complex>(a.ColCount, a.ColCount);
             Decompose(a, q, r);
 
             this.q = q;
@@ -50,7 +51,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public static unsafe void Decompose(in Mat<float> a, in Mat<float> q, in Mat<float> r)
+        public static unsafe void Decompose(in Mat<Complex> a, in Mat<Complex> q, in Mat<Complex> r)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(q, nameof(q));
@@ -81,15 +82,15 @@ namespace NumFlat
                 throw new ArgumentException("'r.ColCount' must match 'a.ColCount'.");
             }
 
-            using var tauBuffer = MemoryPool<float>.Shared.Rent(a.ColCount);
+            using var tauBuffer = MemoryPool<Complex>.Shared.Rent(a.ColCount);
             var tau = tauBuffer.Memory.Span;
 
             a.CopyTo(q);
 
-            fixed (float* pq = q.Memory.Span)
-            fixed (float* ptau = tau)
+            fixed (Complex* pq = q.Memory.Span)
+            fixed (Complex* ptau = tau)
             {
-                Lapack.Sgeqrf(
+                Lapack.Zgeqrf(
                     MatrixLayout.ColMajor,
                     q.RowCount, q.ColCount,
                     pq, q.Stride,
@@ -103,7 +104,7 @@ namespace NumFlat
                     qCols[col].Subvector(0, col + 1).CopyTo(rCols[col].Subvector(0, col + 1));
                 }
 
-                Lapack.Sorgqr(
+                Lapack.Zungqr(
                     MatrixLayout.ColMajor,
                     q.RowCount, q.ColCount, q.ColCount,
                     pq, q.Stride,
@@ -120,7 +121,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the vector x.
         /// </param>
-        public unsafe void Solve(in Vec<float> b, in Vec<float> destination)
+        public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -135,12 +136,12 @@ namespace NumFlat
                 throw new ArgumentException("'destination.Count' must match 'R.RowCount'.");
             }
 
-            Mat.Mul(q, b, destination, true);
+            Mat.Mul(q, b, destination, true, true);
 
-            fixed (float* pr = r.Memory.Span)
-            fixed (float* pd = destination.Memory.Span)
+            fixed (Complex* pr = r.Memory.Span)
+            fixed (Complex* pd = destination.Memory.Span)
             {
-                Blas.Strsv(
+                Blas.Ztrsv(
                     Order.ColMajor,
                     Uplo.Upper,
                     Transpose.NoTrans,
@@ -160,7 +161,7 @@ namespace NumFlat
         /// <returns>
         /// The vector x.
         /// </returns>
-        public unsafe Vec<float> Solve(in Vec<float> b)
+        public unsafe Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -169,7 +170,7 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match 'Q.RowCount'.");
             }
 
-            var x = new Vec<float>(r.RowCount);
+            var x = new Vec<Complex>(r.RowCount);
             Solve(b, x);
             return x;
         }
@@ -177,11 +178,11 @@ namespace NumFlat
         /// <summary>
         /// The matrix Q.
         /// </summary>
-        public ref readonly Mat<float> Q => ref q;
+        public ref readonly Mat<Complex> Q => ref q;
 
         /// <summary>
         /// The matrix R.
         /// </summary>
-        public ref readonly Mat<float> R => ref r;
+        public ref readonly Mat<Complex> R => ref r;
     }
 }

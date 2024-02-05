@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -8,9 +7,9 @@ namespace NumFlat
     /// <summary>
     /// Provides the Cholesky decomposition.
     /// </summary>
-    public class CholeskyComplex
+    public class CholeskyDecompositionDouble
     {
-        private Mat<Complex> l;
+        private Mat<double> l;
 
         /// <summary>
         /// Decomposes the matrix A using Cholesky decomposition.
@@ -18,7 +17,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public CholeskyComplex(in Mat<Complex> a)
+        public CholeskyDecompositionDouble(in Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -27,7 +26,7 @@ namespace NumFlat
                 throw new ArgumentException("The matrix 'a' must be a square matrix.");
             }
 
-            var l = new Mat<Complex>(a.RowCount, a.ColCount);
+            var l = new Mat<double>(a.RowCount, a.ColCount);
             Decompose(a, l);
 
             this.l = l;
@@ -45,7 +44,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        public static unsafe void Decompose(in Mat<Complex> a, in Mat<Complex> l)
+        public static unsafe void Decompose(in Mat<double> a, in Mat<double> l)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(l, nameof(l));
@@ -58,16 +57,16 @@ namespace NumFlat
 
             a.CopyTo(l);
 
-            fixed (Complex* pl = l.Memory.Span)
+            fixed (double* pl = l.Memory.Span)
             {
-                var info = Lapack.Zpotrf(
+                var info = Lapack.Dpotrf(
                     MatrixLayout.ColMajor,
                     'L',
                     l.RowCount,
                     pl, l.Stride);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Zpotrf), (int)info);
+                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dpotrf), (int)info);
                 }
             }
 
@@ -90,7 +89,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
+        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -106,14 +105,14 @@ namespace NumFlat
             }
 
             var tmpLength = l.RowCount;
-            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
-            var tmp = new Vec<Complex>(tmpBuffer.Memory.Slice(0, tmpLength));
+            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
+            var tmp = new Vec<double>(tmpBuffer.Memory.Slice(0, tmpLength));
             b.CopyTo(tmp);
 
-            fixed (Complex* pl = l.Memory.Span)
-            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (double* pl = l.Memory.Span)
+            fixed (double* ptmp = tmp.Memory.Span)
             {
-                var info = Lapack.Zpotrs(
+                var info = Lapack.Dpotrs(
                     MatrixLayout.ColMajor,
                     'L',
                     l.RowCount,
@@ -138,7 +137,7 @@ namespace NumFlat
         /// <remarks>
         /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
         /// </remarks>
-        public Vec<Complex> Solve(in Vec<Complex> b)
+        public Vec<double> Solve(in Vec<double> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -147,7 +146,7 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
             }
 
-            var x = new Vec<Complex>(l.RowCount);
+            var x = new Vec<double>(l.RowCount);
             Solve(b, x);
             return x;
         }
@@ -155,6 +154,6 @@ namespace NumFlat
         /// <summary>
         /// The matrix L.
         /// </summary>
-        public ref readonly Mat<Complex> L => ref l;
+        public ref readonly Mat<double> L => ref l;
     }
 }

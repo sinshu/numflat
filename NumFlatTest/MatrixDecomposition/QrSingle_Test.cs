@@ -27,7 +27,7 @@ namespace NumFlatTest
 
             using (a.EnsureUnchanged())
             {
-                QrSingle.Decompose(a, q, r);
+                QrDecompositionSingle.Decompose(a, q, r);
             }
 
             var reconstructed = q * r;
@@ -53,7 +53,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, m, n, aStride);
 
-            QrSingle qr;
+            QrDecompositionSingle qr;
             using (a.EnsureUnchanged())
             {
                 qr = a.Qr();

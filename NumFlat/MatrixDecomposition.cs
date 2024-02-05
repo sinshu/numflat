@@ -15,13 +15,13 @@ namespace NumFlat
         /// The matrix to be decomposed using LU decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuSingle"/>'.
+        /// An instance of '<see cref="LuDecompositionSingle"/>'.
         /// </returns>
-        public static LuSingle Lu(in this Mat<float> a)
+        public static LuDecompositionSingle Lu(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new LuSingle(a);
+            return new LuDecompositionSingle(a);
         }
 
         /// <summary>
@@ -31,13 +31,13 @@ namespace NumFlat
         /// The matrix to be decomposed using LU decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuDouble"/>'.
+        /// An instance of '<see cref="LuDecompositionDouble"/>'.
         /// </returns>
-        public static LuDouble Lu(in this Mat<double> a)
+        public static LuDecompositionDouble Lu(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new LuDouble(a);
+            return new LuDecompositionDouble(a);
         }
 
         /// <summary>
@@ -47,13 +47,13 @@ namespace NumFlat
         /// The matrix to be decomposed using LU decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuComplex"/>'.
+        /// An instance of '<see cref="LuDecompositionComplex"/>'.
         /// </returns>
-        public static LuComplex Lu(in this Mat<Complex> a)
+        public static LuDecompositionComplex Lu(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new LuComplex(a);
+            return new LuDecompositionComplex(a);
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace NumFlat
         /// The matrix to be decomposed using QR decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrSingle"/>'.
+        /// An instance of '<see cref="QrDecompositionSingle"/>'.
         /// </returns>
-        public static QrSingle Qr(in this Mat<float> a)
+        public static QrDecompositionSingle Qr(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new QrSingle(a);
+            return new QrDecompositionSingle(a);
         }
 
         /// <summary>
@@ -79,13 +79,13 @@ namespace NumFlat
         /// The matrix to be decomposed using QR decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrDouble"/>'.
+        /// An instance of '<see cref="QrDecompositionDouble"/>'.
         /// </returns>
-        public static QrDouble Qr(in this Mat<double> a)
+        public static QrDecompositionDouble Qr(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new QrDouble(a);
+            return new QrDecompositionDouble(a);
         }
 
         /// <summary>
@@ -95,13 +95,13 @@ namespace NumFlat
         /// The matrix to be decomposed using QR decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrComplex"/>'.
+        /// An instance of '<see cref="QrDecompositionComplex"/>'.
         /// </returns>
-        public static QrComplex Qr(in this Mat<Complex> a)
+        public static QrDecompositionComplex Qr(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new QrComplex(a);
+            return new QrDecompositionComplex(a);
         }
 
         /// <summary>
@@ -111,13 +111,13 @@ namespace NumFlat
         /// The matrix to be decomposed using Cholesky decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskySingle"/>'.
+        /// An instance of '<see cref="CholeskyDecompositionSingle"/>'.
         /// </returns>
-        public static CholeskySingle Cholesky(in this Mat<float> a)
+        public static CholeskyDecompositionSingle Cholesky(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new CholeskySingle(a);
+            return new CholeskyDecompositionSingle(a);
         }
 
         /// <summary>
@@ -127,13 +127,13 @@ namespace NumFlat
         /// The matrix to be decomposed using Cholesky decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskyDouble"/>'.
+        /// An instance of '<see cref="CholeskyDecompositionDouble"/>'.
         /// </returns>
-        public static CholeskyDouble Cholesky(in this Mat<double> a)
+        public static CholeskyDecompositionDouble Cholesky(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new CholeskyDouble(a);
+            return new CholeskyDecompositionDouble(a);
         }
 
         /// <summary>
@@ -143,13 +143,13 @@ namespace NumFlat
         /// The matrix to be decomposed using Cholesky decomposition.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskyComplex"/>'.
+        /// An instance of '<see cref="CholeskyDecompositionComplex"/>'.
         /// </returns>
-        public static CholeskyComplex Cholesky(in this Mat<Complex> a)
+        public static CholeskyDecompositionComplex Cholesky(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new CholeskyComplex(a);
+            return new CholeskyDecompositionComplex(a);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             var s = new Vec<float>(Math.Min(a.RowCount, a.ColCount));
-            SvdSingle.GetSingularValues(a, s);
+            SingularValueDecompositionSingle.GetSingularValues(a, s);
             return s;
         }
 
@@ -184,7 +184,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
-            SvdDouble.GetSingularValues(a, s);
+            SingularValueDecompositionDouble.GetSingularValues(a, s);
             return s;
         }
 
@@ -202,7 +202,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
             var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
-            SvdComplex.GetSingularValues(a, s);
+            SingularValueDecompositionComplex.GetSingularValues(a, s);
             return s;
         }
 
@@ -213,13 +213,13 @@ namespace NumFlat
         /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="SvdSingle"/>'.
+        /// An instance of '<see cref="SingularValueDecompositionSingle"/>'.
         /// </returns>
-        public static SvdSingle Svd(in this Mat<float> a)
+        public static SingularValueDecompositionSingle Svd(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SvdSingle(a);
+            return new SingularValueDecompositionSingle(a);
         }
 
         /// <summary>
@@ -229,13 +229,13 @@ namespace NumFlat
         /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="SvdDouble"/>'.
+        /// An instance of '<see cref="SingularValueDecompositionDouble"/>'.
         /// </returns>
-        public static SvdDouble Svd(in this Mat<double> a)
+        public static SingularValueDecompositionDouble Svd(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SvdDouble(a);
+            return new SingularValueDecompositionDouble(a);
         }
 
         /// <summary>
@@ -245,13 +245,13 @@ namespace NumFlat
         /// The matrix to be decomposed using SVD.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="SvdComplex"/>'.
+        /// An instance of '<see cref="SingularValueDecompositionComplex"/>'.
         /// </returns>
-        public static SvdComplex Svd(in this Mat<Complex> a)
+        public static SingularValueDecompositionComplex Svd(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            return new SvdComplex(a);
+            return new SingularValueDecompositionComplex(a);
         }
     }
 }

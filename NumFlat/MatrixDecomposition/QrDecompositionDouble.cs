@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the QR decomposition.
     /// </summary>
-    public class QrDouble
+    public class QrDecompositionDouble
     {
         private Mat<double> q;
         private Mat<double> r;
@@ -18,7 +18,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix A to be decomposed.
         /// </param>
-        public QrDouble(in Mat<double> a)
+        public QrDecompositionDouble(in Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 

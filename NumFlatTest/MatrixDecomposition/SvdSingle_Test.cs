@@ -24,7 +24,7 @@ namespace NumFlatTest
             var actual = TestVector.RandomSingle(57, Math.Min(m, n), sStride);
             using (a.EnsureUnchanged())
             {
-                SvdSingle.GetSingularValues(a, actual);
+                SingularValueDecompositionSingle.GetSingularValues(a, actual);
             }
 
             var expected = Interop.ToMathNet(a).Svd().S;
@@ -74,7 +74,7 @@ namespace NumFlatTest
 
             using (a.EnsureUnchanged())
             {
-                SvdSingle.Decompose(a, s, u, vt);
+                SingularValueDecompositionSingle.Decompose(a, s, u, vt);
             }
 
             var reconstructed = u * s.ToDiagonalMatrix(m, n) * vt;
@@ -100,7 +100,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, m, n, aStride);
 
-            SvdSingle svd;
+            SingularValueDecompositionSingle svd;
             using (a.EnsureUnchanged())
             {
                 svd = a.Svd();

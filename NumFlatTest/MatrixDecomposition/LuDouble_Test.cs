@@ -27,7 +27,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomDouble(42, m, n, aStride);
 
-            LuDouble lu;
+            LuDecompositionDouble lu;
             using (a.EnsureUnchanged())
             {
                 lu = a.Lu();

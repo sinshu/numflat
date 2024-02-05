@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the LU decomposition.
     /// </summary>
-    public class LuSingle
+    public class LuDecompositionSingle
     {
         private Mat<float> lapackDecomposed;
         private int[] lapackPiv;
@@ -21,7 +21,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        public unsafe LuSingle(in Mat<float> a)
+        public unsafe LuDecompositionSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 

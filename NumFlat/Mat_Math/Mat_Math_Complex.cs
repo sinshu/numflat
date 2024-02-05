@@ -287,7 +287,7 @@ namespace NumFlat
             var sLength = Math.Min(x.RowCount, x.ColCount);
             using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
             var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
-            SvdComplex.GetSingularValues(x, s);
+            SingularValueDecompositionComplex.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
@@ -373,7 +373,7 @@ namespace NumFlat
             using var vtBuffer = MemoryPool<Complex>.Shared.Rent(vtLength);
             var vt = new Mat<Complex>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
 
-            SvdComplex.Decompose(a, s, u, vt);
+            SingularValueDecompositionComplex.Decompose(a, s, u, vt);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))

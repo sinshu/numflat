@@ -24,7 +24,7 @@ namespace NumFlatTest
             var l = TestMatrix.RandomDouble(0, n, n, lStride);
             using (a.EnsureUnchanged())
             {
-                CholeskyDouble.Decompose(a, l);
+                CholeskyDecompositionDouble.Decompose(a, l);
             }
 
             var reconstructed = l * l.Transpose();
@@ -45,7 +45,7 @@ namespace NumFlatTest
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            CholeskyDouble chol;
+            CholeskyDecompositionDouble chol;
             using (a.EnsureUnchanged())
             {
                 chol = a.Cholesky();

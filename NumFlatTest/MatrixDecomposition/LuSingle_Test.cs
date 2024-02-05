@@ -27,7 +27,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, m, n, aStride);
 
-            LuSingle lu;
+            LuDecompositionSingle lu;
             using (a.EnsureUnchanged())
             {
                 lu = a.Lu();

@@ -27,7 +27,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
-            LuComplex lu;
+            LuDecompositionComplex lu;
             using (a.EnsureUnchanged())
             {
                 lu = a.Lu();
