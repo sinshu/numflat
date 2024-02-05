@@ -187,7 +187,7 @@ namespace NumFlatTest
             var source = TestVector.RandomDouble(42, count, dstStride);
             var destination = TestVector.RandomDouble(0, count, srcStride);
 
-            using (source.EnsureNoChange())
+            using (source.EnsureUnchanged())
             {
                 source.CopyTo(destination);
             }

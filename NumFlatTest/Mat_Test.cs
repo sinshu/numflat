@@ -329,7 +329,7 @@ namespace NumFlatTest
             var source = TestMatrix.RandomDouble(42, rowCount, colCount, srcStride);
             var destination = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
 
-            using (source.EnsureNoChange())
+            using (source.EnsureUnchanged())
             {
                 source.CopyTo(destination);
             }

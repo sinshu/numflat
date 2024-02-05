@@ -31,8 +31,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => (xCol + yCol).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Mat.Add(x, y, actual);
             }
@@ -64,8 +64,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => (xCol - yCol).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Mat.Sub(x, y, actual);
             }
@@ -96,7 +96,7 @@ namespace NumFlatTest
             var expected = x.Cols.Select(col => (col * y).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Mat.Mul(x, y, actual);
             }
@@ -127,7 +127,7 @@ namespace NumFlatTest
             var expected = x.Cols.Select(col => (col / y).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Mat.Div(x, y, actual);
             }
@@ -159,8 +159,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseMul(yCol).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Mat.PointwiseMul(x, y, actual);
             }
@@ -192,8 +192,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseDiv(yCol).AsEnumerable()).ColsToMatrix();
 
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Mat.PointwiseDiv(x, y, actual);
             }
@@ -219,7 +219,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
             var actual = TestMatrix.RandomDouble(0, colCount, rowCount, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Mat.Transpose(x, actual);
             }
@@ -272,7 +272,7 @@ namespace NumFlatTest
             var expected = x.Cols.Select(col => col.Select(value => new Complex(0, -value))).ColsToMatrix();
 
             Mat<Complex> actual = TestMatrix.RandomComplex(0, rowCount, colCount, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Mat.Map(x, value => new Complex(0, -value), actual);
             }

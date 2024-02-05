@@ -28,12 +28,12 @@ namespace NumFlatTest
 
     public static class MemoryChangeDetection
     {
-        public static MemoryChangeDetection<T> EnsureNoChange<T>(this Vec<T> vector) where T : unmanaged, INumberBase<T>
+        public static MemoryChangeDetection<T> EnsureUnchanged<T>(this Vec<T> vector) where T : unmanaged, INumberBase<T>
         {
             return new MemoryChangeDetection<T>(vector.Memory);
         }
 
-        public static MemoryChangeDetection<T> EnsureNoChange<T>(this Mat<T> matrix) where T : unmanaged, INumberBase<T>
+        public static MemoryChangeDetection<T> EnsureUnchanged<T>(this Mat<T> matrix) where T : unmanaged, INumberBase<T>
         {
             return new MemoryChangeDetection<T>(matrix.Memory);
         }

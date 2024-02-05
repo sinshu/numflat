@@ -31,8 +31,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseMul(yCol).AsEnumerable()).ColsToMatrix();
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.PointwiseMul(y);
             }
@@ -62,8 +62,8 @@ namespace NumFlatTest
             var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseDiv(yCol).AsEnumerable()).ColsToMatrix();
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.PointwiseDiv(y);
             }
@@ -86,7 +86,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.Transpose();
             }
@@ -117,7 +117,7 @@ namespace NumFlatTest
             var expected = x.Map(value => value.Conjugate());
 
             Mat<Complex> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.Conjugate();
             }
@@ -140,7 +140,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
 
             Mat<Complex> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.ConjugateTranspose();
             }
@@ -164,7 +164,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
             Mat<float> inverse;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 inverse = x.Inverse();
             }
@@ -184,7 +184,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, n, n, xStride);
 
             Mat<double> inverse;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 inverse = x.Inverse();
             }
@@ -204,7 +204,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomComplex(42, n, n, xStride);
 
             Mat<Complex> inverse;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 inverse = x.Inverse();
             }
@@ -232,7 +232,7 @@ namespace NumFlatTest
             var expected = ma.PseudoInverse();
 
             Mat<float> actual;
-            using (a.EnsureNoChange())
+            using (a.EnsureUnchanged())
             {
                 actual = a.PseudoInverse();
             }
@@ -258,7 +258,7 @@ namespace NumFlatTest
             var expected = ma.PseudoInverse();
 
             Mat<double> actual;
-            using (a.EnsureNoChange())
+            using (a.EnsureUnchanged())
             {
                 actual = a.PseudoInverse();
             }
@@ -284,7 +284,7 @@ namespace NumFlatTest
             var expected = ma.PseudoInverse();
 
             Mat<Complex> actual;
-            using (a.EnsureNoChange())
+            using (a.EnsureUnchanged())
             {
                 actual = a.PseudoInverse();
             }
@@ -313,7 +313,7 @@ namespace NumFlatTest
             var expected = x.Cols.Select(col => col.Select(value => new Complex(0, -value))).ColsToMatrix();
 
             Mat <Complex> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.Map(value => new Complex(0, -value));
             }

@@ -23,8 +23,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 + val2).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Add(x, y, actual);
             }
@@ -48,8 +48,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 - val2).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Sub(x, y, actual);
             }
@@ -72,7 +72,7 @@ namespace NumFlatTest
             var expected = x.Select(value => value * y).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Vec.Mul(x, y, actual);
             }
@@ -95,7 +95,7 @@ namespace NumFlatTest
             var expected = x.Select(value => value / y).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Vec.Div(x, y, actual);
             }
@@ -119,8 +119,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 * val2).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.PointwiseMul(x, y, actual);
             }
@@ -144,8 +144,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 / val2).ToVector();
 
             var actual = TestVector.RandomDouble(0, count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.PointwiseDiv(x, y, actual);
             }
@@ -166,8 +166,8 @@ namespace NumFlatTest
             var x = TestVector.RandomSingle(42, count, xStride);
             var y = TestVector.RandomSingle(57, count, yStride);
 
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 var actual = x.Dot(y);
                 var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
@@ -186,8 +186,8 @@ namespace NumFlatTest
             var x = TestVector.RandomDouble(42, count, xStride);
             var y = TestVector.RandomDouble(57, count, yStride);
 
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 var actual = x.Dot(y);
                 var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
@@ -206,8 +206,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, count, xStride);
             var y = TestVector.RandomComplex(57, count, yStride);
 
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 var actual = x.Dot(y, false);
                 var expected = x.Zip(y, (val1, val2) => val1 * val2).Aggregate((sum, next) => sum + next);
@@ -227,8 +227,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, count, xStride);
             var y = TestVector.RandomComplex(57, count, yStride);
 
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 var actual = x.Dot(y, true);
                 var expected = x.Zip(y, (val1, val2) => val1.Conjugate() * val2).Aggregate((sum, next) => sum + next);
@@ -257,8 +257,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomSingle(0, x.Count, y.Count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Outer(x, y, actual);
             }
@@ -288,8 +288,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomDouble(0, x.Count, y.Count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Outer(x, y, actual);
             }
@@ -319,8 +319,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomComplex(0, x.Count, y.Count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Outer(x, y, actual, false);
             }
@@ -350,8 +350,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my.Conjugate());
 
             var actual = TestMatrix.RandomComplex(0, x.Count, y.Count, dstStride);
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 Vec.Outer(x, y, actual, true);
             }
@@ -374,7 +374,7 @@ namespace NumFlatTest
             var expected = x.Select(c => c.Conjugate()).ToVector();
 
             var actual = Utilities.CreateRandomVectorComplex(0, count, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Vec.Conjugate(x, actual);
             }
@@ -397,7 +397,7 @@ namespace NumFlatTest
             var expected = x.Select(value => new Complex(0, -value)).ToVector();
 
             var actual = Utilities.CreateRandomVectorComplex(0, count, dstStride);
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 Vec.Map(x, value => new Complex(0, -value), actual);
             }

@@ -23,8 +23,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 * val2).ToVector();
 
             Vec<double> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.PointwiseMul(y);
             }
@@ -46,8 +46,8 @@ namespace NumFlatTest
             var expected = x.Zip(y, (val1, val2) => val1 / val2).ToVector();
 
             Vec<double> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.PointwiseDiv(y);
             }
@@ -75,8 +75,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             Mat<float> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.Outer(y);
             }
@@ -104,8 +104,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.Outer(y);
             }
@@ -133,8 +133,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my);
 
             Mat<Complex> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.Outer(y, false);
             }
@@ -162,8 +162,8 @@ namespace NumFlatTest
             var expected = mx.OuterProduct(my.Conjugate());
 
             Mat<Complex> actual;
-            using (x.EnsureNoChange())
-            using (y.EnsureNoChange())
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
                 actual = x.Outer(y, true);
             }
@@ -184,7 +184,7 @@ namespace NumFlatTest
             var expected = x.Select(value => value.Conjugate()).ToVector();
 
             Vec<Complex> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.Conjugate();
             }
@@ -203,7 +203,7 @@ namespace NumFlatTest
             var x = TestVector.RandomDouble(42, count, xStride);
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.ToRowMatrix();
             }
@@ -225,7 +225,7 @@ namespace NumFlatTest
             var x = TestVector.RandomDouble(42, count, xStride);
 
             Mat<double> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.ToColMatrix();
             }
@@ -249,7 +249,7 @@ namespace NumFlatTest
             var expected = x.Select(value => new Complex(0, -value)).ToVector();
 
             Vec <Complex> actual;
-            using (x.EnsureNoChange())
+            using (x.EnsureUnchanged())
             {
                 actual = x.Map(value => new Complex(0, -value));
             }

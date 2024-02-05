@@ -45,8 +45,8 @@ namespace NumFlatTest
                     var expected = mxt(mx) * myt(my);
 
                     var actual = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
-                    using (x.EnsureNoChange())
-                    using (y.EnsureNoChange())
+                    using (x.EnsureUnchanged())
+                    using (y.EnsureUnchanged())
                     {
                         Mat.Mul(x, y, actual, xTranspose, yTranspose);
                     }
@@ -89,8 +89,8 @@ namespace NumFlatTest
                 var expected = mxt(mx) * my;
 
                 var actual = TestVector.RandomDouble(0, rowCount, dstStride);
-                using (x.EnsureNoChange())
-                using (y.EnsureNoChange())
+                using (x.EnsureUnchanged())
+                using (y.EnsureUnchanged())
                 {
                     Mat.Mul(x, y, actual, xTranspose);
                 }
