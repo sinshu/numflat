@@ -11,6 +11,28 @@ namespace NumFlat
     public static class MatrixBuilder
     {
         /// <summary>
+        /// Create an identity matrix.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="count">
+        /// The number of rows of the square matrix.
+        /// </param>
+        /// <returns>
+        /// The specified identity matrix.
+        /// </returns>
+        public static Mat<T> Identity<T>(int count) where T : unmanaged, INumberBase<T>
+        {
+            var identity = new Mat<T>(count, count);
+            for (var i = 0; i < count; i++)
+            {
+                identity[i, i] = T.One;
+            }
+            return identity;
+        }
+
+        /// <summary>
         /// Create a new matrix from the specified elements.
         /// </summary>
         /// <typeparam name="T">

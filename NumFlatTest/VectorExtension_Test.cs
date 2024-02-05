@@ -17,8 +17,8 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void PointwiseMul(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
+            var y = TestVector.RandomDouble(57, count, yStride);
 
             var expected = x.Zip(y, (val1, val2) => val1 * val2).ToVector();
 
@@ -40,8 +40,8 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void PointwiseDiv(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var y = Utilities.CreateRandomVectorNonZeroDouble(57, count, yStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
+            var y = TestVector.NonZeroRandomDouble(57, count, yStride);
 
             var expected = x.Zip(y, (val1, val2) => val1 / val2).ToVector();
 
@@ -67,8 +67,8 @@ namespace NumFlatTest
         [TestCase(3, 3, 2, 4)]
         public void Outer_Single(int xCount, int xStride, int yCount, int yStride)
         {
-            var x = Utilities.CreateRandomVectorSingle(42, xCount, xStride);
-            var y = Utilities.CreateRandomVectorSingle(57, yCount, yStride);
+            var x = TestVector.RandomSingle(42, xCount, xStride);
+            var y = TestVector.RandomSingle(57, yCount, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
@@ -96,8 +96,8 @@ namespace NumFlatTest
         [TestCase(3, 3, 2, 4)]
         public void Outer_Double(int xCount, int xStride, int yCount, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, xCount, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, yCount, yStride);
+            var x = TestVector.RandomDouble(42, xCount, xStride);
+            var y = TestVector.RandomDouble(57, yCount, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
@@ -125,8 +125,8 @@ namespace NumFlatTest
         [TestCase(3, 3, 2, 4)]
         public void Outer_Complex_N(int xCount, int xStride, int yCount, int yStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
+            var x = TestVector.RandomComplex(42, xCount, xStride);
+            var y = TestVector.RandomComplex(57, yCount, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
@@ -154,8 +154,8 @@ namespace NumFlatTest
         [TestCase(3, 3, 2, 4)]
         public void Outer_Complex_C(int xCount, int xStride, int yCount, int yStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, xCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, yCount, yStride);
+            var x = TestVector.RandomComplex(42, xCount, xStride);
+            var y = TestVector.RandomComplex(57, yCount, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
@@ -179,7 +179,7 @@ namespace NumFlatTest
         [TestCase(5, 7)]
         public void Conjugate(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
+            var x = TestVector.RandomComplex(42, count, xStride);
 
             var expected = x.Select(value => value.Conjugate()).ToVector();
 
@@ -200,7 +200,7 @@ namespace NumFlatTest
         [TestCase(5, 7)]
         public void ToRowMatrix(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
 
             Mat<double> actual;
             using (x.EnsureNoChange())
@@ -222,7 +222,7 @@ namespace NumFlatTest
         [TestCase(5, 7)]
         public void ToColMatrix(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
 
             Mat<double> actual;
             using (x.EnsureNoChange())
@@ -236,15 +236,15 @@ namespace NumFlatTest
             NumAssert.AreSame(x, actual.Cols[0], 0);
         }
 
-        [TestCase(1, 1, 1)]
-        [TestCase(1, 3, 4)]
-        [TestCase(3, 1, 1)]
-        [TestCase(3, 3, 4)]
-        [TestCase(5, 1, 3)]
-        [TestCase(11, 7, 5)]
-        public void Map(int count, int xStride, int dstStride)
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(3, 1)]
+        [TestCase(3, 3)]
+        [TestCase(5, 1)]
+        [TestCase(11, 7)]
+        public void Map(int count, int xStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
 
             var expected = x.Select(value => new Complex(0, -value)).ToVector();
 
