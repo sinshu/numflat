@@ -20,16 +20,16 @@ namespace NumFlatTest
         {
             var matrix = new Mat<int>(rowCount, colCount);
 
-            Assert.That(matrix.RowCount == rowCount);
-            Assert.That(matrix.ColCount == colCount);
-            Assert.That(matrix.Stride == rowCount);
-            Assert.That(matrix.Memory.Length == rowCount * colCount);
+            Assert.That(matrix.RowCount, Is.EqualTo(rowCount));
+            Assert.That(matrix.ColCount, Is.EqualTo(colCount));
+            Assert.That(matrix.Stride, Is.EqualTo(rowCount));
+            Assert.That(matrix.Memory.Length, Is.EqualTo(rowCount * colCount));
 
             for (var col = 0; col < colCount; col++)
             {
                 for (var row = 0; row < rowCount; row++)
                 {
-                    Assert.That(matrix[row, col] == 0);
+                    Assert.That(matrix[row, col], Is.EqualTo(0));
                 }
             }
         }
@@ -52,31 +52,18 @@ namespace NumFlatTest
         {
             var matrix = new Mat<int>(rowCount, colCount, stride, memory);
 
-            {
-                var expected = 1;
-                for (var col = 0; col < colCount; col++)
-                {
-                    for (var row = 0; row < rowCount; row++)
-                    {
-                        Assert.That(matrix[row, col] == expected);
-                        expected++;
-                    }
-                }
-            }
+            Assert.That(matrix.RowCount, Is.EqualTo(rowCount));
+            Assert.That(matrix.ColCount, Is.EqualTo(colCount));
+            Assert.That(matrix.Stride, Is.EqualTo(stride));
+            Assert.That(matrix.Memory.Length, Is.EqualTo(stride * (colCount - 1) + rowCount));
 
+            var expected = 1;
+            for (var col = 0; col < colCount; col++)
             {
-                var offset = 0;
-                var expected = 1;
-                for (var col = 0; col < colCount; col++)
+                for (var row = 0; row < rowCount; row++)
                 {
-                    var position = offset;
-                    for (var row = 0; row < rowCount; row++)
-                    {
-                        Assert.That(matrix.Memory.Span[position] == expected);
-                        expected++;
-                        position++;
-                    }
-                    offset += stride;
+                    Assert.That(matrix[row, col], Is.EqualTo(expected));
+                    expected++;
                 }
             }
         }
@@ -104,7 +91,7 @@ namespace NumFlatTest
                 for (var row = 0; row < rowCount; row++)
                 {
                     matrix[row, col] = int.MaxValue;
-                    Assert.That(matrix[row, col] == int.MaxValue);
+                    Assert.That(matrix[row, col], Is.EqualTo(int.MaxValue));
                 }
             }
 
@@ -116,11 +103,11 @@ namespace NumFlatTest
                 {
                     if (row < rowCount)
                     {
-                        Assert.That(matrix.Memory.Span[position] == int.MaxValue);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(int.MaxValue));
                     }
                     else if (position < memory.Length)
                     {
-                        Assert.That(matrix.Memory.Span[position] == -1);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(-1));
                     }
                     position++;
                 }
@@ -146,11 +133,12 @@ namespace NumFlatTest
         {
             var matrix = new Mat<int>(rowCount, colCount, stride, memory);
             matrix.Fill(int.MaxValue);
+
             for (var col = 0; col < colCount; col++)
             {
                 for (var row = 0; row < rowCount; row++)
                 {
-                    Assert.That(matrix[row, col] == int.MaxValue);
+                    Assert.That(matrix[row, col], Is.EqualTo(int.MaxValue));
                 }
             }
 
@@ -162,11 +150,11 @@ namespace NumFlatTest
                 {
                     if (row < rowCount)
                     {
-                        Assert.That(matrix.Memory.Span[position] == int.MaxValue);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(int.MaxValue));
                     }
                     else if (position < memory.Length)
                     {
-                        Assert.That(matrix.Memory.Span[position] == -1);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(-1));
                     }
                     position++;
                 }
@@ -192,11 +180,12 @@ namespace NumFlatTest
         {
             var matrix = new Mat<int>(rowCount, colCount, stride, memory);
             matrix.Clear();
+
             for (var col = 0; col < colCount; col++)
             {
                 for (var row = 0; row < rowCount; row++)
                 {
-                    Assert.That(matrix[row, col] == 0);
+                    Assert.That(matrix[row, col], Is.EqualTo(0));
                 }
             }
 
@@ -208,11 +197,11 @@ namespace NumFlatTest
                 {
                     if (row < rowCount)
                     {
-                        Assert.That(matrix.Memory.Span[position] == 0);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(0));
                     }
                     else if (position < memory.Length)
                     {
-                        Assert.That(matrix.Memory.Span[position] == -1);
+                        Assert.That(matrix.Memory.Span[position], Is.EqualTo(-1));
                     }
                     position++;
                 }
@@ -236,23 +225,20 @@ namespace NumFlatTest
         [TestCase(3, 2, 6)]
         public void Cols(int rowCount, int colCount, int stride)
         {
-            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+            var matrix = TestMatrix.RandomDouble(42, rowCount, colCount, stride);
 
-            Assert.That(matrix.Cols.Count == colCount);
-
-            for (var col = 0; col < colCount; col++)
-            {
-                var expected = Enumerable.Range(0, rowCount).Select(row => matrix[row, col]).ToArray();
-                var actual = matrix.Cols[col].ToArray();
-                Assert.That(actual, Is.EqualTo(expected));
-            }
+            Assert.That(matrix.Cols.Count, Is.EqualTo(colCount));
 
             var cols = matrix.Cols.ToArray();
             for (var col = 0; col < colCount; col++)
             {
-                var expected = cols[col];
-                var actual = matrix.Cols[col].ToArray();
-                Assert.That(actual, Is.EqualTo(expected));
+                var expected = Enumerable.Range(0, rowCount).Select(row => matrix[row, col]).ToArray();
+
+                var actual1 = matrix.Cols[col].ToArray();
+                Assert.That(actual1, Is.EqualTo(expected));
+
+                var actual2 = cols[col].ToArray();
+                Assert.That(actual2, Is.EqualTo(expected));
             }
         }
 
@@ -276,19 +262,16 @@ namespace NumFlatTest
 
             Assert.That(matrix.Rows.Count == rowCount);
 
-            for (var row = 0; row < rowCount; row++)
-            {
-                var expected = Enumerable.Range(0, colCount).Select(col => matrix[row, col]).ToArray();
-                var actual = matrix.Rows[row].ToArray();
-                Assert.That(actual, Is.EqualTo(expected));
-            }
-
             var rows = matrix.Rows.ToArray();
             for (var row = 0; row < rowCount; row++)
             {
-                var expected = rows[row];
-                var actual = matrix.Rows[row].ToArray();
-                Assert.That(actual, Is.EqualTo(expected));
+                var expected = Enumerable.Range(0, colCount).Select(col => matrix[row, col]).ToArray();
+
+                var actual1 = matrix.Rows[row].ToArray();
+                Assert.That(actual1, Is.EqualTo(expected));
+
+                var actual2 = rows[row].ToArray();
+                Assert.That(actual2, Is.EqualTo(expected));
             }
         }
 
@@ -308,7 +291,7 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 1, 3, 5, 4)]
         public void Submatrix(int srcRowCount, int srcColCount, int srcStride, int dstStartRow, int dstStartCol, int dstRowCount, int dstColCount)
         {
-            var matrix = Utilities.CreateRandomMatrixDouble(42, srcRowCount, srcColCount, srcStride);
+            var matrix = TestMatrix.RandomDouble(42, srcRowCount, srcColCount, srcStride);
 
             var expected = new double[dstRowCount, dstColCount];
             for (var row = 0; row < dstRowCount; row++)
@@ -320,6 +303,7 @@ namespace NumFlatTest
             }
 
             var submatrix = matrix.Submatrix(dstStartRow, dstStartCol, dstRowCount, dstColCount);
+
             var actual = new double[submatrix.RowCount, submatrix.ColCount];
             for (var row = 0; row < dstRowCount; row++)
             {
@@ -329,13 +313,7 @@ namespace NumFlatTest
                 }
             }
 
-            for (var row = 0; row < dstRowCount; row++)
-            {
-                for (var col = 0; col < dstColCount; col++)
-                {
-                    Assert.That(expected[row, col] == actual[row, col]);
-                }
-            }
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -348,20 +326,14 @@ namespace NumFlatTest
         [TestCase(8, 9, 11, 10)]
         public void CopyTo(int rowCount, int colCount, int srcStride, int dstStride)
         {
-            var source = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, srcStride);
-            var destination = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, dstStride);
+            var source = TestMatrix.RandomDouble(42, rowCount, colCount, srcStride);
+            var destination = TestMatrix.RandomDouble(57, rowCount, colCount, dstStride);
 
             source.CopyTo(destination);
 
-            for (var row = 0; row < rowCount; row++)
-            {
-                for (var col = 0; col < colCount; col++)
-                {
-                    Assert.That(source[row, col] == destination[row, col]);
-                }
-            }
+            NumAssert.AreSame(source, destination, 0);
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            TestMatrix.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1)]
@@ -380,14 +352,14 @@ namespace NumFlatTest
         [TestCase(3, 2, 6)]
         public void ToArray(int rowCount, int colCount, int stride)
         {
-            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+            var matrix = TestMatrix.RandomDouble(42, rowCount, colCount, stride);
             var array = matrix.ToArray();
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(array[row, col] == matrix[row, col]);
+                    Assert.That(array[row, col], Is.EqualTo(matrix[row, col]));
                 }
             }
         }
