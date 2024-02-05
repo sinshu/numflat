@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using NUnit.Framework;
 using NumFlat;
+
+using MMat = MathNet.Numerics.LinearAlgebra.Matrix<System.Numerics.Complex>;
 
 namespace NumFlatTest
 {
@@ -19,376 +19,105 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_NN(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void Mul_MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, false, false, false, false);
+            Func<MMat, MMat> none = mat => mat;
+            Func<MMat, MMat> transpose = mat => mat.Transpose();
+            Func<MMat, MMat> conjugate = mat => mat.Conjugate();
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx * my;
+            bool[] xTransposeConditions = [false, true];
+            bool[] yTransposeConditions = [false, true];
 
-            for (var row = 0; row < destination.RowCount; row++)
+            bool[] xConjugateConditions = [false, true];
+            bool[] yConjugateConditions = [false, true];
+
+            foreach (var xTranspose in xTransposeConditions)
             {
-                for (var col = 0; col < destination.ColCount; col++)
+                foreach (var yTranspose in yTransposeConditions)
                 {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+                    foreach (var xConjugate in xConjugateConditions)
+                    {
+                        foreach (var yConjugate in yConjugateConditions)
+                        {
+                            var xArgs = xTranspose ? (k, m, yStride) : (m, k, xStride);
+                            var yArgs = yTranspose ? (n, k, xStride) : (k, n, yStride);
+
+                            var mxt = xTranspose ? transpose : none;
+                            var myt = yTranspose ? transpose : none;
+
+                            var mxc = xConjugate ? conjugate : none;
+                            var myc = yConjugate ? conjugate : none;
+
+                            var x = TestMatrix.RandomComplex(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
+                            var y = TestMatrix.RandomComplex(57, yArgs.Item1, yArgs.Item2, yArgs.Item3);
+
+                            var mx = Utilities.ToMathNet(x);
+                            var my = Utilities.ToMathNet(y);
+                            var expected = mxc(mxt(mx)) * myc(myt(my));
+
+                            var actual = TestMatrix.RandomComplex(0, m, n, dstStride);
+                            using (x.EnsureUnchanged())
+                            using (y.EnsureUnchanged())
+                            {
+                                Mat.Mul(x, y, actual, xTranspose, xConjugate, yTranspose, yConjugate);
+                            }
+
+                            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+                            TestMatrix.FailIfOutOfRangeWrite(actual);
+                        }
+                    }
                 }
             }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 8, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_NT(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, false, false, true, false);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx * my.Transpose();
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 10, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_TN(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, true, false, false, false);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.Transpose() * my;
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 10, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_TT(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, true, false, true, false);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.Transpose() * my.Transpose();
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 8, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_CC(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, false, true, false, true);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.Conjugate() * my.Conjugate();
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 10, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_HH(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, true, true, true, true);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.ConjugateTranspose() * my.ConjugateTranspose();
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 8, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_NH(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, n, k, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, false, false, true, true);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx * my.ConjugateTranspose();
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 1, 2, 3, 4)]
-        [TestCase(2, 2, 2, 2, 2, 2)]
-        [TestCase(2, 2, 2, 5, 4, 3)]
-        [TestCase(2, 4, 3, 5, 6, 5)]
-        [TestCase(5, 4, 3, 5, 5, 5)]
-        [TestCase(8, 7, 9, 10, 9, 8)]
-        [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat_HN(int m, int n, int k, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, k, m, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
-            var destination = Utilities.CreateRandomMatrixComplex(0, m, n, dstStride);
-            Mat.Mul(x, y, destination, true, true, false, false);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.ConjugateTranspose() * my;
-
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 5)]
         [TestCase(2, 2, 2, 1, 1)]
-        [TestCase(3, 3, 3, 7, 6)]
-        [TestCase(2, 3, 3, 1, 6)]
+        [TestCase(2, 2, 3, 3, 2)]
+        [TestCase(3, 3, 3, 1, 1)]
+        [TestCase(3, 3, 4, 7, 6)]
+        [TestCase(2, 5, 2, 1, 1)]
+        [TestCase(2, 5, 3, 2, 2)]
         [TestCase(7, 3, 7, 1, 1)]
         [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec_N(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        public void Mul_MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
-            var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
-            Mat.Mul(x, y, destination, false, false);
+            Func<MMat, MMat> none = mat => mat;
+            Func<MMat, MMat> transpose = mat => mat.Transpose();
+            Func<MMat, MMat> conjugate = mat => mat.Conjugate();
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx * my;
+            bool[] xTransposeConditions = [false, true];
+            bool[] xConjugateConditions = [false, true];
 
-            var actual = destination.ToArray();
-            var expected = md.ToArray();
-            for (var i = 0; i < destination.Count; i++)
+            foreach (var xTranspose in xTransposeConditions)
             {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
+                foreach (var xConjugate in xConjugateConditions)
+                {
+                    var xArgs = xTranspose ? (colCount, rowCount, colCount + xStride - rowCount) : (rowCount, colCount, xStride);
+
+                    var mxt = xTranspose ? transpose : none;
+                    var mxc = xConjugate ? conjugate : none;
+
+                    var x = TestMatrix.RandomComplex(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
+                    var y = TestVector.RandomComplex(57, colCount, yStride);
+
+                    var mx = Utilities.ToMathNet(x);
+                    var my = Utilities.ToMathNet(y);
+                    var expected = mxc(mxt(mx)) * my;
+
+                    var actual = TestVector.RandomComplex(0, rowCount, dstStride);
+                    using (x.EnsureUnchanged())
+                    using (y.EnsureUnchanged())
+                    {
+                        Mat.Mul(x, y, actual, xTranspose, xConjugate);
+                    }
+
+                    NumAssert.AreSame(expected, actual, 1.0E-12);
+
+                    TestVector.FailIfOutOfRangeWrite(actual);
+                }
             }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 3, 4, 5)]
-        [TestCase(2, 2, 2, 1, 1)]
-        [TestCase(3, 3, 3, 7, 6)]
-        [TestCase(2, 3, 3, 1, 6)]
-        [TestCase(7, 3, 7, 1, 1)]
-        [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec_T(int rowCount, int colCount, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, rowCount, yStride);
-            var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
-            Mat.Mul(x, y, destination, true, false);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.Transpose() * my;
-
-            var actual = destination.ToArray();
-            var expected = md.ToArray();
-            for (var i = 0; i < destination.Count; i++)
-            {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 3, 4, 5)]
-        [TestCase(2, 2, 2, 1, 1)]
-        [TestCase(3, 3, 3, 7, 6)]
-        [TestCase(2, 3, 3, 1, 6)]
-        [TestCase(7, 3, 7, 1, 1)]
-        [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec_C(int rowCount, int colCount, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
-            var destination = Utilities.CreateRandomVectorComplex(0, rowCount, dstStride);
-            Mat.Mul(x, y, destination, false, true);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.Conjugate() * my;
-
-            var actual = destination.ToArray();
-            var expected = md.ToArray();
-            for (var i = 0; i < destination.Count; i++)
-            {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
-
-        [TestCase(1, 1, 1, 1, 1)]
-        [TestCase(1, 1, 3, 4, 5)]
-        [TestCase(2, 2, 2, 1, 1)]
-        [TestCase(3, 3, 3, 7, 6)]
-        [TestCase(2, 3, 3, 1, 6)]
-        [TestCase(7, 3, 7, 1, 1)]
-        [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec_H(int rowCount, int colCount, int xStride, int yStride, int dstStride)
-        {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, rowCount, yStride);
-            var destination = Utilities.CreateRandomVectorComplex(0, colCount, dstStride);
-            Mat.Mul(x, y, destination, true, true);
-
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
-            var md = mx.ConjugateTranspose() * my;
-
-            var actual = destination.ToArray();
-            var expected = md.ToArray();
-            for (var i = 0; i < destination.Count; i++)
-            {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
         }
 
         [TestCase(1, 1, 1, 1, 1)]
@@ -401,24 +130,15 @@ namespace NumFlatTest
         [TestCase(7, 8, 9, 10, 10)]
         public void Operator_MatMat(int m, int n, int k, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, m, k, xStride);
-            var y = Utilities.CreateRandomMatrixComplex(57, k, n, yStride);
-            var destination = x * y;
+            var x = TestMatrix.RandomComplex(42, m, k, xStride);
+            var y = TestMatrix.RandomComplex(57, k, n, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
-            var md = mx * my;
 
-            for (var row = 0; row < destination.RowCount; row++)
-            {
-                for (var col = 0; col < destination.ColCount; col++)
-                {
-                    var actual = destination[row, col];
-                    var expected = md[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
+            var expected = mx * my;
+            var actual = x * y;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -430,21 +150,15 @@ namespace NumFlatTest
         [TestCase(7, 4, 7, 2)]
         public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, colCount, yStride);
-            var destination = x * y;
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+            var y = TestVector.RandomComplex(57, colCount, yStride);
 
             var mx = Utilities.ToMathNet(x);
             var my = Utilities.ToMathNet(y);
-            var md = mx * my;
 
-            var actual = destination.ToArray();
-            var expected = md.ToArray();
-            for (var i = 0; i < destination.Count; i++)
-            {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
+            var expected = mx * my;
+            var actual = x * y;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }
 }
