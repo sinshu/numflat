@@ -329,7 +329,10 @@ namespace NumFlatTest
             var source = TestMatrix.RandomDouble(42, rowCount, colCount, srcStride);
             var destination = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
 
-            source.CopyTo(destination);
+            using (source.EnsureNoChange())
+            {
+                source.CopyTo(destination);
+            }
 
             NumAssert.AreSame(source, destination, 0);
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
+using System.Security.Principal;
 
 namespace NumFlatTest
 {
@@ -186,7 +187,10 @@ namespace NumFlatTest
             var source = TestVector.RandomDouble(42, count, dstStride);
             var destination = TestVector.RandomDouble(0, count, srcStride);
 
-            source.CopyTo(destination);
+            using (source.EnsureNoChange())
+            {
+                source.CopyTo(destination);
+            }
 
             NumAssert.AreSame(source, destination, 0);
 
