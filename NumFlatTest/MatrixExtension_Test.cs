@@ -25,19 +25,19 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 4)]
         public void PointwiseMul(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, yStride);
-            var destination = x.PointwiseMul(y);
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var y = TestMatrix.RandomDouble(57, rowCount, colCount, yStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseMul(yCol).AsEnumerable()).ColsToMatrix();
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] * y[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
-                }
+                actual = x.PointwiseMul(y);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -56,19 +56,19 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 4)]
         public void PointwiseDiv(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomMatrixNonZeroDouble(57, rowCount, colCount, yStride);
-            var destination = x.PointwiseDiv(y);
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var y = TestMatrix.NonZeroRandomDouble(57, rowCount, colCount, yStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => xCol.PointwiseDiv(yCol).AsEnumerable()).ColsToMatrix();
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] / y[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
-                }
+                actual = x.PointwiseDiv(y);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1)]
@@ -83,14 +83,19 @@ namespace NumFlatTest
         [TestCase(9, 6, 11)]
         public void Transpose(int rowCount, int colCount, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var destination = x.Transpose();
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Transpose();
+            }
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(x[row, col] == destination[col, row]);
+                    Assert.That(actual[col, row], Is.EqualTo(x[row, col]));
                 }
             }
         }
@@ -107,16 +112,17 @@ namespace NumFlatTest
         [TestCase(9, 6, 11)]
         public void Conjugate(int rowCount, int colCount, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var destination = x.Conjugate();
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Map(value => value.Conjugate());
+
+            Mat<Complex> actual;
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    Assert.That(x[row, col].Conjugate() == destination[row, col]);
-                }
+                actual = x.Conjugate();
             }
+
+            NumAssert.AreSame(expected, actual, 0);
         }
 
         [TestCase(1, 1, 1)]
@@ -131,14 +137,19 @@ namespace NumFlatTest
         [TestCase(9, 6, 11)]
         public void ConjugateTranspose(int rowCount, int colCount, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, xStride);
-            var destination = x.ConjugateTranspose();
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<Complex> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.ConjugateTranspose();
+            }
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(x[row, col].Conjugate() == destination[col, row]);
+                    Assert.That(actual[col, row], Is.EqualTo(x[row, col].Conjugate()));
                 }
             }
         }
@@ -150,24 +161,17 @@ namespace NumFlatTest
         [TestCase(4, 6)]
         public void Inverse_Single(int n, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixSingle(42, n, n, xStride);
-            var destination = x.Inverse();
+            var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
-            var identity = destination * x;
-            for (var row = 0; row < n; row++)
+            Mat<float> inverse;
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < n; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-6));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-6));
-                    }
-                }
+                inverse = x.Inverse();
             }
+
+            var expected = MatrixBuilder.Identity<float>(n);
+            var actual = inverse * x;
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
         }
 
         [TestCase(1, 1)]
@@ -177,24 +181,17 @@ namespace NumFlatTest
         [TestCase(4, 6)]
         public void Inverse_Double(int n, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, n, n, xStride);
-            var destination = x.Inverse();
+            var x = TestMatrix.RandomDouble(42, n, n, xStride);
 
-            var identity = destination * x;
-            for (var row = 0; row < n; row++)
+            Mat<double> inverse;
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < n; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-12));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-12));
-                    }
-                }
+                inverse = x.Inverse();
             }
+
+            var expected = MatrixBuilder.Identity<double>(n);
+            var actual = inverse * x;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1)]
@@ -204,26 +201,17 @@ namespace NumFlatTest
         [TestCase(4, 6)]
         public void Inverse_Complex(int n, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixComplex(42, n, n, xStride);
-            var destination = x.Inverse();
+            var x = TestMatrix.RandomComplex(42, n, n, xStride);
 
-            var identity = destination * x;
-            for (var row = 0; row < n; row++)
+            Mat<Complex> inverse;
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < n; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col].Real, Is.EqualTo(1.0).Within(1.0E-12));
-                        Assert.That(identity[row, col].Imaginary, Is.EqualTo(0.0).Within(1.0E-12));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col].Real, Is.EqualTo(0.0).Within(1.0E-12));
-                        Assert.That(identity[row, col].Imaginary, Is.EqualTo(0.0).Within(1.0E-12));
-                    }
-                }
+                inverse = x.Inverse();
             }
+
+            var expected = MatrixBuilder.Identity<Complex>(n);
+            var actual = inverse * x;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1)]
@@ -238,21 +226,18 @@ namespace NumFlatTest
         [TestCase(4, 7, 5)]
         public void PseudoInverse_Single(int rowCount, int colCount, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, aStride);
-            var actual1 = a.PseudoInverse(1.0E-6F);
-            var actual2 = a.PseudoInverse();
+            var a = TestMatrix.RandomSingle(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
-            for (var row = 0; row < expected.RowCount; row++)
+            Mat<float> actual;
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < expected.ColumnCount; col++)
-                {
-                    Assert.That(actual1[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
-                    Assert.That(actual2[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
-                }
+                actual = a.PseudoInverse();
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
         }
 
         [TestCase(1, 1, 1)]
@@ -267,21 +252,18 @@ namespace NumFlatTest
         [TestCase(4, 7, 5)]
         public void PseudoInverse_Double(int rowCount, int colCount, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, aStride);
-            var actual1 = a.PseudoInverse(1.0E-12);
-            var actual2 = a.PseudoInverse();
+            var a = TestMatrix.RandomDouble(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
-            for (var row = 0; row < expected.RowCount; row++)
+            Mat<double> actual;
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < expected.ColumnCount; col++)
-                {
-                    Assert.That(actual1[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
-                    Assert.That(actual2[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
-                }
+                actual = a.PseudoInverse();
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1)]
@@ -296,23 +278,18 @@ namespace NumFlatTest
         [TestCase(4, 7, 5)]
         public void PseudoInverse_Complex(int rowCount, int colCount, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, rowCount, colCount, aStride);
-            var actual1 = a.PseudoInverse(1.0E-12);
-            var actual2 = a.PseudoInverse();
+            var a = TestMatrix.RandomComplex(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
-            for (var row = 0; row < expected.RowCount; row++)
+            Mat<Complex> actual;
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < expected.ColumnCount; col++)
-                {
-                    Assert.That(actual1[row, col].Real, Is.EqualTo(expected[row, col].Real).Within(1.0E-12));
-                    Assert.That(actual1[row, col].Imaginary, Is.EqualTo(expected[row, col].Imaginary).Within(1.0E-12));
-                    Assert.That(actual2[row, col].Real, Is.EqualTo(expected[row, col].Real).Within(1.0E-12));
-                    Assert.That(actual2[row, col].Imaginary, Is.EqualTo(expected[row, col].Imaginary).Within(1.0E-12));
-                }
+                actual = a.PseudoInverse();
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -331,17 +308,17 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 3)]
         public void Map(int rowCount, int colCount, int xStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var destination = x.Map(value => new Complex(0, -value));
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Cols.Select(col => col.Select(value => new Complex(0, -value))).ColsToMatrix();
+
+            Mat <Complex> actual;
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    Assert.That(destination[row, col].Real == 0);
-                    Assert.That(destination[row, col].Imaginary == -x[row, col]);
-                }
+                actual = x.Map(value => new Complex(0, -value));
             }
+
+            NumAssert.AreSame(expected, actual, 0);
         }
     }
 }

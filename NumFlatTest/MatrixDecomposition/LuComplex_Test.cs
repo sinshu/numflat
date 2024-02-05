@@ -25,20 +25,16 @@ namespace NumFlatTest
         [TestCase(6, 4, 7)]
         public void ExtensionMethod(int m, int n, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var lu = a.Lu();
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+
+            LuComplex lu;
+            using (a.EnsureUnchanged())
+            {
+                lu = a.Lu();
+            }
 
             var reconstructed = lu.GetP() * lu.GetL() * lu.GetU();
-            for (var row = 0; row < reconstructed.RowCount; row++)
-            {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -53,21 +49,22 @@ namespace NumFlatTest
         [TestCase(5, 5, 8, 7)]
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, n, n, aStride);
-            var b = Utilities.CreateRandomVectorComplex(57, n, bStride);
+            var a = TestMatrix.RandomComplex(42, n, n, aStride);
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var lu = a.Lu();
-            var destination = Utilities.CreateRandomVectorComplex(66, n, dstStride);
-            lu.Solve(b, destination);
+
+            var actual = TestVector.RandomComplex(66, a.ColCount, dstStride);
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                lu.Solve(b, actual);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < n; i++)
-            {
-                Assert.That(destination[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(destination[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1)]
@@ -82,18 +79,20 @@ namespace NumFlatTest
         [TestCase(5, 5, 8)]
         public void Solve_Arg1(int n, int aStride, int bStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, n, n, aStride);
-            var b = Utilities.CreateRandomVectorComplex(57, n, bStride);
+            var a = TestMatrix.RandomComplex(42, n, n, aStride);
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var lu = a.Lu();
-            var destination = lu.Solve(b);
+
+            Vec<Complex> actual;
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                actual = lu.Solve(b);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < n; i++)
-            {
-                Assert.That(destination[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(destination[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }
 }

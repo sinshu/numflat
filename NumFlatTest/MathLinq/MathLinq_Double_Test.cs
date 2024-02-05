@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
+using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
+
+using MVec = MathNet.Numerics.LinearAlgebra.Vector<double>;
+using MMat = MathNet.Numerics.LinearAlgebra.Matrix<double>;
 
 namespace NumFlatTest
 {
@@ -20,15 +22,12 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetMean(data);
 
-            var actual = Utilities.CreateRandomVectorDouble(0, dim, dstStride);
+            var actual = TestVector.RandomDouble(0, dim, dstStride);
             data.Select(x => x.ToVector()).Mean(actual);
 
-            for (var i = 0; i < dim; i++)
-            {
-                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
 
-            Utilities.FailIfOutOfRangeWrite(actual);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(3, 1)]
@@ -39,11 +38,7 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetMean(data);
             var actual = data.Select(x => x.ToVector()).Mean();
-
-            for (var i = 0; i < dim; i++)
-            {
-                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(3, 1, 0, 1, 3)]
@@ -57,21 +52,15 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
 
-            var mean = Utilities.CreateRandomVectorDouble(0, dim, meanStride);
+            var mean = TestVector.RandomDouble(0, dim, meanStride);
             data.Select(x => x.ToVector()).Mean(mean);
-            var actual = Utilities.CreateRandomMatrixDouble(0, dim, dim, covStride);
+            var actual = TestMatrix.RandomDouble(0, dim, dim, covStride);
             data.Select(x => x.ToVector()).Covariance(mean, actual, ddot);
 
-            for (var row = 0; row < dim; row++)
-            {
-                for (var col = 0; col < dim; col++)
-                {
-                    Assert.That(actual[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
 
-            Utilities.FailIfOutOfRangeWrite(mean);
-            Utilities.FailIfOutOfRangeWrite(actual);
+            TestVector.FailIfOutOfRangeWrite(mean);
+            TestMatrix.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(3, 1, 0)]
@@ -81,16 +70,8 @@ namespace NumFlatTest
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
-
             var actual = data.Select(x => x.ToVector()).Covariance(ddot);
-
-            for (var row = 0; row < dim; row++)
-            {
-                for (var col = 0; col < dim; col++)
-                {
-                    Assert.That(actual[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(3, 2)]
@@ -100,16 +81,8 @@ namespace NumFlatTest
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, 1);
-
             var actual = data.Select(x => x.ToVector()).Covariance();
-
-            for (var row = 0; row < dim; row++)
-            {
-                for (var col = 0; col < dim; col++)
-                {
-                    Assert.That(actual[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(3, 1, 0)]
@@ -122,19 +95,8 @@ namespace NumFlatTest
             var expectedCov = MathNetCov(data, ddot);
 
             var result = data.Select(x => x.ToVector()).MeanAndCovariance(ddot);
-
-            for (var i = 0; i < dim; i++)
-            {
-                Assert.That(result.Mean[i], Is.EqualTo(expectedMean[i]).Within(1.0E-12));
-            }
-
-            for (var row = 0; row < dim; row++)
-            {
-                for (var col = 0; col < dim; col++)
-                {
-                    Assert.That(result.Covariance[row, col], Is.EqualTo(expectedCov[row, col]).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedCov, result.Covariance, 1.0E-12);
         }
 
         [TestCase(3, 2)]
@@ -147,24 +109,13 @@ namespace NumFlatTest
             var expectedCov = MathNetCov(data, 1);
 
             var result = data.Select(x => x.ToVector()).MeanAndCovariance();
-
-            for (var i = 0; i < dim; i++)
-            {
-                Assert.That(result.Mean[i], Is.EqualTo(expectedMean[i]).Within(1.0E-12));
-            }
-
-            for (var row = 0; row < dim; row++)
-            {
-                for (var col = 0; col < dim; col++)
-                {
-                    Assert.That(result.Covariance[row, col], Is.EqualTo(expectedCov[row, col]).Within(1.0E-12));
-                }
-            }
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedCov, result.Covariance, 1.0E-12);
         }
 
-        private static Vector<double> MathNetMean(IEnumerable<Vector<double>> xs)
+        private static MVec MathNetMean(IEnumerable<MVec> xs)
         {
-            Vector<double> sum = new DenseVector(xs.First().Count);
+            MVec sum = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(xs.First().Count);
             var count = 0;
             foreach (var x in xs)
             {
@@ -174,11 +125,11 @@ namespace NumFlatTest
             return sum / count;
         }
 
-        private static Matrix<double> MathNetCov(IEnumerable<Vector<double>> xs, int ddot)
+        private static MMat MathNetCov(IEnumerable<MVec> xs, int ddot)
         {
             var mean = MathNetMean(xs);
 
-            Matrix<double> sum = new DenseMatrix(xs.First().Count);
+            MMat sum = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(xs.First().Count);
             var count = 0;
             foreach (var x in xs)
             {
@@ -189,16 +140,16 @@ namespace NumFlatTest
             return sum / (count - ddot);
         }
 
-        private static Vector<double>[] CreateData(int seed, int dim, int count)
+        private static MVec[] CreateData(int seed, int dim, int count)
         {
             var random = new Random(seed);
 
-            var data = new List<Vector<double>>();
+            var data = new List<MVec>();
 
             for (var i = 0; i < count; i++)
             {
                 var elements = Enumerable.Range(0, dim).Select(i => random.NextDouble()).ToArray();
-                var x = new DenseVector(elements);
+                var x = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(elements);
                 data.Add(x);
             }
 

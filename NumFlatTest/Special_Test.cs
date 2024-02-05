@@ -18,7 +18,7 @@ namespace NumFlatTest
         [TestCase(-99.99F)]
         public void Eps_Float(float x)
         {
-            Assert.That(Special.Eps(x) == Precision.EpsilonOf(x));
+            Assert.That(Special.Eps(x), Is.EqualTo(Precision.EpsilonOf(x)));
         }
 
         [TestCase(2.3)]
@@ -29,7 +29,7 @@ namespace NumFlatTest
         [TestCase(-99.99)]
         public void Eps_Double(double x)
         {
-            Assert.That(Special.Eps(x) == Precision.EpsilonOf(x));
+            Assert.That(Special.Eps(x), Is.EqualTo(Precision.EpsilonOf(x)));
         }
     }
 }

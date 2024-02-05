@@ -9,6 +9,30 @@ namespace NumFlatTest
 {
     public class MatrixBuilder_Test
     {
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(2)]
+        [TestCase(5)]
+        public void Identity(int count)
+        {
+            var identity = MatrixBuilder.Identity<double>(count);
+
+            for (var row = 0; row < count; row++)
+            {
+                for (var col = 0; col < count; col++)
+                {
+                    if (row == col)
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(1));
+                    }
+                    else
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(0));
+                    }
+                }
+            }
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(2, 4)]
@@ -16,6 +40,7 @@ namespace NumFlatTest
         public void ToMatrix(int rowCount, int colCount)
         {
             var random = new Random(42);
+
             var expected = new double[rowCount, colCount];
             for (var row = 0; row < rowCount; row++)
             {
@@ -26,14 +51,15 @@ namespace NumFlatTest
             }
 
             var actual = expected.ToMatrix();
-            Assert.That(actual.RowCount == rowCount);
-            Assert.That(actual.ColCount == colCount);
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(actual[row, col] == expected[row, col]);
+                    Assert.That(actual[row, col], Is.EqualTo(expected[row, col]));
                 }
             }
         }
@@ -45,6 +71,7 @@ namespace NumFlatTest
         public void RowsToMatrix(int rowCount, int colCount)
         {
             var random = new Random(42);
+
             var expected = new List<double[]>();
             for (var row = 0; row < rowCount; row++)
             {
@@ -53,14 +80,15 @@ namespace NumFlatTest
             }
 
             var actual = expected.RowsToMatrix();
-            Assert.That(actual.RowCount == rowCount);
-            Assert.That(actual.ColCount == colCount);
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(actual[row, col] == expected[row][col]);
+                    Assert.That(actual[row, col], Is.EqualTo(expected[row][col]));
                 }
             }
         }
@@ -72,6 +100,7 @@ namespace NumFlatTest
         public void ColsToMatrix(int rowCount, int colCount)
         {
             var random = new Random(42);
+
             var expected = new List<double[]>();
             for (var col = 0; col < colCount; col++)
             {
@@ -80,14 +109,15 @@ namespace NumFlatTest
             }
 
             var actual = expected.ColsToMatrix();
-            Assert.That(actual.RowCount == rowCount);
-            Assert.That(actual.ColCount == colCount);
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
 
             for (var row = 0; row < rowCount; row++)
             {
                 for (var col = 0; col < colCount; col++)
                 {
-                    Assert.That(actual[row, col] == expected[col][row]);
+                    Assert.That(actual[row, col], Is.EqualTo(expected[col][row]));
                 }
             }
         }
@@ -99,11 +129,12 @@ namespace NumFlatTest
         public void ToDiagonalMatrix_NoArg(int count)
         {
             var random = new Random(42);
-            var expected = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
+            var expected = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
             var actual = expected.ToDiagonalMatrix();
-            Assert.That(actual.RowCount == count);
-            Assert.That(actual.ColCount == count);
+
+            Assert.That(actual.RowCount, Is.EqualTo(count));
+            Assert.That(actual.ColCount, Is.EqualTo(count));
 
             for (var row = 0; row < count; row++)
             {
@@ -111,11 +142,11 @@ namespace NumFlatTest
                 {
                     if (row == col)
                     {
-                        Assert.That(actual[row, col] == expected[row]);
+                        Assert.That(actual[row, col], Is.EqualTo(expected[row]));
                     }
                     else
                     {
-                        Assert.That(actual[row, col] == 0);
+                        Assert.That(actual[row, col], Is.EqualTo(0));
                     }
                 }
             }
@@ -131,11 +162,12 @@ namespace NumFlatTest
         public void ToDiagonalMatrix_OneArg(int rowCount, int colCount, int elementCount)
         {
             var random = new Random(42);
-            var expected = Enumerable.Range(0, elementCount).Select(i => random.NextDouble()).ToArray();
 
+            var expected = Enumerable.Range(0, elementCount).Select(i => random.NextDouble()).ToArray();
             var actual = expected.ToDiagonalMatrix(rowCount, colCount);
-            Assert.That(actual.RowCount == rowCount);
-            Assert.That(actual.ColCount == colCount);
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
 
             for (var row = 0; row < rowCount; row++)
             {
@@ -143,11 +175,11 @@ namespace NumFlatTest
                 {
                     if (row == col && row < elementCount)
                     {
-                        Assert.That(actual[row, col] == expected[row]);
+                        Assert.That(actual[row, col], Is.EqualTo(expected[row]));
                     }
                     else
                     {
-                        Assert.That(actual[row, col] == 0);
+                        Assert.That(actual[row, col], Is.EqualTo(0));
                     }
                 }
             }

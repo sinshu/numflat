@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
 using NUnit.Framework;
 using NumFlat;
 
@@ -19,20 +17,11 @@ namespace NumFlatTest
         [TestCase(5, 6)]
         public void Determinant(int n, int xStride)
         {
-            var x = Utilities.CreateRandomMatrixSingle(42, n, n, xStride);
+            var x = TestMatrix.RandomSingle(42, n, n, xStride);
+
             var actual = Mat.Determinant(x);
-
-            var mathNet = new DenseMatrix(n, n);
-            for (var row = 0; row < n; row++)
-            {
-                for (var col = 0; col < n; col++)
-                {
-                    mathNet[row, col] = x[row, col];
-                }
-            }
-            var expected = mathNet.Determinant();
-
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
+            var expected = Interop.ToMathNet(x).Determinant();
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6F));
         }
 
         [TestCase(1, 1, 1)]
@@ -42,27 +31,19 @@ namespace NumFlatTest
         [TestCase(4, 6, 5)]
         public void Inverse(int n, int xStride, int dstStride)
         {
-            var x = Utilities.CreateRandomMatrixSingle(42, n, n, xStride);
-            var destination = Utilities.CreateRandomMatrixSingle(0, n, n, dstStride);
-            Mat.Inverse(x, destination);
+            var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
-            var identity = destination * x;
-            for (var row = 0; row < n; row++)
+            var inverse = TestMatrix.RandomSingle(0, n, n, dstStride);
+            using (x.EnsureUnchanged())
             {
-                for (var col = 0; col < n; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(1.0).Within(1.0E-6));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col], Is.EqualTo(0.0).Within(1.0E-6));
-                    }
-                }
+                Mat.Inverse(x, inverse);
             }
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            var actual = inverse * x;
+            var expected = MatrixBuilder.Identity<float>(n);
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
+
+            TestMatrix.FailIfOutOfRangeWrite(inverse);
         }
 
         [TestCase(1)]
@@ -73,8 +54,8 @@ namespace NumFlatTest
         public void Rank_Zero(int n)
         {
             var x = new Mat<float>(n, n);
-            Assert.That(x.Rank() == 0);
-            Assert.That(x.Rank(1.0E-6F) == 0);
+
+            Assert.That(x.Rank(), Is.EqualTo(0));
         }
 
         [TestCase(1)]
@@ -86,10 +67,10 @@ namespace NumFlatTest
         {
             for (var rank = 1; rank <= n; rank++)
             {
-                var src = Utilities.CreateRandomMatrixSingle(42, rank, n, rank);
+                var src = TestMatrix.RandomSingle(42, rank, n, rank);
                 var x = src * src.Transpose();
-                Assert.That(x.Rank() == rank);
-                Assert.That(x.Rank(1.0E-6F) == rank);
+
+                Assert.That(x.Rank(), Is.EqualTo(rank));
             }
         }
 
@@ -104,11 +85,11 @@ namespace NumFlatTest
             }
             .ToMatrix();
 
-            Assert.True(a.Rank() == 2);
-            Assert.True(a.Rank(5) == 1);
-            Assert.True(a.Rank(10) == 1);
-            Assert.True(a.Rank(15) == 1);
-            Assert.True(a.Rank(20) == 0);
+            Assert.That(a.Rank(), Is.EqualTo(2));
+            Assert.That(a.Rank(5), Is.EqualTo(1));
+            Assert.That(a.Rank(10), Is.EqualTo(1));
+            Assert.That(a.Rank(15), Is.EqualTo(1));
+            Assert.That(a.Rank(20), Is.EqualTo(0));
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -121,54 +102,22 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 4)]
         [TestCase(6, 3, 7, 4)]
         [TestCase(4, 7, 5, 9)]
-        public void PseudoInverse_Arg3(int rowCount, int colCount, int aStride, int dstStride)
+        public void PseudoInverse(int rowCount, int colCount, int aStride, int dstStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, aStride);
-            var destination = Utilities.CreateRandomMatrixSingle(0, colCount, rowCount, dstStride);
-            Mat.PseudoInverse(a, destination, 1.0E-6F);
+            var a = TestMatrix.RandomSingle(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
-            for (var row = 0; row < expected.RowCount; row++)
+            var actual = TestMatrix.RandomSingle(0, colCount, rowCount, dstStride);
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < expected.ColumnCount; col++)
-                {
-                    Assert.That(destination[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
-                }
+                Mat.PseudoInverse(a, actual);
             }
 
-            Utilities.FailIfOutOfRangeWrite(destination);
-        }
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 1, 3, 5)]
-        [TestCase(2, 2, 2, 2)]
-        [TestCase(2, 2, 4, 3)]
-        [TestCase(3, 2, 3, 2)]
-        [TestCase(3, 2, 5, 4)]
-        [TestCase(2, 3, 2, 3)]
-        [TestCase(2, 3, 4, 4)]
-        [TestCase(6, 3, 7, 4)]
-        [TestCase(4, 7, 5, 9)]
-        public void PseudoInverse_Arg2(int rowCount, int colCount, int aStride, int dstStride)
-        {
-            var a = Utilities.CreateRandomMatrixSingle(42, rowCount, colCount, aStride);
-            var destination = Utilities.CreateRandomMatrixSingle(0, colCount, rowCount, dstStride);
-            Mat.PseudoInverse(a, destination);
-
-            var ma = Utilities.ToMathNet(a);
-            var expected = ma.PseudoInverse();
-
-            for (var row = 0; row < expected.RowCount; row++)
-            {
-                for (var col = 0; col < expected.ColumnCount; col++)
-                {
-                    Assert.That(destination[row, col], Is.EqualTo(expected[row, col]).Within(1.0E-5));
-                }
-            }
-
-            Utilities.FailIfOutOfRangeWrite(destination);
+            TestMatrix.FailIfOutOfRangeWrite(actual);
         }
 
         [Test]
@@ -198,23 +147,9 @@ namespace NumFlatTest
             }
             .ToMatrix();
 
-            {
-                var pinv = a.PseudoInverse(0.5F);
-                var error = (pinv - result1).Cols.SelectMany(col => col).Select(Math.Abs).Max();
-                Assert.That(error < 1.0E-6);
-            }
-
-            {
-                var pinv = a.PseudoInverse(5);
-                var error = (pinv - result2).Cols.SelectMany(col => col).Select(Math.Abs).Max();
-                Assert.That(error < 1.0E-6);
-            }
-
-            {
-                var pinv = a.PseudoInverse(20);
-                var error = pinv.Cols.SelectMany(col => col).Select(Math.Abs).Max();
-                Assert.That(error < 1.0E-6);
-            }
+            NumAssert.AreSame(result1, a.PseudoInverse(0.5F), 1.0E-6F);
+            NumAssert.AreSame(result2, a.PseudoInverse(5F), 1.0E-6F);
+            NumAssert.AreSame(new Mat<float>(3, 3), a.PseudoInverse(20F), 1.0E-6F);
         }
     }
 }

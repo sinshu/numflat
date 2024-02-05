@@ -25,19 +25,19 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 4)]
         public void Add(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, yStride);
-            var destination = x + y;
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var y = TestMatrix.RandomDouble(57, rowCount, colCount, yStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => (xCol + yCol).AsEnumerable()).ColsToMatrix();
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] + y[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
-                }
+                actual = x + y;
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -56,19 +56,19 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 4)]
         public void Sub(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var y = Utilities.CreateRandomMatrixDouble(57, rowCount, colCount, yStride);
-            var destination = x - y;
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var y = TestMatrix.RandomDouble(57, rowCount, colCount, yStride);
 
-            for (var row = 0; row < rowCount; row++)
+            var expected = x.Cols.Zip(y.Cols, (xCol, yCol) => (xCol - yCol).AsEnumerable()).ColsToMatrix();
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            using (y.EnsureUnchanged())
             {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] - y[row, col];
-                    var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
-                }
+                actual = x - y;
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 2.5)]
@@ -87,18 +87,11 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 0.4)]
         public void Mul_MatScalar(int rowCount, int colCount, int xStride, double y)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var destination = x * y;
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
-            for (var row = 0; row < rowCount; row++)
-            {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] * y;
-                    var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
-                }
-            }
+            var expected = x.Cols.Select(col => (col * y).AsEnumerable()).ColsToMatrix();
+            var actual = x * y;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 2.5)]
@@ -117,18 +110,11 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 0.4)]
         public void Mul_ScalarMat(int rowCount, int colCount, int xStride, double y)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var destination = y * x;
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
-            for (var row = 0; row < rowCount; row++)
-            {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] * y;
-                    var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
-                }
-            }
+            var expected = x.Cols.Select(col => (y * col).AsEnumerable()).ColsToMatrix();
+            var actual = y * x;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 2.5)]
@@ -147,18 +133,11 @@ namespace NumFlatTest
         [TestCase(3, 2, 6, 0.4)]
         public void Div(int rowCount, int colCount, int xStride, double y)
         {
-            var x = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, xStride);
-            var destination = x / y;
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
-            for (var row = 0; row < rowCount; row++)
-            {
-                for (var col = 0; col < colCount; col++)
-                {
-                    var expected = x[row, col] / y;
-                    var actual = destination[row, col];
-                    Assert.That(expected, Is.EqualTo(actual).Within(1.0E-12));
-                }
-            }
+            var expected = x.Cols.Select(col => (col / y).AsEnumerable()).ColsToMatrix();
+            var actual = x / y;
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }
 }

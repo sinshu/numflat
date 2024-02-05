@@ -19,19 +19,19 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3)]
         public void GetSingularValues(int m, int n, int aStride, int sStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var actual = Utilities.CreateRandomVectorDouble(57, Math.Min(m, n), sStride);
-            SvdComplex.GetSingularValues(a, actual);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
-            var expected = a.Svd().S;
-
-            for (var i = 0; i < expected.Count; i++)
+            var actual = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
+            using (a.EnsureUnchanged())
             {
-                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+                SvdComplex.GetSingularValues(a, actual);
             }
 
-            Utilities.FailIfOutOfRangeWrite(a);
-            Utilities.FailIfOutOfRangeWrite(actual);
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c=>c.Real).ToVector();
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1)]
@@ -44,18 +44,17 @@ namespace NumFlatTest
         [TestCase(4, 3, 6)]
         public void GetSingularValues_ExtensionMethod(int m, int n, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var actual = a.GetSingularValues();
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
-            var expected = a.Svd().S;
-
-            for (var i = 0; i < expected.Count; i++)
+            Vec<double> actual;
+            using (a.EnsureUnchanged())
             {
-                Assert.That(actual[i], Is.EqualTo(expected[i]).Within(1.0E-12));
+                actual = a.GetSingularValues();
             }
 
-            Utilities.FailIfOutOfRangeWrite(a);
-            Utilities.FailIfOutOfRangeWrite(actual);
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c => c.Real).ToVector();
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1, 1, 1)]
@@ -68,32 +67,25 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3, 7, 5)]
         public void Decompose(int m, int n, int aStride, int sStride, int uStride, int vtStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var s = Utilities.CreateRandomVectorDouble(57, Math.Min(m, n), sStride);
-            var u = Utilities.CreateRandomMatrixComplex(66, m, m, uStride);
-            var vt = Utilities.CreateRandomMatrixComplex(77, n, n, vtStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+            var s = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
+            var u = TestMatrix.RandomComplex(66, m, m, uStride);
+            var vt = TestMatrix.RandomComplex(77, n, n, vtStride);
 
-            SvdComplex.Decompose(a, s, u, vt);
-
-            var reconstructed = u * s.Select(e => (Complex)e).ToDiagonalMatrix(m, n) * vt;
-            for (var row = 0; row < reconstructed.RowCount; row++)
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
+                SvdComplex.Decompose(a, s, u, vt);
             }
+
+            var reconstructed = u * s.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * vt;
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             CheckUnitary(u);
             CheckUnitary(vt);
 
-            Utilities.FailIfOutOfRangeWrite(a);
-            Utilities.FailIfOutOfRangeWrite(s);
-            Utilities.FailIfOutOfRangeWrite(u);
-            Utilities.FailIfOutOfRangeWrite(vt);
+            TestVector.FailIfOutOfRangeWrite(s);
+            TestMatrix.FailIfOutOfRangeWrite(u);
+            TestMatrix.FailIfOutOfRangeWrite(vt);
         }
 
         [TestCase(1, 1, 1)]
@@ -106,20 +98,16 @@ namespace NumFlatTest
         [TestCase(4, 3, 6)]
         public void ExtensionMethod(int m, int n, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var svd = a.Svd();
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
-            var reconstructed = svd.U * svd.S.Select(e => (Complex)e).ToDiagonalMatrix(m, n) * svd.VT;
-            for (var row = 0; row < reconstructed.RowCount; row++)
+            SvdComplex svd;
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
-                    Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
-                }
+                svd = a.Svd();
             }
+
+            var reconstructed = svd.U * svd.S.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * svd.VT;
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             CheckUnitary(svd.U);
             CheckUnitary(svd.VT);
@@ -139,24 +127,24 @@ namespace NumFlatTest
         [TestCase(3, 7, 4, 3, 3)]
         public void Solve_Arg2(int m, int n, int aStride, int bStride, int dstStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var b = Utilities.CreateRandomVectorComplex(57, a.RowCount, bStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var svd = a.Svd();
-            var destination = Utilities.CreateRandomVectorComplex(66, a.ColCount, dstStride);
-            svd.Solve(b, destination);
 
-            var ma = Utilities.ToMathNet(a);
-            var mb = Utilities.ToMathNet(b);
-            var msvd = ma.Svd();
-            var expected = msvd.Solve(mb);
+            var ma = Interop.ToMathNet(a);
+            var mb = Interop.ToMathNet(b);
+            var expected = ma.Svd().Solve(mb);
 
-            for (var i = 0; i < expected.Count; i++)
+            var actual = TestVector.RandomComplex(66, a.ColCount, dstStride);
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
             {
-                Assert.That(destination[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(destination[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
+                svd.Solve(b, actual);
             }
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -173,42 +161,29 @@ namespace NumFlatTest
         [TestCase(3, 7, 4, 3)]
         public void Solve_Arg1(int m, int n, int aStride, int bStride)
         {
-            var a = Utilities.CreateRandomMatrixComplex(42, m, n, aStride);
-            var b = Utilities.CreateRandomVectorComplex(57, a.RowCount, bStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var svd = a.Svd();
-            var actual = svd.Solve(b);
 
-            var ma = Utilities.ToMathNet(a);
-            var mb = Utilities.ToMathNet(b);
-            var msvd = ma.Svd();
-            var expected = msvd.Solve(mb);
+            var ma = Interop.ToMathNet(a);
+            var mb = Interop.ToMathNet(b);
+            var expected = ma.Svd().Solve(mb);
 
-            for (var i = 0; i < expected.Count; i++)
+            Vec<Complex> actual;
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
             {
-                Assert.That(actual[i].Real, Is.EqualTo(expected[i].Real).Within(1.0E-12));
-                Assert.That(actual[i].Imaginary, Is.EqualTo(expected[i].Imaginary).Within(1.0E-12));
+                actual = svd.Solve(b);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         private static void CheckUnitary(Mat<Complex> mat)
         {
-            var identity = mat * mat.ConjugateTranspose();
-            for (var row = 0; row < identity.RowCount; row++)
-            {
-                for (var col = 0; col < identity.ColCount; col++)
-                {
-                    if (row == col)
-                    {
-                        Assert.That(identity[row, col].Real, Is.EqualTo(1.0).Within(1.0E-12));
-                        Assert.That(identity[row, col].Imaginary, Is.EqualTo(0.0).Within(1.0E-12));
-                    }
-                    else
-                    {
-                        Assert.That(identity[row, col].Real, Is.EqualTo(0.0).Within(1.0E-12));
-                        Assert.That(identity[row, col].Imaginary, Is.EqualTo(0.0).Within(1.0E-12));
-                    }
-                }
-            }
+            var actual = mat * mat.ConjugateTranspose();
+            var expected = MatrixBuilder.Identity<Complex>(actual.RowCount);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }
 }

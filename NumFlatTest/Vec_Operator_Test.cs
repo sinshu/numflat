@@ -17,8 +17,8 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void Add(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
+            var y = TestVector.RandomDouble(57, count, yStride);
             var destination = x + y;
 
             var expected = x.Zip(y, (val1, val2) => val1 + val2).ToArray();
@@ -34,8 +34,8 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void Sub(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
+            var y = TestVector.RandomDouble(57, count, yStride);
             var destination = x - y;
 
             var expected = x.Zip(y, (val1, val2) => val1 - val2).ToArray();
@@ -51,7 +51,7 @@ namespace NumFlatTest
         [TestCase(11, 7, 7.9)]
         public void Mul_VecScalar(int count, int xStride, double y)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
             var destination = x * y;
 
             var expected = x.Select(value => value * y).ToArray();
@@ -67,7 +67,7 @@ namespace NumFlatTest
         [TestCase(11, 7, 7.9)]
         public void Mul_ScalarVec(int count, int xStride, double y)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
             var destination = y * x;
 
             var expected = x.Select(value => value * y).ToArray();
@@ -83,7 +83,7 @@ namespace NumFlatTest
         [TestCase(11, 7, 7.9)]
         public void Div(int count, int xStride, double y)
         {
-            var x = Utilities.CreateRandomVectorNonZeroDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
             var destination = x / y;
 
             var expected = x.Select(value => value / y).ToArray();
@@ -99,10 +99,10 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void Dot_Single(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorSingle(42, count, xStride);
-            var y = Utilities.CreateRandomVectorSingle(57, count, yStride);
-            var actual = x * y;
+            var x = TestVector.RandomSingle(42, count, xStride);
+            var y = TestVector.RandomSingle(57, count, yStride);
 
+            var actual = x * y;
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
         }
@@ -115,10 +115,10 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void Dot_Double(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
-            var y = Utilities.CreateRandomVectorDouble(57, count, yStride);
-            var actual = x * y;
+            var x = TestVector.RandomDouble(42, count, xStride);
+            var y = TestVector.RandomDouble(57, count, yStride);
 
+            var actual = x * y;
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Sum();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
@@ -131,10 +131,10 @@ namespace NumFlatTest
         [TestCase(11, 7, 2)]
         public void Dot_Complex(int count, int xStride, int yStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
-            var y = Utilities.CreateRandomVectorComplex(57, count, yStride);
-            var actual = x * y;
+            var x = TestVector.RandomComplex(42, count, xStride);
+            var y = TestVector.RandomComplex(57, count, yStride);
 
+            var actual = x * y;
             var expected = x.Zip(y, (val1, val2) => val1 * val2).Aggregate((sum, next) => sum + next);
             Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
             Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
