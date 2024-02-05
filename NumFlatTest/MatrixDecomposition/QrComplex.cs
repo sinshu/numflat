@@ -91,7 +91,7 @@ namespace NumFlatTest
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
-            Utilities.FailIfOutOfRangeWrite(actual);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1, 1)]

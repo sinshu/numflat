@@ -70,8 +70,8 @@ namespace NumFlatTest
             var x = TestVector.RandomSingle(42, xCount, xStride);
             var y = TestVector.RandomSingle(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             Mat<float> actual;
@@ -99,8 +99,8 @@ namespace NumFlatTest
             var x = TestVector.RandomDouble(42, xCount, xStride);
             var y = TestVector.RandomDouble(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             Mat<double> actual;
@@ -128,8 +128,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, xCount, xStride);
             var y = TestVector.RandomComplex(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             Mat<Complex> actual;
@@ -157,8 +157,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, xCount, xStride);
             var y = TestVector.RandomComplex(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my.Conjugate());
 
             Mat<Complex> actual;

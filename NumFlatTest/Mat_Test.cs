@@ -258,7 +258,7 @@ namespace NumFlatTest
         [TestCase(3, 2, 6)]
         public void Rows(int rowCount, int colCount, int stride)
         {
-            var matrix = Utilities.CreateRandomMatrixDouble(42, rowCount, colCount, stride);
+            var matrix = TestMatrix.RandomDouble(42, rowCount, colCount, stride);
 
             Assert.That(matrix.Rows.Count == rowCount);
 

@@ -20,7 +20,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
             var actual = Mat.Determinant(x);
-            var expected = Utilities.ToMathNet(x).Determinant();
+            var expected = Interop.ToMathNet(x).Determinant();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6F));
         }
 
@@ -106,7 +106,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
             var actual = TestMatrix.RandomSingle(0, colCount, rowCount, dstStride);

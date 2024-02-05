@@ -51,8 +51,8 @@ namespace NumFlatTest
                             var x = TestMatrix.RandomComplex(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
                             var y = TestMatrix.RandomComplex(57, yArgs.Item1, yArgs.Item2, yArgs.Item3);
 
-                            var mx = Utilities.ToMathNet(x);
-                            var my = Utilities.ToMathNet(y);
+                            var mx = Interop.ToMathNet(x);
+                            var my = Interop.ToMathNet(y);
                             var expected = mxc(mxt(mx)) * myc(myt(my));
 
                             var actual = TestMatrix.RandomComplex(0, m, n, dstStride);
@@ -102,8 +102,8 @@ namespace NumFlatTest
                     var x = TestMatrix.RandomComplex(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
                     var y = TestVector.RandomComplex(57, colCount, yStride);
 
-                    var mx = Utilities.ToMathNet(x);
-                    var my = Utilities.ToMathNet(y);
+                    var mx = Interop.ToMathNet(x);
+                    var my = Interop.ToMathNet(y);
                     var expected = mxc(mxt(mx)) * my;
 
                     var actual = TestVector.RandomComplex(0, rowCount, dstStride);
@@ -133,8 +133,8 @@ namespace NumFlatTest
             var x = TestMatrix.RandomComplex(42, m, k, xStride);
             var y = TestMatrix.RandomComplex(57, k, n, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;
@@ -153,8 +153,8 @@ namespace NumFlatTest
             var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
             var y = TestVector.RandomComplex(57, colCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;

@@ -252,8 +252,8 @@ namespace NumFlatTest
             var x = TestVector.RandomSingle(42, xCount, xStride);
             var y = TestVector.RandomSingle(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomSingle(0, x.Count, y.Count, dstStride);
@@ -283,8 +283,8 @@ namespace NumFlatTest
             var x = TestVector.RandomDouble(42, xCount, xStride);
             var y = TestVector.RandomDouble(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomDouble(0, x.Count, y.Count, dstStride);
@@ -314,8 +314,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, xCount, xStride);
             var y = TestVector.RandomComplex(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my);
 
             var actual = TestMatrix.RandomComplex(0, x.Count, y.Count, dstStride);
@@ -345,8 +345,8 @@ namespace NumFlatTest
             var x = TestVector.RandomComplex(42, xCount, xStride);
             var y = TestVector.RandomComplex(57, yCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
             var expected = mx.OuterProduct(my.Conjugate());
 
             var actual = TestMatrix.RandomComplex(0, x.Count, y.Count, dstStride);
@@ -369,11 +369,11 @@ namespace NumFlatTest
         [TestCase(5, 7, 6)]
         public void Conjugate(int count, int xStride, int dstStride)
         {
-            var x = Utilities.CreateRandomVectorComplex(42, count, xStride);
+            var x = TestVector.RandomComplex(42, count, xStride);
 
             var expected = x.Select(c => c.Conjugate()).ToVector();
 
-            var actual = Utilities.CreateRandomVectorComplex(0, count, dstStride);
+            var actual = TestVector.RandomComplex(0, count, dstStride);
             using (x.EnsureUnchanged())
             {
                 Vec.Conjugate(x, actual);
@@ -392,11 +392,11 @@ namespace NumFlatTest
         [TestCase(11, 7, 5)]
         public void Map(int count, int xStride, int dstStride)
         {
-            var x = Utilities.CreateRandomVectorDouble(42, count, xStride);
+            var x = TestVector.RandomDouble(42, count, xStride);
 
             var expected = x.Select(value => new Complex(0, -value)).ToVector();
 
-            var actual = Utilities.CreateRandomVectorComplex(0, count, dstStride);
+            var actual = TestVector.RandomComplex(0, count, dstStride);
             using (x.EnsureUnchanged())
             {
                 Vec.Map(x, value => new Complex(0, -value), actual);

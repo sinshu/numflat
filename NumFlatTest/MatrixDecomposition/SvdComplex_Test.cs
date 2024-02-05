@@ -27,7 +27,7 @@ namespace NumFlatTest
                 SvdComplex.GetSingularValues(a, actual);
             }
 
-            var expected = Utilities.ToMathNet(a).Svd().S.Select(c=>c.Real).ToVector();
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c=>c.Real).ToVector();
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
@@ -52,7 +52,7 @@ namespace NumFlatTest
                 actual = a.GetSingularValues();
             }
 
-            var expected = Utilities.ToMathNet(a).Svd().S.Select(c => c.Real).ToVector();
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c => c.Real).ToVector();
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
@@ -131,8 +131,8 @@ namespace NumFlatTest
             var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var svd = a.Svd();
 
-            var ma = Utilities.ToMathNet(a);
-            var mb = Utilities.ToMathNet(b);
+            var ma = Interop.ToMathNet(a);
+            var mb = Interop.ToMathNet(b);
             var expected = ma.Svd().Solve(mb);
 
             var actual = TestVector.RandomComplex(66, a.ColCount, dstStride);
@@ -144,7 +144,7 @@ namespace NumFlatTest
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
-            Utilities.FailIfOutOfRangeWrite(actual);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -165,8 +165,8 @@ namespace NumFlatTest
             var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var svd = a.Svd();
 
-            var ma = Utilities.ToMathNet(a);
-            var mb = Utilities.ToMathNet(b);
+            var ma = Interop.ToMathNet(a);
+            var mb = Interop.ToMathNet(b);
             var expected = ma.Svd().Solve(mb);
 
             Vec<Complex> actual;

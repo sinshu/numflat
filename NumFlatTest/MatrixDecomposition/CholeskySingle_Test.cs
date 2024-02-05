@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
@@ -19,23 +20,17 @@ namespace NumFlatTest
         public void Decompose(int n, int aStride, int lStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var destination = Utilities.CreateRandomMatrixSingle(0, n, n, lStride);
 
-            CholeskySingle.Decompose(a, destination);
-
-            var reconstructed = destination * destination.Transpose();
-
-            for (var row = 0; row < reconstructed.RowCount; row++)
+            var l = TestMatrix.RandomSingle(0, n, n, lStride);
+            using (a.EnsureUnchanged())
             {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
+                CholeskySingle.Decompose(a, l);
             }
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            var reconstructed = l * l.Transpose();
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
+
+            TestMatrix.FailIfOutOfRangeWrite(l);
         }
 
         [TestCase(1, 1)]
@@ -49,19 +44,15 @@ namespace NumFlatTest
         public void ExtensionMethod(int n, int aStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var chol = a.Cholesky();
+
+            CholeskySingle chol;
+            using (a.EnsureUnchanged())
+            {
+                chol = a.Cholesky();
+            }
 
             var reconstructed = chol.L * chol.L.Transpose();
-
-            for (var row = 0; row < reconstructed.RowCount; row++)
-            {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
-            }
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -77,19 +68,21 @@ namespace NumFlatTest
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var chol = a.Cholesky();
-            var destination = Utilities.CreateRandomVectorSingle(66, n, dstStride);
-            chol.Solve(b, destination);
+
+            var actual = TestVector.RandomSingle(66, a.ColCount, dstStride);
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                chol.Solve(b, actual);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < n; i++)
-            {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1)]
@@ -105,21 +98,26 @@ namespace NumFlatTest
         public void Solve_Arg1(int n, int aStride, int bStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var chol = a.Cholesky();
-            var destination = chol.Solve(b);
 
-            var expected = a.Svd().Solve(b);
+            var ma = Interop.ToMathNet(a);
+            var mb = Interop.ToMathNet(b);
+            var expected = ma.Svd().Solve(mb);
 
-            for (var i = 0; i < n; i++)
+            Vec<float> actual;
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
             {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-6));
+                actual = chol.Solve(b);
             }
+
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
         }
 
         private static Mat<float> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = Utilities.CreateRandomMatrixSingle(seed, n, n, stride);
+            var mat = TestMatrix.RandomSingle(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -131,8 +129,7 @@ namespace NumFlatTest
                     }
                     else
                     {
-                        mat[row, col] = Utilities.NextSingle(random);
-                        mat[col, row] = mat[row, col];
+                        mat[row, col] = mat[col, row];
                     }
                 }
             }

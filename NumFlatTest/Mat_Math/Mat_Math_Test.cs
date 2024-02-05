@@ -247,7 +247,7 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, n, n, xStride);
 
             var actual = x.Trace();
-            var expected = Utilities.ToMathNet(x).Trace();
+            var expected = Interop.ToMathNet(x).Trace();
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
 

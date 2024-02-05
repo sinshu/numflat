@@ -228,7 +228,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
             Mat<float> actual;
@@ -254,7 +254,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomDouble(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
             Mat<double> actual;
@@ -280,7 +280,7 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomComplex(42, rowCount, colCount, aStride);
 
-            var ma = Utilities.ToMathNet(a);
+            var ma = Interop.ToMathNet(a);
             var expected = ma.PseudoInverse();
 
             Mat<Complex> actual;

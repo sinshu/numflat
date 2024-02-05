@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
@@ -24,19 +25,16 @@ namespace NumFlatTest
         [TestCase(6, 4, 7)]
         public void ExtensionMethod(int m, int n, int aStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, m, n, aStride);
-            var lu = a.Lu();
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+
+            LuSingle lu;
+            using (a.EnsureUnchanged())
+            {
+                lu = a.Lu();
+            }
 
             var reconstructed = lu.GetP() * lu.GetL() * lu.GetU();
-            for (var row = 0; row < reconstructed.RowCount; row++)
-            {
-                for (var col = 0; col < reconstructed.ColCount; col++)
-                {
-                    var actual = reconstructed[row, col];
-                    var expected = a[row, col];
-                    Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6));
-                }
-            }
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -51,20 +49,22 @@ namespace NumFlatTest
         [TestCase(5, 5, 8, 7)]
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, n, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
+            var a = TestMatrix.RandomSingle(42, n, n, aStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var lu = a.Lu();
-            var destination = Utilities.CreateRandomVectorSingle(66, n, dstStride);
-            lu.Solve(b, destination);
+
+            var actual = TestVector.RandomSingle(66, a.ColCount, dstStride);
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                lu.Solve(b, actual);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < n; i++)
-            {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-5));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
 
-            Utilities.FailIfOutOfRangeWrite(destination);
+            TestVector.FailIfOutOfRangeWrite(actual);
         }
 
         [TestCase(1, 1, 1)]
@@ -79,17 +79,20 @@ namespace NumFlatTest
         [TestCase(5, 5, 8)]
         public void Solve_Arg1(int n, int aStride, int bStride)
         {
-            var a = Utilities.CreateRandomMatrixSingle(42, n, n, aStride);
-            var b = Utilities.CreateRandomVectorSingle(57, n, bStride);
+            var a = TestMatrix.RandomSingle(42, n, n, aStride);
+            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
             var lu = a.Lu();
-            var destination = lu.Solve(b);
+
+            Vec<float> actual;
+            using (a.EnsureUnchanged())
+            using (b.EnsureUnchanged())
+            {
+                actual = lu.Solve(b);
+            }
 
             var expected = a.Svd().Solve(b);
 
-            for (var i = 0; i < n; i++)
-            {
-                Assert.That(destination[i], Is.EqualTo(expected[i]).Within(1.0E-5));
-            }
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
         }
     }
 }

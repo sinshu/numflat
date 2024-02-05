@@ -19,7 +19,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextSingle(random);
+                memory[position] = Utility.NextSingle(random);
             }
 
             return new Vec<float>(count, stride, memory);
@@ -37,7 +37,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextSingleNonZero(random);
+                memory[position] = Utility.NextSingleNonZero(random);
             }
 
             return new Vec<float>(count, stride, memory);
@@ -55,7 +55,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextDouble(random);
+                memory[position] = Utility.NextDouble(random);
             }
 
             return new Vec<double>(count, stride, memory);
@@ -73,7 +73,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextDoubleNonZero(random);
+                memory[position] = Utility.NextDoubleNonZero(random);
             }
 
             return new Vec<double>(count, stride, memory);
@@ -91,7 +91,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextComplex(random);
+                memory[position] = Utility.NextComplex(random);
             }
 
             return new Vec<Complex>(count, stride, memory);
@@ -109,7 +109,7 @@ namespace NumFlatTest
 
             for (var position = 0; position < memory.Length; position += stride)
             {
-                memory[position] = Utilities.NextDoubleNonZero(random);
+                memory[position] = Utility.NextDoubleNonZero(random);
             }
 
             return new Vec<Complex>(count, stride, memory);

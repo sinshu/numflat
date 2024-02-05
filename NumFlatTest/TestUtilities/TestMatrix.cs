@@ -23,7 +23,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextSingle(random);
+                    memory[position] = Utility.NextSingle(random);
                 }
             }
 
@@ -46,7 +46,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextSingleNonZero(random);
+                    memory[position] = Utility.NextSingleNonZero(random);
                 }
             }
 
@@ -69,7 +69,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextDouble(random);
+                    memory[position] = Utility.NextDouble(random);
                 }
             }
 
@@ -92,7 +92,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextDoubleNonZero(random);
+                    memory[position] = Utility.NextDoubleNonZero(random);
                 }
             }
 
@@ -115,7 +115,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextComplex(random);
+                    memory[position] = Utility.NextComplex(random);
                 }
             }
 
@@ -138,7 +138,7 @@ namespace NumFlatTest
                 for (var i = 0; i < rowCount; i++)
                 {
                     var position = offset + i;
-                    memory[position] = Utilities.NextComplexNonZero(random);
+                    memory[position] = Utility.NextComplexNonZero(random);
                 }
             }
 

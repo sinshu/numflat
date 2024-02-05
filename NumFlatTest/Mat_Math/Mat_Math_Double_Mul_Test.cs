@@ -40,11 +40,11 @@ namespace NumFlatTest
                     var x = TestMatrix.RandomDouble(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
                     var y = TestMatrix.RandomDouble(57, yArgs.Item1, yArgs.Item2, yArgs.Item3);
 
-                    var mx = Utilities.ToMathNet(x);
-                    var my = Utilities.ToMathNet(y);
+                    var mx = Interop.ToMathNet(x);
+                    var my = Interop.ToMathNet(y);
                     var expected = mxt(mx) * myt(my);
 
-                    var actual = Utilities.CreateRandomMatrixDouble(0, m, n, dstStride);
+                    var actual = TestMatrix.RandomDouble(0, m, n, dstStride);
                     using (x.EnsureUnchanged())
                     using (y.EnsureUnchanged())
                     {
@@ -84,8 +84,8 @@ namespace NumFlatTest
                 var x = TestMatrix.RandomDouble(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
                 var y = TestVector.RandomDouble(57, colCount, yStride);
 
-                var mx = Utilities.ToMathNet(x);
-                var my = Utilities.ToMathNet(y);
+                var mx = Interop.ToMathNet(x);
+                var my = Interop.ToMathNet(y);
                 var expected = mxt(mx) * my;
 
                 var actual = TestVector.RandomDouble(0, rowCount, dstStride);
@@ -114,8 +114,8 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, m, k, xStride);
             var y = TestMatrix.RandomDouble(57, k, n, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;
@@ -134,8 +134,8 @@ namespace NumFlatTest
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
             var y = TestVector.RandomDouble(57, colCount, yStride);
 
-            var mx = Utilities.ToMathNet(x);
-            var my = Utilities.ToMathNet(y);
+            var mx = Interop.ToMathNet(x);
+            var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;
