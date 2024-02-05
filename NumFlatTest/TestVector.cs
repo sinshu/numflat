@@ -15,9 +15,28 @@ namespace NumFlatTest
             {
                 memory[i] = double.NaN;
             }
+
             for (var position = 0; position < memory.Length; position += stride)
             {
                 memory[position] = Utilities.NextDouble(random);
+            }
+
+            return new Vec<double>(count, stride, memory);
+        }
+
+        public static Vec<double> NonZeroRandomDouble(int seed, int count, int stride)
+        {
+            var random = new Random(seed);
+
+            var memory = new double[stride * (count - 1) + 1];
+            for (var i = 0; i < memory.Length; i++)
+            {
+                memory[i] = double.NaN;
+            }
+
+            for (var position = 0; position < memory.Length; position += stride)
+            {
+                memory[position] = Utilities.NextDoubleNonZero(random);
             }
 
             return new Vec<double>(count, stride, memory);
