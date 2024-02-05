@@ -327,7 +327,7 @@ namespace NumFlatTest
         public void CopyTo(int rowCount, int colCount, int srcStride, int dstStride)
         {
             var source = TestMatrix.RandomDouble(42, rowCount, colCount, srcStride);
-            var destination = TestMatrix.RandomDouble(57, rowCount, colCount, dstStride);
+            var destination = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
 
             source.CopyTo(destination);
 

@@ -16,13 +16,13 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count);
 
-            Assert.That(vector.Count == count);
-            Assert.That(vector.Stride == 1);
-            Assert.That(vector.Memory.Length == count);
+            Assert.That(vector.Count, Is.EqualTo(count));
+            Assert.That(vector.Stride, Is.EqualTo(1));
+            Assert.That(vector.Memory.Length, Is.EqualTo(count));
 
             for (var i = 0; i < count; i++)
             {
-                Assert.That(vector[i] == 0);
+                Assert.That(vector[i], Is.EqualTo(0));
             }
         }
 
@@ -36,29 +36,15 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count, stride, memory);
 
-            {
-                var expected = 1;
-                for (var i = 0; i < count; i++)
-                {
-                    Assert.That(vector[i] == expected);
-                    expected++;
-                }
-            }
+            Assert.That(vector.Count, Is.EqualTo(count));
+            Assert.That(vector.Stride, Is.EqualTo(stride));
+            Assert.That(vector.Memory.Length, Is.EqualTo(stride * (count - 1) + 1));
 
+            var expected = 1;
+            for (var i = 0; i < count; i++)
             {
-                var expected = 1;
-                for (var position = 0; position < memory.Length; position++)
-                {
-                    if (position % stride == 0)
-                    {
-                        Assert.That(vector.Memory.Span[position] == expected);
-                        expected++;
-                    }
-                    else
-                    {
-                        Assert.That(vector.Memory.Span[position] == -1);
-                    }
-                }
+                Assert.That(vector[i], Is.EqualTo(expected));
+                expected++;
             }
         }
 
@@ -75,18 +61,18 @@ namespace NumFlatTest
             for (var i = 0; i < count; i++)
             {
                 vector[i] = int.MaxValue;
-                Assert.That(vector[i] == int.MaxValue);
+                Assert.That(vector[i], Is.EqualTo(int.MaxValue));
             }
 
             for (var position = 0; position < memory.Length; position++)
             {
                 if (position % stride == 0)
                 {
-                    Assert.That(memory[position] == int.MaxValue);
+                    Assert.That(memory[position], Is.EqualTo(int.MaxValue));
                 }
                 else
                 {
-                    Assert.That(memory[position] == -1);
+                    Assert.That(memory[position], Is.EqualTo(-1));
                 }
             }
         }
@@ -101,17 +87,18 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count, stride, memory);
             vector.Fill(int.MaxValue);
+
             Assert.That(vector.All(value => value == int.MaxValue));
 
             for (var position = 0; position < memory.Length; position++)
             {
                 if (position % stride == 0)
                 {
-                    Assert.That(memory[position] == int.MaxValue);
+                    Assert.That(memory[position], Is.EqualTo(int.MaxValue));
                 }
                 else
                 {
-                    Assert.That(memory[position] == -1);
+                    Assert.That(memory[position], Is.EqualTo(-1));
                 }
             }
         }
@@ -126,17 +113,18 @@ namespace NumFlatTest
         {
             var vector = new Vec<int>(count, stride, memory);
             vector.Clear();
+
             Assert.That(vector.All(value => value == 0));
 
             for (var position = 0; position < memory.Length; position++)
             {
                 if (position % stride == 0)
                 {
-                    Assert.That(memory[position] == 0);
+                    Assert.That(memory[position], Is.EqualTo(0));
                 }
                 else
                 {
-                    Assert.That(memory[position] == -1);
+                    Assert.That(memory[position], Is.EqualTo(-1));
                 }
             }
         }
@@ -148,7 +136,9 @@ namespace NumFlatTest
         [TestCase(11, 7)]
         public void Enumerate(int count, int stride)
         {
-            var vector = Utilities.CreateRandomVectorDouble(42, count, stride);
+            var vector = TestVector.RandomDouble(42, count, stride);
+
+            var actual = vector.ToArray();
 
             var expected = new double[vector.Count];
             for (var i = 0; i < vector.Count; i++)
@@ -156,8 +146,7 @@ namespace NumFlatTest
                 expected[i] = vector[i];
             }
 
-            var actual = vector.ToArray();
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [TestCase(1, 1, 0, 1)]
@@ -171,7 +160,9 @@ namespace NumFlatTest
         [TestCase(11, 7, 3, 5)]
         public void Subvector(int srcCount, int srcStride, int dstIndex, int dstCount)
         {
-            var vector = Utilities.CreateRandomVectorDouble(42, srcCount, srcStride);
+            var vector = TestVector.RandomDouble(42, srcCount, srcStride);
+
+            var actual = vector.Subvector(dstIndex, dstCount).ToArray();
 
             var expected = new double[dstCount];
             for (var i = 0; i < dstCount; i++)
@@ -179,47 +170,27 @@ namespace NumFlatTest
                 expected[i] = vector[dstIndex + i];
             }
 
-            var actual = vector.Subvector(dstIndex, dstCount).ToArray();
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
-        [TestCase(1, 1, 0, 1, 1)]
-        [TestCase(1, 3, 0, 1, 3)]
-        [TestCase(3, 1, 0, 2, 1)]
-        [TestCase(3, 1, 1, 2, 1)]
-        [TestCase(3, 1, 0, 3, 1)]
-        [TestCase(3, 3, 0, 2, 5)]
-        [TestCase(3, 3, 1, 2, 3)]
-        [TestCase(3, 3, 0, 3, 2)]
-        [TestCase(11, 7, 3, 5, 4)]
-        public void CopyTo(int dstCount, int dstStride, int subIndex, int subCount, int srcStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 2, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 4, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 4, 4)]
+        [TestCase(5, 9, 7)]
+        [TestCase(7, 9, 8)]
+        public void CopyTo(int count, int srcStride, int dstStride)
         {
-            var vector = Utilities.CreateRandomVectorDouble(42, dstCount, dstStride);
-            var expected = vector.ToArray();
+            var source = TestVector.RandomDouble(42, count, dstStride);
+            var destination = TestVector.RandomDouble(0, count, srcStride);
 
-            var subvector = vector.Subvector(subIndex, subCount);
-            var source = Utilities.CreateRandomVectorDouble(57, subCount, srcStride);
-            source.CopyTo(subvector);
-            for (var i = 0; i < subCount; i++)
-            {
-                expected[subIndex + i] = source[i];
-            }
-            var actual = vector.ToArray();
+            source.CopyTo(destination);
 
-            CollectionAssert.AreEqual(subvector, source);
-            CollectionAssert.AreEqual(expected, actual);
+            NumAssert.AreSame(source, destination, 0);
 
-            for (var position = 0; position < vector.Memory.Length; position++)
-            {
-                if (position % vector.Stride == 0)
-                {
-                    Assert.That(!double.IsNaN(vector.Memory.Span[position]));
-                }
-                else
-                {
-                    Assert.That(double.IsNaN(vector.Memory.Span[position]));
-                }
-            }
+            TestVector.FailIfOutOfRangeWrite(destination);
         }
     }
 }
