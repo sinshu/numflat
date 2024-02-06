@@ -177,12 +177,12 @@ namespace NumFlat
 
             if (startRow + rowCount > this.rowCount)
             {
-                throw new ArgumentOutOfRangeException("'startRow + rowCount' must be less than or equal to 'Vec<T>.RowCount'.");
+                throw new ArgumentOutOfRangeException("'startRow + rowCount' must be less than or equal to the number of rows of the source matrix.");
             }
 
             if (startCol + colCount > this.colCount)
             {
-                throw new ArgumentOutOfRangeException("'startCol + colCount' must be less than or equal to 'Vec<T>.ColCount'.");
+                throw new ArgumentOutOfRangeException("'startCol + colCount' must be less than or equal to the number of columns of the source matrix.");
             }
 
             var stride = this.stride;
@@ -206,15 +206,7 @@ namespace NumFlat
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
 
-            if (destination.rowCount != this.rowCount)
-            {
-                throw new ArgumentException("'destination.RowCount' must match 'source.RowCount'.");
-            }
-
-            if (destination.colCount != this.colCount)
-            {
-                throw new ArgumentException("'destination.ColCount' must match 'source.ColCount'.");
-            }
+            ThrowHelper.ThrowIfDifferentSize(this, destination);
 
             var st = this.memory.Span;
             var sd = destination.memory.Span;
@@ -288,12 +280,12 @@ namespace NumFlat
 
                 if ((uint)row >= rowCount)
                 {
-                    throw new IndexOutOfRangeException("'row' must be within 'source.RowCount'.");
+                    throw new IndexOutOfRangeException("'row' must be within the number of rows.");
                 }
 
                 if ((uint)col >= colCount)
                 {
-                    throw new IndexOutOfRangeException("'col' must be within 'source.ColCount'.");
+                    throw new IndexOutOfRangeException("'col' must be within the number of columns.");
                 }
 
                 return memory.Span[stride * col + row];
@@ -308,12 +300,12 @@ namespace NumFlat
 
                 if ((uint)row >= rowCount)
                 {
-                    throw new IndexOutOfRangeException("'row' must be within 'source.RowCount'.");
+                    throw new IndexOutOfRangeException("'row' must be within the number of rows.");
                 }
 
                 if ((uint)col >= colCount)
                 {
-                    throw new IndexOutOfRangeException("'col' must be within 'source.ColCount'.");
+                    throw new IndexOutOfRangeException("'col' must be within the number of columns.");
                 }
 
                 memory.Span[stride * col + row] = value;

@@ -16,11 +16,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the vector addition.
+        /// The vector addition.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Add{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Add{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> operator +(in Vec<T> x, in Vec<T> y)
         {
@@ -43,11 +43,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the vector subtraction.
+        /// The vector subtraction.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Sub{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Sub{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> operator -(in Vec<T> x, in Vec<T> y)
         {
@@ -70,11 +70,11 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <returns>
-        /// The result of the vector-and-scalar multiplication.
+        /// The vector-and-scalar multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> operator *(in Vec<T> x, T y)
         {
@@ -95,11 +95,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the scalar-and-vector multiplication.
+        /// The scalar-and-vector multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Mul{T}(in Vec{T}, T, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> operator *(T x, in Vec<T> y)
         {
@@ -120,7 +120,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The dot product.
         /// </returns>
         public static T operator *(Vec<T> x, Vec<T> y)
         {
@@ -151,7 +151,7 @@ namespace NumFlat
             }
             else
             {
-                throw new NotSupportedException($"dot product for the type '{typeof(T).Name}' is not supported.");
+                throw new NotSupportedException($"Dot product for the type '{typeof(T).Name}' is not supported.");
             }
         }
 
@@ -165,11 +165,11 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <returns>
-        /// The result of the vector-and-scalar division.
+        /// The vector-and-scalar division.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Div{T}(in Vec{T}, T, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Div{T}(in Vec{T}, T, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> operator /(in Vec<T> x, T y)
         {

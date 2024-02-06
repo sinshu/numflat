@@ -22,7 +22,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the vector addition.
+        /// The destination of the vector addition.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -62,7 +62,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the vector subtraction.
+        /// The destination of the vector subtraction.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -102,7 +102,7 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the vector-and-scalar multiplication.
+        /// The destination the vector-and-scalar multiplication.
         /// </param>
         /// /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -138,7 +138,7 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the vector-and-scalar division.
+        /// The destination of the vector-and-scalar division.
         /// </param>
         /// /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -174,7 +174,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pointwise-multiplication.
+        /// The destination of the the pointwise-multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -214,7 +214,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pointwise-division.
+        /// The destination of the pointwise-division.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -251,7 +251,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The dot product.
         /// </returns>
         public static unsafe float Dot(in this Vec<float> x, in Vec<float> y)
         {
@@ -276,7 +276,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The dot product.
         /// </returns>
         public static unsafe double Dot(in this Vec<double> x, in Vec<double> y)
         {
@@ -304,7 +304,7 @@ namespace NumFlat
         /// If true, the vector x is treated as conjugated.
         /// </param>
         /// <returns>
-        /// The result of the dot product.
+        /// The dot product.
         /// </returns>
         public static unsafe Complex Dot(in this Vec<Complex> x, in Vec<Complex> y, bool conjugateX)
         {
@@ -336,11 +336,8 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The result of outer dot product.
+        /// The destination of the outer product.
         /// </param>
-        /// <returns>
-        /// The result of the outer product.
-        /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
@@ -386,11 +383,8 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The result of outer dot product.
+        /// The destination of the outer product.
         /// </param>
-        /// <returns>
-        /// The result of the outer product.
-        /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
@@ -436,14 +430,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The result of outer dot product.
+        /// The destination of the outer product.
         /// </param>
         /// <param name="conjugateY">
         /// If true, the vector y is treated as conjugated.
         /// </param>
-        /// <returns>
-        /// The result of the outer product.
-        /// </returns>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// </remarks>
@@ -501,7 +492,7 @@ namespace NumFlat
         /// The complex vector to be conjugated.
         /// </param>
         /// <param name="destination">
-        /// The conjugated complex vector.
+        /// The destination of the conjugation.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -540,7 +531,7 @@ namespace NumFlat
         /// The function to be applied.
         /// </param>
         /// <param name="destination">
-        /// The destination vector where the results of the function application are stored.
+        /// The destination where the results of the function application are stored.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -552,7 +543,7 @@ namespace NumFlat
 
             if (source.Count != destination.Count)
             {
-                throw new ArgumentException("The vectors must be the same length.");
+                throw new ArgumentException("The vectors must have the same length.");
             }
 
             var ss = source.Memory.Span;

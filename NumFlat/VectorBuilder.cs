@@ -11,13 +11,13 @@ namespace NumFlat
     public static class VectorBuilder
     {
         /// <summary>
-        /// Create a new vector from the specified elements.
+        /// Creates a new vector from the specified elements.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
         /// </typeparam>
         /// <param name="elements">
-        /// The elements in the vector.
+        /// The elements for the new vector.
         /// </param>
         /// <returns>
         /// A new vector that contains the specified elements.
@@ -29,20 +29,20 @@ namespace NumFlat
         {
             if (elements.Length == 0)
             {
-                throw new ArgumentException("The number of elements must be greater than or equal to one.");
+                throw new ArgumentException("The sequence must contain at least one element.");
             }
 
             return new Vec<T>(elements.ToArray());
         }
 
         /// <summary>
-        /// Create a new vector from the specified elements.
+        /// Creates a new vector from the specified elements.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
         /// </typeparam>
         /// <param name="elements">
-        /// The elements in the vector.
+        /// The elements for the new vector.
         /// </param>
         /// <returns>
         /// A new vector that contains the specified elements.
@@ -55,7 +55,7 @@ namespace NumFlat
             var array = elements.ToArray();
             if (array.Length == 0)
             {
-                throw new ArgumentException("The number of elements must be greater than or equal to one.");
+                throw new ArgumentException("The sequence must contain at least one element.");
             }
 
             return new Vec<T>(array);

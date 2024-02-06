@@ -16,11 +16,11 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The result of the matrix addition.
+        /// The matrix addition.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Add{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Add{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> operator +(in Mat<T> x, in Mat<T> y)
         {
@@ -43,11 +43,11 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The result of the matrix subtraction.
+        /// The matrix subtraction.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Sub{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Sub{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> operator -(in Mat<T> x, in Mat<T> y)
         {
@@ -70,11 +70,11 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <returns>
-        /// The result of the matrix-and-scalar multiplication.
+        /// The matrix-and-scalar multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> operator *(in Mat<T> x, T y)
         {
@@ -95,11 +95,11 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The result of the scalar-and-matri multiplication.
+        /// The scalar-and-matri multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> operator *(T x, in Mat<T> y)
         {
@@ -121,11 +121,11 @@ namespace NumFlat
         /// This vector is interpreted as a column vector.
         /// </param>
         /// <returns>
-        /// The result of the matrix-and-vector multiplication.
+        /// The matrix-and-vector multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Vec<T> operator *(Mat<T> x, Vec<T> y)
         {
@@ -177,11 +177,11 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The result of the matrix multiplication.
+        /// The matrix multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/> instead.
         /// </remarks>
         public static Mat<T> operator *(Mat<T> x, Mat<T> y)
         {
@@ -233,11 +233,11 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <returns>
-        /// The result of the matrix-and-scalar division.
+        /// The matrix-and-scalar division.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrices.
-        /// To avoid the allocation, use '<see cref="Mat.Div{T}(in Mat{T}, T, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Div{T}(in Mat{T}, T, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> operator /(in Mat<T> x, T y)
         {

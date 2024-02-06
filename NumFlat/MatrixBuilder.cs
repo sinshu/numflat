@@ -11,13 +11,13 @@ namespace NumFlat
     public static class MatrixBuilder
     {
         /// <summary>
-        /// Create an identity matrix.
+        /// Creates an identity matrix.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="count">
-        /// The number of rows of the square matrix.
+        /// The order of the square matrix.
         /// </param>
         /// <returns>
         /// The specified identity matrix.
@@ -33,13 +33,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Create a new matrix from the specified elements.
+        /// Creates a new matrix from the specified elements.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="elements">
-        /// The elements in the matrix.
+        /// The elements for the new matrix.
         /// </param>
         /// <returns>
         /// A new matrix that contains the specified elements.
@@ -70,13 +70,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Create a new matrix from the specified diagonal elements.
+        /// Creates a new matrix from the specified diagonal elements.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="elements">
-        /// The diagonal elements in the matrix.
+        /// The diagonal elements for the new matrix.
         /// </param>
         /// <returns>
         /// A new matrix that contains the specified diagonal elements.
@@ -104,19 +104,19 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Create a new matrix from the specified diagonal elements.
+        /// Creates a new matrix from the specified diagonal elements.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="elements">
-        /// The diagonal elements in the matrix.
+        /// The diagonal elements for the new matrix.
         /// </param>
         /// <param name="rowCount">
-        /// The number of rows of the matrix.
+        /// The number of rows.
         /// </param>
         /// <param name="colCount">
-        /// The number of columns of the matrix.
+        /// The number of columns.
         /// </param>
         /// <returns>
         /// A new matrix that contains the specified diagonal elements.
@@ -147,19 +147,19 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Create a new matrix from the specified rows.
+        /// Creates a new matrix from the specified rows.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="rows">
-        /// The rows in the matrix.
+        /// The rows for the new matrix.
         /// </param>
         /// <returns>
         /// A new matrix that contains the specified rows.
         /// </returns>
         /// <remarks>
-        /// This method allocates a new matrix which is independent from the original storage.
+        /// This method allocates a new matrix which is independent from the original rows.
         /// </remarks>
         public static Mat<T> RowsToMatrix<T>(this IEnumerable<IEnumerable<T>> rows) where T : unmanaged, INumberBase<T>
         {
@@ -213,13 +213,13 @@ namespace NumFlat
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="cols">
-        /// The columns in the matrix.
+        /// The columns for the new matrix.
         /// </param>
         /// <returns>
         /// A new matrix that contains the specified columns.
         /// </returns>
         /// <remarks>
-        /// This method allocates a new matrix which is independent from the original storage.
+        /// This method allocates a new matrix which is independent from the original columns.
         /// </remarks>
         public static Mat<T> ColsToMatrix<T>(this IEnumerable<IEnumerable<T>> cols) where T : unmanaged, INumberBase<T>
         {

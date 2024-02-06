@@ -4,7 +4,7 @@ using System.Numerics;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides extension methods for '<see cref="Complex"/>'.
+    /// Provides extension methods for the <see cref="Complex"/> type.
     /// </summary>
     public static class ComplexExtension
     {

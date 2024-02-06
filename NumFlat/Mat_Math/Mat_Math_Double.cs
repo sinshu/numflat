@@ -15,11 +15,9 @@ namespace NumFlat
         /// <param name="y">
         /// The vector y.
         /// This vector is interpreted as a column vector.
-        /// 'y.Count' must match 'x.ColCount'.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix-and-vector multiplication.
-        /// 'destination.Count' must match 'x.RowCount'.
+        /// The destination of the matrix-and-vector multiplication.
         /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.
@@ -86,7 +84,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix multiplication.
+        /// The destination the matrix multiplication.
         /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.
@@ -127,21 +125,18 @@ namespace NumFlat
         /// Computes the determinant of a matrix, det(X).
         /// </summary>
         /// <param name="x">
-        /// The matrix X.
+        /// The target matrix.
         /// </param>
         /// <returns>
         /// The determinant of the matrix.
         /// </returns>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static unsafe double Determinant(in this Mat<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("'x' must be a square matrix.");
+                throw new ArgumentException("The matrix must be a square matrix.");
             }
 
             using var tmp_xCopy = TemporalMatrix.CopyFrom(x);
@@ -180,17 +175,14 @@ namespace NumFlat
         /// Computes a matrix inversion, X^-1.
         /// </summary>
         /// <param name="x">
-        /// The matrix X.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix inversion.
+        /// The destination of the matrix inversion.
         /// </param>
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static unsafe void Inverse(in Mat<double> x, in Mat<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -199,7 +191,7 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("'x' must be a square matrix.");
+                throw new ArgumentException("The matrix must be a square matrix.");
             }
 
             x.CopyTo(destination);
@@ -236,20 +228,17 @@ namespace NumFlat
         /// Gets the rank of the matrix.
         /// </summary>
         /// <param name="x">
-        /// The matrix.
+        /// The target matrix.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
+        /// Singular values below this threshold will be replaced with zero.
         /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static int Rank(in this Mat<double> x, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
@@ -281,17 +270,14 @@ namespace NumFlat
         /// Gets the rank of the matrix.
         /// </summary>
         /// <param name="x">
-        /// The matrix.
+        /// The target matrix.
         /// </param>
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static int Rank(in this Mat<double> x)
         {
             // Set NaN to tolerance to set the tolerance automatically.
@@ -299,23 +285,20 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inverse of the matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pseudo inversion.
+        /// The destination of the pseudo inversion.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
+        /// Singular values below this threshold will be replaced with zero.
         /// </param>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static void PseudoInverse(in Mat<double> a, in Mat<double> destination, double tolerance)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -385,20 +368,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inverse of the matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pseudo inversion.
+        /// The destination the pseudo inversion.
         /// </param>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static void PseudoInverse(in Mat<double> a, in Mat<double> destination)
         {
             // Set NaN to tolerance to set the tolerance automatically.

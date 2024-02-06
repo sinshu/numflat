@@ -8,13 +8,13 @@ namespace NumFlat
     public static class Special
     {
         /// <summary>
-        /// Gets a value that is small enough in comparison to the given scale.
+        /// Gets a value that is very small compared to the scale of the given value.
         /// </summary>
         /// <param name="x">
-        /// The current scale.
+        /// The value being compared.
         /// </param>
         /// <returns>
-        /// A value small enough compared to the given scale.
+        /// A very small value compared to the given value.
         /// </returns>
         public static float Eps(float x)
         {
@@ -42,13 +42,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Gets a value that is small enough in comparison to the given scale.
+        /// Gets a value that is very small compared to the scale of the given value.
         /// </summary>
         /// <param name="x">
-        /// The current scale.
+        /// The value being compared.
         /// </param>
         /// <returns>
-        /// A value small enough compared to the given scale.
+        /// A very small value compared to the given value.
         /// </returns>
         public static double Eps(double x)
         {

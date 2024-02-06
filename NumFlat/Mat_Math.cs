@@ -21,10 +21,9 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix addition.
+        /// The destination of the matrix addition.
         /// </param>
         /// <remarks>
-        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Add<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -72,10 +71,9 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix subtraction.
+        /// The destination of the matrix subtraction.
         /// </param>
         /// <remarks>
-        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Sub<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -123,8 +121,7 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix-and-scalar multiplication.
-        /// The dimensions of <paramref name="destination"/> must match <paramref name="x"/>.
+        /// The destination of the matrix-and-scalar multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -168,8 +165,7 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix-and-scalar division.
-        /// The dimensions of <paramref name="destination"/> must match <paramref name="x"/>.
+        /// The destination of the matrix-and-scalar division.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -213,10 +209,9 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pointwise-multiplication.
+        /// The destination the pointwise-multiplication.
         /// </param>
         /// <remarks>
-        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void PointwiseMul<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -264,10 +259,9 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the pointwise-division.
+        /// The destination of the pointwise-division.
         /// </param>
         /// <remarks>
-        /// The dimensions of the matrices must match.
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void PointwiseDiv<T>(in Mat<T> x, in Mat<T> y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
@@ -312,14 +306,14 @@ namespace NumFlat
         /// The matrix X.
         /// </param>
         /// <param name="destination">
-        /// The destination of the result of the matrix transposition.
+        /// The destination of the matrix transposition.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
         /// Since in-place transposition is not supported,
         /// <paramref name="x"/> and <paramref name="destination"/> must be different.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use '<see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>'.
+        /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
         /// </remarks>
         public static void Transpose<T>(in Mat<T> x, in Mat<T> destination) where T : unmanaged, INumberBase<T>
         {
@@ -359,7 +353,7 @@ namespace NumFlat
         /// The type of elements in the matrix.
         /// </typeparam>
         /// <param name="x">
-        /// The matrix X.
+        /// The target matrix.
         /// </param>
         /// <returns></returns>
         public static T Trace<T>(in this Mat<T> x) where T : unmanaged, INumberBase<T>
@@ -396,7 +390,7 @@ namespace NumFlat
         /// The function to be applied.
         /// </param>
         /// <param name="destination">
-        /// The destination matrix where the results of the function application are stored.
+        /// The destination where the results of the function application are stored.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.

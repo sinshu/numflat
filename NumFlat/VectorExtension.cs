@@ -21,11 +21,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the pointwise-multiplication.
+        /// The pointwise-multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.PointwiseMul{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.PointwiseMul{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> PointwiseMul<T>(in this Vec<T> x, in Vec<T> y) where T : unmanaged, INumberBase<T>
         {
@@ -51,11 +51,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the pointwise-division.
+        /// The pointwise-division.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.PointwiseDiv{T}(in Vec{T}, in Vec{T}, in Vec{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.PointwiseDiv{T}(in Vec{T}, in Vec{T}, in Vec{T})"/> instead.
         /// </remarks>
         public static Vec<T> PointwiseDiv<T>(in this Vec<T> x, in Vec<T> y) where T : unmanaged, INumberBase<T>
         {
@@ -78,11 +78,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the outer product.
+        /// The outer product.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Outer(in Vec{float}, in Vec{float}, in Mat{float})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Outer(in Vec{float}, in Vec{float}, in Mat{float})"/> instead.
         /// </remarks>
         public static Mat<float> Outer(in this Vec<float> x, in Vec<float> y)
         {
@@ -104,11 +104,11 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The result of the outer product.
+        /// The outer product.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Outer(in Vec{double}, in Vec{double}, in Mat{double})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Outer(in Vec{double}, in Vec{double}, in Mat{double})"/> instead.
         /// </remarks>
         public static Mat<double> Outer(in this Vec<double> x, in Vec<double> y)
         {
@@ -133,11 +133,11 @@ namespace NumFlat
         /// If true, the vector y is treated as conjugated.
         /// </param>
         /// <returns>
-        /// The result of the outer product.
+        /// The outer product.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original vectors.
-        /// To avoid the allocation, use '<see cref="Vec.Outer(in Vec{Complex}, in Vec{Complex}, in Mat{Complex}, bool)"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Outer(in Vec{Complex}, in Vec{Complex}, in Mat{Complex}, bool)"/> instead.
         /// </remarks>
         public static Mat<Complex> Outer(in this Vec<Complex> x, in Vec<Complex> y, bool conjugateY)
         {
@@ -160,7 +160,7 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vector.
-        /// To avoid the allocation, use '<see cref="Vec.Conjugate(in Vec{Complex}, in Vec{Complex})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Conjugate(in Vec{Complex}, in Vec{Complex})"/> instead.
         /// </remarks>
         public static Vec<Complex> Conjugate(in this Vec<Complex> x)
         {
@@ -230,7 +230,7 @@ namespace NumFlat
         /// </param>
         /// <returns>
         /// This method allocates a new vector which is independent from the original vector.
-        /// To avoid the allocation, use '<see cref="Vec.Map{TSource, TResult}(in Vec{TSource}, Func{TSource, TResult}, in Vec{TResult})"/>' instead.
+        /// To avoid the allocation, use <see cref="Vec.Map{TSource, TResult}(in Vec{TSource}, Func{TSource, TResult}, in Vec{TResult})"/> instead.
         /// </returns>
         public static Vec<TResult> Map<TSource, TResult>(in this Vec<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
         {

@@ -17,7 +17,7 @@ namespace NumFlat
         {
             if (v.Count == 0)
             {
-                throw new ArgumentException("The vector must not be empty.", name);
+                throw new ArgumentException("An empty vector is not allowed.", name);
             }
         }
 
@@ -25,7 +25,7 @@ namespace NumFlat
         {
             if (m.RowCount == 0 || m.ColCount == 0)
             {
-                throw new ArgumentException("The matrix must not be empty.", name);
+                throw new ArgumentException("An empty matrix is not allowed.", name);
             }
         }
 
@@ -33,7 +33,7 @@ namespace NumFlat
         {
             if (v1.Count != v2.Count)
             {
-                throw new ArgumentException("The vectors must be the same length.");
+                throw new ArgumentException("The vectors must have the same length.");
             }
         }
 
@@ -41,7 +41,7 @@ namespace NumFlat
         {
             if (v1.Count != v2.Count || v1.Count != v3.Count)
             {
-                throw new ArgumentException("The vectors must be the same length.");
+                throw new ArgumentException("The vectors must have the same length.");
             }
         }
 
@@ -49,7 +49,7 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount)
             {
-                throw new ArgumentException("The matrices must be the same dimensions.");
+                throw new ArgumentException("The matrices must have the same number of rows and columns.");
             }
         }
 
@@ -57,7 +57,7 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount || m1.RowCount != m3.RowCount || m1.ColCount != m3.ColCount)
             {
-                throw new ArgumentException("The matrices must be the same dimensions.");
+                throw new ArgumentException("The matrices must have the same number of rows and columns.");
             }
         }
     }

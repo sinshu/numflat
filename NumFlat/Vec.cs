@@ -159,7 +159,7 @@ namespace NumFlat
 
             if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to 'source.Count'.");
+                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to the length of the source vector.");
             }
 
             var stride = this.stride;
@@ -183,10 +183,7 @@ namespace NumFlat
                 throw new InvalidOperationException("Method call against an empty vector is not allowed.");
             }
 
-            if (destination.count != this.count)
-            {
-                throw new ArgumentException("'destination.Count' must match 'source.Count'.");
-            }
+            ThrowHelper.ThrowIfDifferentSize(this, destination);
 
             var st = this.memory.Span;
             var sd = destination.memory.Span;
@@ -220,7 +217,7 @@ namespace NumFlat
 
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");
+                    throw new IndexOutOfRangeException("'index' must be within the vector length.");
                 }
 
                 return memory.Span[stride * index];
@@ -235,7 +232,7 @@ namespace NumFlat
 
                 if ((uint)index >= count)
                 {
-                    throw new IndexOutOfRangeException("'index' must be within 'source.Count'.");
+                    throw new IndexOutOfRangeException("'index' must be within the vector length.");
                 }
 
                 memory.Span[stride * index] = value;

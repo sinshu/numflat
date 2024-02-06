@@ -20,9 +20,12 @@ namespace NumFlat
         /// <param name="y">
         /// The matrix Y.
         /// </param>
+        /// <returns>
+        /// The pointwise-multiplication.
+        /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PointwiseMul{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PointwiseMul{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> PointwiseMul<T>(in this Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
         {
@@ -47,9 +50,12 @@ namespace NumFlat
         /// <param name="y">
         /// The matrix Y.
         /// </param>
+        /// <returns>
+        /// The pointwise-division.
+        /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PointwiseDiv{T}(in Mat{T}, in Mat{T}, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PointwiseDiv{T}(in Mat{T}, in Mat{T}, in Mat{T})"/> instead.
         /// </remarks>
         public static Mat<T> PointwiseDiv<T>(in this Mat<T> x, in Mat<T> y) where T : unmanaged, INumberBase<T>
         {
@@ -76,9 +82,9 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Transpose{T}(in Mat{T}, in Mat{T})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Transpose{T}(in Mat{T}, in Mat{T})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use '<see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>'.
+        /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
         /// </remarks>
         public static Mat<T> Transpose<T>(in this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
@@ -100,9 +106,9 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Conjugate(in Mat{Complex}, in Mat{Complex})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Conjugate(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix conjugation,
-        /// use '<see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>'.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static Mat<Complex> Conjugate(in this Mat<Complex> x)
         {
@@ -124,9 +130,9 @@ namespace NumFlat
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.ConjugateTranspose(in Mat{Complex}, in Mat{Complex})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.ConjugateTranspose(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
-        /// use '<see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>'.
+        /// use <see cref="Mat.Mul(in Mat{Complex}, in Mat{Complex}, in Mat{Complex}, bool, bool, bool, bool)"/>.
         /// </remarks>
         public static Mat<Complex> ConjugateTranspose(in this Mat<Complex> x)
         {
@@ -141,17 +147,17 @@ namespace NumFlat
         /// Computes a matrix inversion, X^-1.
         /// </summary>
         /// <param name="x">
-        /// The matrix X.
+        /// The matrix to be inverted.
         /// </param>
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Inverse(in Mat{float}, in Mat{float})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{float}, in Mat{float})"/> instead.
         /// </remarks>
         public static Mat<float> Inverse(in this Mat<float> x)
         {
@@ -171,17 +177,17 @@ namespace NumFlat
         /// Computes a matrix inversion, X^-1.
         /// </summary>
         /// <param name="x">
-        /// The matrix X.
+        /// The matrix to be inverted.
         /// </param>
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Inverse(in Mat{double}, in Mat{double})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{double}, in Mat{double})"/> instead.
         /// </remarks>
         public static Mat<double> Inverse(in this Mat<double> x)
         {
@@ -201,17 +207,17 @@ namespace NumFlat
         /// Computes a matrix inversion, X^-1.
         /// </summary>
         /// <param name="x">
-        /// The matrix X.
+        /// The matrix to be inverted.
         /// </param>
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Inverse(in Mat{Complex}, in Mat{Complex})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Inverse(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// </remarks>
         public static Mat<Complex> Inverse(in this Mat<Complex> x)
         {
@@ -228,17 +234,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{float}, in Mat{float})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{float}, in Mat{float})"/> instead.
         /// </remarks>
         public static Mat<float> PseudoInverse(in this Mat<float> a)
         {
@@ -250,20 +256,20 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
+        /// Singular values below this threshold will be replaced with zero.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{float}, in Mat{float}, float)"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{float}, in Mat{float}, float)"/> instead.
         /// </remarks>
         public static Mat<float> PseudoInverse(in this Mat<float> a, float tolerance)
         {
@@ -275,17 +281,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double})"/> instead.
         /// </remarks>
         public static Mat<double> PseudoInverse(in this Mat<double> a)
         {
@@ -297,20 +303,20 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
+        /// Singular values below this threshold will be replaced with zero.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double}, double)"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{double}, in Mat{double}, double)"/> instead.
         /// </remarks>
         public static Mat<double> PseudoInverse(in this Mat<double> a, double tolerance)
         {
@@ -322,17 +328,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{Complex}, in Mat{Complex})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{Complex}, in Mat{Complex})"/> instead.
         /// </remarks>
         public static Mat<Complex> PseudoInverse(in this Mat<Complex> a)
         {
@@ -344,20 +350,20 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix A.
+        /// Computes a pseudo inversion of a matrix, pinv(A).
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The matrix to be inverted.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be ignored.
+        /// Singular values below this threshold will be replaced with zero.
         /// </param>
         /// <exception cref="LapackException">
-        /// Failed in computing SVD.
+        /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.PseudoInverse(in Mat{Complex}, in Mat{Complex}, double)"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.PseudoInverse(in Mat{Complex}, in Mat{Complex}, double)"/> instead.
         /// </remarks>
         public static Mat<Complex> PseudoInverse(in this Mat<Complex> a, double tolerance)
         {
@@ -385,7 +391,7 @@ namespace NumFlat
         /// </param>
         /// <returns>
         /// This method allocates a new matrix which is independent from the original matrix.
-        /// To avoid the allocation, use '<see cref="Mat.Map{TSource, TResult}(in Mat{TSource}, Func{TSource, TResult}, in Mat{TResult})"/>' instead.
+        /// To avoid the allocation, use <see cref="Mat.Map{TSource, TResult}(in Mat{TSource}, Func{TSource, TResult}, in Mat{TResult})"/> instead.
         /// </returns>
         public static Mat<TResult> Map<TSource, TResult>(in this Mat<TSource> source, Func<TSource, TResult> func) where TSource : unmanaged, INumberBase<TSource> where TResult : unmanaged, INumberBase<TResult>
         {
