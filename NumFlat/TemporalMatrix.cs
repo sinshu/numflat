@@ -26,6 +26,8 @@ namespace NumFlat
         }
     }
 
+
+
     internal static class TemporalMatrix
     {
         public static TemporalMatrix<T> CopyFrom<T>(in Mat<T> source) where T : unmanaged, INumberBase<T>

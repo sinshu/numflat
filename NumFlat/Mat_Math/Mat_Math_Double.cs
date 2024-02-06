@@ -147,8 +147,8 @@ namespace NumFlat
             using var tmp_xCopy = TemporalMatrix.CopyFrom(x);
             ref readonly var xCopy = ref tmp_xCopy.Item;
 
-            using var tmp_piv = new TemporalArray<int>(xCopy.RowCount);
-            var piv = tmp_piv.Span;
+            using var tmp_piv = MemoryPool<int>.Shared.Rent(xCopy.RowCount);
+            var piv = tmp_piv.Memory.Span;
 
             fixed (double* px = xCopy.Memory.Span)
             fixed (int* ppiv = piv)
