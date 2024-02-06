@@ -139,32 +139,32 @@ namespace NumFlat
                 throw new ArgumentException("The matrix must be a square matrix.");
             }
 
-            using var tmp_xCopy = TemporalMatrix.CopyFrom(x);
-            ref readonly var xCopy = ref tmp_xCopy.Item;
+            using var utmp = TemporalMatrix.CopyFrom(x);
+            ref readonly var tmp = ref utmp.Item;
 
-            using var tmp_piv = MemoryPool<int>.Shared.Rent(xCopy.RowCount);
-            var piv = tmp_piv.Memory.Span;
+            using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
+            var piv = upiv.Memory.Span;
 
-            fixed (double* px = xCopy.Memory.Span)
+            fixed (double* ptmp = tmp.Memory.Span)
             fixed (int* ppiv = piv)
             {
                 var info = Lapack.Dgetrf(
                     MatrixLayout.ColMajor,
-                    xCopy.RowCount, xCopy.ColCount,
-                    px, xCopy.Stride,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
                     ppiv);
             }
 
             var determinant = 1.0;
-            for (var i = 0; i < xCopy.RowCount; i++)
+            for (var i = 0; i < tmp.RowCount; i++)
             {
                 if (piv[i] - 1 == i)
                 {
-                    determinant *= xCopy[i, i];
+                    determinant *= tmp[i, i];
                 }
                 else
                 {
-                    determinant *= -xCopy[i, i];
+                    determinant *= -tmp[i, i];
                 }
             }
 
@@ -196,8 +196,8 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var pivBuffer = MemoryPool<int>.Shared.Rent(destination.RowCount);
-            var piv = pivBuffer.Memory.Span;
+            using var upiv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            var piv = upiv.Memory.Span;
 
             fixed (double* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)
@@ -243,9 +243,9 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
-            var sLength = Math.Min(x.RowCount, x.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var us = new TemporalVector<double>(Math.Min(x.RowCount, x.ColCount));
+            ref readonly var s = ref us.Item;
+
             SingularValueDecompositionDouble.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
@@ -314,17 +314,14 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
             }
 
-            var sLength = Math.Min(a.RowCount, a.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var us = new TemporalVector<double>(Math.Min(a.RowCount, a.ColCount));
+            ref readonly var s = ref us.Item;
 
-            var uLength = a.RowCount * a.RowCount;
-            using var uBuffer = MemoryPool<double>.Shared.Rent(uLength);
-            var u = new Mat<double>(a.RowCount, a.RowCount, a.RowCount, uBuffer.Memory.Slice(0, uLength));
+            using var uu = new TemporalMatrix<double>(a.RowCount, a.RowCount);
+            ref readonly var u = ref uu.Item;
 
-            var vtLength = a.ColCount * a.ColCount;
-            using var vtBuffer = MemoryPool<double>.Shared.Rent(vtLength);
-            var vt = new Mat<double>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
+            using var uvt = new TemporalMatrix<double>(a.ColCount, a.ColCount);
+            ref readonly var vt = ref uvt.Item;
 
             SingularValueDecompositionDouble.Decompose(a, s, u, vt);
 
@@ -334,9 +331,8 @@ namespace NumFlat
                 tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
             }
 
-            var tmpLength = a.ColCount * a.RowCount;
-            using var tmpBuffer = MemoryPool<double>.Shared.Rent(tmpLength);
-            var tmp = new Mat<double>(a.ColCount, a.RowCount, a.ColCount, tmpBuffer.Memory.Slice(0, tmpLength));
+            using var utmp = new TemporalMatrix<double>(a.ColCount, a.RowCount);
+            ref readonly var tmp = ref utmp.Item;
             tmp.Clear();
 
             if (a.RowCount >= a.ColCount)

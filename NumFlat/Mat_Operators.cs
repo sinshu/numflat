@@ -190,7 +190,7 @@ namespace NumFlat
 
             if (x.colCount != y.rowCount)
             {
-                throw new ArgumentException("'y.RowCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The dimensions of the matrices do not meet the requirement for matrix multiplication.");
             }
 
             if (typeof(T) == typeof(float))

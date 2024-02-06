@@ -167,34 +167,32 @@ namespace NumFlat
                 throw new ArgumentException("The matrix must be a square matrix.");
             }
 
-            var xLength = x.RowCount * x.ColCount;
-            using var xBuffer = MemoryPool<Complex>.Shared.Rent(xLength);
-            var xCopy = new Mat<Complex>(x.RowCount, x.ColCount, x.RowCount, xBuffer.Memory.Slice(0, xLength));
-            x.CopyTo(xCopy);
+            using var utmp = TemporalMatrix.CopyFrom(x);
+            ref readonly var tmp = ref utmp.Item;
 
-            using var pivBuffer = MemoryPool<int>.Shared.Rent(xCopy.RowCount);
-            var piv = pivBuffer.Memory.Span;
+            using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
+            var piv = upiv.Memory.Span;
 
-            fixed (Complex* px = xCopy.Memory.Span)
+            fixed (Complex* ptmp = tmp.Memory.Span)
             fixed (int* ppiv = piv)
             {
                 var info = Lapack.Zgetrf(
                     MatrixLayout.ColMajor,
-                    xCopy.RowCount, xCopy.ColCount,
-                    px, xCopy.Stride,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
                     ppiv);
             }
 
             var determinant = Complex.One;
-            for (var i = 0; i < xCopy.RowCount; i++)
+            for (var i = 0; i < tmp.RowCount; i++)
             {
                 if (piv[i] - 1 == i)
                 {
-                    determinant *= xCopy[i, i];
+                    determinant *= tmp[i, i];
                 }
                 else
                 {
-                    determinant *= -xCopy[i, i];
+                    determinant *= -tmp[i, i];
                 }
             }
 
@@ -226,8 +224,8 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var pivBuffer = MemoryPool<int>.Shared.Rent(destination.RowCount);
-            var piv = pivBuffer.Memory.Span;
+            using var upiv = MemoryPool<int>.Shared.Rent(destination.RowCount);
+            var piv = upiv.Memory.Span;
 
             fixed (Complex* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)
@@ -273,9 +271,9 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
-            var sLength = Math.Min(x.RowCount, x.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var us = new TemporalVector<double>(Math.Min(x.RowCount, x.ColCount));
+            ref readonly var s = ref us.Item;
+
             SingularValueDecompositionComplex.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
@@ -344,17 +342,14 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
             }
 
-            var sLength = Math.Min(a.RowCount, a.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var s = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var us = new TemporalVector<double>(Math.Min(a.RowCount, a.ColCount));
+            ref readonly var s = ref us.Item;
 
-            var uLength = a.RowCount * a.RowCount;
-            using var uBuffer = MemoryPool<Complex>.Shared.Rent(uLength);
-            var u = new Mat<Complex>(a.RowCount, a.RowCount, a.RowCount, uBuffer.Memory.Slice(0, uLength));
+            using var uu = new TemporalMatrix<Complex>(a.RowCount, a.RowCount);
+            ref readonly var u = ref uu.Item;
 
-            var vtLength = a.ColCount * a.ColCount;
-            using var vtBuffer = MemoryPool<Complex>.Shared.Rent(vtLength);
-            var vt = new Mat<Complex>(a.ColCount, a.ColCount, a.ColCount, vtBuffer.Memory.Slice(0, vtLength));
+            using var uvt = new TemporalMatrix<Complex>(a.ColCount, a.ColCount);
+            ref readonly var vt = ref uvt.Item;
 
             SingularValueDecompositionComplex.Decompose(a, s, u, vt);
 
@@ -364,9 +359,8 @@ namespace NumFlat
                 tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
             }
 
-            var tmpLength = a.ColCount * a.RowCount;
-            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
-            var tmp = new Mat<Complex>(a.ColCount, a.RowCount, a.ColCount, tmpBuffer.Memory.Slice(0, tmpLength));
+            using var utmp = new TemporalMatrix<Complex>(a.ColCount, a.RowCount);
+            ref readonly var tmp = ref utmp.Item;
             tmp.Clear();
 
             if (a.RowCount >= a.ColCount)
