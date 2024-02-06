@@ -144,13 +144,11 @@ namespace NumFlat
                 throw new ArgumentException("'x' must be a square matrix.");
             }
 
-            var xLength = x.RowCount * x.ColCount;
-            using var xBuffer = MemoryPool<double>.Shared.Rent(xLength);
-            var xCopy = new Mat<double>(x.RowCount, x.ColCount, x.RowCount, xBuffer.Memory.Slice(0, xLength));
-            x.CopyTo(xCopy);
+            using var tmp_xCopy = TemporalMatrix.CopyFrom(x);
+            ref readonly var xCopy = ref tmp_xCopy.Item;
 
-            using var pivBuffer = MemoryPool<int>.Shared.Rent(xCopy.RowCount);
-            var piv = pivBuffer.Memory.Span;
+            using var tmp_piv = new TemporalArray<int>(xCopy.RowCount);
+            var piv = tmp_piv.Span;
 
             fixed (double* px = xCopy.Memory.Span)
             fixed (int* ppiv = piv)
