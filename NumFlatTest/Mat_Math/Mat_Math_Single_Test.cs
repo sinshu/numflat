@@ -19,8 +19,14 @@ namespace NumFlatTest
         {
             var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
-            var actual = Mat.Determinant(x);
+            float actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = Mat.Determinant(x);
+            }
+
             var expected = Interop.ToMathNet(x).Determinant();
+
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-6F));
         }
 
@@ -55,7 +61,13 @@ namespace NumFlatTest
         {
             var x = new Mat<float>(n, n);
 
-            Assert.That(x.Rank(), Is.EqualTo(0));
+            int rank;
+            using (x.EnsureUnchanged())
+            {
+                rank = x.Rank();
+            }
+
+            Assert.That(rank, Is.EqualTo(0));
         }
 
         [TestCase(1)]
@@ -65,12 +77,18 @@ namespace NumFlatTest
         [TestCase(5)]
         public void Rank_OneOrMore(int n)
         {
-            for (var rank = 1; rank <= n; rank++)
+            for (var expected = 1; expected <= n; expected++)
             {
-                var src = TestMatrix.RandomSingle(42, rank, n, rank);
+                var src = TestMatrix.RandomSingle(42, expected, n, expected);
                 var x = src * src.Transpose();
 
-                Assert.That(x.Rank(), Is.EqualTo(rank));
+                int rank;
+                using (x.EnsureUnchanged())
+                {
+                    rank = x.Rank();
+                }
+
+                Assert.That(rank, Is.EqualTo(expected));
             }
         }
 
@@ -85,11 +103,14 @@ namespace NumFlatTest
             }
             .ToMatrix();
 
-            Assert.That(a.Rank(), Is.EqualTo(2));
-            Assert.That(a.Rank(5), Is.EqualTo(1));
-            Assert.That(a.Rank(10), Is.EqualTo(1));
-            Assert.That(a.Rank(15), Is.EqualTo(1));
-            Assert.That(a.Rank(20), Is.EqualTo(0));
+            using (a.EnsureUnchanged())
+            {
+                Assert.That(a.Rank(), Is.EqualTo(2));
+                Assert.That(a.Rank(5), Is.EqualTo(1));
+                Assert.That(a.Rank(10), Is.EqualTo(1));
+                Assert.That(a.Rank(15), Is.EqualTo(1));
+                Assert.That(a.Rank(20), Is.EqualTo(0));
+            }
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -147,9 +168,12 @@ namespace NumFlatTest
             }
             .ToMatrix();
 
-            NumAssert.AreSame(result1, a.PseudoInverse(0.5F), 1.0E-6F);
-            NumAssert.AreSame(result2, a.PseudoInverse(5F), 1.0E-6F);
-            NumAssert.AreSame(new Mat<float>(3, 3), a.PseudoInverse(20F), 1.0E-6F);
+            using (a.EnsureUnchanged())
+            {
+                NumAssert.AreSame(result1, a.PseudoInverse(0.5F), 1.0E-6F);
+                NumAssert.AreSame(result2, a.PseudoInverse(5F), 1.0E-6F);
+                NumAssert.AreSame(new Mat<float>(3, 3), a.PseudoInverse(20F), 1.0E-6F);
+            }
         }
     }
 }
