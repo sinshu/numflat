@@ -207,8 +207,8 @@ public static class MatrixExamples
 
         // Decomposed matrices.
         var p = lu.GetP();
-        var l = lu.GetL();
-        var u = lu.GetU();
+        var l = lu.L;
+        var u = lu.U;
 
         // Reconstruct the matrix.
         var reconstructed = p * l * u;

@@ -33,7 +33,7 @@ namespace NumFlatTest
                 lu = a.Lu();
             }
 
-            var reconstructed = lu.GetP() * lu.GetL() * lu.GetU();
+            var reconstructed = lu.GetP() * lu.L * lu.U;
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
         }
 
