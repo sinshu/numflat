@@ -105,7 +105,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Variance(IEnumerable<Vec<double>> xs, Vec<double> mean, Vec<double> destination, int ddof)
+        public static void Variance(IEnumerable<Vec<double>> xs, Vec<double> mean, Vec<double> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -127,21 +127,17 @@ namespace NumFlat
             destination.Clear();
             var count = 0;
 
-            fixed (double* pd = destination.Memory.Span)
-            fixed (double* pc = centered.Memory.Span)
+            foreach (var x in xs)
             {
-                foreach (var x in xs)
+                if (x.Count != mean.Count)
                 {
-                    if (x.Count != mean.Count)
-                    {
-                        throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
-                    }
-
-                    Vec.Sub(x, mean, centered);
-                    Vec.PointwiseMul(centered, centered, centered);
-                    Vec.Add(destination, centered, destination);
-                    count++;
+                    throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
                 }
+
+                Vec.Sub(x, mean, centered);
+                Vec.PointwiseMul(centered, centered, centered);
+                Vec.Add(destination, centered, destination);
+                count++;
             }
 
             if (count - ddof <= 0)
