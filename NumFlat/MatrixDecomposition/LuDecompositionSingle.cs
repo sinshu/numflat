@@ -9,205 +9,209 @@ namespace NumFlat
     /// </summary>
     public class LuDecompositionSingle
     {
-        private Mat<float> lapackDecomposed;
-        private int[] lapackPiv;
+        private Mat<float> l;
+        private Mat<float> u;
+        private int[] permutation;
 
         /// <summary>
-        /// Decomposes the matrix A using LU decomposition.
+        /// Decomposes the matrix using LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        public unsafe LuDecompositionSingle(in Mat<float> a)
+        public LuDecompositionSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
-            lapackDecomposed = new Mat<float>(a.RowCount, a.ColCount);
-            lapackPiv = new int[Math.Min(a.RowCount, a.ColCount)];
+            var min = Math.Min(a.RowCount, a.ColCount);
 
-            a.CopyTo(lapackDecomposed);
+            var l = new Mat<float>(a.RowCount, min);
+            var u = new Mat<float>(min, a.ColCount);
 
-            fixed (float* pld = lapackDecomposed.Memory.Span)
-            fixed (int* ppiv = lapackPiv)
+            using var upiv = MemoryPool<int>.Shared.Rent(min);
+            var piv = upiv.Memory.Span.Slice(0, min);
+
+            Decompose(a, l, u, piv);
+
+            this.l = l;
+            this.u = u;
+
+            permutation = new int[a.RowCount];
+            for (var i = 0; i < a.RowCount; i++)
+            {
+                permutation[i] = i;
+            }
+            for (var i = 0; i < min; i++)
+            {
+                var j = piv[i];
+                (permutation[i], permutation[j]) = (permutation[j], permutation[i]);
+            }
+        }
+
+        /// <summary>
+        /// Decomposes the matrix using LU decomposition.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed.
+        /// </param>
+        /// <param name="l">
+        /// The destination of the matrix L.
+        /// </param>
+        /// <param name="u">
+        /// The destination of the matrix U.
+        /// </param>
+        /// <param name="piv">
+        /// The destination of the pivot info.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
+        public unsafe static void Decompose(in Mat<float> a, in Mat<float> l, in Mat<float> u, Span<int> piv)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(l, nameof(l));
+            ThrowHelper.ThrowIfEmpty(u, nameof(u));
+
+            var min = Math.Min(a.RowCount, a.ColCount);
+
+            if (l.RowCount != a.RowCount)
+            {
+                throw new ArgumentException("'l.RowCount' must match 'a.RowCount'.");
+            }
+
+            if (l.ColCount != min)
+            {
+                throw new ArgumentException("'l.ColCount' must match 'min(a.RowCount, a.ColCount)'.");
+            }
+
+            if (u.RowCount != min)
+            {
+                throw new ArgumentException("'u.RowCount' must match 'min(a.RowCount, a.ColCount)'.");
+            }
+
+            if (u.ColCount != a.ColCount)
+            {
+                throw new ArgumentException("'u.ColCount' must match 'a.ColCount'.");
+            }
+
+            if (piv.Length != min)
+            {
+                throw new ArgumentException("'piv.Length' must match 'min(a.RowCount, a.ColCount)'");
+            }
+
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
+
+            fixed (float* ptmp = tmp.Memory.Span)
+            fixed (int* ppiv = piv)
             {
                 var info = Lapack.Sgetrf(
                     MatrixLayout.ColMajor,
-                    lapackDecomposed.RowCount, lapackDecomposed.ColCount,
-                    pld, lapackDecomposed.Stride,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
                     ppiv);
                 if (info != LapackInfo.None)
                 {
                     throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
                 }
             }
+
+            ExtractL(tmp, l);
+            ExtractU(tmp, u);
+
+            for (var i = 0; i < piv.Length; i++)
+            {
+                piv[i] -= 1;
+            }
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <param name="destination">
-        /// The destination of the vector x.
+        /// The destination of the solution vector.
         /// </param>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public unsafe void Solve(in Vec<float> b, in Vec<float> destination)
         {
-            if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
-            {
-                throw new InvalidOperationException("This method does not support non-square matrices.");
-            }
-
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            if (b.Count != lapackDecomposed.RowCount)
+            if (l.RowCount != u.ColCount)
             {
-                throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
-            if (destination.Count != lapackDecomposed.RowCount)
+            if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'L.RowCount'.");
+                throw new ArgumentException("'b.Count' must match the order of L.");
             }
 
-            var tmpLength = lapackDecomposed.RowCount;
-            using var tmpBuffer = MemoryPool<float>.Shared.Rent(tmpLength);
-            var tmp = new Vec<float>(tmpBuffer.Memory.Slice(0, tmpLength));
-            b.CopyTo(tmp);
-
-            fixed (float* pld = lapackDecomposed.Memory.Span)
-            fixed (int* ppiv = lapackPiv)
-            fixed (float* ptmp = tmp.Memory.Span)
+            if (destination.Count != l.RowCount)
             {
-                var info = Lapack.Sgetrs(
-                    MatrixLayout.ColMajor,
-                    'N',
-                    lapackDecomposed.RowCount,
-                    1,
-                    pld, lapackDecomposed.Stride,
-                    ppiv,
-                    ptmp, tmpLength);
-
+                throw new ArgumentException("'destination.Count' must match the order of L.");
             }
 
-            tmp.CopyTo(destination);
+            for (var i = 0; i < destination.Count; i++)
+            {
+                destination[i] = b[permutation[i]];
+            }
+
+            fixed (float* pl = l.Memory.Span)
+            fixed (float* pu = u.Memory.Span)
+            fixed (float* pd = destination.Memory.Span)
+            {
+                Blas.Strsv(
+                    Order.ColMajor,
+                    Uplo.Lower,
+                    Transpose.NoTrans,
+                    Diag.Unit,
+                    l.RowCount,
+                    pl, l.Stride,
+                    pd, destination.Stride);
+
+                Blas.Strsv(
+                    Order.ColMajor,
+                    Uplo.Upper,
+                    Transpose.NoTrans,
+                    Diag.NonUnit,
+                    u.RowCount,
+                    pu, u.Stride,
+                    pd, destination.Stride);
+            }
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <returns>
-        /// The vector x.
+        /// The solution vector.
         /// </returns>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public Vec<float> Solve(in Vec<float> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
-            if (lapackDecomposed.RowCount != lapackDecomposed.ColCount)
+            if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("This method does not support non-square matrices.");
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
-            if (b.Count != lapackDecomposed.RowCount)
+            if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("The length of the input vector does not meet the requirement.");
             }
 
-            var x = new Vec<float>(lapackDecomposed.RowCount);
+            var x = new Vec<float>(l.RowCount);
             Solve(b, x);
             return x;
-        }
-
-        /// <summary>
-        /// Gets the matrix L.
-        /// </summary>
-        /// <returns>
-        /// The matrix L.
-        /// </returns>
-        /// <remarks>
-        /// This method allocates a new matrix.
-        /// </remarks>
-        public Mat<float> GetL()
-        {
-            var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
-
-            var l = new Mat<float>(lapackDecomposed.RowCount, min);
-            for (var i = 0; i < min; i++)
-            {
-                var lCol = l.Cols[i];
-                lapackDecomposed.Cols[i].CopyTo(lCol);
-                for (var j = 0; j < i; j++)
-                {
-                    lCol[j] = 0;
-                }
-                lCol[i] = 1;
-            }
-
-            return l;
-        }
-
-        /// <summary>
-        /// Gets the matrix U.
-        /// </summary>
-        /// <returns>
-        /// The matrix U.
-        /// </returns>
-        /// <remarks>
-        /// This method allocates a new matrix.
-        /// </remarks>
-        public Mat<float> GetU()
-        {
-            var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
-
-            var u = new Mat<float>(min, lapackDecomposed.ColCount);
-            for (var i = 0; i < min; i++)
-            {
-                var uRow = u.Rows[i];
-                lapackDecomposed.Rows[i].CopyTo(uRow);
-                for (var j = 0; j < i; j++)
-                {
-                    uRow[j] = 0;
-                }
-            }
-
-            return u;
-        }
-
-        /// <summary>
-        /// Gets the permutation info.
-        /// </summary>
-        /// <returns>
-        /// The permutation info.
-        /// </returns>
-        public int[] GetPermutation()
-        {
-            var permutation = new int[lapackDecomposed.RowCount];
-            for (var i = 0; i < lapackDecomposed.RowCount; i++)
-            {
-                permutation[i] = i;
-            }
-
-            var min = Math.Min(lapackDecomposed.RowCount, lapackDecomposed.ColCount);
-            for (var i = 0; i < min; i++)
-            {
-                var j = lapackPiv[i] - 1;
-                (permutation[i], permutation[j]) = (permutation[j], permutation[i]);
-            }
-
-            return permutation;
         }
 
         /// <summary>
@@ -216,13 +220,8 @@ namespace NumFlat
         /// <returns>
         /// The permutation matrix.
         /// </returns>
-        /// <remarks>
-        /// This method allocates a new matrix.
-        /// </remarks>
-        public Mat<float> GetP()
+        public Mat<float> GetPermutationMatrix()
         {
-            var permutation = GetPermutation();
-
             var p = new Mat<float>(permutation.Length, permutation.Length);
             for (var i = 0; i < permutation.Length; i++)
             {
@@ -231,5 +230,74 @@ namespace NumFlat
 
             return p;
         }
+
+        private static void ExtractL(in Mat<float> source, in Mat<float> l)
+        {
+            var min = Math.Min(source.RowCount, source.ColCount);
+
+            var sCols = source.Cols;
+            var lCols = l.Cols;
+
+            for (var i = 0; i < min; i++)
+            {
+                var sCol = sCols[i];
+                var lCol = lCols[i];
+
+                var zeroLength = i + 1;
+                var copyLength = l.RowCount - i - 1;
+
+                if (zeroLength > 0)
+                {
+                    lCol.Subvector(0, zeroLength).Clear();
+                }
+                if (copyLength > 0)
+                {
+                    sCol.Subvector(zeroLength, copyLength).CopyTo(lCol.Subvector(zeroLength, copyLength));
+                }
+
+                lCol[i] = 1;
+            }
+        }
+
+        private static void ExtractU(in Mat<float> source, in Mat<float> u)
+        {
+            var min = Math.Min(source.RowCount, source.ColCount);
+
+            var sRows = source.Rows;
+            var uRows = u.Rows;
+
+            for (var i = 0; i < min; i++)
+            {
+                var sRow = sRows[i];
+                var uRow = uRows[i];
+
+                var zeroLength = i;
+                var copyLength = u.ColCount - i;
+
+                if (zeroLength > 0)
+                {
+                    uRow.Subvector(0, zeroLength).Clear();
+                }
+                if (copyLength > 0)
+                {
+                    sRow.Subvector(zeroLength, copyLength).CopyTo(uRow.Subvector(zeroLength, copyLength));
+                }
+            }
+        }
+
+        /// <summary>
+        /// The matrix L.
+        /// </summary>
+        public ref readonly Mat<float> L => ref l;
+
+        /// <summary>
+        /// The matrix U.
+        /// </summary>
+        public ref readonly Mat<float> U => ref u;
+
+        /// <summary>
+        /// The permutation of rows.
+        /// </summary>
+        public ReadOnlySpan<int> Permutation => permutation;
     }
 }

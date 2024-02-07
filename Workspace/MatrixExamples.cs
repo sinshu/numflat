@@ -206,7 +206,7 @@ public static class MatrixExamples
         var lu = x.Lu();
 
         // Decomposed matrices.
-        var p = lu.GetP();
+        var p = lu.GetPermutationMatrix();
         var l = lu.L;
         var u = lu.U;
 

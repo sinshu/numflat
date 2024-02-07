@@ -9,6 +9,33 @@ namespace NumFlatTest
 {
     public class LuSingle_Test
     {
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 2, 5)]
+        [TestCase(2, 2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3, 3)]
+        [TestCase(3, 4, 3, 3, 4)]
+        [TestCase(3, 4, 5, 7, 6)]
+        [TestCase(4, 3, 4, 4, 3)]
+        [TestCase(4, 3, 6, 7, 5)]
+        public void Decompose(int m, int n, int aStride, int lStride, int uStride)
+        {
+            var a = TestMatrix.RandomSingle(42, m, n, aStride);
+            var l = TestMatrix.RandomSingle(57, m, Math.Min(m, n), lStride);
+            var u = TestMatrix.RandomSingle(66, Math.Min(m, n), n, uStride);
+            var piv = new int[Math.Min(m, n)];
+
+            using (a.EnsureUnchanged())
+            {
+                LuDecompositionSingle.Decompose(a, l, u, piv);
+            }
+
+            var reconstructed = a.Lu().GetPermutationMatrix() * l * u;
+            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
+
+            TestMatrix.FailIfOutOfRangeWrite(l);
+            TestMatrix.FailIfOutOfRangeWrite(u);
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(1, 1, 3)]
         [TestCase(2, 2, 2)]
@@ -33,7 +60,7 @@ namespace NumFlatTest
                 lu = a.Lu();
             }
 
-            var reconstructed = lu.GetP() * lu.GetL() * lu.GetU();
+            var reconstructed = lu.GetPermutationMatrix() * lu.L * lu.U;
             NumAssert.AreSame(a, reconstructed, 1.0E-6F);
         }
 

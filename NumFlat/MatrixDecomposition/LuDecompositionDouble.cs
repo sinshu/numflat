@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Linq;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -15,10 +14,10 @@ namespace NumFlat
         private int[] permutation;
 
         /// <summary>
-        /// Decomposes the matrix A using LU decomposition.
+        /// Decomposes the matrix using LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
@@ -32,8 +31,8 @@ namespace NumFlat
             var l = new Mat<double>(a.RowCount, min);
             var u = new Mat<double>(min, a.ColCount);
 
-            using var tmp_piv = MemoryPool<int>.Shared.Rent(min);
-            var piv = tmp_piv.Memory.Span.Slice(0, min);
+            using var upiv = MemoryPool<int>.Shared.Rent(min);
+            var piv = upiv.Memory.Span.Slice(0, min);
 
             Decompose(a, l, u, piv);
 
@@ -53,19 +52,19 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Decomposes the matrix A using LU decomposition.
+        /// Decomposes the matrix using LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <param name="l">
-        /// The destination of the the matrix L.
+        /// The destination of the matrix L.
         /// </param>
         /// <param name="u">
-        /// The destination of the the matrix U.
+        /// The destination of the matrix U.
         /// </param>
         /// <param name="piv">
-        /// The destination of the the pivot info.
+        /// The destination of the pivot info.
         /// </param>
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
@@ -78,31 +77,41 @@ namespace NumFlat
 
             var min = Math.Min(a.RowCount, a.ColCount);
 
-            if (l.RowCount != a.RowCount || l.ColCount != min)
+            if (l.RowCount != a.RowCount)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("'l.RowCount' must match 'a.RowCount'.");
             }
 
-            if (u.RowCount != min || u.ColCount != a.ColCount)
+            if (l.ColCount != min)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("'l.ColCount' must match 'min(a.RowCount, a.ColCount)'.");
+            }
+
+            if (u.RowCount != min)
+            {
+                throw new ArgumentException("'u.RowCount' must match 'min(a.RowCount, a.ColCount)'.");
+            }
+
+            if (u.ColCount != a.ColCount)
+            {
+                throw new ArgumentException("'u.ColCount' must match 'a.ColCount'.");
             }
 
             if (piv.Length != min)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("'piv.Length' must match 'min(a.RowCount, a.ColCount)'");
             }
 
-            using var tmp_aCopy = TemporalMatrix.CopyFrom(a);
-            ref readonly var aCopy = ref tmp_aCopy.Item;
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
 
-            fixed (double* pa = aCopy.Memory.Span)
+            fixed (double* ptmp = tmp.Memory.Span)
             fixed (int* ppiv = piv)
             {
                 var info = Lapack.Dgetrf(
                     MatrixLayout.ColMajor,
-                    aCopy.RowCount, aCopy.ColCount,
-                    pa, aCopy.Stride,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
                     ppiv);
                 if (info != LapackInfo.None)
                 {
@@ -110,28 +119,8 @@ namespace NumFlat
                 }
             }
 
-            l.Clear();
-            for (var i = 0; i < min; i++)
-            {
-                var lCol = l.Cols[i];
-                aCopy.Cols[i].CopyTo(lCol);
-                for (var j = 0; j < i; j++)
-                {
-                    lCol[j] = 0;
-                }
-                lCol[i] = 1;
-            }
-
-            u.Clear();
-            for (var i = 0; i < min; i++)
-            {
-                var uRow = u.Rows[i];
-                aCopy.Rows[i].CopyTo(uRow);
-                for (var j = 0; j < i; j++)
-                {
-                    uRow[j] = 0;
-                }
-            }
+            ExtractL(tmp, l);
+            ExtractU(tmp, u);
 
             for (var i = 0; i < piv.Length; i++)
             {
@@ -140,13 +129,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <param name="destination">
-        /// The destination of the vector x.
+        /// The destination of the solution vector.
         /// </param>
         public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
         {
@@ -155,17 +144,17 @@ namespace NumFlat
 
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("This method does not support non-square matrices.");
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
             if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("'b.Count' must match the order of L.");
             }
 
             if (destination.Count != l.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("'destination.Count' must match the order of L.");
             }
 
             for (var i = 0; i < destination.Count; i++)
@@ -198,13 +187,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <returns>
-        /// The vector x.
+        /// The solution vector.
         /// </returns>
         public Vec<double> Solve(in Vec<double> b)
         {
@@ -212,12 +201,12 @@ namespace NumFlat
 
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("This method does not support non-square matrices.");
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
             if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'a.RowCount'.");
+                throw new ArgumentException("The length of the input vector does not meet the requirement.");
             }
 
             var x = new Vec<double>(l.RowCount);
@@ -231,7 +220,7 @@ namespace NumFlat
         /// <returns>
         /// The permutation matrix.
         /// </returns>
-        public Mat<double> GetP()
+        public Mat<double> GetPermutationMatrix()
         {
             var p = new Mat<double>(permutation.Length, permutation.Length);
             for (var i = 0; i < permutation.Length; i++)
@@ -240,6 +229,60 @@ namespace NumFlat
             }
 
             return p;
+        }
+
+        private static void ExtractL(in Mat<double> source, in Mat<double> l)
+        {
+            var min = Math.Min(source.RowCount, source.ColCount);
+
+            var sCols = source.Cols;
+            var lCols = l.Cols;
+
+            for (var i = 0; i < min; i++)
+            {
+                var sCol = sCols[i];
+                var lCol = lCols[i];
+
+                var zeroLength = i + 1;
+                var copyLength = l.RowCount - i - 1;
+
+                if (zeroLength > 0)
+                {
+                    lCol.Subvector(0, zeroLength).Clear();
+                }
+                if (copyLength > 0)
+                {
+                    sCol.Subvector(zeroLength, copyLength).CopyTo(lCol.Subvector(zeroLength, copyLength));
+                }
+
+                lCol[i] = 1;
+            }
+        }
+
+        private static void ExtractU(in Mat<double> source, in Mat<double> u)
+        {
+            var min = Math.Min(source.RowCount, source.ColCount);
+
+            var sRows = source.Rows;
+            var uRows = u.Rows;
+
+            for (var i = 0; i < min; i++)
+            {
+                var sRow = sRows[i];
+                var uRow = uRows[i];
+
+                var zeroLength = i;
+                var copyLength = u.ColCount - i;
+
+                if (zeroLength > 0)
+                {
+                    uRow.Subvector(0, zeroLength).Clear();
+                }
+                if (copyLength > 0)
+                {
+                    sRow.Subvector(zeroLength, copyLength).CopyTo(uRow.Subvector(zeroLength, copyLength));
+                }
+            }
         }
 
         /// <summary>
@@ -253,7 +296,7 @@ namespace NumFlat
         public ref readonly Mat<double> U => ref u;
 
         /// <summary>
-        /// The permutation info.
+        /// The permutation of rows.
         /// </summary>
         public ReadOnlySpan<int> Permutation => permutation;
     }
