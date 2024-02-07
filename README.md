@@ -387,12 +387,12 @@ var x = new double[,]
 .ToMatrix();
 
 // Do LU decomposition.
-var lu = x.Lu();
+var decomposition = x.Lu();
 
 // Decomposed matrices.
-var p = lu.GetP();
-var l = lu.GetL();
-var u = lu.GetU();
+var p = decomposition.GetPermutationMatrix();
+var l = decomposition.L;
+var u = decomposition.U;
 
 // Reconstruct the matrix.
 var reconstructed = p * l * u;
@@ -424,11 +424,11 @@ var x = new double[,]
 .ToMatrix();
 
 // Do QR decomposition.
-var qr = x.Qr();
+var decomposition = x.Qr();
 
 // Decomposed matrices.
-var q = qr.Q;
-var r = qr.R;
+var q = decomposition.Q;
+var r = decomposition.R;
 
 // Reconstruct the matrix.
 var reconstructed = q * r;
@@ -460,10 +460,10 @@ var x = new double[,]
 .ToMatrix();
 
 // Do Cholesky decomposition.
-var cholesky = x.Cholesky();
+var decomposition = x.Cholesky();
 
 // Decomposed matrix.
-var l = cholesky.L;
+var l = decomposition.L;
 
 // Reconstruct the matrix.
 var reconstructed = l * l.Transpose();
@@ -495,12 +495,12 @@ var x = new double[,]
 .ToMatrix();
 
 // Do SVD.
-var svd = x.Svd();
+var decomposition = x.Svd();
 
 // Decomposed matrices.
-var s = svd.S.ToDiagonalMatrix();
-var u = svd.U;
-var vt = svd.VT;
+var s = decomposition.S.ToDiagonalMatrix();
+var u = decomposition.U;
+var vt = decomposition.VT;
 
 // Reconstruct the matrix.
 var reconstructed = u * s * vt;
