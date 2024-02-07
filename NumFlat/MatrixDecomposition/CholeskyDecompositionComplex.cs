@@ -17,6 +17,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public CholeskyDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

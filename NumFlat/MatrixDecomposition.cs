@@ -4,7 +4,7 @@ using System.Numerics;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides methods for matrix decomposition.
+    /// Provides extension methods for matrix decomposition.
     /// </summary>
     public static class MatrixDecomposition
     {
@@ -12,11 +12,14 @@ namespace NumFlat
         /// Computes the LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using LU decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuDecompositionSingle"/>'.
+        /// An instance of <see cref="LuDecompositionSingle"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static LuDecompositionSingle Lu(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -28,11 +31,14 @@ namespace NumFlat
         /// Computes the LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using LU decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuDecompositionDouble"/>'.
+        /// An instance of <see cref="LuDecompositionDouble"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static LuDecompositionDouble Lu(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -44,11 +50,14 @@ namespace NumFlat
         /// Computes the LU decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using LU decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="LuDecompositionComplex"/>'.
+        /// An instance of <see cref="LuDecompositionComplex"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static LuDecompositionComplex Lu(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -60,10 +69,10 @@ namespace NumFlat
         /// Computes the QR decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using QR decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrDecompositionSingle"/>'.
+        /// An instance of <see cref="QrDecompositionSingle"/>.
         /// </returns>
         public static QrDecompositionSingle Qr(in this Mat<float> a)
         {
@@ -76,10 +85,10 @@ namespace NumFlat
         /// Computes the QR decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using QR decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrDecompositionDouble"/>'.
+        /// An instance of <see cref="QrDecompositionDouble"/>.
         /// </returns>
         public static QrDecompositionDouble Qr(in this Mat<double> a)
         {
@@ -92,10 +101,10 @@ namespace NumFlat
         /// Computes the QR decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using QR decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="QrDecompositionComplex"/>'.
+        /// An instance of <see cref="QrDecompositionComplex"/>.
         /// </returns>
         public static QrDecompositionComplex Qr(in this Mat<Complex> a)
         {
@@ -108,11 +117,14 @@ namespace NumFlat
         /// Computes the Cholesky decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using Cholesky decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskyDecompositionSingle"/>'.
+        /// An instance of <see cref="CholeskyDecompositionSingle"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static CholeskyDecompositionSingle Cholesky(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -124,11 +136,14 @@ namespace NumFlat
         /// Computes the Cholesky decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using Cholesky decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskyDecompositionDouble"/>'.
+        /// An instance of <see cref="CholeskyDecompositionDouble"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static CholeskyDecompositionDouble Cholesky(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -140,11 +155,14 @@ namespace NumFlat
         /// Computes the Cholesky decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using Cholesky decomposition.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
-        /// An instance of '<see cref="CholeskyDecompositionComplex"/>'.
+        /// An instance of <see cref="CholeskyDecompositionComplex"/>.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// The matrix is ill-conditioned.
+        /// </exception>
         public static CholeskyDecompositionComplex Cholesky(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -153,13 +171,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Gets the singular values of the matrix A.
+        /// Gets the singular values from the matrix.
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The target matrix.
         /// </param>
         /// <returns>
-        /// The diagonal elements of the matrix S.
+        /// The singular values.
         /// </returns>
         public static Vec<float> GetSingularValues(in this Mat<float> a)
         {
@@ -171,13 +189,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Gets the singular values of the matrix A.
+        /// Gets the singular values from the matrix.
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The target matrix.
         /// </param>
         /// <returns>
-        /// The diagonal elements of the matrix S.
+        /// The singular values.
         /// </returns>
         public static Vec<double> GetSingularValues(in this Mat<double> a)
         {
@@ -189,13 +207,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Gets the singular values of the matrix A.
+        /// Gets the singular values from the matrix.
         /// </summary>
         /// <param name="a">
-        /// The matrix A.
+        /// The target matrix.
         /// </param>
         /// <returns>
-        /// The diagonal elements of the matrix S.
+        /// The singular values.
         /// </returns>
         public static Vec<double> GetSingularValues(in this Mat<Complex> a)
         {
@@ -207,10 +225,10 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the SVD.
+        /// Computes the singular value decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using SVD.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionSingle"/>'.
@@ -223,10 +241,10 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the SVD.
+        /// Computes the singular value decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using SVD.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionDouble"/>'.
@@ -239,10 +257,10 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the SVD.
+        /// Computes the singular value decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix to be decomposed using SVD.
+        /// The matrix to be decomposed.
         /// </param>
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionComplex"/>'.
