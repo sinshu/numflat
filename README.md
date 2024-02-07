@@ -549,8 +549,10 @@ Matrix 3x3-Double
     - ⬜ GEVD
 * ⬜ LINQ-like operations
     - ✅ Mean
+    - ⬜ Variance
     - ✅ Covariance
     - ⬜ Weighted mean
+    - ⬜ Weighted variance
     - ⬜ Weighted covariance
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis
