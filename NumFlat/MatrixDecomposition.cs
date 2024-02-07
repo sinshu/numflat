@@ -20,6 +20,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static EigenValueDecompositionSingle Evd(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -39,6 +44,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static EigenValueDecompositionDouble Evd(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -58,6 +68,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static EigenValueDecompositionComplex Evd(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -182,6 +197,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static CholeskyDecompositionSingle Cholesky(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -201,6 +221,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static CholeskyDecompositionDouble Cholesky(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -220,6 +245,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static CholeskyDecompositionComplex Cholesky(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

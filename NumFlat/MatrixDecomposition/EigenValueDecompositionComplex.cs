@@ -21,6 +21,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public EigenValueDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -53,6 +58,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> d, in Mat<Complex> v)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

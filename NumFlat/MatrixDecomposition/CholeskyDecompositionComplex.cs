@@ -20,6 +20,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public CholeskyDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -47,6 +52,11 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
         public static unsafe void Decompose(in Mat<Complex> a, in Mat<Complex> l)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
