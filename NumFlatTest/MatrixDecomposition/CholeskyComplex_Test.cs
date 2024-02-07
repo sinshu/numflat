@@ -101,9 +101,7 @@ namespace NumFlatTest
             var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var chol = a.Cholesky();
 
-            var ma = Interop.ToMathNet(a);
-            var mb = Interop.ToMathNet(b);
-            var expected = ma.Svd().Solve(mb);
+            var expected = a.Svd().Solve(b);
 
             Vec<Complex> actual;
             using (a.EnsureUnchanged())

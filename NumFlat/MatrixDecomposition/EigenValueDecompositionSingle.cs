@@ -6,10 +6,10 @@ namespace NumFlat
     /// <summary>
     /// Provides the eigen value decomposition (EVD).
     /// </summary>
-    public class EigenValueDecompositionDouble
+    public class EigenValueDecompositionSingle
     {
-        private readonly Vec<double> d;
-        private readonly Mat<double> v;
+        private readonly Vec<float> d;
+        private readonly Mat<float> v;
 
         /// <summary>
         /// Decomposes the matrix using EVD.
@@ -20,7 +20,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
-        public EigenValueDecompositionDouble(in Mat<double> a)
+        public EigenValueDecompositionSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -29,8 +29,8 @@ namespace NumFlat
                 throw new ArgumentException("The matrix must be a square matrix.");
             }
 
-            var d = new Vec<double>(a.RowCount);
-            var v = new Mat<double>(a.RowCount, a.RowCount);
+            var d = new Vec<float>(a.RowCount);
+            var v = new Mat<float>(a.RowCount, a.RowCount);
             Decompose(a, d, v);
 
             this.d = d;
@@ -52,7 +52,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
-        public static unsafe void Decompose(in Mat<double> a, in Vec<double> d, in Mat<double> v)
+        public static unsafe void Decompose(in Mat<float> a, in Vec<float> d, in Mat<float> v)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(d, nameof(d));
@@ -78,10 +78,10 @@ namespace NumFlat
 
             a.CopyTo(v);
 
-            fixed (double* pv = v.Memory.Span)
-            fixed (double* pcd = cd.Memory.Span)
+            fixed (float* pv = v.Memory.Span)
+            fixed (float* pcd = cd.Memory.Span)
             {
-                var info = Lapack.Dsyev(
+                var info = Lapack.Ssyev(
                     MatrixLayout.ColMajor,
                     'V',
                     'L',
@@ -90,7 +90,7 @@ namespace NumFlat
                     pcd);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("Failed to compute the EVD.", nameof(Lapack.Dsyev), (int)info);
+                    throw new LapackException("Failed to compute the EVD.", nameof(Lapack.Ssyev), (int)info);
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the solution vector.
         /// </param>
-        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
+        public unsafe void Solve(in Vec<float> b, in Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -119,7 +119,7 @@ namespace NumFlat
                 throw new ArgumentException("'destination.Count' must match the order of V.");
             }
 
-            using var utmp = new TemporalVector<double>(v.RowCount);
+            using var utmp = new TemporalVector<float>(v.RowCount);
             ref readonly var tmp = ref utmp.Item;
 
             Mat.Mul(v, b, tmp, true);
@@ -136,7 +136,7 @@ namespace NumFlat
         /// <returns>
         /// The solution vector.
         /// </returns>
-        public Vec<double> Solve(in Vec<double> b)
+        public Vec<float> Solve(in Vec<float> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -145,7 +145,7 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match the order of V.");
             }
 
-            var x = new Vec<double>(v.RowCount);
+            var x = new Vec<float>(v.RowCount);
             Solve(b, x);
             return x;
         }
@@ -153,11 +153,11 @@ namespace NumFlat
         /// <summary>
         /// The diagonal elements of the matrix D.
         /// </summary>
-        public ref readonly Vec<double> D => ref d;
+        public ref readonly Vec<float> D => ref d;
 
         /// <summary>
         /// The matrix V.
         /// </summary>
-        public ref readonly Mat<double> V => ref v;
+        public ref readonly Mat<float> V => ref v;
     }
 }

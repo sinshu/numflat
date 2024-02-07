@@ -9,6 +9,63 @@ namespace NumFlat
     public static class MatrixDecomposition
     {
         /// <summary>
+        /// Computes the engen value decomposition (EVD).
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="EigenValueDecompositionSingle"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the EVD.
+        /// </exception>
+        public static EigenValueDecompositionSingle Evd(in this Mat<float> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new EigenValueDecompositionSingle(a);
+        }
+
+        /// <summary>
+        /// Computes the engen value decomposition (EVD).
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="EigenValueDecompositionDouble"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the EVD.
+        /// </exception>
+        public static EigenValueDecompositionDouble Evd(in this Mat<double> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new EigenValueDecompositionDouble(a);
+        }
+
+        /// <summary>
+        /// Computes the engen value decomposition (EVD).
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="EigenValueDecompositionComplex"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the EVD.
+        /// </exception>
+        public static EigenValueDecompositionComplex Evd(in this Mat<Complex> a)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+
+            return new EigenValueDecompositionComplex(a);
+        }
+
+        /// <summary>
         /// Computes the LU decomposition.
         /// </summary>
         /// <param name="a">

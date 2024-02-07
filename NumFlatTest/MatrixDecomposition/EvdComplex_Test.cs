@@ -7,51 +7,57 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class CholeskyDouble_Test
+    public class EvdComplex_Test
     {
-        [TestCase(1, 1, 1)]
-        [TestCase(1, 2, 3)]
-        [TestCase(2, 2, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(3, 3, 3)]
-        [TestCase(3, 5, 3)]
-        [TestCase(5, 5, 5)]
-        [TestCase(5, 8, 6)]
-        public void Decompose(int n, int aStride, int lStride)
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 3, 3, 3)]
+        [TestCase(2, 2, 1, 2)]
+        [TestCase(2, 4, 4, 3)]
+        [TestCase(3, 3, 1, 3)]
+        [TestCase(3, 5, 3, 4)]
+        [TestCase(4, 4, 1, 4)]
+        [TestCase(4, 5, 2, 5)]
+        [TestCase(5, 5, 1, 5)]
+        [TestCase(5, 7, 3, 8)]
+        public void Decompose(int n, int aStride, int dStride, int vStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            var l = TestMatrix.RandomDouble(0, n, n, lStride);
+            var d = TestVector.RandomDouble(0, n, dStride);
+            var v = TestMatrix.RandomComplex(0, n, n, vStride);
             using (a.EnsureUnchanged())
             {
-                CholeskyDecompositionDouble.Decompose(a, l);
+                EigenValueDecompositionComplex.Decompose(a, d, v);
             }
 
-            var reconstructed = l * l.Transpose();
+            var reconstructed = v * d.Select(value => (Complex)value).ToDiagonalMatrix() * v.ConjugateTranspose();
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
-            TestMatrix.FailIfOutOfRangeWrite(l);
+            TestVector.FailIfOutOfRangeWrite(d);
+            TestMatrix.FailIfOutOfRangeWrite(v);
         }
 
         [TestCase(1, 1)]
-        [TestCase(1, 2)]
+        [TestCase(1, 3)]
         [TestCase(2, 2)]
-        [TestCase(2, 3)]
+        [TestCase(2, 4)]
         [TestCase(3, 3)]
         [TestCase(3, 5)]
+        [TestCase(4, 4)]
+        [TestCase(4, 5)]
         [TestCase(5, 5)]
-        [TestCase(5, 8)]
+        [TestCase(5, 7)]
         public void ExtensionMethod(int n, int aStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            CholeskyDecompositionDouble chol;
+            EigenValueDecompositionComplex evd;
             using (a.EnsureUnchanged())
             {
-                chol = a.Cholesky();
+                evd = a.Evd();
             }
 
-            var reconstructed = chol.L * chol.L.Transpose();
+            var reconstructed = evd.V * evd.D.Select(value => (Complex)value).ToDiagonalMatrix() * evd.V.ConjugateTranspose();
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
         }
 
@@ -68,14 +74,14 @@ namespace NumFlatTest
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = TestVector.RandomDouble(57, a.RowCount, bStride);
-            var chol = a.Cholesky();
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
+            var evd = a.Evd();
 
-            var actual = TestVector.RandomDouble(66, a.ColCount, dstStride);
+            var actual = TestVector.RandomComplex(66, a.ColCount, dstStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                chol.Solve(b, actual);
+                evd.Solve(b, actual);
             }
 
             var expected = a.Svd().Solve(b);
@@ -98,24 +104,24 @@ namespace NumFlatTest
         public void Solve_Arg1(int n, int aStride, int bStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = TestVector.RandomDouble(57, a.RowCount, bStride);
-            var chol = a.Cholesky();
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
+            var evd = a.Evd();
 
             var expected = a.Svd().Solve(b);
 
-            Vec<double> actual;
+            Vec<Complex> actual;
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                actual = chol.Solve(b);
+                actual = evd.Solve(b);
             }
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
-        private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)
+        private static Mat<Complex> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = TestMatrix.RandomDouble(seed, n, n, stride);
+            var mat = TestMatrix.RandomComplex(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -127,7 +133,7 @@ namespace NumFlatTest
                     }
                     else
                     {
-                        mat[row, col] = mat[col, row];
+                        mat[row, col] = mat[col, row].Conjugate();
                     }
                 }
             }

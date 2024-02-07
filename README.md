@@ -545,7 +545,7 @@ Matrix 3x3-Double
     - ✅ QR
     - ✅ Cholesky
     - ✅ SVD
-    - ⬜ EVD
+    - ✅ EVD
     - ⬜ GEVD
 * ⬜ LINQ-like operations
     - ✅ Mean

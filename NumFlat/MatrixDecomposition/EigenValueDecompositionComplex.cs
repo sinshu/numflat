@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -6,10 +7,10 @@ namespace NumFlat
     /// <summary>
     /// Provides the eigen value decomposition (EVD).
     /// </summary>
-    public class EigenValueDecompositionDouble
+    public class EigenValueDecompositionComplex
     {
         private readonly Vec<double> d;
-        private readonly Mat<double> v;
+        private readonly Mat<Complex> v;
 
         /// <summary>
         /// Decomposes the matrix using EVD.
@@ -20,7 +21,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
-        public EigenValueDecompositionDouble(in Mat<double> a)
+        public EigenValueDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -30,7 +31,7 @@ namespace NumFlat
             }
 
             var d = new Vec<double>(a.RowCount);
-            var v = new Mat<double>(a.RowCount, a.RowCount);
+            var v = new Mat<Complex>(a.RowCount, a.RowCount);
             Decompose(a, d, v);
 
             this.d = d;
@@ -52,7 +53,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the EVD.
         /// </exception>
-        public static unsafe void Decompose(in Mat<double> a, in Vec<double> d, in Mat<double> v)
+        public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> d, in Mat<Complex> v)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(d, nameof(d));
@@ -78,10 +79,10 @@ namespace NumFlat
 
             a.CopyTo(v);
 
-            fixed (double* pv = v.Memory.Span)
+            fixed (Complex* pv = v.Memory.Span)
             fixed (double* pcd = cd.Memory.Span)
             {
-                var info = Lapack.Dsyev(
+                var info = Lapack.Zheev(
                     MatrixLayout.ColMajor,
                     'V',
                     'L',
@@ -104,7 +105,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the solution vector.
         /// </param>
-        public unsafe void Solve(in Vec<double> b, in Vec<double> destination)
+        public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -119,12 +120,12 @@ namespace NumFlat
                 throw new ArgumentException("'destination.Count' must match the order of V.");
             }
 
-            using var utmp = new TemporalVector<double>(v.RowCount);
+            using var utmp = new TemporalVector<Complex>(v.RowCount);
             ref readonly var tmp = ref utmp.Item;
 
-            Mat.Mul(v, b, tmp, true);
-            Vec.PointwiseDiv(tmp, d, tmp);
-            Mat.Mul(v, tmp, destination, false);
+            Mat.Mul(v, b, tmp, true, true);
+            PointwiseDiv(tmp, d, tmp);
+            Mat.Mul(v, tmp, destination, false, false);
         }
 
         /// <summary>
@@ -136,7 +137,7 @@ namespace NumFlat
         /// <returns>
         /// The solution vector.
         /// </returns>
-        public Vec<double> Solve(in Vec<double> b)
+        public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -145,9 +146,26 @@ namespace NumFlat
                 throw new ArgumentException("'b.Count' must match the order of V.");
             }
 
-            var x = new Vec<double>(v.RowCount);
+            var x = new Vec<Complex>(v.RowCount);
             Solve(b, x);
             return x;
+        }
+
+        private static void PointwiseDiv(in Vec<Complex> x, in Vec<double> y, in Vec<Complex> destination)
+        {
+            var sx = x.Memory.Span;
+            var sy = y.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var py = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px] / sy[py];
+                px += x.Stride;
+                py += y.Stride;
+                pd += destination.Stride;
+            }
         }
 
         /// <summary>
@@ -158,6 +176,6 @@ namespace NumFlat
         /// <summary>
         /// The matrix V.
         /// </summary>
-        public ref readonly Mat<double> V => ref v;
+        public ref readonly Mat<Complex> V => ref v;
     }
 }
