@@ -21,5 +21,19 @@ namespace NumFlat
         {
             return new Complex(value.Real, -value.Imaginary);
         }
+
+        /// <summary>
+        /// Conjugates the squared magnitude of the complex number.
+        /// </summary>
+        /// <param name="value">
+        /// The target complex number.
+        /// </param>
+        /// <returns>
+        /// The the squared magnitude.
+        /// </returns>
+        public static double MagnitudeSquared(this Complex value)
+        {
+            return value.Real * value.Real + value.Imaginary * value.Imaginary;
+        }
     }
 }

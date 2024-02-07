@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Numerics;
 using OpenBlasSharp;
@@ -92,6 +91,59 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the pointwise-variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="mean">
+        /// The pre-computed mean vector of the source vectors.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise-variance.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        public static void Variance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Vec<double> destination, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.Count != mean.Count)
+            {
+                throw new ArgumentException("The length of the destination must match the length of the mean vector.");
+            }
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            destination.Clear();
+            var count = 0;
+
+            foreach (var x in xs)
+            {
+                if (x.Count != mean.Count)
+                {
+                    throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
+                }
+
+                AccumulateVariance(x, mean, destination);
+                count++;
+            }
+
+            if (count - ddof <= 0)
+            {
+                throw new ArgumentException("The number of source vectors is not sufficient.");
+            }
+
+            Vec.Div(destination, count - ddof, destination);
+        }
+
+        /// <summary>
         /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -129,9 +181,8 @@ namespace NumFlat
 
             var one = Complex.One;
 
-            var centeredLength = mean.Count;
-            using var centeredBuffer = MemoryPool<Complex>.Shared.Rent(centeredLength);
-            var centered = new Vec<Complex>(centeredBuffer.Memory.Slice(0, centeredLength));
+            using var ucentered = new TemporalVector<Complex>(mean.Count);
+            ref readonly var centered = ref ucentered.Item;
 
             destination.Clear();
             var count = 0;
@@ -164,6 +215,49 @@ namespace NumFlat
             }
 
             Mat.Div(destination, count - ddof, destination);
+        }
+
+        /// <summary>
+        /// Computes the mean vector and pointwise-variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The mean vector and pointwise-variance.
+        /// </returns>
+        public static (Vec<Complex> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<Complex>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            var mean = xs.Mean();
+            var variance = new Vec<double>(mean.Count);
+            Variance(xs, mean, variance, ddof);
+            return (mean, variance);
+        }
+
+        /// <summary>
+        /// Computes the mean vector and pointwise-variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <returns>
+        /// The mean vector and pointwise-variance.
+        /// </returns>
+        public static (Vec<Complex> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<Complex>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, 1);
         }
 
         /// <summary>
@@ -210,6 +304,41 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the mean vector and pointwise-variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The pointwise-variance.
+        /// </returns>
+        public static Vec<double> Variance(this IEnumerable<Vec<Complex>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, ddof).Variance;
+        }
+
+        /// <summary>
+        /// Computes the mean vector and pointwise-variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <returns>
+        /// The pointwise-variance.
+        /// </returns>
+        public static Vec<double> Variance(this IEnumerable<Vec<Complex>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, 1).Variance;
+        }
+
+        /// <summary>
         /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -242,6 +371,24 @@ namespace NumFlat
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
             return MeanAndCovariance(xs, 1).Covariance;
+        }
+
+        private static void AccumulateVariance(in Vec<Complex> x, in Vec<Complex> mean, in Vec<double> destination)
+        {
+            var sx = x.Memory.Span;
+            var sm = mean.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pm = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                var delta = sx[px] - sm[pm];
+                sd[pd] += delta.MagnitudeSquared();
+                px += x.Stride;
+                pm += mean.Stride;
+                pd += destination.Stride;
+            }
         }
     }
 }

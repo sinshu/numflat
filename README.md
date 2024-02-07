@@ -549,7 +549,7 @@ Matrix 3x3-Double
     - ⬜ GEVD
 * ⬜ LINQ-like operations
     - ✅ Mean
-    - ⬜ Variance
+    - ✅ Variance
     - ✅ Covariance
     - ⬜ Weighted mean
     - ⬜ Weighted variance
