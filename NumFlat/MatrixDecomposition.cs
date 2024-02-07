@@ -179,6 +179,9 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static Vec<float> GetSingularValues(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -197,6 +200,9 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static Vec<double> GetSingularValues(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -215,6 +221,9 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static Vec<double> GetSingularValues(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -233,6 +242,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionSingle"/>'.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static SingularValueDecompositionSingle Svd(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -249,6 +261,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionDouble"/>'.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static SingularValueDecompositionDouble Svd(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -265,6 +280,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionComplex"/>'.
         /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public static SingularValueDecompositionComplex Svd(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

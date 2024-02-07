@@ -19,6 +19,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public SingularValueDecompositionSingle(in Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));

@@ -57,6 +57,11 @@ namespace NumFlat
                 throw new ArgumentException("'a' must be a square matrix.");
             }
 
+            if (l.RowCount != a.RowCount || l.ColCount != a.ColCount)
+            {
+                throw new ArgumentException("The order of 'l' must match 'a'.");
+            }
+
             a.CopyTo(l);
 
             fixed (double* pl = l.Memory.Span)

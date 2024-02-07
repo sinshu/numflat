@@ -20,6 +20,9 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
         public SingularValueDecompositionComplex(in Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
