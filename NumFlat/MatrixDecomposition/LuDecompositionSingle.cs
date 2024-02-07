@@ -220,6 +220,9 @@ namespace NumFlat
         /// <returns>
         /// The permutation matrix.
         /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix.
+        /// </remarks>
         public Mat<float> GetPermutationMatrix()
         {
             var p = new Mat<float>(permutation.Length, permutation.Length);
