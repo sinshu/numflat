@@ -35,6 +35,32 @@ namespace NumFlatTest
 
         [TestCase(1, 1)]
         [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(3, 2)]
+        [TestCase(5, 3)]
+        [TestCase(3, 5)]
+        public void Identity(int rowCOunt, int colCount)
+        {
+            var identity = MatrixBuilder.Identity<double>(rowCOunt, colCount);
+
+            for (var row = 0; row < rowCOunt; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    if (row == col)
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(1));
+                    }
+                    else
+                    {
+                        Assert.That(identity[row, col], Is.EqualTo(0));
+                    }
+                }
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
         [TestCase(2, 4)]
         [TestCase(5, 3)]
         public void ToMatrix(int rowCount, int colCount)

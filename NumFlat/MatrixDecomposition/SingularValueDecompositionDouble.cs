@@ -171,12 +171,12 @@ namespace NumFlat
 
             if (b.Count != u.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'U.RowCount'.");
+                throw new ArgumentException("'b.Count' must match the number of rows of U.");
             }
 
             if (destination.Count != vt.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'VT.RowCount'.");
+                throw new ArgumentException("'destination.Count' must match the number of columns of V^T.");
             }
 
             using var utmp = new TemporalVector<double>(vt.RowCount);

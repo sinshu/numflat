@@ -33,6 +33,32 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Creates an identity matrix.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="rowCount">
+        /// The number of rows.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns.
+        /// </param>
+        /// <returns>
+        /// The specified identity matrix.
+        /// </returns>
+        public static Mat<T> Identity<T>(int rowCount, int colCount) where T : unmanaged, INumberBase<T>
+        {
+            var identity = new Mat<T>(rowCount, colCount);
+            var min = Math.Min(rowCount, colCount);
+            for (var i = 0; i < min; i++)
+            {
+                identity[i, i] = T.One;
+            }
+            return identity;
+        }
+
+        /// <summary>
         /// Creates a new matrix from the specified elements.
         /// </summary>
         /// <typeparam name="T">

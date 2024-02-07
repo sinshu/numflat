@@ -14,10 +14,10 @@ namespace NumFlat
         private Mat<Complex> r;
 
         /// <summary>
-        /// Decomposes the matrix A using QR decomposition.
+        /// Decomposes the matrix using QR decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         public QrDecompositionComplex(in Mat<Complex> a)
         {
@@ -25,7 +25,7 @@ namespace NumFlat
 
             if (a.RowCount < a.ColCount)
             {
-                throw new ArgumentException("'a.RowCount' must be greater than or equal to 'a.ColCount'.");
+                throw new ArgumentException("The number of rows must be greater than or equal to the number of columns.");
             }
 
             var q = new Mat<Complex>(a.RowCount, a.ColCount);
@@ -37,20 +37,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Decomposes the matrix A using QR decomposition.
+        /// Decomposes the matrix using QR decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <param name="q">
-        /// The matrix Q.
+        /// The destination of the matrix Q.
         /// </param>
         /// <param name="r">
-        /// The matrix R.
+        /// The destination of the matrix R.
         /// </param>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static unsafe void Decompose(in Mat<Complex> a, in Mat<Complex> q, in Mat<Complex> r)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -82,8 +79,8 @@ namespace NumFlat
                 throw new ArgumentException("'r.ColCount' must match 'a.ColCount'.");
             }
 
-            using var tauBuffer = MemoryPool<Complex>.Shared.Rent(a.ColCount);
-            var tau = tauBuffer.Memory.Span;
+            using var utau = MemoryPool<Complex>.Shared.Rent(a.ColCount);
+            var tau = utau.Memory.Span;
 
             a.CopyTo(q);
 
@@ -113,13 +110,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <param name="destination">
-        /// The destination of the vector x.
+        /// The destination of the solution vector.
         /// </param>
         public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
@@ -128,12 +125,12 @@ namespace NumFlat
 
             if (b.Count != q.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'Q.RowCount'.");
+                throw new ArgumentException("'b.Count' must match the number of rows of Q.");
             }
 
             if (destination.Count != r.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'R.RowCount'.");
+                throw new ArgumentException("'destination.Count' must match the number of columns of R.");
             }
 
             Mat.Mul(q, b, destination, true, true);
@@ -153,13 +150,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <returns>
-        /// The vector x.
+        /// The solution vector.
         /// </returns>
         public unsafe Vec<Complex> Solve(in Vec<Complex> b)
         {
@@ -167,7 +164,7 @@ namespace NumFlat
 
             if (b.Count != q.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'Q.RowCount'.");
+                throw new ArgumentException("The length of the input vector does not meet the requirement.");
             }
 
             var x = new Vec<Complex>(r.RowCount);
