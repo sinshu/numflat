@@ -15,10 +15,10 @@ namespace NumFlat
         private readonly Mat<Complex> vt;
 
         /// <summary>
-        /// Decomposes the matrix A using SVD.
+        /// Decomposes the matrix using SVD.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         public SingularValueDecompositionComplex(in Mat<Complex> a)
         {
@@ -35,20 +35,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Gets the singular values of the matrix A.
+        /// Gets the singular values of the matrix.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The source matrix.
         /// </param>
         /// <param name="s">
         /// The destination of the diagonal elements of the matrix S.
         /// </param>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static unsafe void GetSingularValues(in Mat<Complex> a, in Vec<double> s)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -56,58 +53,43 @@ namespace NumFlat
 
             if (s.Count != Math.Min(a.RowCount, a.ColCount))
             {
-                throw new ArgumentException("'s.Count' must match 'Min(a.RowCount, a.ColCount)'.");
+                throw new ArgumentException("'s.Count' must match 'min(a.RowCount, a.ColCount)'.");
             }
 
-            //
-            // Need to copy 'a' and 's' here.
-            //
-            //   a: LAPACK SVD will destroy 'a'.
-            //      We have to copy original 'a' to preserve the original content.
-            //
-            //   s: Write buffer for 's' must be contiguous. Given Vec might not be so.
-            //      Creating Vec for 's' with stride = 1 to ensure contiguity.
-            //
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
 
-            var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<Complex>.Shared.Rent(aLength);
-            var aCopy = new Mat<Complex>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
-            a.CopyTo(aCopy);
+            using var ucs = s.EnsureContiguous(false);
+            ref readonly var cs = ref ucs.Item;
 
-            var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var sCopy = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var uwork = MemoryPool<double>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
+            var work = uwork.Memory.Span;
 
-            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
-            var work = workBuffer.Memory.Span;
-
-            fixed (Complex* pa = aCopy.Memory.Span)
-            fixed (double* ps = sCopy.Memory.Span)
+            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (double* pcs = cs.Memory.Span)
             fixed (double* pwork = work)
             {
                 var info = Lapack.Zgesvd(
                     MatrixLayout.ColMajor,
                     'N', 'N',
-                    aCopy.RowCount, aCopy.ColCount,
-                    pa, aCopy.Stride,
-                    ps,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
+                    pcs,
                     null, 1,
                     null, 1,
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Zgesvd), (int)info);
+                    throw new LapackException("Failed to compute the SVD.", nameof(Lapack.Zgesvd), (int)info);
                 }
             }
-
-            sCopy.CopyTo(s);
         }
 
         /// <summary>
-        /// Decomposes the matrix A using SVD.
+        /// Decomposes the matrix using SVD.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <param name="s">
         /// The destination of the diagonal elements of the matrix S.
@@ -119,11 +101,8 @@ namespace NumFlat
         /// The destination of the the matrix V^T.
         /// </param>
         /// <exception cref="LapackException">
-        /// The SVD computation did not converge.
+        /// Failed to compute the SVD.
         /// </exception>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> s, in Mat<Complex> u, in Mat<Complex> vt)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -133,7 +112,7 @@ namespace NumFlat
 
             if (s.Count != Math.Min(a.RowCount, a.ColCount))
             {
-                throw new ArgumentException("'s.Count' must match 'Min(a.RowCount, a.ColCount)'.");
+                throw new ArgumentException("'s.Count' must match 'min(a.RowCount, a.ColCount)'.");
             }
 
             if (u.RowCount != a.RowCount || u.ColCount != a.RowCount)
@@ -146,30 +125,17 @@ namespace NumFlat
                 throw new ArgumentException("'vt.RowCount' and 'vt.ColCount' must match 'a.ColCount'.");
             }
 
-            //
-            // Need to copy 'a' and 's' here.
-            //
-            //   a: LAPACK SVD will destroy 'a'.
-            //      We have to copy original 'a' to preserve the original content.
-            //
-            //   s: Write buffer for 's' must be contiguous. Given Vec might not be so.
-            //      Creating Vec for 's' with stride = 1 to ensure contiguity.
-            //
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
 
-            var aLength = a.RowCount * a.ColCount;
-            using var aBuffer = MemoryPool<Complex>.Shared.Rent(aLength);
-            var aCopy = new Mat<Complex>(a.RowCount, a.ColCount, a.RowCount, aBuffer.Memory.Slice(0, aLength));
-            a.CopyTo(aCopy);
+            using var ucs = s.EnsureContiguous(false);
+            ref readonly var cs = ref ucs.Item;
 
-            var sLength = Math.Min(aCopy.RowCount, aCopy.ColCount);
-            using var sBuffer = MemoryPool<double>.Shared.Rent(sLength);
-            var sCopy = new Vec<double>(sBuffer.Memory.Slice(0, sLength));
+            using var uwork = MemoryPool<double>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
+            var work = uwork.Memory.Span;
 
-            using var workBuffer = MemoryPool<double>.Shared.Rent(Math.Min(aCopy.RowCount, aCopy.ColCount) - 1);
-            var work = workBuffer.Memory.Span;
-
-            fixed (Complex* pa = aCopy.Memory.Span)
-            fixed (double* ps = sCopy.Memory.Span)
+            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (double* pcs = cs.Memory.Span)
             fixed (Complex* pu = u.Memory.Span)
             fixed (Complex* pvt = vt.Memory.Span)
             fixed (double* pwork = work)
@@ -177,33 +143,28 @@ namespace NumFlat
                 var info = Lapack.Zgesvd(
                     MatrixLayout.ColMajor,
                     'A', 'A',
-                    aCopy.RowCount, aCopy.ColCount,
-                    pa, aCopy.Stride,
-                    ps,
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
+                    pcs,
                     pu, u.Stride,
                     pvt, vt.Stride,
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("The SVD computation did not converge.", nameof(Lapack.Zgesvd), (int)info);
+                    throw new LapackException("Failed to compute the SVD.", nameof(Lapack.Zgesvd), (int)info);
                 }
             }
-
-            sCopy.CopyTo(s);
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <param name="destination">
-        /// The destination of the vector x.
+        /// The destination of the solution vector.
         /// </param>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
@@ -219,9 +180,8 @@ namespace NumFlat
                 throw new ArgumentException("'destination.Count' must match 'VT.RowCount'.");
             }
 
-            var tmpLength = vt.RowCount;
-            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
-            var tmp = new Vec<Complex>(tmpBuffer.Memory.Slice(0, tmpLength));
+            using var utmp = new TemporalVector<Complex>(vt.RowCount);
+            ref readonly var tmp = ref utmp.Item;
             tmp.Clear();
 
             var ts = tmp.Subvector(0, s.Count);
@@ -231,24 +191,21 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <returns>
-        /// The vector x.
+        /// The solution vector.
         /// </returns>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
             if (b.Count != u.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'U.RowCount'.");
+                throw new ArgumentException("The length of the input vector does not meet the requirement.");
             }
 
             var x = new Vec<Complex>(vt.RowCount);

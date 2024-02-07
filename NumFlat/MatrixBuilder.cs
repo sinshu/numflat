@@ -51,7 +51,7 @@ namespace NumFlat
         {
             if (elements.GetLength(0) == 0 || elements.GetLength(1) == 0)
             {
-                throw new ArgumentException("One or more elements are required.");
+                throw new ArgumentException("The sequence must contain at least one element.");
             }
 
             var destination = new Mat<T>(elements.GetLength(0), elements.GetLength(1));
@@ -91,7 +91,7 @@ namespace NumFlat
             var array = elements.ToArray();
             if (array.Length == 0)
             {
-                throw new ArgumentException("One or more elements are required.");
+                throw new ArgumentException("The sequence must contain at least one element.");
             }
 
             var matrix = new Mat<T>(array.Length, array.Length);
@@ -171,7 +171,7 @@ namespace NumFlat
                 {
                     if (row.Length == 0)
                     {
-                        new ArgumentException("Zero-length rows are not allowed.");
+                        new ArgumentException("Empty rows are not allowed.");
                     }
 
                     colCount = row.Length;
@@ -179,7 +179,7 @@ namespace NumFlat
 
                 if (row.Length != colCount)
                 {
-                    throw new ArgumentException("All the rows in 'rows' must be the same length.");
+                    throw new ArgumentException("All the rows must have the same length.");
                 }
 
                 cache.Add(row);
@@ -188,7 +188,7 @@ namespace NumFlat
             var rowCount = cache.Count;
             if (rowCount == 0)
             {
-                throw new ArgumentException("'rows' must contain at least one row.");
+                throw new ArgumentException("The sequence must contain at least one row.");
             }
 
             var destination = new Mat<T>(rowCount, colCount);
@@ -231,7 +231,7 @@ namespace NumFlat
                 {
                     if (col.Length == 0)
                     {
-                        new ArgumentException("Zero-length columns are not allowed.");
+                        new ArgumentException("Empty columns are not allowed.");
                     }
 
                     rowCount = col.Length;
@@ -239,7 +239,7 @@ namespace NumFlat
 
                 if (col.Length != rowCount)
                 {
-                    throw new ArgumentException("All the columns in 'cols' must be the same length.");
+                    throw new ArgumentException("All the columns must have the same length.");
                 }
 
                 cache.Add(col);
@@ -248,7 +248,7 @@ namespace NumFlat
             var colCount = cache.Count;
             if (colCount == 0)
             {
-                throw new ArgumentException("'cols' must contain at least one column.");
+                throw new ArgumentException("The sequence must contain at least one column.");
             }
 
             var destination = new Mat<T>(rowCount, colCount);
