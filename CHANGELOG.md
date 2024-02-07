@@ -1,3 +1,8 @@
+# v0.2.1
+
+* Revised the doc comments and error messages.
+* Added the eigen value decomposition.
+
 # v0.2.0
 
 * Revised the unit tests for better robustness.
