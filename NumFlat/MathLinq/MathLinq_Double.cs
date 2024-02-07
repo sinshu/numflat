@@ -102,10 +102,10 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the covariance matrix.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(IEnumerable<Vec<double>> xs, Vec<double> mean, Mat<double> destination, int ddot)
+        public static unsafe void Covariance(IEnumerable<Vec<double>> xs, Vec<double> mean, Mat<double> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -121,7 +121,7 @@ namespace NumFlat
                 throw new ArgumentException("The number of columns of the destination must match the length of the mean vector.");
             }
 
-            if (ddot < 0)
+            if (ddof < 0)
             {
                 throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
@@ -155,12 +155,12 @@ namespace NumFlat
                 }
             }
 
-            if (count - ddot <= 0)
+            if (count - ddof <= 0)
             {
                 throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
-            Mat.Div(destination, count - ddot, destination);
+            Mat.Div(destination, count - ddof, destination);
         }
 
         /// <summary>
@@ -169,24 +169,24 @@ namespace NumFlat
         /// <param name="xs">
         /// The source vectors.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
         /// The mean vector and covariance matrix.
         /// </returns>
-        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, int ddot)
+        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            if (ddot < 0)
+            if (ddof < 0)
             {
                 throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
             var mean = xs.Mean();
             var covariance = new Mat<double>(mean.Count, mean.Count);
-            Covariance(xs, mean, covariance, ddot);
+            Covariance(xs, mean, covariance, ddof);
             return (mean, covariance);
         }
 
@@ -212,17 +212,17 @@ namespace NumFlat
         /// <param name="xs">
         /// The source vectors.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
         /// The covariance matrix.
         /// </returns>
-        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, int ddot)
+        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            return MeanAndCovariance(xs, ddot).Covariance;
+            return MeanAndCovariance(xs, ddof).Covariance;
         }
 
         /// <summary>

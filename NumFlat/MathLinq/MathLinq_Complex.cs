@@ -29,7 +29,7 @@ namespace NumFlat
             {
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors in 'xs' must be the same length as 'destination'.");
+                    throw new ArgumentException("All the source vectors must have the same length as the destination.");
                 }
 
                 Vec.Add(destination, x, destination);
@@ -38,7 +38,7 @@ namespace NumFlat
 
             if (count == 0)
             {
-                throw new ArgumentException("'xs' must contain at least one vector.");
+                throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
             Vec.Div(destination, count, destination);
@@ -66,7 +66,7 @@ namespace NumFlat
                 {
                     if (x.Count == 0)
                     {
-                        new ArgumentException("Zero-length vectors are not allowed.");
+                        new ArgumentException("Empty vectors are not allowed.");
                     }
 
                     destination = new Vec<Complex>(x.Count);
@@ -74,7 +74,7 @@ namespace NumFlat
 
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors in 'xs' must be the same length.");
+                    throw new ArgumentException("All the vectors must have the same length.");
                 }
 
                 Vec.Add(destination, x, destination);
@@ -83,7 +83,7 @@ namespace NumFlat
 
             if (count == 0)
             {
-                throw new ArgumentException("'xs' must contain at least one vector.");
+                throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
             Vec.Div(destination, count, destination);
@@ -103,10 +103,10 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the covariance matrix.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Mat<Complex> destination, int ddot)
+        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Mat<Complex> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -114,17 +114,17 @@ namespace NumFlat
 
             if (destination.RowCount != mean.Count)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'mean.Count'.");
+                throw new ArgumentException("The number of rows of the destination must match the length of the mean vector.");
             }
 
             if (destination.ColCount != mean.Count)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'mean.Count'.");
+                throw new ArgumentException("The number of columns of the destination must match the length of the mean vector.");
             }
 
-            if (ddot < 0)
+            if (ddof < 0)
             {
-                throw new ArgumentException("'ddot' must be a non-negative integer.");
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
             var one = Complex.One;
@@ -143,7 +143,7 @@ namespace NumFlat
                 {
                     if (x.Count != mean.Count)
                     {
-                        throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
+                        throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
                     }
 
                     Vec.Sub(x, mean, centered);
@@ -158,12 +158,12 @@ namespace NumFlat
                 }
             }
 
-            if (count - ddot <= 0)
+            if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of vectors in 'xs' is not sufficient.");
+                throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
-            Mat.Div(destination, count - ddot, destination);
+            Mat.Div(destination, count - ddof, destination);
         }
 
         /// <summary>
@@ -172,24 +172,24 @@ namespace NumFlat
         /// <param name="xs">
         /// The source vectors.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
         /// The mean vector and covariance matrix.
         /// </returns>
-        public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs, int ddot)
+        public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            if (ddot < 0)
+            if (ddof < 0)
             {
-                throw new ArgumentException("'ddot' must be a non-negative integer.");
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
             var mean = xs.Mean();
             var covariance = new Mat<Complex>(mean.Count, mean.Count);
-            Covariance(xs, mean, covariance, ddot);
+            Covariance(xs, mean, covariance, ddof);
             return (mean, covariance);
         }
 
@@ -215,17 +215,17 @@ namespace NumFlat
         /// <param name="xs">
         /// The source vectors.
         /// </param>
-        /// <param name="ddot">
+        /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
         /// The covariance matrix.
         /// </returns>
-        public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs, int ddot)
+        public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            return MeanAndCovariance(xs, ddot).Covariance;
+            return MeanAndCovariance(xs, ddof).Covariance;
         }
 
         /// <summary>
