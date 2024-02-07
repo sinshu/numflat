@@ -8,15 +8,15 @@ namespace NumFlat
     public static partial class MathLinq
     {
         /// <summary>
-        /// Computes the mean vector from a vector set.
+        /// Computes the mean vector from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="destination">
         /// The destination of the mean vector.
         /// </param>
-        public static void Mean(this IEnumerable<Vec<double>> xs, Vec<double> destination)
+        public static void Mean(IEnumerable<Vec<double>> xs, Vec<double> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -28,7 +28,7 @@ namespace NumFlat
             {
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors in 'xs' must be the same length as 'destination'.");
+                    throw new ArgumentException("All the source vectors must have the same length as the destination.");
                 }
 
                 Vec.Add(destination, x, destination);
@@ -37,18 +37,21 @@ namespace NumFlat
 
             if (count == 0)
             {
-                throw new ArgumentException("'xs' must contain at least one vector.");
+                throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
             Vec.Div(destination, count, destination);
         }
 
         /// <summary>
-        /// Computes the mean vector from a vector set.
+        /// Computes the mean vector from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The mean vector.
+        /// </returns>
         public static Vec<double> Mean(this IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -62,7 +65,7 @@ namespace NumFlat
                 {
                     if (x.Count == 0)
                     {
-                        new ArgumentException("Zero-length vectors are not allowed.");
+                        new ArgumentException("Empty vectors are not allowed.");
                     }
 
                     destination = new Vec<double>(x.Count);
@@ -70,7 +73,7 @@ namespace NumFlat
 
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors in 'xs' must be the same length.");
+                    throw new ArgumentException("All the vectors must have the same length.");
                 }
 
                 Vec.Add(destination, x, destination);
@@ -79,7 +82,7 @@ namespace NumFlat
 
             if (count == 0)
             {
-                throw new ArgumentException("'xs' must contain at least one vector.");
+                throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
             Vec.Div(destination, count, destination);
@@ -88,13 +91,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="mean">
-        /// The pre-computed mean vector of the vector set.
+        /// The pre-computed mean vector of the source vectors.
         /// </param>
         /// <param name="destination">
         /// The destination of the covariance matrix.
@@ -102,7 +105,7 @@ namespace NumFlat
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(this IEnumerable<Vec<double>> xs, Vec<double> mean, Mat<double> destination, int ddot)
+        public static unsafe void Covariance(IEnumerable<Vec<double>> xs, Vec<double> mean, Mat<double> destination, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -110,17 +113,17 @@ namespace NumFlat
 
             if (destination.RowCount != mean.Count)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'mean.Count'.");
+                throw new ArgumentException("The number of rows of the destination must match the length of the mean vector.");
             }
 
             if (destination.ColCount != mean.Count)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'mean.Count'.");
+                throw new ArgumentException("The number of columns of the destination must match the length of the mean vector.");
             }
 
             if (ddot < 0)
             {
-                throw new ArgumentException("'ddot' must be a non-negative integer.");
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
             var centeredLength = mean.Count;
@@ -137,7 +140,7 @@ namespace NumFlat
                 {
                     if (x.Count != mean.Count)
                     {
-                        throw new ArgumentException("All the vectors in 'xs' must be the same length as 'mean'.");
+                        throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
                     }
 
                     Vec.Sub(x, mean, centered);
@@ -154,28 +157,31 @@ namespace NumFlat
 
             if (count - ddot <= 0)
             {
-                throw new ArgumentException("The number of vectors in 'xs' is not sufficient.");
+                throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
             Mat.Div(destination, count - ddot, destination);
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the mean vector and covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
+        /// <returns>
+        /// The mean vector and covariance matrix.
+        /// </returns>
         public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
             if (ddot < 0)
             {
-                throw new ArgumentException("'ddot' must be a non-negative integer.");
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
             var mean = xs.Mean();
@@ -185,11 +191,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the mean vector and covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The mean vector and covariance matrix.
+        /// </returns>
         public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -198,14 +207,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
+        /// <returns>
+        /// The covariance matrix.
+        /// </returns>
         public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -214,11 +226,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The covariance matrix.
+        /// </returns>
         public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));

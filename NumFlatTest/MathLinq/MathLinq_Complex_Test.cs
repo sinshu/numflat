@@ -23,7 +23,7 @@ namespace NumFlatTest
             var expected = MathNetMean(data);
 
             var actual = TestVector.RandomComplex(0, dim, dstStride);
-            data.Select(x => x.ToVector()).Mean(actual);
+            MathLinq.Mean(data.Select(x => x.ToVector()), actual);
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
@@ -53,9 +53,13 @@ namespace NumFlatTest
             var expected = MathNetCov(data, ddot);
 
             var mean = TestVector.RandomComplex(0, dim, meanStride);
-            data.Select(x => x.ToVector()).Mean(mean);
+            MathLinq.Mean(data.Select(x => x.ToVector()), mean);
+
             var actual = TestMatrix.RandomComplex(0, dim, dim, covStride);
-            data.Select(x => x.ToVector()).Covariance(mean, actual, ddot);
+            using (mean.EnsureUnchanged())
+            {
+                MathLinq.Covariance(data.Select(x => x.ToVector()), mean, actual, ddot);
+            }
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 

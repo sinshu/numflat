@@ -9,15 +9,15 @@ namespace NumFlat
     public static partial class MathLinq
     {
         /// <summary>
-        /// Computes the mean vector from a vector set.
+        /// Computes the mean vector from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="destination">
         /// The destination of the mean vector.
         /// </param>
-        public static void Mean(this IEnumerable<Vec<Complex>> xs, Vec<Complex> destination)
+        public static void Mean(IEnumerable<Vec<Complex>> xs, Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -45,11 +45,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector from a vector set.
+        /// Computes the mean vector from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The mean vector.
+        /// </returns>
         public static Vec<Complex> Mean(this IEnumerable<Vec<Complex>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -89,13 +92,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="mean">
-        /// The pre-computed mean vector of the vector set.
+        /// The pre-computed mean vector of the source vectors.
         /// </param>
         /// <param name="destination">
         /// The destination of the covariance matrix.
@@ -103,7 +106,7 @@ namespace NumFlat
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(this IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Mat<Complex> destination, int ddot)
+        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Mat<Complex> destination, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -164,14 +167,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the mean vector and covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
+        /// <returns>
+        /// The mean vector and covariance matrix.
+        /// </returns>
         public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -188,11 +194,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the mean vector and covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The mean vector and covariance matrix.
+        /// </returns>
         public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -201,14 +210,17 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
         /// <param name="ddot">
         /// The delta degrees of freedom.
         /// </param>
+        /// <returns>
+        /// The covariance matrix.
+        /// </returns>
         public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs, int ddot)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -217,11 +229,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a vector set.
+        /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
-        /// The vector set.
+        /// The source vectors.
         /// </param>
+        /// <returns>
+        /// The covariance matrix.
+        /// </returns>
         public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
