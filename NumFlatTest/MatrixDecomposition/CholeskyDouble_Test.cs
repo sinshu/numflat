@@ -57,13 +57,13 @@ namespace NumFlatTest
 
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 2, 3)]
-        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 1, 1)]
         [TestCase(2, 2, 4, 3)]
-        [TestCase(3, 3, 3, 3)]
-        [TestCase(3, 3, 4, 4)]
-        [TestCase(4, 4, 4, 4)]
-        [TestCase(4, 4, 6, 5)]
-        [TestCase(5, 5, 5, 5)]
+        [TestCase(3, 3, 1, 1)]
+        [TestCase(3, 3, 2, 4)]
+        [TestCase(4, 4, 1, 1)]
+        [TestCase(4, 4, 3, 2)]
+        [TestCase(5, 5, 1, 1)]
         [TestCase(5, 5, 8, 7)]
         public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
         {
@@ -87,13 +87,13 @@ namespace NumFlatTest
 
         [TestCase(1, 1, 1)]
         [TestCase(1, 1, 2)]
-        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 1)]
         [TestCase(2, 2, 4)]
-        [TestCase(3, 3, 3)]
-        [TestCase(3, 3, 4)]
-        [TestCase(4, 4, 4)]
-        [TestCase(4, 4, 6)]
-        [TestCase(5, 5, 5)]
+        [TestCase(3, 3, 1)]
+        [TestCase(3, 3, 2)]
+        [TestCase(4, 4, 1)]
+        [TestCase(4, 4, 3)]
+        [TestCase(5, 5, 1)]
         [TestCase(5, 5, 8)]
         public void Solve_Arg1(int n, int aStride, int bStride)
         {

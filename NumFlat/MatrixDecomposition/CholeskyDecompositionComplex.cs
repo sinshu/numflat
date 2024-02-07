@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Numerics;
 using OpenBlasSharp;
 
@@ -13,10 +12,10 @@ namespace NumFlat
         private Mat<Complex> l;
 
         /// <summary>
-        /// Decomposes the matrix A using Cholesky decomposition.
+        /// Decomposes the matrix using Cholesky decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         public CholeskyDecompositionComplex(in Mat<Complex> a)
         {
@@ -24,7 +23,7 @@ namespace NumFlat
 
             if (a.RowCount != a.ColCount)
             {
-                throw new ArgumentException("The matrix 'a' must be a square matrix.");
+                throw new ArgumentException("The matrix must be a square matrix.");
             }
 
             var l = new Mat<Complex>(a.RowCount, a.ColCount);
@@ -34,10 +33,10 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Decomposes the matrix A using Cholesky decomposition.
+        /// Decomposes the matrix using Cholesky decomposition.
         /// </summary>
         /// <param name="a">
-        /// The matrix A to be decomposed.
+        /// The matrix to be decomposed.
         /// </param>
         /// <param name="l">
         /// The destination of the the matrix L.
@@ -53,7 +52,7 @@ namespace NumFlat
 
             if (a.RowCount != a.ColCount)
             {
-                throw new ArgumentException("The matrix 'a' must be a square matrix.");
+                throw new ArgumentException("'a' must be a square matrix.");
             }
 
             a.CopyTo(l);
@@ -79,17 +78,14 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <param name="destination">
-        /// The destination of the vector x.
+        /// The destination of the solution vector.
         /// </param>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
@@ -97,21 +93,20 @@ namespace NumFlat
 
             if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
+                throw new ArgumentException("'b.Count' must match the order of L.");
             }
 
             if (destination.Count != l.RowCount)
             {
-                throw new ArgumentException("'destination.Count' must match 'L.RowCount'.");
+                throw new ArgumentException("'destination.Count' must match the order of L.");
             }
 
-            var tmpLength = l.RowCount;
-            using var tmpBuffer = MemoryPool<Complex>.Shared.Rent(tmpLength);
-            var tmp = new Vec<Complex>(tmpBuffer.Memory.Slice(0, tmpLength));
-            b.CopyTo(tmp);
+            using var ucdst = TemporalContiguousVector.EnsureContiguous(destination, false);
+            ref readonly var cdst = ref ucdst.Item;
+            b.CopyTo(cdst);
 
             fixed (Complex* pl = l.Memory.Span)
-            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (Complex* pcdst = cdst.Memory.Span)
             {
                 var info = Lapack.Zpotrs(
                     MatrixLayout.ColMajor,
@@ -119,32 +114,26 @@ namespace NumFlat
                     l.RowCount,
                     1,
                     pl, l.Stride,
-                    ptmp, tmpLength);
-
+                    pcdst, cdst.Count);
             }
-
-            tmp.CopyTo(destination);
         }
 
         /// <summary>
-        /// Compute a vector x from b, where Ax = b.
+        /// Solves the linear equation, Ax = b.
         /// </summary>
         /// <param name="b">
-        /// The vector b.
+        /// The input vector.
         /// </param>
         /// <returns>
-        /// The vector x.
+        /// The solution vector.
         /// </returns>
-        /// <remarks>
-        /// This method internally uses '<see cref="MemoryPool{T}.Shared"/>' to allocate buffer.
-        /// </remarks>
         public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
             if (b.Count != l.RowCount)
             {
-                throw new ArgumentException("'b.Count' must match 'L.RowCount'.");
+                throw new ArgumentException("The length of the input vector does not meet the requirement.");
             }
 
             var x = new Vec<Complex>(l.RowCount);
