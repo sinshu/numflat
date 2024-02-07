@@ -121,9 +121,6 @@ namespace NumFlat
                 throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
-            using var ucentered = new TemporalVector<double>(mean.Count);
-            ref readonly var centered = ref ucentered.Item;
-
             destination.Clear();
             var count = 0;
 
@@ -134,9 +131,7 @@ namespace NumFlat
                     throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
                 }
 
-                Vec.Sub(x, mean, centered);
-                Vec.PointwiseMul(centered, centered, centered);
-                Vec.Add(destination, centered, destination);
+                AccumulateVariance(x, mean, destination);
                 count++;
             }
 
@@ -374,6 +369,24 @@ namespace NumFlat
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
             return MeanAndCovariance(xs, 1).Covariance;
+        }
+
+        private static void AccumulateVariance(in Vec<double> x, in Vec<double> mean, in Vec<double> destination)
+        {
+            var sx = x.Memory.Span;
+            var sm = mean.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pm = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                var delta = sx[px] - sm[pm];
+                sd[pd] += delta * delta;
+                px += x.Stride;
+                pm += mean.Stride;
+                pd += destination.Stride;
+            }
         }
     }
 }
