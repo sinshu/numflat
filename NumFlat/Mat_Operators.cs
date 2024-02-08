@@ -134,7 +134,7 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                throw new ArgumentException("The vector length must match the number of columns of the matrix.");
             }
 
             if (typeof(T) == typeof(float))

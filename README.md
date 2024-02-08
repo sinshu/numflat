@@ -540,13 +540,13 @@ Matrix 3x3-Double
     - ✅ Inversion
     - ✅ Pseudo-inverse
     - ⬜ Norm
-* ⬜ Matrix Decomposition
+* ✅ Matrix Decomposition
     - ✅ LU
     - ✅ QR
     - ✅ Cholesky
     - ✅ SVD
     - ✅ EVD
-    - ⬜ GEVD
+    - ✅ GEVD
 * ⬜ LINQ-like operations
     - ✅ Mean
     - ✅ Variance
