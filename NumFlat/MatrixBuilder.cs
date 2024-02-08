@@ -11,6 +11,87 @@ namespace NumFlat
     public static class MatrixBuilder
     {
         /// <summary>
+        /// Creates a new matrix which is filled with a specified value.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="rowCount">
+        /// The number of rows.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns.
+        /// </param>
+        /// <param name="value">
+        /// The value to fill the new matrix.
+        /// </param>
+        /// <returns>
+        /// The new matrix filled with the specified value.
+        /// </returns>
+        public static Mat<T> Fill<T>(int rowCount, int colCount, T value) where T : unmanaged, INumberBase<T>
+        {
+            if (rowCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "The number of rows must be greater than zero.");
+            }
+
+            if (colCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(colCount), "The number of columns must be greater than zero.");
+            }
+
+            var mat = new Mat<T>(rowCount, colCount);
+            mat.Fill(value);
+            return mat;
+        }
+
+        /// <summary>
+        /// Creates a new matrix from a specified function.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="rowCount">
+        /// The number of rows.
+        /// </param>
+        /// <param name="colCount">
+        /// The number of columns.
+        /// </param>
+        /// <param name="func">
+        /// The function which generates the values for the new matrix.
+        /// The row and column indices are given as arguments of the function.
+        /// </param>
+        /// <returns>
+        /// The new matrix generated with the function.
+        /// </returns>
+        public static Mat<T> FromFunc<T>(int rowCount, int colCount, Func<int, int, T> func) where T : unmanaged, INumberBase<T>
+        {
+            if (rowCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "The number of rows must be greater than zero.");
+            }
+
+            if (colCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(colCount), "The number of columns must be greater than zero.");
+            }
+
+            ThrowHelper.ThrowIfNull(func, nameof(func));
+
+            var mat = new Mat<T>(rowCount, colCount);
+            var span = mat.Memory.Span;
+            var position = 0;
+            for (var col = 0; col < colCount; col++)
+            {
+                for (var row = 0; row < rowCount; row++)
+                {
+                    span[position++] = func(row, col);
+                }
+            }
+            return mat;
+        }
+
+        /// <summary>
         /// Creates an identity matrix.
         /// </summary>
         /// <typeparam name="T">
@@ -24,6 +105,11 @@ namespace NumFlat
         /// </returns>
         public static Mat<T> Identity<T>(int count) where T : unmanaged, INumberBase<T>
         {
+            if (count <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "The order of the matrix must be greater than zero.");
+            }
+
             var identity = new Mat<T>(count, count);
             for (var i = 0; i < count; i++)
             {
@@ -49,6 +135,16 @@ namespace NumFlat
         /// </returns>
         public static Mat<T> Identity<T>(int rowCount, int colCount) where T : unmanaged, INumberBase<T>
         {
+            if (rowCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "The number of rows must be greater than zero.");
+            }
+
+            if (colCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(colCount), "The number of columns must be greater than zero.");
+            }
+
             var identity = new Mat<T>(rowCount, colCount);
             var min = Math.Min(rowCount, colCount);
             for (var i = 0; i < min; i++)

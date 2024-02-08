@@ -9,6 +9,45 @@ namespace NumFlatTest
 {
     public class MatrixBuilder_Test
     {
+        [TestCase(1, 1, 555)]
+        [TestCase(2, 2, 666)]
+        [TestCase(2, 3, 777)]
+        [TestCase(3, 2, 888)]
+        [TestCase(5, 3, 999)]
+        [TestCase(3, 5, 101010)]
+        public void Fill(int rowCOunt, int colCount, int value)
+        {
+            var mat = MatrixBuilder.Fill(rowCOunt, colCount, value);
+
+            for (var row = 0; row < rowCOunt; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(mat[row, col], Is.EqualTo(value));
+                }
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        [TestCase(3, 2)]
+        [TestCase(5, 3)]
+        [TestCase(3, 5)]
+        public void FromFunc(int rowCOunt, int colCount)
+        {
+            var mat = MatrixBuilder.FromFunc(rowCOunt, colCount, (row, col) => 10 * row + col);
+
+            for (var row = 0; row < rowCOunt; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    var value = 10 * row + col;
+                    Assert.That(mat[row, col], Is.EqualTo(value));
+                }
+            }
+        }
+
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(2)]

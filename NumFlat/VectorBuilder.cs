@@ -36,6 +36,67 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Creates a new vector which is filled with a specified value.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="count">
+        /// The length of the vector.
+        /// </param>
+        /// <param name="value">
+        /// The value to fill the new vector.
+        /// </param>
+        /// <returns>
+        /// The new vector filled with the specified value.
+        /// </returns>
+        public static Vec<T> Fill<T>(int count, T value) where T : unmanaged, INumberBase<T>
+        {
+            if (count <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "The vector length must be greater than zero.");
+            }
+
+            var vec = new Vec<T>(count);
+            vec.Fill(value);
+            return vec;
+        }
+
+        /// <summary>
+        /// Creates a new vector from a specified function.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="count">
+        /// The length of the vector.
+        /// </param>
+        /// <param name="func">
+        /// The function which generates the values for the new vector.
+        /// The element index is given as an argument of the function.
+        /// </param>
+        /// <returns>
+        /// The new vector filled with the specified value.
+        /// </returns>
+        public static Vec<T> FromFunc<T>(int count, Func<int, T> func) where T : unmanaged, INumberBase<T>
+        {
+            if (count <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "The vector length must be greater than zero.");
+            }
+
+            ThrowHelper.ThrowIfNull(func, nameof(func));
+
+            var vec = new Vec<T>(count);
+            var span = vec.Memory.Span;
+            for (var i = 0; i < span.Length; i++)
+            {
+                span[i] = func(i);
+            }
+            return vec;
+        }
+
+        /// <summary>
         /// Creates a new vector from the specified elements.
         /// </summary>
         /// <typeparam name="T">
