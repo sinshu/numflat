@@ -13,6 +13,10 @@ namespace NumFlatTest
 {
     public class MathLinq_Double_Test
     {
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
         [TestCase(3, 1, 1)]
         [TestCase(3, 1, 4)]
         [TestCase(3, 10, 1)]
@@ -31,6 +35,8 @@ namespace NumFlatTest
             TestVector.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
         [TestCase(3, 1)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
@@ -42,13 +48,17 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1, 0, 1, 1)]
+        [TestCase(1, 1, 0, 3, 2)]
+        [TestCase(1, 2, 0, 1, 1)]
+        [TestCase(1, 2, 0, 2, 3)]
         [TestCase(3, 1, 0, 1, 3)]
         [TestCase(3, 1, 0, 2, 4)]
-        [TestCase(3, 10, 1, 1, 3)]
-        [TestCase(3, 10, 1, 4, 7)]
-        [TestCase(5, 20, 0, 1, 5)]
+        [TestCase(3, 10, 1, 1, 1)]
+        [TestCase(3, 10, 1, 4, 3)]
+        [TestCase(5, 20, 0, 1, 1)]
         [TestCase(5, 20, 1, 5, 6)]
-        public void Variance(int dim, int count, int ddot, int meanStride, int covStride)
+        public void Variance(int dim, int count, int ddot, int meanStride, int varStride)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetVar(data, ddot);
@@ -56,7 +66,7 @@ namespace NumFlatTest
             var mean = TestVector.RandomDouble(0, dim, meanStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), mean);
 
-            var actual = TestVector.RandomDouble(0, dim, covStride);
+            var actual = TestVector.RandomDouble(0, dim, varStride);
             using (mean.EnsureUnchanged())
             {
                 MathLinq.Variance(data.Select(x => x.ToVector()), mean, actual, ddot);
@@ -68,6 +78,9 @@ namespace NumFlatTest
             TestVector.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1, 0)]
+        [TestCase(1, 3, 0)]
+        [TestCase(1, 3, 1)]
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
@@ -82,6 +95,8 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
         }
 
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
@@ -96,6 +111,12 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedCov, result.Variance, 1.0E-12);
         }
 
+        [TestCase(1, 1, 0, 1, 1)]
+        [TestCase(1, 1, 0, 3, 3)]
+        [TestCase(1, 3, 0, 1, 1)]
+        [TestCase(1, 3, 0, 3, 3)]
+        [TestCase(1, 3, 1, 1, 1)]
+        [TestCase(1, 3, 1, 3, 3)]
         [TestCase(3, 1, 0, 1, 3)]
         [TestCase(3, 1, 0, 2, 4)]
         [TestCase(3, 10, 1, 1, 3)]
@@ -122,6 +143,8 @@ namespace NumFlatTest
             TestMatrix.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1, 0)]
+        [TestCase(1, 2, 1)]
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
@@ -136,6 +159,7 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedCov, result.Covariance, 1.0E-12);
         }
 
+        [TestCase(1, 2)]
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
@@ -150,6 +174,8 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedCov, result.Covariance, 1.0E-12);
         }
 
+        [TestCase(1, 1, 0)]
+        [TestCase(1, 2, 1)]
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
@@ -161,6 +187,7 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 2)]
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
@@ -172,6 +199,8 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1, 0)]
+        [TestCase(1, 2, 1)]
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
@@ -183,6 +212,7 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 2)]
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
