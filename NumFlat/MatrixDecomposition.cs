@@ -376,5 +376,89 @@ namespace NumFlat
 
             return new SingularValueDecompositionComplex(a);
         }
+
+        /// <summary>
+        /// Computes the generalized engen value decomposition (GEVD).
+        /// </summary>
+        /// <param name="a">
+        /// The source matrix A.
+        /// </param>
+        /// <param name="b">
+        /// The source matrix B.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="GeneralizedEigenValueDecompositionSingle"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the GEVD.
+        /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
+        public static GeneralizedEigenValueDecompositionSingle Gevd(in this Mat<float> a, in Mat<float> b)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            return new GeneralizedEigenValueDecompositionSingle(a, b);
+        }
+
+        /// <summary>
+        /// Computes the generalized engen value decomposition (GEVD).
+        /// </summary>
+        /// <param name="a">
+        /// The source matrix A.
+        /// </param>
+        /// <param name="b">
+        /// The source matrix B.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="GeneralizedEigenValueDecompositionDouble"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the GEVD.
+        /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
+        public static GeneralizedEigenValueDecompositionDouble Gevd(in this Mat<double> a, in Mat<double> b)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            return new GeneralizedEigenValueDecompositionDouble(a, b);
+        }
+
+        /// <summary>
+        /// Computes the generalized engen value decomposition (GEVD).
+        /// </summary>
+        /// <param name="a">
+        /// The source matrix A.
+        /// </param>
+        /// <param name="b">
+        /// The source matrix B.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="GeneralizedEigenValueDecompositionComplex"/>.
+        /// </returns>
+        /// <exception cref="LapackException">
+        /// Failed to compute the GEVD.
+        /// </exception>
+        /// <remarks>
+        /// The matrix to be decomposed must be Hermitian symmetric.
+        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
+        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// </remarks>
+        public static GeneralizedEigenValueDecompositionComplex Gevd(in this Mat<Complex> a, in Mat<Complex> b)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            return new GeneralizedEigenValueDecompositionComplex(a, b);
+        }
     }
 }
