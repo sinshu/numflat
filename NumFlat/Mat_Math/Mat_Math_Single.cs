@@ -130,7 +130,7 @@ namespace NumFlat
         /// <returns>
         /// The determinant of the matrix.
         /// </returns>
-        public static unsafe float Determinant(in Mat<float> x)
+        public static unsafe float Determinant(in this Mat<float> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 

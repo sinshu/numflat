@@ -11,6 +11,7 @@ namespace NumFlat
     {
         private Mat<double> l;
         private Mat<double> u;
+        private int[] pivot;
         private int[] permutation;
 
         /// <summary>
@@ -30,14 +31,13 @@ namespace NumFlat
 
             var l = new Mat<double>(a.RowCount, min);
             var u = new Mat<double>(min, a.ColCount);
+            var pivot = new int[min];
 
-            using var upiv = MemoryPool<int>.Shared.Rent(min);
-            var piv = upiv.Memory.Span.Slice(0, min);
-
-            Decompose(a, l, u, piv);
+            Decompose(a, l, u, pivot);
 
             this.l = l;
             this.u = u;
+            this.pivot = pivot;
 
             permutation = new int[a.RowCount];
             for (var i = 0; i < a.RowCount; i++)
@@ -46,7 +46,7 @@ namespace NumFlat
             }
             for (var i = 0; i < min; i++)
             {
-                var j = piv[i];
+                var j = pivot[i];
                 (permutation[i], permutation[j]) = (permutation[j], permutation[i]);
             }
         }
@@ -232,6 +232,29 @@ namespace NumFlat
             }
 
             return p;
+        }
+
+        /// <summary>
+        /// Computes the determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The determinant of the source matrix.
+        /// </returns>
+        public double Determinant()
+        {
+            var determinant = 1.0;
+            for (var i = 0; i < pivot.Length; i++)
+            {
+                if (pivot[i] == i)
+                {
+                    determinant *= u[i, i];
+                }
+                else
+                {
+                    determinant *= -u[i, i];
+                }
+            }
+            return determinant;
         }
 
         private static void ExtractL(in Mat<double> source, in Mat<double> l)

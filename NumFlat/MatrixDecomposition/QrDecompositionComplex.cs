@@ -158,7 +158,7 @@ namespace NumFlat
         /// <returns>
         /// The solution vector.
         /// </returns>
-        public unsafe Vec<Complex> Solve(in Vec<Complex> b)
+        public Vec<Complex> Solve(in Vec<Complex> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
 
@@ -170,6 +170,38 @@ namespace NumFlat
             var x = new Vec<Complex>(r.RowCount);
             Solve(b, x);
             return x;
+        }
+
+        /// <summary>
+        /// Computes the absolute determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The absolute determinant of the source matrix.
+        /// </returns>
+        public double Determinant()
+        {
+            var determinant = 1.0;
+            for (var i = 0; i < r.RowCount; i++)
+            {
+                determinant *= r[i, i].Magnitude;
+            }
+            return determinant;
+        }
+
+        /// <summary>
+        /// Computes the log absolute determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The log absolute determinant of the source matrix.
+        /// </returns>
+        public double LogDeterminant()
+        {
+            var logDeterminant = 0.0;
+            for (var i = 0; i < r.RowCount; i++)
+            {
+                logDeterminant += Math.Log(r[i, i].Magnitude);
+            }
+            return logDeterminant;
         }
 
         /// <summary>

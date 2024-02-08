@@ -121,5 +121,19 @@ namespace NumFlatTest
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Determinant(int n)
+        {
+            var a = TestMatrix.RandomComplex(42, n, n, n);
+            var actual = a.Lu().Determinant();
+            var expected = a.Determinant();
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
     }
 }

@@ -158,7 +158,7 @@ namespace NumFlat
         /// <returns>
         /// The determinant of the matrix.
         /// </returns>
-        public static unsafe Complex Determinant(in Mat<Complex> x)
+        public static unsafe Complex Determinant(in this Mat<Complex> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
