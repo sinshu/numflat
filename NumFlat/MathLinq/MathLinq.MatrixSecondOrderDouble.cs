@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace NumFlat
 {
@@ -185,6 +186,53 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the mean matrix and pointwise standard deviation from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The mean matrix and pointwise standard deviation.
+        /// </returns>
+        public static (Mat<double> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<double>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            var (mean, tmp) = xs.MeanAndVariance(ddof);
+            Debug.Assert(tmp.Stride == tmp.RowCount);
+            var span = tmp.Memory.Span;
+            for (var i = 0; i < span.Length; i++)
+            {
+                span[i] = Math.Sqrt(span[i]);
+            }
+            return (mean, tmp);
+        }
+
+        /// <summary>
+        /// Computes the mean matrix and pointwise standard deviation from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <returns>
+        /// The mean matrix and pointwise standard deviation.
+        /// </returns>
+        public static (Mat<double> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndStandardDeviation(xs, 1);
+        }
+
+        /// <summary>
         /// Computes the pointwise variance from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
@@ -217,6 +265,41 @@ namespace NumFlat
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
             return MeanAndVariance(xs, 1).Variance;
+        }
+
+        /// <summary>
+        /// Computes the pointwise standard deviation from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The pointwise standard deviation.
+        /// </returns>
+        public static Mat<double> StandardDeviation(this IEnumerable<Mat<double>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndStandardDeviation(xs, ddof).StandardDeviation;
+        }
+
+        /// <summary>
+        /// Computes the pointwise standard deviation from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <returns>
+        /// The pointwise standard deviation.
+        /// </returns>
+        public static Mat<double> StandardDeviation(this IEnumerable<Mat<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndStandardDeviation(xs).StandardDeviation;
         }
 
         private static void AccumulateVariance(in Mat<double> x, in Mat<double> mean, in Mat<double> destination)

@@ -103,6 +103,35 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
+        public void MeanAndStandardDeviatione_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedStd = MathNetStd(data, ddot);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation(ddot);
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void MeanAndStandardDeviation_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedStd = MathNetStd(data, 1);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation();
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
         public void Variance_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
@@ -119,6 +148,29 @@ namespace NumFlatTest
             var data = CreateData(42, rowCount, colCount, matCount);
             var expected = MathNetVar(data, 1);
             var actual = data.Select(x => x.ToArray().ToMatrix()).Variance();
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
+        public void StandardDeviation_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetStd(data, ddot);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation(ddot);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void StandardDeviation_ExtensionMethod_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetStd(data, 1);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation();
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -151,6 +203,33 @@ namespace NumFlatTest
                     else if (ddot == 0)
                     {
                         result[row, col] = xs.Select(x => x[row, col]).PopulationVariance();
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static MMat MathNetStd(IEnumerable<MMat> xs, int ddot)
+        {
+            var mean = MathNetMean(xs);
+
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(mean.RowCount, mean.ColumnCount);
+            for (var row = 0; row < result.RowCount; row++)
+            {
+                for (var col = 0; col < result.ColumnCount; col++)
+                {
+                    if (ddot == 1)
+                    {
+                        result[row, col] = xs.Select(x => x[row, col]).StandardDeviation();
+                    }
+                    else if (ddot == 0)
+                    {
+                        result[row, col] = xs.Select(x => x[row, col]).PopulationStandardDeviation();
                     }
                     else
                     {

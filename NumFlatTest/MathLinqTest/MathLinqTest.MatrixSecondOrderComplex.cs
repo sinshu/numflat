@@ -46,6 +46,134 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1, 1, 0, 2, 2)]
+        [TestCase(1, 1, 2, 1, 2, 2)]
+        [TestCase(2, 3, 3, 1, 4, 4)]
+        [TestCase(4, 3, 5, 0, 6, 6)]
+        public void Variance(int rowCount, int colCount, int matCount, int ddot, int meanStride, int varStride)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetVar(data, ddot);
+
+            var mean = TestMatrix.RandomComplex(0, rowCount, colCount, meanStride);
+            MathLinq.Mean(data.Select(x => x.ToArray().ToMatrix()), mean);
+
+            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, varStride);
+            using (mean.EnsureUnchanged())
+            {
+                MathLinq.Variance(data.Select(x => x.ToArray().ToMatrix()), mean, actual, ddot);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestMatrix.FailIfOutOfRangeWrite(mean);
+            TestMatrix.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
+        public void MeanAndVariance_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedVar = MathNetVar(data, ddot);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndVariance(ddot);
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void MeanAndVariance_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedVar = MathNetVar(data, 1);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndVariance();
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
+        public void MeanAndStandardDeviatione_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedStd = MathNetStd(data, ddot);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation(ddot);
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void MeanAndStandardDeviation_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expectedMean = MathNetMean(data);
+            var expectedStd = MathNetStd(data, 1);
+
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation();
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
+        public void Variance_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetVar(data, ddot);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).Variance(ddot);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void Variance_ExtensionMethod_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetVar(data, 1);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).Variance();
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 1, 0)]
+        [TestCase(1, 1, 2, 1)]
+        [TestCase(2, 3, 3, 1)]
+        [TestCase(4, 3, 5, 0)]
+        public void StandardDeviation_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetStd(data, ddot);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation(ddot);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 3, 5)]
+        public void StandardDeviation_ExtensionMethod_Arg0(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var expected = MathNetStd(data, 1);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation();
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
         private static MMat MathNetMean(IEnumerable<MMat> xs)
         {
             var first = xs.First();
@@ -79,6 +207,42 @@ namespace NumFlatTest
             }
 
             return data.ToArray();
+        }
+
+        private static Mat<double> MathNetVar(IEnumerable<MMat> xs, int ddof)
+        {
+            var mean = MathNetMean(xs);
+            var centered = xs.Select(x => x - mean).ToArray();
+            var n = centered.Length;
+
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(mean.RowCount, mean.ColumnCount);
+            for (var row = 0; row < result.RowCount; row++)
+            {
+                for (var col = 0; col < result.ColumnCount; col++)
+                {
+                    result[row, col] = centered.Select(x => x[row, col].MagnitudeSquared()).Sum() / (n - ddof);
+                }
+            }
+
+            return result.ToArray().ToMatrix();
+        }
+
+        private static Mat<double> MathNetStd(IEnumerable<MMat> xs, int ddof)
+        {
+            var mean = MathNetMean(xs);
+            var centered = xs.Select(x => x - mean).ToArray();
+            var n = centered.Length;
+
+            var result = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(mean.RowCount, mean.ColumnCount);
+            for (var row = 0; row < result.RowCount; row++)
+            {
+                for (var col = 0; col < result.ColumnCount; col++)
+                {
+                    result[row, col] = Math.Sqrt(centered.Select(x => x[row, col].MagnitudeSquared()).Sum() / (n - ddof));
+                }
+            }
+
+            return result.ToArray().ToMatrix();
         }
     }
 }
