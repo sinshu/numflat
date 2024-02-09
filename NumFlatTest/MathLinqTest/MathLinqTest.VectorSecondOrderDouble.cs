@@ -175,6 +175,39 @@ namespace NumFlatTest
         }
 
         [TestCase(1, 1, 0)]
+        [TestCase(1, 3, 0)]
+        [TestCase(1, 3, 1)]
+        [TestCase(3, 1, 0)]
+        [TestCase(3, 10, 1)]
+        [TestCase(5, 20, 0)]
+        public void MeanAndStandardDeviation_Arg1(int dim, int count, int ddot)
+        {
+            var data = CreateData(42, dim, count);
+            var expectedMean = MathNetMean(data);
+            var expectedVar = MathNetStd(data, ddot);
+
+            var result = data.Select(x => x.ToVector()).MeanAndStandardDeviation(ddot);
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedVar, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(3, 2)]
+        [TestCase(3, 10)]
+        [TestCase(5, 20)]
+        public void MeanAndStandardDeviation_Arg0(int dim, int count)
+        {
+            var data = CreateData(42, dim, count);
+            var expectedMean = MathNetMean(data);
+            var expectedCov = MathNetStd(data, 1);
+
+            var result = data.Select(x => x.ToVector()).MeanAndStandardDeviation();
+            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedCov, result.StandardDeviation, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 0)]
         [TestCase(1, 2, 1)]
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]

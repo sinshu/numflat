@@ -311,6 +311,53 @@ namespace NumFlat
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
+        /// The mean vector and pointwise variance.
+        /// </returns>
+        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            var (mean, tmp) = xs.MeanAndVariance(ddof);
+            Debug.Assert(tmp.Stride == 1);
+            var span = tmp.Memory.Span;
+            for (var i = 0; i < span.Length; i++)
+            {
+                span[i] = Math.Sqrt(span[i]);
+            }
+            return (mean, tmp);
+        }
+
+        /// <summary>
+        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <returns>
+        /// The mean vector and pointwise variance.
+        /// </returns>
+        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndStandardDeviation(xs, 1);
+        }
+
+        /// <summary>
+        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
         /// The pointwise variance.
         /// </returns>
         public static Vec<double> Variance(this IEnumerable<Vec<double>> xs, int ddof)
@@ -387,14 +434,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            var variance = MeanAndVariance(xs, ddof).Variance;
-            Debug.Assert(variance.Stride == 1);
-            var span = variance.Memory.Span;
-            for (var i = 0; i < span.Length; i++)
-            {
-                span[i] = Math.Sqrt(span[i]);
-            }
-            return variance;
+            return MeanAndStandardDeviation(xs, ddof).StandardDeviation;
         }
 
         /// <summary>
@@ -410,14 +450,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            var variance = MeanAndVariance(xs, 1).Variance;
-            Debug.Assert(variance.Stride == 1);
-            var span = variance.Memory.Span;
-            for (var i = 0; i < span.Length; i++)
-            {
-                span[i] = Math.Sqrt(span[i]);
-            }
-            return variance;
+            return MeanAndStandardDeviation(xs).StandardDeviation;
         }
 
         private static void AccumulateVariance(in Vec<double> x, in Vec<double> mean, in Vec<double> destination)
