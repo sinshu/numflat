@@ -197,7 +197,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-multiplication of matrices, X .* Y.
+        /// Computes a pointwise multiplication of matrices, X .* Y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -209,7 +209,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination the pointwise-multiplication.
+        /// The destination the pointwise multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -247,7 +247,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-division of matrices, X ./ Y.
+        /// Computes a pointwise division of matrices, X ./ Y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -259,7 +259,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the pointwise-division.
+        /// The destination of the pointwise division.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.

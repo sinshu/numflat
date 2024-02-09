@@ -191,7 +191,7 @@ namespace NumFlatTest
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(5)]
-        public void ToDiagonalMatrix_NoArg(int count)
+        public void ToDiagonalMatrix_Arg0(int count)
         {
             var random = new Random(42);
 
@@ -224,7 +224,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3)]
         [TestCase(4, 5, 2)]
         [TestCase(4, 3, 0)]
-        public void ToDiagonalMatrix_OneArg(int rowCount, int colCount, int elementCount)
+        public void ToDiagonalMatrix_Arg1(int rowCount, int colCount, int elementCount)
         {
             var random = new Random(42);
 

@@ -9,7 +9,7 @@ namespace NumFlat
     public static class VectorExtension
     {
         /// <summary>
-        /// Computes a pointwise-multiplication of vectors, x .* y.
+        /// Computes a pointwise multiplication of vectors, x .* y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -21,7 +21,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The pointwise-multiplication.
+        /// The pointwise multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.
@@ -39,7 +39,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-division of vectors, x .* y.
+        /// Computes a pointwise division of vectors, x .* y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -51,7 +51,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <returns>
-        /// The pointwise-division.
+        /// The pointwise division.
         /// </returns>
         /// <remarks>
         /// This method allocates a new vector which is independent from the original vectors.

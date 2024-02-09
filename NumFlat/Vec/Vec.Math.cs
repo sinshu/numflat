@@ -162,7 +162,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-multiplication of vectors, x .* y.
+        /// Computes a pointwise multiplication of vectors, x .* y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -174,7 +174,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the the pointwise-multiplication.
+        /// The destination of the the pointwise multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -202,7 +202,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-division of vectors, x ./ y.
+        /// Computes a pointwise division of vectors, x ./ y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -214,7 +214,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the pointwise-division.
+        /// The destination of the pointwise division.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.

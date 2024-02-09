@@ -9,7 +9,7 @@ namespace NumFlat
     public static class MatrixExtension
     {
         /// <summary>
-        /// Computes a pointwise-multiplication of matrices, X .* Y.
+        /// Computes a pointwise multiplication of matrices, X .* Y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -21,7 +21,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The pointwise-multiplication.
+        /// The pointwise multiplication.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.
@@ -39,7 +39,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise-division of matrices, X ./ Y.
+        /// Computes a pointwise division of matrices, X ./ Y.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -51,7 +51,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <returns>
-        /// The pointwise-division.
+        /// The pointwise division.
         /// </returns>
         /// <remarks>
         /// This method allocates a new matrix which is independent from the original matrix.

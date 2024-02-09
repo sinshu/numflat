@@ -84,7 +84,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void MeanAndVariance_OneArg(int dim, int count, int ddot)
+        public void MeanAndVariance_Arg1(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
@@ -100,7 +100,7 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void MeanAndVariance_NoArg(int dim, int count)
+        public void MeanAndVariance_Arg0(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
@@ -148,7 +148,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void MeanAndCovariance_OneArg(int dim, int count, int ddot)
+        public void MeanAndCovariance_Arg1(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
@@ -163,7 +163,7 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void MeanAndCovariance_NoArg(int dim, int count)
+        public void MeanAndCovariance_Arg0(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
@@ -179,7 +179,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void Variance_ExtensionMethod_OneArg(int dim, int count, int ddot)
+        public void Variance_ExtensionMethod_Arg1(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetVar(data, ddot);
@@ -191,7 +191,7 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void Variance_ExtensionMethod_NoArg(int dim, int count)
+        public void Variance_ExtensionMethod_Arg0(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetVar(data, 1);
@@ -204,7 +204,7 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void Covariance_ExtensionMethod_OneArg(int dim, int count, int ddot)
+        public void Covariance_ExtensionMethod_Arg1(int dim, int count, int ddot)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
@@ -216,11 +216,36 @@ namespace NumFlatTest
         [TestCase(3, 2)]
         [TestCase(3, 10)]
         [TestCase(5, 20)]
-        public void Covariance_ExtensionMethod_NoArg(int dim, int count)
+        public void Covariance_ExtensionMethod_Arg0(int dim, int count)
         {
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, 1);
             var actual = data.Select(x => x.ToVector()).Covariance();
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 1, 0)]
+        [TestCase(1, 2, 1)]
+        [TestCase(3, 1, 0)]
+        [TestCase(3, 10, 1)]
+        [TestCase(5, 20, 0)]
+        public void StandardDeviation_ExtensionMethod_Arg1(int dim, int count, int ddot)
+        {
+            var data = CreateData(42, dim, count);
+            var expected = MathNetStd(data, ddot);
+            var actual = data.Select(x => x.ToVector()).StandardDeviation(ddot);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
+        [TestCase(1, 2)]
+        [TestCase(3, 2)]
+        [TestCase(3, 10)]
+        [TestCase(5, 20)]
+        public void StandardDeviation_ExtensionMethod_Arg0(int dim, int count)
+        {
+            var data = CreateData(42, dim, count);
+            var expected = MathNetStd(data, 1);
+            var actual = data.Select(x => x.ToVector()).StandardDeviation();
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -268,6 +293,25 @@ namespace NumFlatTest
                 count++;
             }
             return sum / (count - ddot);
+        }
+
+        private static MVec MathNetStd(IEnumerable<MVec> xs, int ddot)
+        {
+            var mean = MathNetMean(xs);
+            if (ddot == 1)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).StandardDeviation());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else if (ddot == 0)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).PopulationStandardDeviation());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
 
         private static MVec[] CreateData(int seed, int dim, int count)
