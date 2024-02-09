@@ -256,5 +256,77 @@ namespace NumFlatTest
 
             NumAssert.AreSame(expected, actual, 0);
         }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(5, 2)]
+        [TestCase(7, 3)]
+        public void NormalizeSingle(int count, int xStride)
+        {
+            var x = TestVector.RandomSingle(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(2);
+
+            Vec<float> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize();
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(5, 2)]
+        [TestCase(7, 3)]
+        public void NormalizeDouble(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(2);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize();
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(5, 2)]
+        [TestCase(7, 3)]
+        public void NormalizeComplex(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(2);
+
+            Vec<Complex> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize();
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }
