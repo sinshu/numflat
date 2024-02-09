@@ -199,14 +199,22 @@ namespace NumFlat
                     }
 
                     Vec.Sub(x, mean, centered);
-                    Blas.Zgerc(
+                    Blas.Zher(
                         Order.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        &one,
-                        pc, centered.Stride,
+                        Uplo.Lower,
+                        destination.RowCount,
+                        1.0,
                         pc, centered.Stride,
                         pd, destination.Stride);
                     count++;
+                }
+            }
+
+            for (var col = 1; col < destination.ColCount; col++)
+            {
+                for (var row = 0; row < col; row++)
+                {
+                    destination[row, col] = destination[col, row].Conjugate();
                 }
             }
 
