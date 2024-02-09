@@ -80,12 +80,171 @@ namespace NumFlat
 
             if (count == 0)
             {
-                throw new ArgumentException("The sequence must contain at least one vector.");
+                throw new ArgumentException("The sequence must contain at least one matrix.");
             }
 
             Mat.Div(destination, count, destination);
 
             return destination;
+        }
+
+        /// <summary>
+        /// Computes the pointwise variance from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <param name="mean">
+        /// The pre-computed mean matrix of the source matrices.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise variance.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        public static void Variance(IEnumerable<Mat<double>> xs, in Mat<double> mean, in Mat<double> destination, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.RowCount != mean.RowCount || destination.ColCount != mean.ColCount)
+            {
+                throw new ArgumentException("The dimensions of the destination must match the dimensions of the mean matrix.");
+            }
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            destination.Clear();
+            var count = 0;
+
+            foreach (var x in xs)
+            {
+                if (x.RowCount != mean.RowCount || x.ColCount != mean.ColCount)
+                {
+                    throw new ArgumentException("All the source matrices must have the same dimensions as the mean matrix.");
+                }
+
+                AccumulateVariance(x, mean, destination);
+                count++;
+            }
+
+            if (count - ddof <= 0)
+            {
+                throw new ArgumentException("The number of source matrices is not sufficient.");
+            }
+
+            Mat.Div(destination, count - ddof, destination);
+        }
+
+        /// <summary>
+        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The mean matrix and pointwise variance.
+        /// </returns>
+        public static (Mat<double> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<double>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (ddof < 0)
+            {
+                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+            }
+
+            var mean = xs.Mean();
+            var variance = new Mat<double>(mean.RowCount, mean.ColCount);
+            Variance(xs, mean, variance, ddof);
+            return (mean, variance);
+        }
+
+        /// <summary>
+        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <returns>
+        /// The mean matrix and pointwise variance.
+        /// </returns>
+        public static (Mat<double> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, 1);
+        }
+
+        /// <summary>
+        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The pointwise variance.
+        /// </returns>
+        public static Mat<double> Variance(this IEnumerable<Mat<double>> xs, int ddof)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, ddof).Variance;
+        }
+
+        /// <summary>
+        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// </summary>
+        /// <param name="xs">
+        /// The source matrices.
+        /// </param>
+        /// <returns>
+        /// The pointwise variance.
+        /// </returns>
+        public static Mat<double> Variance(this IEnumerable<Mat<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return MeanAndVariance(xs, 1).Variance;
+        }
+
+        private static void AccumulateVariance(in Mat<double> x, in Mat<double> mean, in Mat<double> destination)
+        {
+            var sx = x.Memory.Span;
+            var sm = mean.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var om = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pm = om;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    var delta = sx[px] - sm[pm];
+                    sd[pd] += delta * delta;
+                    px++;
+                    pm++;
+                    pd++;
+                }
+                ox += x.Stride;
+                om += mean.Stride;
+                od += destination.Stride;
+            }
         }
     }
 }
