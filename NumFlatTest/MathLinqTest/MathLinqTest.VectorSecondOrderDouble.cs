@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using MathNet.Numerics.Statistics;
 using NUnit.Framework;
 using NumFlat;
 
-using MVec = MathNet.Numerics.LinearAlgebra.Vector<System.Numerics.Complex>;
-using MMat = MathNet.Numerics.LinearAlgebra.Matrix<System.Numerics.Complex>;
+using MVec = MathNet.Numerics.LinearAlgebra.Vector<double>;
+using MMat = MathNet.Numerics.LinearAlgebra.Matrix<double>;
 
 namespace NumFlatTest
 {
-    public class MathLinqTest_SecondOrderComplex
+    public class MathLinqTest_VectorSecondOrderDouble
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 1, 3)]
@@ -26,7 +27,7 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetMean(data);
 
-            var actual = TestVector.RandomComplex(0, dim, dstStride);
+            var actual = TestVector.RandomDouble(0, dim, dstStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), actual);
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
@@ -62,7 +63,7 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetVar(data, ddot);
 
-            var mean = TestVector.RandomComplex(0, dim, meanStride);
+            var mean = TestVector.RandomDouble(0, dim, meanStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), mean);
 
             var actual = TestVector.RandomDouble(0, dim, varStride);
@@ -103,11 +104,11 @@ namespace NumFlatTest
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
-            var expectedVar = MathNetVar(data, 1);
+            var expectedCov = MathNetVar(data, 1);
 
             var result = data.Select(x => x.ToVector()).MeanAndVariance();
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
-            NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
+            NumAssert.AreSame(expectedCov, result.Variance, 1.0E-12);
         }
 
         [TestCase(1, 1, 0, 1, 1)]
@@ -127,10 +128,10 @@ namespace NumFlatTest
             var data = CreateData(42, dim, count);
             var expected = MathNetCov(data, ddot);
 
-            var mean = TestVector.RandomComplex(0, dim, meanStride);
+            var mean = TestVector.RandomDouble(0, dim, meanStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), mean);
 
-            var actual = TestMatrix.RandomComplex(0, dim, dim, covStride);
+            var actual = TestMatrix.RandomDouble(0, dim, dim, covStride);
             using (mean.EnsureUnchanged())
             {
                 MathLinq.Covariance(data.Select(x => x.ToVector()), mean, actual, ddot);
@@ -250,7 +251,7 @@ namespace NumFlatTest
 
         private static MVec MathNetMean(IEnumerable<MVec> xs)
         {
-            MVec sum = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(xs.First().Count);
+            MVec sum = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(xs.First().Count);
             var count = 0;
             foreach (var x in xs)
             {
@@ -260,33 +261,57 @@ namespace NumFlatTest
             return sum / count;
         }
 
-        private static Vec<double> MathNetVar(IEnumerable<MVec> xs, int ddot)
+        private static MVec MathNetVar(IEnumerable<MVec> xs, int ddot)
         {
             var mean = MathNetMean(xs);
-            var cov = MathNetCov(xs, ddot);
-            return Enumerable.Range(0, mean.Count).Select(i=>cov[i,i].Real).ToVector();
+            if (ddot == 1)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).Variance());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else if (ddot == 0)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).PopulationVariance());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
 
         private static MMat MathNetCov(IEnumerable<MVec> xs, int ddot)
         {
             var mean = MathNetMean(xs);
 
-            MMat sum = new MathNet.Numerics.LinearAlgebra.Complex.DenseMatrix(xs.First().Count);
+            MMat sum = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(xs.First().Count);
             var count = 0;
             foreach (var x in xs)
             {
                 var d = x - mean;
-                sum += d.OuterProduct(d.Conjugate());
+                sum += d.OuterProduct(d);
                 count++;
             }
             return sum / (count - ddot);
         }
 
-        private static Vec<double> MathNetStd(IEnumerable<MVec> xs, int ddot)
+        private static MVec MathNetStd(IEnumerable<MVec> xs, int ddot)
         {
             var mean = MathNetMean(xs);
-            var cov = MathNetCov(xs, ddot);
-            return Enumerable.Range(0, mean.Count).Select(i => Math.Sqrt(cov[i, i].Real)).ToVector();
+            if (ddot == 1)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).StandardDeviation());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else if (ddot == 0)
+            {
+                var variance = Enumerable.Range(0, mean.Count).Select(i => xs.Select(x => x[i]).PopulationStandardDeviation());
+                return MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfEnumerable(variance);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
 
         private static MVec[] CreateData(int seed, int dim, int count)
@@ -297,8 +322,8 @@ namespace NumFlatTest
 
             for (var i = 0; i < count; i++)
             {
-                var elements = Enumerable.Range(0, dim).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
-                var x = new MathNet.Numerics.LinearAlgebra.Complex.DenseVector(elements);
+                var elements = Enumerable.Range(0, dim).Select(i => random.NextDouble()).ToArray();
+                var x = new MathNet.Numerics.LinearAlgebra.Double.DenseVector(elements);
                 data.Add(x);
             }
 

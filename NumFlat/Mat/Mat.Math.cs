@@ -362,7 +362,7 @@ namespace NumFlat
 
             if (x.RowCount != x.ColCount)
             {
-                throw new ArgumentException("'x' must be a square matrix.");
+                throw new ArgumentException("The matrix must be a square matrix.");
             }
 
             var trace = T.Zero;
@@ -402,7 +402,7 @@ namespace NumFlat
 
             if (source.RowCount != destination.RowCount || source.ColCount != destination.ColCount)
             {
-                throw new ArgumentException("The matrices must be the same dimensions.");
+                throw new ArgumentException("The matrices must have the same dimensions.");
             }
 
             var ss = source.Memory.Span;
