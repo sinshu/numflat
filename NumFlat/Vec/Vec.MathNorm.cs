@@ -15,7 +15,7 @@ namespace NumFlat
         /// <returns>
         /// The L2 norm.
         /// </returns>
-        public static unsafe float L2Norm(in this Vec<float> x)
+        public static unsafe float Norm(in this Vec<float> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -34,7 +34,7 @@ namespace NumFlat
         /// <returns>
         /// The L2 norm.
         /// </returns>
-        public static unsafe double L2Norm(in this Vec<double> x)
+        public static unsafe double Norm(in this Vec<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -53,7 +53,7 @@ namespace NumFlat
         /// <returns>
         /// The L2 norm.
         /// </returns>
-        public static unsafe double L2Norm(in this Vec<Complex> x)
+        public static unsafe double Norm(in this Vec<Complex> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
@@ -61,6 +61,93 @@ namespace NumFlat
             {
                 return Blas.Dznrm2(x.Count, px, x.Stride);
             }
+        }
+
+        /// <summary>
+        /// Computes the Lp norm.
+        /// </summary>
+        /// <param name="x">
+        /// The targer vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The Lp norm.
+        /// </returns>
+        public static float Norm(in this Vec<float> x, float p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
+            var norm = 0.0F;
+            foreach (var value in x)
+            {
+                norm += MathF.Pow(MathF.Abs(value), p);
+            }
+            return MathF.Pow(norm, 1.0F / p);
+        }
+
+        /// <summary>
+        /// Computes the Lp norm.
+        /// </summary>
+        /// <param name="x">
+        /// The targer vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The Lp norm.
+        /// </returns>
+        public static double Norm(in this Vec<double> x, double p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
+            var norm = 0.0;
+            foreach (var value in x)
+            {
+                norm += Math.Pow(Math.Abs(value), p);
+            }
+            return Math.Pow(norm, 1.0 / p);
+        }
+
+        /// <summary>
+        /// Computes the Lp norm.
+        /// </summary>
+        /// <param name="x">
+        /// The targer vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The Lp norm.
+        /// </returns>
+        public static double Norm(in this Vec<Complex> x, double p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
+            var norm = 0.0;
+            foreach (var value in x)
+            {
+                norm += Math.Pow(value.Magnitude, p);
+            }
+            return Math.Pow(norm, 1.0 / p);
         }
 
         /// <summary>
@@ -213,12 +300,15 @@ namespace NumFlat
         /// <remarks>
         /// The L2 norm of the destination vector will be 1.
         /// </remarks>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Noramlize(in Vec<float> x, in Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfDifferentSize(x, destination);
 
-            var norm = x.L2Norm();
+            var norm = x.Norm();
             Vec.Div(x, norm, destination);
         }
 
@@ -233,13 +323,16 @@ namespace NumFlat
         /// </param>
         /// <remarks>
         /// The L2 norm of the destination vector will be 1.
+        /// </remarks>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void Noramlize(in Vec<double> x, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfDifferentSize(x, destination);
 
-            var norm = x.L2Norm();
+            var norm = x.Norm();
             Vec.Div(x, norm, destination);
         }
 
@@ -255,12 +348,87 @@ namespace NumFlat
         /// <remarks>
         /// The L2 norm of the destination vector will be 1.
         /// </remarks>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void Noramlize(in Vec<Complex> x, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfDifferentSize(x, destination);
 
-            var norm = x.L2Norm();
+            var norm = x.Norm();
+            Vec.Div(x, norm, destination);
+        }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the normalized vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Noramlize(in Vec<float> x, in Vec<float> destination, float p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
+
+            var norm = x.Norm(p);
+            Vec.Div(x, norm, destination);
+        }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the normalized vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Noramlize(in Vec<double> x, in Vec<double> destination, double p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
+
+            var norm = x.Norm(p);
+            Vec.Div(x, norm, destination);
+        }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the normalized vector.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Noramlize(in Vec<Complex> x, in Vec<Complex> destination, double p)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
+
+            var norm = x.Norm(p);
             Vec.Div(x, norm, destination);
         }
     }

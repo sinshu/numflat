@@ -328,5 +328,77 @@ namespace NumFlatTest
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(1, 2, 3)]
+        [TestCase(2, 1, 4)]
+        [TestCase(2, 2, 2)]
+        [TestCase(5, 2, 3)]
+        [TestCase(7, 3, 4)]
+        public void NormalizeSingle(int count, int xStride, float p)
+        {
+            var x = TestVector.RandomSingle(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(p);
+
+            Vec<float> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize(p);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-6F);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(1, 2, 3)]
+        [TestCase(2, 1, 4)]
+        [TestCase(2, 2, 2)]
+        [TestCase(5, 2, 3)]
+        [TestCase(7, 3, 4)]
+        public void NormalizeDouble(int count, int xStride, double p)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(p);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize(p);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 2)]
+        [TestCase(1, 2, 3)]
+        [TestCase(2, 1, 4)]
+        [TestCase(2, 2, 2)]
+        [TestCase(5, 2, 3)]
+        [TestCase(7, 3, 4)]
+        public void NormalizeComplex(int count, int xStride, double p)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var mx = Interop.ToMathNet(x);
+            var expected = mx.Normalize(p);
+
+            Vec<Complex> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Normalize(p);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }

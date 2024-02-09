@@ -303,5 +303,74 @@ namespace NumFlat
             Vec.Noramlize(x, normalized);
             return normalized;
         }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The normalized vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Noramlize(in Vec{float}, in Vec{float}, float)"/> instead.
+        /// </remarks>
+        public static Vec<float> Normalize(in this Vec<float> x, float p)
+        {
+            var normalized = new Vec<float>(x.Count);
+            Vec.Noramlize(x, normalized, p);
+            return normalized;
+        }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The normalized vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Noramlize(in Vec{double}, in Vec{double}, double)"/> instead.
+        /// </remarks>
+        public static Vec<double> Normalize(in this Vec<double> x, double p)
+        {
+            var normalized = new Vec<double>(x.Count);
+            Vec.Noramlize(x, normalized, p);
+            return normalized;
+        }
+
+        /// <summary>
+        /// Normalize the vector.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to be normalized.
+        /// </param>
+        /// <param name="p">
+        /// The p value.
+        /// </param>
+        /// <returns>
+        /// The normalized vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Noramlize(in Vec{Complex}, in Vec{Complex}, double)"/> instead.
+        /// </remarks>
+        public static Vec<Complex> Normalize(in this Vec<Complex> x, double p)
+        {
+            var normalized = new Vec<Complex>(x.Count);
+            Vec.Noramlize(x, normalized, p);
+            return normalized;
+        }
     }
 }
