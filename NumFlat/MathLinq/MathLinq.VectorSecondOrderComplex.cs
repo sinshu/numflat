@@ -305,7 +305,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// Computes the mean vector and pointwise standard deviation from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
@@ -314,7 +314,7 @@ namespace NumFlat
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
-        /// The mean vector and pointwise variance.
+        /// The mean vector and pointwise standard deviation.
         /// </returns>
         public static (Vec<Complex> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<Complex>> xs, int ddof)
         {
@@ -336,13 +336,13 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// Computes the mean vector and pointwise standard deviation from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
         /// </param>
         /// <returns>
-        /// The mean vector and pointwise variance.
+        /// The mean vector and pointwise standard deviation.
         /// </returns>
         public static (Vec<Complex> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<Complex>> xs)
         {
@@ -352,7 +352,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// Computes the pointwise variance from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
@@ -371,7 +371,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise variance from a sequence of vectors.
+        /// Computes the pointwise variance from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
         /// The source vectors.

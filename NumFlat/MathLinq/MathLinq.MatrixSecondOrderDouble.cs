@@ -185,7 +185,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// Computes the pointwise variance from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
         /// The source matrices.
@@ -204,7 +204,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
+        /// Computes the pointwise variance from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
         /// The source matrices.
