@@ -548,12 +548,10 @@ Matrix 3x3-Double
     - ✅ EVD
     - ✅ GEVD
 * ⬜ LINQ-like operations
-    - ✅ Mean
-    - ✅ Variance
-    - ✅ Covariance
-    - ⬜ Weighted mean
-    - ⬜ Weighted variance
-    - ⬜ Weighted covariance
+    - ✅ Mean, covariance, pointwise variance, pointwise SD for vectors
+    - ✅ Mean, pointwise variance, pointwise SD for matrices
+    - ⬜ Weighted statistics for vectors
+    - ⬜ Weighted statistics for matrices
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
