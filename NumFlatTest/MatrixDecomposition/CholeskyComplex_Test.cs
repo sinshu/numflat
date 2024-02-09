@@ -113,6 +113,20 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Determinant(int n)
+        {
+            var a = CreateHermitianMatrix(42, n, n);
+            var chol = a.Cholesky();
+            var expected = a.Determinant().Magnitude;
+            Assert.That(chol.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(chol.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
+        }
+
         private static Mat<Complex> CreateHermitianMatrix(int seed, int n, int stride)
         {
             var mat = TestMatrix.RandomComplex(seed, n, n, stride);

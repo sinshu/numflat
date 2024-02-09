@@ -159,6 +159,38 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The determinant of the source matrix.
+        /// </returns>
+        public float Determinant()
+        {
+            var value = 1.0F;
+            for (var i = 0; i < l.RowCount; i++)
+            {
+                value *= l[i, i];
+            }
+            return value * value;
+        }
+
+        /// <summary>
+        /// Computes the log determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The log determinant of the source matrix.
+        /// </returns>
+        public float LogDeterminant()
+        {
+            var value = 0.0F;
+            for (var i = 0; i < l.RowCount; i++)
+            {
+                value += MathF.Log(l[i, i]);
+            }
+            return 2 * value;
+        }
+
+        /// <summary>
         /// The matrix L.
         /// </summary>
         public ref readonly Mat<float> L => ref l;
