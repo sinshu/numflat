@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides low-level vector operations.
     /// </summary>
-    public static class Vec
+    public static partial class Vec
     {
         /// <summary>
         /// Computes a vector addition, x + y.
