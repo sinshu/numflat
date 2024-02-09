@@ -17,7 +17,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the mean vector.
         /// </param>
-        public static void Mean(IEnumerable<Vec<Complex>> xs, Vec<Complex> destination)
+        public static void Mean(IEnumerable<Vec<Complex>> xs, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -106,7 +106,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static void Variance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Vec<double> destination, int ddof)
+        public static void Variance(IEnumerable<Vec<Complex>> xs, in Vec<Complex> mean, in Vec<double> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -159,7 +159,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, Vec<Complex> mean, Mat<Complex> destination, int ddof)
+        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, in Vec<Complex> mean, in Mat<Complex> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));

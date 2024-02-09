@@ -15,7 +15,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the mean matrix.
         /// </param>
-        public static void Mean(IEnumerable<Mat<Complex>> xs, Mat<Complex> destination)
+        public static void Mean(IEnumerable<Mat<Complex>> xs, in Mat<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
