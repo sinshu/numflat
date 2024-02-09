@@ -522,16 +522,18 @@ Matrix 3x3-Double
 
 * ✅ OpenBLAS wrapper (see [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp))
 * ✅ Vector operations
+    - ✅ Builder
     - ✅ Indexer
     - ✅ Subvector
-    - ✅ Copy, fill, clear
+    - ✅ Copy, Fill, Clear
     - ✅ Arithmetic operations
-    - ✅ Dot and outer products
+    - ✅ Dot and Outer products
     - ✅ Norm and normalization
 * ⬜ Matrix operations
+    - ✅ Builder
     - ✅ Indexer
     - ✅ Submatrix
-    - ✅ Copy, fill, clear
+    - ✅ Copy, Fill, Clear
     - ✅ Arithmetic operations
     - ✅ Transposition
     - ✅ Trace
@@ -548,8 +550,8 @@ Matrix 3x3-Double
     - ✅ EVD
     - ✅ GEVD
 * ⬜ LINQ-like operations
-    - ✅ Mean, covariance, pointwise variance, pointwise SD for vectors
-    - ✅ Mean, pointwise variance, pointwise SD for matrices
+    - ✅ Second order statistics for vectors
+    - ✅ Second order statistics for matrices
     - ⬜ Weighted statistics for vectors
     - ⬜ Weighted statistics for matrices
     - ⬜ Higher-order statistics
@@ -559,9 +561,13 @@ Matrix 3x3-Double
     - ⬜ LDA
     - ⬜ ICA
     - ⬜ NMF
+* ⬜ Distributions
+    - ⬜ Gaussian
 * ⬜ Clustering
     - ⬜ k-means
     - ⬜ GMM
+* ⬜ Time series
+    - ⬜ HMM
 * ⬜ DSP
     - ⬜ FFT
     - ⬜ Filtering
