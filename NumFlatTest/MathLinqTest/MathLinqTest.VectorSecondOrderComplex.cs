@@ -57,10 +57,10 @@ namespace NumFlatTest
         [TestCase(3, 10, 1, 4, 3)]
         [TestCase(5, 20, 0, 1, 1)]
         [TestCase(5, 20, 1, 5, 6)]
-        public void Variance(int dim, int count, int ddot, int meanStride, int varStride)
+        public void Variance(int dim, int count, int ddof, int meanStride, int varStride)
         {
             var data = CreateData(42, dim, count);
-            var expected = MathNetVar(data, ddot);
+            var expected = MathNetVar(data, ddof);
 
             var mean = TestVector.RandomComplex(0, dim, meanStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), mean);
@@ -68,7 +68,7 @@ namespace NumFlatTest
             var actual = TestVector.RandomDouble(0, dim, varStride);
             using (mean.EnsureUnchanged())
             {
-                MathLinq.Variance(data.Select(x => x.ToVector()), mean, actual, ddot);
+                MathLinq.Variance(data.Select(x => x.ToVector()), mean, actual, ddof);
             }
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
@@ -83,13 +83,13 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void MeanAndVariance_Arg1(int dim, int count, int ddot)
+        public void MeanAndVariance_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
-            var expectedVar = MathNetVar(data, ddot);
+            var expectedVar = MathNetVar(data, ddof);
 
-            var result = data.Select(x => x.ToVector()).MeanAndVariance(ddot);
+            var result = data.Select(x => x.ToVector()).MeanAndVariance(ddof);
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
             NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
         }
@@ -122,10 +122,10 @@ namespace NumFlatTest
         [TestCase(3, 10, 1, 4, 7)]
         [TestCase(5, 20, 2, 1, 5)]
         [TestCase(5, 20, 2, 5, 6)]
-        public void Covariance(int dim, int count, int ddot, int meanStride, int covStride)
+        public void Covariance(int dim, int count, int ddof, int meanStride, int covStride)
         {
             var data = CreateData(42, dim, count);
-            var expected = MathNetCov(data, ddot);
+            var expected = MathNetCov(data, ddof);
 
             var mean = TestVector.RandomComplex(0, dim, meanStride);
             MathLinq.Mean(data.Select(x => x.ToVector()), mean);
@@ -133,7 +133,7 @@ namespace NumFlatTest
             var actual = TestMatrix.RandomComplex(0, dim, dim, covStride);
             using (mean.EnsureUnchanged())
             {
-                MathLinq.Covariance(data.Select(x => x.ToVector()), mean, actual, ddot);
+                MathLinq.Covariance(data.Select(x => x.ToVector()), mean, actual, ddof);
             }
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
@@ -147,13 +147,13 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void MeanAndCovariance_Arg1(int dim, int count, int ddot)
+        public void MeanAndCovariance_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
-            var expectedCov = MathNetCov(data, ddot);
+            var expectedCov = MathNetCov(data, ddof);
 
-            var result = data.Select(x => x.ToVector()).MeanAndCovariance(ddot);
+            var result = data.Select(x => x.ToVector()).MeanAndCovariance(ddof);
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
             NumAssert.AreSame(expectedCov, result.Covariance, 1.0E-12);
         }
@@ -179,13 +179,13 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void MeanAndStandardDeviation_Arg1(int dim, int count, int ddot)
+        public void MeanAndStandardDeviation_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
             var expectedMean = MathNetMean(data);
-            var expectedVar = MathNetStd(data, ddot);
+            var expectedVar = MathNetStd(data, ddof);
 
-            var result = data.Select(x => x.ToVector()).MeanAndStandardDeviation(ddot);
+            var result = data.Select(x => x.ToVector()).MeanAndStandardDeviation(ddof);
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
             NumAssert.AreSame(expectedVar, result.StandardDeviation, 1.0E-12);
         }
@@ -211,11 +211,11 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void Variance_ExtensionMethod_Arg1(int dim, int count, int ddot)
+        public void Variance_ExtensionMethod_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
-            var expected = MathNetVar(data, ddot);
-            var actual = data.Select(x => x.ToVector()).Variance(ddot);
+            var expected = MathNetVar(data, ddof);
+            var actual = data.Select(x => x.ToVector()).Variance(ddof);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -236,11 +236,11 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 2)]
-        public void Covariance_ExtensionMethod_Arg1(int dim, int count, int ddot)
+        public void Covariance_ExtensionMethod_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
-            var expected = MathNetCov(data, ddot);
-            var actual = data.Select(x => x.ToVector()).Covariance(ddot);
+            var expected = MathNetCov(data, ddof);
+            var actual = data.Select(x => x.ToVector()).Covariance(ddof);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -261,11 +261,11 @@ namespace NumFlatTest
         [TestCase(3, 1, 0)]
         [TestCase(3, 10, 1)]
         [TestCase(5, 20, 0)]
-        public void StandardDeviation_ExtensionMethod_Arg1(int dim, int count, int ddot)
+        public void StandardDeviation_ExtensionMethod_Arg1(int dim, int count, int ddof)
         {
             var data = CreateData(42, dim, count);
-            var expected = MathNetStd(data, ddot);
-            var actual = data.Select(x => x.ToVector()).StandardDeviation(ddot);
+            var expected = MathNetStd(data, ddof);
+            var actual = data.Select(x => x.ToVector()).StandardDeviation(ddof);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -293,14 +293,14 @@ namespace NumFlatTest
             return sum / count;
         }
 
-        private static Vec<double> MathNetVar(IEnumerable<MVec> xs, int ddot)
+        private static Vec<double> MathNetVar(IEnumerable<MVec> xs, int ddof)
         {
             var mean = MathNetMean(xs);
-            var cov = MathNetCov(xs, ddot);
+            var cov = MathNetCov(xs, ddof);
             return Enumerable.Range(0, mean.Count).Select(i=>cov[i,i].Real).ToVector();
         }
 
-        private static MMat MathNetCov(IEnumerable<MVec> xs, int ddot)
+        private static MMat MathNetCov(IEnumerable<MVec> xs, int ddof)
         {
             var mean = MathNetMean(xs);
 
@@ -312,13 +312,13 @@ namespace NumFlatTest
                 sum += d.OuterProduct(d.Conjugate());
                 count++;
             }
-            return sum / (count - ddot);
+            return sum / (count - ddof);
         }
 
-        private static Vec<double> MathNetStd(IEnumerable<MVec> xs, int ddot)
+        private static Vec<double> MathNetStd(IEnumerable<MVec> xs, int ddof)
         {
             var mean = MathNetMean(xs);
-            var cov = MathNetCov(xs, ddot);
+            var cov = MathNetCov(xs, ddof);
             return Enumerable.Range(0, mean.Count).Select(i => Math.Sqrt(cov[i, i].Real)).ToVector();
         }
 

@@ -50,10 +50,10 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1, 2, 2)]
         [TestCase(2, 3, 3, 1, 4, 4)]
         [TestCase(4, 3, 5, 0, 6, 6)]
-        public void Variance(int rowCount, int colCount, int matCount, int ddot, int meanStride, int varStride)
+        public void Variance(int rowCount, int colCount, int matCount, int ddof, int meanStride, int varStride)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
-            var expected = MathNetVar(data, ddot);
+            var expected = MathNetVar(data, ddof);
 
             var mean = TestMatrix.RandomDouble(0, rowCount, colCount, meanStride);
             MathLinq.Mean(data.Select(x => x.ToArray().ToMatrix()), mean);
@@ -61,7 +61,7 @@ namespace NumFlatTest
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, varStride);
             using (mean.EnsureUnchanged())
             {
-                MathLinq.Variance(data.Select(x => x.ToArray().ToMatrix()), mean, actual, ddot);
+                MathLinq.Variance(data.Select(x => x.ToArray().ToMatrix()), mean, actual, ddof);
             }
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
@@ -74,13 +74,13 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void MeanAndVariance_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        public void MeanAndVariance_Arg1(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expectedMean = MathNetMean(data);
-            var expectedVar = MathNetVar(data, ddot);
+            var expectedVar = MathNetVar(data, ddof);
 
-            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndVariance(ddot);
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndVariance(ddof);
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
             NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
         }
@@ -103,13 +103,13 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void MeanAndStandardDeviatione_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        public void MeanAndStandardDeviatione_Arg1(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expectedMean = MathNetMean(data);
-            var expectedStd = MathNetStd(data, ddot);
+            var expectedStd = MathNetStd(data, ddof);
 
-            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation(ddot);
+            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation(ddof);
             NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
             NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
         }
@@ -132,11 +132,11 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void Variance_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        public void Variance_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
-            var expected = MathNetVar(data, ddot);
-            var actual = data.Select(x => x.ToArray().ToMatrix()).Variance(ddot);
+            var expected = MathNetVar(data, ddof);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).Variance(ddof);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -155,11 +155,11 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void StandardDeviation_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddot)
+        public void StandardDeviation_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
-            var expected = MathNetStd(data, ddot);
-            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation(ddot);
+            var expected = MathNetStd(data, ddof);
+            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation(ddof);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
@@ -187,7 +187,7 @@ namespace NumFlatTest
             return sum / count;
         }
 
-        private static MMat MathNetVar(IEnumerable<MMat> xs, int ddot)
+        private static MMat MathNetVar(IEnumerable<MMat> xs, int ddof)
         {
             var mean = MathNetMean(xs);
             
@@ -196,11 +196,11 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < result.ColumnCount; col++)
                 {
-                    if (ddot == 1)
+                    if (ddof == 1)
                     {
                         result[row, col] = xs.Select(x => x[row, col]).Variance();
                     }
-                    else if (ddot == 0)
+                    else if (ddof == 0)
                     {
                         result[row, col] = xs.Select(x => x[row, col]).PopulationVariance();
                     }
@@ -214,7 +214,7 @@ namespace NumFlatTest
             return result;
         }
 
-        private static MMat MathNetStd(IEnumerable<MMat> xs, int ddot)
+        private static MMat MathNetStd(IEnumerable<MMat> xs, int ddof)
         {
             var mean = MathNetMean(xs);
 
@@ -223,11 +223,11 @@ namespace NumFlatTest
             {
                 for (var col = 0; col < result.ColumnCount; col++)
                 {
-                    if (ddot == 1)
+                    if (ddof == 1)
                     {
                         result[row, col] = xs.Select(x => x[row, col]).StandardDeviation();
                     }
-                    else if (ddot == 0)
+                    else if (ddof == 0)
                     {
                         result[row, col] = xs.Select(x => x[row, col]).PopulationStandardDeviation();
                     }
