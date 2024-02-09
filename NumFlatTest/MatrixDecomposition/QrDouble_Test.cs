@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace NumFlatTest
 {
@@ -130,9 +131,9 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomDouble(42, n, n, n);
             var qr = a.Qr();
-            var expected = a.Determinant();
-            Assert.That(qr.Determinant(), Is.EqualTo(Math.Abs(expected)).Within(1.0E-12));
-            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(Math.Abs(expected))).Within(1.0E-12));
+            var expected = Math.Abs(a.Determinant());
+            Assert.That(qr.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
         }
 
         private static void CheckUnitary(Mat<double> mat)

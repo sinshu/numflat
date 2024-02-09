@@ -216,6 +216,38 @@ namespace NumFlat
             return x;
         }
 
+        /// <summary>
+        /// Computes the absolute determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The absolute determinant of the source matrix.
+        /// </returns>
+        public double Determinant()
+        {
+            var determinant = 1.0;
+            foreach (var value in s)
+            {
+                determinant *= value;
+            }
+            return determinant;
+        }
+
+        /// <summary>
+        /// Computes the log absolute determinant of the source matrix.
+        /// </summary>
+        /// <returns>
+        /// The log absolute determinant of the source matrix.
+        /// </returns>
+        public double LogDeterminant()
+        {
+            var logDeterminant = 0.0;
+            foreach (var value in s)
+            {
+                logDeterminant += Math.Log(value);
+            }
+            return logDeterminant;
+        }
+
         private static void PointwiseDiv(in Vec<Complex> x, in Vec<double> y, in Vec<Complex> destination)
         {
             var sx = x.Memory.Span;

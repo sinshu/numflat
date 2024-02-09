@@ -130,9 +130,9 @@ namespace NumFlatTest
         {
             var a = TestMatrix.RandomSingle(42, n, n, n);
             var qr = a.Qr();
-            var expected = a.Determinant();
-            Assert.That(qr.Determinant(), Is.EqualTo(Math.Abs(expected)).Within(1.0E-6F));
-            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(Math.Abs(expected))).Within(1.0E-5F)); // 1.0E-6F is too small.
+            var expected = Math.Abs(a.Determinant());
+            Assert.That(qr.Determinant(), Is.EqualTo(expected).Within(1.0E-6F));
+            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-5F)); // 1.0E-6F is too small.
         }
 
         private static void CheckUnitary(Mat<float> mat)

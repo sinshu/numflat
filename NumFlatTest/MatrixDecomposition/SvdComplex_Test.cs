@@ -179,6 +179,20 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void Determinant(int n)
+        {
+            var a = TestMatrix.RandomComplex(42, n, n, n);
+            var svd = a.Svd();
+            var expected = a.Determinant().Magnitude;
+            Assert.That(svd.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(svd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
+        }
+
         private static void CheckUnitary(Mat<Complex> mat)
         {
             var actual = mat * mat.ConjugateTranspose();
