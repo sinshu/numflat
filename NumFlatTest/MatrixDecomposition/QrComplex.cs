@@ -129,8 +129,10 @@ namespace NumFlatTest
         public void Determinant(int n)
         {
             var a = TestMatrix.RandomComplex(42, n, n, n);
-            Assert.That(a.Qr().Determinant(), Is.EqualTo(a.Determinant().Magnitude).Within(1.0E-12));
-            Assert.That(a.Qr().LogDeterminant(), Is.EqualTo(Math.Log(a.Determinant().Magnitude)).Within(1.0E-12));
+            var qr = a.Qr();
+            var expected = a.Determinant();
+            Assert.That(qr.Determinant(), Is.EqualTo(a.Determinant().Magnitude).Within(1.0E-12));
+            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(a.Determinant().Magnitude)).Within(1.0E-12));
         }
 
         private static void CheckUnitary(Mat<Complex> mat)
