@@ -521,13 +521,13 @@ Matrix 3x3-Double
 ## Todo
 
 * ✅ OpenBLAS wrapper (see [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp))
-* ⬜ Vector operations
+* ✅ Vector operations
     - ✅ Indexer
     - ✅ Subvector
     - ✅ Copy, fill, clear
     - ✅ Arithmetic operations
     - ✅ Dot and outer products
-    - ⬜ Norm and normalization
+    - ✅ Norm and normalization
 * ⬜ Matrix operations
     - ✅ Indexer
     - ✅ Submatrix
