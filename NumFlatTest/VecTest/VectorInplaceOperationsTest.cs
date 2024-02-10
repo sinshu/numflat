@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class VectorInplaceOperationTest
+    public class VectorInplaceOperationsTest
     {
         [Test]
         public void AddInplace()

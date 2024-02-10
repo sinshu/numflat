@@ -530,7 +530,7 @@ Matrix 3x3-Double
     - ✅ Dot and Outer products
     - ✅ Norm and normalization
     - ✅ In-place operations
-* ⬜ Matrix operations
+* ✅ Matrix operations
     - ✅ Builder
     - ✅ Indexer
     - ✅ Submatrix
@@ -543,7 +543,7 @@ Matrix 3x3-Double
     - ✅ Inversion
     - ✅ Pseudo-inverse
     - ✅ Norm
-    - ⬜ In-place operations
+    - ✅ In-place operations
 * ✅ Matrix Decomposition
     - ✅ LU
     - ✅ QR
