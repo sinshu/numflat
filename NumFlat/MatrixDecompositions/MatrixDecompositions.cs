@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides extension methods for matrix decomposition.
     /// </summary>
-    public static class MatrixDecomposition
+    public static class MatrixDecompositions
     {
         /// <summary>
         /// Computes the engen value decomposition (EVD).

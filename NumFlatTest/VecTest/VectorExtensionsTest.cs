@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class VectorExtensionTest
+    public class VectorExtensionsTest
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]

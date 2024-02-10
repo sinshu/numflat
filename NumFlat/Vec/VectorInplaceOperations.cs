@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides in-place operations for <see cref="Vec{T}"/>.
     /// </summary>
-    public static class VectorInplaceOperation
+    public static class VectorInplaceOperations
     {
         /// <summary>
         /// Computes a vector addition in-place.

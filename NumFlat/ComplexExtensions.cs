@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides extension methods for the <see cref="Complex"/> type.
     /// </summary>
-    public static class ComplexExtension
+    public static class ComplexExtensions
     {
         /// <summary>
         /// Conjugates the complex number.
