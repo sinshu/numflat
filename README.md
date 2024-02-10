@@ -162,7 +162,7 @@ var l2Norm = x.Norm();
 // L1 norm.
 var l1Norm = x.L1Norm();
 
-// InfinityNorm.
+// Infinity norm.
 var infinityNorm = x.InfinityNorm();
 
 // Normalization.
