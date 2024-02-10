@@ -1,3 +1,7 @@
+# v0.3.1
+
+* Added the weighted version of `Mean`, `Variance`, `Covariance`, `StandardDeviation` for vectors.
+
 # v0.3.0
 
 * Added the `Determinant` and `LogDeterminant` methods to matrix decomposition objects.
