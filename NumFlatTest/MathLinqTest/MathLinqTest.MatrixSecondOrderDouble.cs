@@ -74,7 +74,7 @@ namespace NumFlatTest
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void MeanAndVariance_Arg1(int rowCount, int colCount, int matCount, int ddof)
+        public void MeanAndVariance(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expectedMean = MathNetMean(data);
@@ -85,25 +85,11 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
         }
 
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(4, 3, 5)]
-        public void MeanAndVariance_Arg0(int rowCount, int colCount, int matCount)
-        {
-            var data = CreateData(42, rowCount, colCount, matCount);
-            var expectedMean = MathNetMean(data);
-            var expectedVar = MathNetVar(data, 1);
-
-            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndVariance();
-            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
-            NumAssert.AreSame(expectedVar, result.Variance, 1.0E-12);
-        }
-
         [TestCase(1, 1, 1, 0)]
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void MeanAndStandardDeviatione_Arg1(int rowCount, int colCount, int matCount, int ddof)
+        public void MeanAndStandardDeviatione(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expectedMean = MathNetMean(data);
@@ -114,25 +100,11 @@ namespace NumFlatTest
             NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
         }
 
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(4, 3, 5)]
-        public void MeanAndStandardDeviation_Arg0(int rowCount, int colCount, int matCount)
-        {
-            var data = CreateData(42, rowCount, colCount, matCount);
-            var expectedMean = MathNetMean(data);
-            var expectedStd = MathNetStd(data, 1);
-
-            var result = data.Select(x => x.ToArray().ToMatrix()).MeanAndStandardDeviation();
-            NumAssert.AreSame(expectedMean, result.Mean, 1.0E-12);
-            NumAssert.AreSame(expectedStd, result.StandardDeviation, 1.0E-12);
-        }
-
         [TestCase(1, 1, 1, 0)]
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void Variance_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddof)
+        public void Variance_ExtensionMethod(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expected = MathNetVar(data, ddof);
@@ -140,37 +112,15 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(4, 3, 5)]
-        public void Variance_ExtensionMethod_Arg0(int rowCount, int colCount, int matCount)
-        {
-            var data = CreateData(42, rowCount, colCount, matCount);
-            var expected = MathNetVar(data, 1);
-            var actual = data.Select(x => x.ToArray().ToMatrix()).Variance();
-            NumAssert.AreSame(expected, actual, 1.0E-12);
-        }
-
         [TestCase(1, 1, 1, 0)]
         [TestCase(1, 1, 2, 1)]
         [TestCase(2, 3, 3, 1)]
         [TestCase(4, 3, 5, 0)]
-        public void StandardDeviation_ExtensionMethod_Arg1(int rowCount, int colCount, int matCount, int ddof)
+        public void StandardDeviation_ExtensionMethod(int rowCount, int colCount, int matCount, int ddof)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var expected = MathNetStd(data, ddof);
             var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation(ddof);
-            NumAssert.AreSame(expected, actual, 1.0E-12);
-        }
-
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(4, 3, 5)]
-        public void StandardDeviation_ExtensionMethod_Arg0(int rowCount, int colCount, int matCount)
-        {
-            var data = CreateData(42, rowCount, colCount, matCount);
-            var expected = MathNetStd(data, 1);
-            var actual = data.Select(x => x.ToArray().ToMatrix()).StandardDeviation();
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 

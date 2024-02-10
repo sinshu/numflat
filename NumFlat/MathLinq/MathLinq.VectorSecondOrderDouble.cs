@@ -235,7 +235,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise variance.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<double>> xs, int ddof)
+        public static (Vec<double> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -251,22 +251,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise variance from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The mean vector and pointwise variance.
-        /// </returns>
-        public static (Vec<double> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndVariance(xs, 1);
-        }
-
-        /// <summary>
         /// Computes the mean vector and covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -278,7 +262,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and covariance matrix.
         /// </returns>
-        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, int ddof)
+        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -294,22 +278,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and covariance matrix from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The mean vector and covariance matrix.
-        /// </returns>
-        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndCovariance(xs, 1);
-        }
-
-        /// <summary>
         /// Computes the mean vector and pointwise standard deviation from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -321,7 +289,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise standard deviation.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs, int ddof)
+        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -341,22 +309,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean vector and pointwise standard deviation from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The mean vector and pointwise standard deviation.
-        /// </returns>
-        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndStandardDeviation(xs, 1);
-        }
-
-        /// <summary>
         /// Computes the pointwise variance from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -368,30 +320,12 @@ namespace NumFlat
         /// <returns>
         /// The pointwise variance.
         /// </returns>
-        public static Vec<double> Variance(this IEnumerable<Vec<double>> xs, int ddof)
+        public static Vec<double> Variance(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return MeanAndVariance(xs, ddof).Variance;
         }
 
         /// <summary>
-        /// Computes the pointwise variance from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The pointwise variance.
-        /// </returns>
-        public static Vec<double> Variance(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndVariance(xs, 1).Variance;
-        }
-
-        /// <summary>
         /// Computes the covariance matrix from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -403,30 +337,12 @@ namespace NumFlat
         /// <returns>
         /// The covariance matrix.
         /// </returns>
-        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, int ddof)
+        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return MeanAndCovariance(xs, ddof).Covariance;
         }
 
         /// <summary>
-        /// Computes the covariance matrix from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The covariance matrix.
-        /// </returns>
-        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndCovariance(xs, 1).Covariance;
-        }
-
-        /// <summary>
         /// Computes the pointwise standard deviation from a sequence of vectors.
         /// </summary>
         /// <param name="xs">
@@ -438,27 +354,9 @@ namespace NumFlat
         /// <returns>
         /// The pointwise standard deviation.
         /// </returns>
-        public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs, int ddof)
+        public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs, int ddof = 1)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return MeanAndStandardDeviation(xs, ddof).StandardDeviation;
-        }
-
-        /// <summary>
-        /// Computes the pointwise standard deviation from a sequence of vectors.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <returns>
-        /// The pointwise standard deviation.
-        /// </returns>
-        public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndStandardDeviation(xs).StandardDeviation;
         }
 
         private static void AccumulateVariance(in Vec<double> x, in Vec<double> mean, in Vec<double> destination)

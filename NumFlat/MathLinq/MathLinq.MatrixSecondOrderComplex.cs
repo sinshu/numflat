@@ -155,7 +155,7 @@ namespace NumFlat
         /// <returns>
         /// The mean matrix and pointwise variance.
         /// </returns>
-        public static (Mat<Complex> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<Complex>> xs, int ddof)
+        public static (Mat<Complex> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<Complex>> xs, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -171,22 +171,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean matrix and pointwise variance from a sequence of matrices.
-        /// </summary>
-        /// <param name="xs">
-        /// The source matrices.
-        /// </param>
-        /// <returns>
-        /// The mean matrix and pointwise variance.
-        /// </returns>
-        public static (Mat<Complex> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<Complex>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndVariance(xs, 1);
-        }
-
-        /// <summary>
         /// Computes the mean matrix and pointwise standard deviation from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
@@ -198,7 +182,7 @@ namespace NumFlat
         /// <returns>
         /// The mean matrix and pointwise standard deviation.
         /// </returns>
-        public static (Mat<Complex> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<Complex>> xs, int ddof)
+        public static (Mat<Complex> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<Complex>> xs, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -218,22 +202,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean matrix and pointwise standard deviation from a sequence of matrices.
-        /// </summary>
-        /// <param name="xs">
-        /// The source matrices.
-        /// </param>
-        /// <returns>
-        /// The mean matrix and pointwise standard deviation.
-        /// </returns>
-        public static (Mat<Complex> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<Complex>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndStandardDeviation(xs, 1);
-        }
-
-        /// <summary>
         /// Computes the pointwise variance from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
@@ -245,30 +213,12 @@ namespace NumFlat
         /// <returns>
         /// The pointwise variance.
         /// </returns>
-        public static Mat<double> Variance(this IEnumerable<Mat<Complex>> xs, int ddof)
+        public static Mat<double> Variance(this IEnumerable<Mat<Complex>> xs, int ddof = 1)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return MeanAndVariance(xs, ddof).Variance;
         }
 
         /// <summary>
-        /// Computes the pointwise variance from a sequence of matrices.
-        /// </summary>
-        /// <param name="xs">
-        /// The source matrices.
-        /// </param>
-        /// <returns>
-        /// The pointwise variance.
-        /// </returns>
-        public static Mat<double> Variance(this IEnumerable<Mat<Complex>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndVariance(xs, 1).Variance;
-        }
-
-        /// <summary>
         /// Computes the pointwise standard deviation from a sequence of matrices.
         /// </summary>
         /// <param name="xs">
@@ -280,27 +230,9 @@ namespace NumFlat
         /// <returns>
         /// The pointwise standard deviation.
         /// </returns>
-        public static Mat<double> StandardDeviation(this IEnumerable<Mat<Complex>> xs, int ddof)
+        public static Mat<double> StandardDeviation(this IEnumerable<Mat<Complex>> xs, int ddof = 1)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return MeanAndStandardDeviation(xs, ddof).StandardDeviation;
-        }
-
-        /// <summary>
-        /// Computes the pointwise standard deviation from a sequence of matrices.
-        /// </summary>
-        /// <param name="xs">
-        /// The source matrices.
-        /// </param>
-        /// <returns>
-        /// The pointwise standard deviation.
-        /// </returns>
-        public static Mat<double> StandardDeviation(this IEnumerable<Mat<Complex>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
-            return MeanAndStandardDeviation(xs).StandardDeviation;
         }
 
         private static void AccumulateVariance(in Mat<Complex> x, in Mat<Complex> mean, in Mat<double> destination)
