@@ -552,10 +552,12 @@ Matrix 3x3-Double
     - ✅ EVD
     - ✅ GEVD
 * ⬜ LINQ-like operations
-    - ✅ Second order statistics for vectors
-    - ✅ Second order statistics for matrices
-    - ⬜ Weighted statistics for vectors
-    - ⬜ Weighted statistics for matrices
+    - ⬜ Mean, Variance, Covariance for scalars
+    - ✅ Mean, Variance, Covariance for vectors
+    - ✅ Mean, Variance for matrices
+    - ⬜ Weighted Mean, Variance, Covariance for scalars
+    - ⬜ Weighted Mean, Variance, Covariance for vectors
+    - ⬜ Weighted Mean, Variance for matrices
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
