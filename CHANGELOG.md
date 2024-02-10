@@ -1,3 +1,23 @@
+# v0.3.0
+
+* Added the `Determinant` and `LogDeterminant` methods to matrix decomposition objects.
+* Now `MathLinq` supports `Mean` and `Variance` for matrices.
+* Optimized `Covariance` by utilizing the symmetry of matrices.
+* Added the following norm-related methods to `Vec<T>`.
+    - `Norm()`
+    - `Norm(p)`
+    - `L1Norm()`
+    - `InfinityNorm()`
+    - `Normalize()`
+    - `Normalize(p)`
+* Added the following norm-related methods to `Mat<T>`.
+    - `FrobeniusNorm()`
+    - `L1Norm()`
+    - `L2Norm()`
+    - `InfinityNorm()`
+* Added in-place operations for vectors and matrices.  
+In-place operations have a method name with the suffix `Inplace` (`NormalizeInplace` for example).
+
 # v0.2.2
 
 * Added the following builder methods.
