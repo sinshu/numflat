@@ -556,7 +556,7 @@ Matrix 3x3-Double
     - ✅ Mean, Variance, Covariance for vectors
     - ✅ Mean, Variance for matrices
     - ⬜ Weighted Mean, Variance, Covariance for scalars
-    - ⬜ Weighted Mean, Variance, Covariance for vectors
+    - ✅ Weighted Mean, Variance, Covariance for vectors
     - ⬜ Weighted Mean, Variance for matrices
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis

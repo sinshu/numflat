@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -19,7 +20,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the mean vector.
         /// </param>
-        public static void Mean(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, in Vec<double> destination)
+        public static void Mean(IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -85,12 +86,12 @@ namespace NumFlat
         /// <returns>
         /// The mean vector.
         /// </returns>
-        public static Vec<double> Mean(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Vec<Complex> Mean(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
 
-            var destination = new Vec<double>();
+            var destination = new Vec<Complex>();
 
             var w1Sum = 0.0;
             using (var exs = xs.GetEnumerator())
@@ -118,7 +119,7 @@ namespace NumFlat
                                 new ArgumentException("Empty vectors are not allowed.");
                             }
 
-                            destination = new Vec<double>(x.Count);
+                            destination = new Vec<Complex>(x.Count);
                         }
 
                         if (x.Count != destination.Count)
@@ -170,7 +171,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static void Variance(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, in Vec<double> mean, in Vec<double> destination, int ddof)
+        public static void Variance(IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, in Vec<Complex> mean, in Vec<double> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -256,7 +257,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static unsafe void Covariance(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, in Vec<double> mean, in Mat<double> destination, int ddof)
+        public static unsafe void Covariance(IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, in Vec<Complex> mean, in Mat<Complex> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -278,7 +279,7 @@ namespace NumFlat
                 throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
             }
 
-            using var ucentered = new TemporalVector<double>(mean.Count);
+            using var ucentered = new TemporalVector<Complex>(mean.Count);
             ref readonly var centered = ref ucentered.Item;
 
             destination.Clear();
@@ -288,8 +289,8 @@ namespace NumFlat
             using (var exs = xs.GetEnumerator())
             using (var eweights = weights.GetEnumerator())
             {
-                fixed (double* pd = destination.Memory.Span)
-                fixed (double* pc = centered.Memory.Span)
+                fixed (Complex* pd = destination.Memory.Span)
+                fixed (Complex* pc = centered.Memory.Span)
                 {
                     while (true)
                     {
@@ -316,7 +317,7 @@ namespace NumFlat
                             }
 
                             Vec.Sub(x, mean, centered);
-                            Blas.Dsyr(
+                            Blas.Zher(
                                 Order.ColMajor,
                                 Uplo.Lower,
                                 destination.RowCount,
@@ -337,7 +338,7 @@ namespace NumFlat
                 {
                     for (var row = 0; row < col; row++)
                     {
-                        destination[row, col] = destination[col, row];
+                        destination[row, col] = destination[col, row].Conjugate();
                     }
                 }
 
@@ -366,7 +367,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise variance.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static (Vec<Complex> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -394,7 +395,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise variance.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static (Vec<Complex> Mean, Vec<double> Variance) MeanAndVariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -417,7 +418,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and covariance matrix.
         /// </returns>
-        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -428,7 +429,7 @@ namespace NumFlat
             }
 
             var mean = xs.Mean(weights);
-            var covariance = new Mat<double>(mean.Count, mean.Count);
+            var covariance = new Mat<Complex>(mean.Count, mean.Count);
             Covariance(xs, weights, mean, covariance, ddof);
             return (mean, covariance);
         }
@@ -445,7 +446,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and covariance matrix.
         /// </returns>
-        public static (Vec<double> Mean, Mat<double> Covariance) MeanAndCovariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static (Vec<Complex> Mean, Mat<Complex> Covariance) MeanAndCovariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -468,7 +469,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise standard deviation.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static (Vec<Complex> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -500,7 +501,7 @@ namespace NumFlat
         /// <returns>
         /// The mean vector and pointwise standard deviation.
         /// </returns>
-        public static (Vec<double> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static (Vec<Complex> Mean, Vec<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -523,7 +524,7 @@ namespace NumFlat
         /// <returns>
         /// The pointwise variance.
         /// </returns>
-        public static Vec<double> Variance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static Vec<double> Variance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -543,7 +544,7 @@ namespace NumFlat
         /// <returns>
         /// The pointwise variance.
         /// </returns>
-        public static Vec<double> Variance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Vec<double> Variance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -566,7 +567,7 @@ namespace NumFlat
         /// <returns>
         /// The covariance matrix.
         /// </returns>
-        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -586,7 +587,7 @@ namespace NumFlat
         /// <returns>
         /// The covariance matrix.
         /// </returns>
-        public static Mat<double> Covariance(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Mat<Complex> Covariance(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -609,7 +610,7 @@ namespace NumFlat
         /// <returns>
         /// The pointwise standard deviation.
         /// </returns>
-        public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof)
+        public static Vec<double> StandardDeviation(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -629,7 +630,7 @@ namespace NumFlat
         /// <returns>
         /// The pointwise standard deviation.
         /// </returns>
-        public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Vec<double> StandardDeviation(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -637,7 +638,7 @@ namespace NumFlat
             return MeanAndStandardDeviation(xs, weights).StandardDeviation;
         }
 
-        private static void AccumulateWeightedMean(in Vec<double> x, double w, in Vec<double> destination)
+        private static void AccumulateWeightedMean(in Vec<Complex> x, double w, in Vec<Complex> destination)
         {
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -651,7 +652,7 @@ namespace NumFlat
             }
         }
 
-        private static void AccumulateWeightedVariance(in Vec<double> x, double w, in Vec<double> mean, in Vec<double> destination)
+        private static void AccumulateWeightedVariance(in Vec<Complex> x, double w, in Vec<Complex> mean, in Vec<double> destination)
         {
             var sx = x.Memory.Span;
             var sm = mean.Memory.Span;
@@ -662,7 +663,7 @@ namespace NumFlat
             while (pd < sd.Length)
             {
                 var delta = sx[px] - sm[pm];
-                sd[pd] += w * delta * delta;
+                sd[pd] += w * delta.MagnitudeSquared();
                 px += x.Stride;
                 pm += mean.Stride;
                 pd += destination.Stride;
