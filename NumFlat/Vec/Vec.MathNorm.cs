@@ -289,7 +289,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.
@@ -313,7 +313,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.
@@ -337,7 +337,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.
@@ -361,7 +361,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.
@@ -385,7 +385,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.
@@ -409,7 +409,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Normalize the vector.
+        /// Normalizes the vector.
         /// </summary>
         /// <param name="x">
         /// The vector to be normalized.

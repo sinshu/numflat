@@ -529,6 +529,7 @@ Matrix 3x3-Double
     - ✅ Arithmetic operations
     - ✅ Dot and Outer products
     - ✅ Norm and normalization
+    - ✅ In-place operations
 * ⬜ Matrix operations
     - ✅ Builder
     - ✅ Indexer
@@ -541,7 +542,8 @@ Matrix 3x3-Double
     - ✅ Rank
     - ✅ Inversion
     - ✅ Pseudo-inverse
-    - ⬜ Norm
+    - ✅ Norm
+    - ⬜ In-place operations
 * ✅ Matrix Decomposition
     - ✅ LU
     - ✅ QR
