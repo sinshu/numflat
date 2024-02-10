@@ -126,6 +126,15 @@ public static class MatrixExamples
         // Pseudo-inverse.
         var pseudoInverse = x.PseudoInverse();
 
+        // L1 norm.
+        var l1Norm = x.L1Norm();
+
+        // L2 norm.
+        var l2Norm = x.L2Norm();
+
+        // Infinity norm.
+        var infinityNorm = x.InfinityNorm();
+
         Console.WriteLine();
         Console.WriteLine();
     }

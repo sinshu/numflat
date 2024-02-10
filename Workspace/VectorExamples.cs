@@ -100,6 +100,18 @@ public static class VectorExamples
         // Outer product.
         var outer = x.Outer(y);
 
+        // L2 norm.
+        var l2Norm = x.Norm();
+
+        // L1 norm.
+        var l1Norm = x.L1Norm();
+
+        // InfinityNorm.
+        var infinityNorm = x.InfinityNorm();
+
+        // Normalization.
+        var normalized = x.Normalize();
+
         Console.WriteLine();
         Console.WriteLine();
     }

@@ -155,6 +155,18 @@ var dot = x * y;
 
 // Outer product.
 var outer = x.Outer(y);
+
+// L2 norm.
+var l2Norm = x.Norm();
+
+// L1 norm.
+var l1Norm = x.L1Norm();
+
+// InfinityNorm.
+var infinityNorm = x.InfinityNorm();
+
+// Normalization.
+var normalized = x.Normalize();
 ```
 
 ### Subvector
@@ -304,6 +316,15 @@ var inverse = x.Inverse();
 
 // Pseudo-inverse.
 var pseudoInverse = x.PseudoInverse();
+
+// L1 norm.
+var l1Norm = x.L1Norm();
+
+// L2 norm.
+var l2Norm = x.L2Norm();
+
+// Infinity norm.
+var infinityNorm = x.InfinityNorm();
 ```
 
 ### Submatrix
