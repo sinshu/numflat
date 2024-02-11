@@ -10,7 +10,7 @@ namespace NumFlat.MultivariateAnalyses
     {
         private Vec<double> mean;
         private Mat<double> covariance;
-        private EigenValueDecompositionDouble evd;
+        private SingularValueDecompositionDouble svd;
 
         /// <summary>
         /// Performs principal component analysis.
@@ -23,18 +23,44 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
             var (mean, covariance) = xs.MeanAndCovariance();
-            var evd = covariance.Evd();
+            var svd = covariance.Svd();
 
             this.mean = mean;
             this.covariance = covariance;
-            this.evd = evd;
+            this.svd = svd;
         }
 
         /// <summary>
         /// Transforms a vector.
         /// </summary>
         /// <param name="x">
-        /// The vector to be transformed.
+        /// The source vector to be transformed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the transformed vector.
+        /// </param>
+        public void Transform(in Vec<double> x, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
+
+            if (x.Count != mean.Count)
+            {
+                throw new ArgumentException("The length of the source vector does not meet the requirement.");
+            }
+
+            using var utmp = new TemporalVector<double>(x.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            Vec.Sub(x, mean, tmp);
+            Mat.Mul(svd.U, tmp, destination, true);
+        }
+
+        /// <summary>
+        /// Transforms a vector.
+        /// </summary>
+        /// <param name="x">
+        /// The source vector to be transformed.
         /// </param>
         /// <returns>
         /// The transformed vector.
@@ -43,7 +69,14 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
-            return evd.V * (x - mean);
+            if (x.Count != mean.Count)
+            {
+                throw new ArgumentException("The length of the source vector does not meet the requirement.");
+            }
+
+            var destination = new Vec<double>(x.Count);
+            Transform(x, destination);
+            return destination;
         }
     }
 }
