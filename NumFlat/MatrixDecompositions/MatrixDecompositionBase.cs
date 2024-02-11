@@ -59,5 +59,67 @@ namespace NumFlat
             Solve(b, x);
             return x;
         }
+
+        /// <summary>
+        /// Solves the linear equation, Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The right-hand side vectors.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the solution vectors.
+        /// </param>
+        public void Solve(in Mat<T> b, in Mat<T> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (b.RowCount != rhsVectorLength)
+            {
+                throw new ArgumentException("The length of the right-hand side vectors does not meet the requirement.");
+            }
+
+            if (destination.RowCount != solutionVectorLength)
+            {
+                throw new ArgumentException("The length of the solution vectors does not meet the requirement.");
+            }
+
+            if (b.ColCount != destination.ColCount)
+            {
+                throw new ArgumentException("The number of the right-hand side vectors and solution vectors must match.");
+            }
+
+            var bCols = b.Cols;
+            var destinationCols = destination.Cols;
+            for (var col = 0; col < destinationCols.Count; col++)
+            {
+                var bCol = bCols[col];
+                var destinationCol = destinationCols[col];
+                Solve(bCol, destinationCol);
+            }
+        }
+
+        /// <summary>
+        /// Solves the linear equation, Ax = b.
+        /// </summary>
+        /// <param name="b">
+        /// The right-hand side vectors.
+        /// </param>
+        /// <returns>
+        /// The solution vectors.
+        /// </returns>
+        public Mat<T> Solve(in Mat<T> b)
+        {
+            ThrowHelper.ThrowIfEmpty(b, nameof(b));
+
+            if (b.RowCount != rhsVectorLength)
+            {
+                throw new ArgumentException("The length of the right-hand side vectors does not meet the requirement.");
+            }
+
+            var destination = new Mat<T>(solutionVectorLength, b.ColCount);
+            Solve(b, destination);
+            return destination;
+        }
     }
 }
