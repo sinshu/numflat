@@ -125,7 +125,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 5, 2, 3)]
         [TestCase(6, 3, 7, 4, 2)]
         [TestCase(3, 7, 4, 3, 3)]
-        public void Solve_Arg2(int m, int n, int aStride, int bStride, int dstStride)
+        public void Solve(int m, int n, int aStride, int bStride, int dstStride)
         {
             var a = TestMatrix.RandomSingle(42, m, n, aStride);
             var b = TestVector.RandomSingle(57, a.RowCount, bStride);
@@ -145,38 +145,6 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
 
             TestVector.FailIfOutOfRangeWrite(actual);
-        }
-
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 1, 2, 4)]
-        [TestCase(2, 2, 2, 1)]
-        [TestCase(2, 2, 4, 9)]
-        [TestCase(3, 3, 3, 1)]
-        [TestCase(3, 3, 4, 2)]
-        [TestCase(3, 2, 3, 1)]
-        [TestCase(3, 2, 4, 5)]
-        [TestCase(2, 3, 2, 1)]
-        [TestCase(2, 3, 5, 2)]
-        [TestCase(6, 3, 7, 4)]
-        [TestCase(3, 7, 4, 3)]
-        public void Solve_Arg1(int m, int n, int aStride, int bStride)
-        {
-            var a = TestMatrix.RandomSingle(42, m, n, aStride);
-            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
-            var svd = a.Svd();
-
-            var ma = Interop.ToMathNet(a);
-            var mb = Interop.ToMathNet(b);
-            var expected = ma.Svd().Solve(mb);
-
-            Vec<float> actual;
-            using (a.EnsureUnchanged())
-            using (b.EnsureUnchanged())
-            {
-                actual = svd.Solve(b);
-            }
-
-            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
         }
 
         [TestCase(1)]
