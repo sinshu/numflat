@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the QR decomposition.
     /// </summary>
-    public class QrDecompositionSingle
+    public class QrDecompositionSingle : MatrixDecompositionBase<float>
     {
         private Mat<float> q;
         private Mat<float> r;
@@ -18,7 +18,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        public QrDecompositionSingle(in Mat<float> a)
+        public QrDecompositionSingle(in Mat<float> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -108,16 +108,8 @@ namespace NumFlat
             }
         }
 
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the solution vector.
-        /// </param>
-        public unsafe void Solve(in Vec<float> b, in Vec<float> destination)
+        /// <inheritdoc/>
+        public unsafe override void Solve(in Vec<float> b, in Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -146,29 +138,6 @@ namespace NumFlat
                     pr, r.Stride,
                     pd, destination.Stride);
             }
-        }
-
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <returns>
-        /// The solution vector.
-        /// </returns>
-        public Vec<float> Solve(in Vec<float> b)
-        {
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != q.RowCount)
-            {
-                throw new ArgumentException("The length of the input vector does not meet the requirement.");
-            }
-
-            var x = new Vec<float>(r.RowCount);
-            Solve(b, x);
-            return x;
         }
 
         /// <summary>

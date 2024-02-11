@@ -51,9 +51,7 @@ namespace NumFlat
             /// </summary>
             public int Count => rowCount;
 
-            /// <summary>
             /// <inheritdoc/>
-            /// </summary>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
@@ -82,16 +80,12 @@ namespace NumFlat
                     this.current = default;
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public void Dispose()
                 {
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public bool MoveNext()
                 {
                     row++;
@@ -107,9 +101,7 @@ namespace NumFlat
                     }
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public Vec<T> Current => current;
 
                 object? IEnumerator.Current
@@ -172,9 +164,7 @@ namespace NumFlat
             /// </summary>
             public int Count => colCount;
 
-            /// <summary>
             /// <inheritdoc/>
-            /// </summary>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
@@ -201,16 +191,12 @@ namespace NumFlat
                     this.current = default;
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public void Dispose()
                 {
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public bool MoveNext()
                 {
                     offset += stride;
@@ -226,9 +212,7 @@ namespace NumFlat
                     }
                 }
 
-                /// <summary>
                 /// <inheritdoc/>
-                /// </summary>
                 public Vec<T> Current => current;
 
                 object? IEnumerator.Current

@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SingularValueDecompositionSingle
+    public class SingularValueDecompositionSingle : MatrixDecompositionBase<float>
     {
         private readonly Vec<float> s;
         private readonly Mat<float> u;
@@ -22,7 +22,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the SVD.
         /// </exception>
-        public SingularValueDecompositionSingle(in Mat<float> a)
+        public SingularValueDecompositionSingle(in Mat<float> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -158,16 +158,8 @@ namespace NumFlat
             }
         }
 
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the solution vector.
-        /// </param>
-        public void Solve(in Vec<float> b, in Vec<float> destination)
+        /// <inheritdoc/>
+        public unsafe override void Solve(in Vec<float> b, in Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -190,29 +182,6 @@ namespace NumFlat
             Mat.Mul(u.Submatrix(0, 0, u.RowCount, s.Count), b, ts, true);
             Vec.PointwiseDiv(ts, s, ts);
             Mat.Mul(vt, tmp, destination, true);
-        }
-
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <returns>
-        /// The solution vector.
-        /// </returns>
-        public Vec<float> Solve(in Vec<float> b)
-        {
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != u.RowCount)
-            {
-                throw new ArgumentException("The length of the input vector does not meet the requirement.");
-            }
-
-            var x = new Vec<float>(vt.RowCount);
-            Solve(b, x);
-            return x;
         }
 
         /// <summary>

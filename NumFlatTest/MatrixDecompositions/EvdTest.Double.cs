@@ -71,7 +71,7 @@ namespace NumFlatTest
         [TestCase(4, 4, 3, 2)]
         [TestCase(5, 5, 1, 1)]
         [TestCase(5, 5, 8, 7)]
-        public void Solve_Arg2(int n, int aStride, int bStride, int dstStride)
+        public void Solve(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = TestVector.RandomDouble(57, a.RowCount, bStride);
@@ -89,34 +89,6 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
             TestVector.FailIfOutOfRangeWrite(actual);
-        }
-
-        [TestCase(1, 1, 1)]
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 2, 1)]
-        [TestCase(2, 2, 4)]
-        [TestCase(3, 3, 1)]
-        [TestCase(3, 3, 2)]
-        [TestCase(4, 4, 1)]
-        [TestCase(4, 4, 3)]
-        [TestCase(5, 5, 1)]
-        [TestCase(5, 5, 8)]
-        public void Solve_Arg1(int n, int aStride, int bStride)
-        {
-            var a = CreateHermitianMatrix(42, n, aStride);
-            var b = TestVector.RandomDouble(57, a.RowCount, bStride);
-            var evd = a.Evd();
-
-            var expected = a.Svd().Solve(b);
-
-            Vec<double> actual;
-            using (a.EnsureUnchanged())
-            using (b.EnsureUnchanged())
-            {
-                actual = evd.Solve(b);
-            }
-
-            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1)]

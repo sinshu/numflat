@@ -6,9 +6,7 @@ namespace NumFlat
 {
     public partial struct Vec<T>
     {
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)this).GetEnumerator();
@@ -33,16 +31,12 @@ namespace NumFlat
                 this.current = default;
             }
 
-            /// <summary>
             /// <inheritdoc/>
-            /// </summary>
             public void Dispose()
             {
             }
 
-            /// <summary>
             /// <inheritdoc/>
-            /// </summary>
             public bool MoveNext()
             {
                 position += stride;
@@ -58,9 +52,7 @@ namespace NumFlat
                 }
             }
 
-            /// <summary>
             /// <inheritdoc/>
-            /// </summary>
             public T Current => current;
 
             object? IEnumerator.Current

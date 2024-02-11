@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the eigen value decomposition (EVD).
     /// </summary>
-    public class EigenValueDecompositionSingle
+    public class EigenValueDecompositionSingle : MatrixDecompositionBase<float>
     {
         private readonly Vec<float> d;
         private readonly Mat<float> v;
@@ -25,7 +25,7 @@ namespace NumFlat
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
         /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
-        public EigenValueDecompositionSingle(in Mat<float> a)
+        public EigenValueDecompositionSingle(in Mat<float> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -105,16 +105,8 @@ namespace NumFlat
             }
         }
 
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the solution vector.
-        /// </param>
-        public unsafe void Solve(in Vec<float> b, in Vec<float> destination)
+        /// <inheritdoc/>
+        public unsafe override void Solve(in Vec<float> b, in Vec<float> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -135,29 +127,6 @@ namespace NumFlat
             Mat.Mul(v, b, tmp, true);
             Vec.PointwiseDiv(tmp, d, tmp);
             Mat.Mul(v, tmp, destination, false);
-        }
-
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <returns>
-        /// The solution vector.
-        /// </returns>
-        public Vec<float> Solve(in Vec<float> b)
-        {
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != v.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the order of V.");
-            }
-
-            var x = new Vec<float>(v.RowCount);
-            Solve(b, x);
-            return x;
         }
 
         /// <summary>

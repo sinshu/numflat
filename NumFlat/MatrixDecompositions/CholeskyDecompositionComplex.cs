@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the Cholesky decomposition.
     /// </summary>
-    public class CholeskyDecompositionComplex
+    public class CholeskyDecompositionComplex : MatrixDecompositionBase<Complex>
     {
         private Mat<Complex> l;
 
@@ -25,7 +25,7 @@ namespace NumFlat
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
         /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
-        public CholeskyDecompositionComplex(in Mat<Complex> a)
+        public CholeskyDecompositionComplex(in Mat<Complex> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -95,16 +95,8 @@ namespace NumFlat
             }
         }
 
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the solution vector.
-        /// </param>
-        public unsafe void Solve(in Vec<Complex> b, in Vec<Complex> destination)
+        /// <inheritdoc/>
+        public unsafe override void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -134,29 +126,6 @@ namespace NumFlat
                     pl, l.Stride,
                     pcdst, cdst.Count);
             }
-        }
-
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <returns>
-        /// The solution vector.
-        /// </returns>
-        public Vec<Complex> Solve(in Vec<Complex> b)
-        {
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != l.RowCount)
-            {
-                throw new ArgumentException("The length of the input vector does not meet the requirement.");
-            }
-
-            var x = new Vec<Complex>(l.RowCount);
-            Solve(b, x);
-            return x;
         }
 
         /// <summary>

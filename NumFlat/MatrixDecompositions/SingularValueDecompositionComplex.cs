@@ -8,7 +8,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SingularValueDecompositionComplex
+    public class SingularValueDecompositionComplex : MatrixDecompositionBase<Complex>
     {
         private readonly Vec<double> s;
         private readonly Mat<Complex> u;
@@ -23,7 +23,7 @@ namespace NumFlat
         /// <exception cref="LapackException">
         /// Failed to compute the SVD.
         /// </exception>
-        public SingularValueDecompositionComplex(in Mat<Complex> a)
+        public SingularValueDecompositionComplex(in Mat<Complex> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
 
@@ -159,16 +159,8 @@ namespace NumFlat
             }
         }
 
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the solution vector.
-        /// </param>
-        public void Solve(in Vec<Complex> b, in Vec<Complex> destination)
+        /// <inheritdoc/>
+        public unsafe override void Solve(in Vec<Complex> b, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -191,29 +183,6 @@ namespace NumFlat
             Mat.Mul(u.Submatrix(0, 0, u.RowCount, s.Count), b, ts, true, true);
             PointwiseDiv(ts, s, ts);
             Mat.Mul(vt, tmp, destination, true, true);
-        }
-
-        /// <summary>
-        /// Solves the linear equation, Ax = b.
-        /// </summary>
-        /// <param name="b">
-        /// The input vector.
-        /// </param>
-        /// <returns>
-        /// The solution vector.
-        /// </returns>
-        public Vec<Complex> Solve(in Vec<Complex> b)
-        {
-            ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != u.RowCount)
-            {
-                throw new ArgumentException("The length of the input vector does not meet the requirement.");
-            }
-
-            var x = new Vec<Complex>(vt.RowCount);
-            Solve(b, x);
-            return x;
         }
 
         /// <summary>
