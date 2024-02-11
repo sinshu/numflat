@@ -11,29 +11,23 @@ namespace NumFlat
         private string? functionName = null;
         private int errorCode = 0;
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public LapackException() : base()
         {
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public LapackException(string message) : base(message)
         {
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         public LapackException(string message, Exception inner) : base(message, inner)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="LapackException"/>.
+        /// Initializes a new instance of the <see cref="LapackException"/> class with a LAPACK function name ant a error code.
         /// </summary>
         public LapackException(string message, string functionName, int errorCode)
             : base($"The function '{functionName}' failed with the error code '{errorCode}'. {message}")
@@ -42,9 +36,7 @@ namespace NumFlat
             this.errorCode = errorCode;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
         protected LapackException(SerializationInfo info, StreamingContext context)
         {
         }
