@@ -137,6 +137,9 @@ namespace NumFlat
         /// <param name="target">
         /// The target matrix to be transposed.
         /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void TransposeInplace<T>(in this Mat<T> target) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
@@ -161,6 +164,9 @@ namespace NumFlat
         /// <param name="target">
         /// The target complex matrix to be conjugated.
         /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void ConjugateInplace(in this Mat<Complex> target)
         {
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
@@ -174,6 +180,9 @@ namespace NumFlat
         /// <param name="target">
         /// The target complex matrix to be conjugated and transposed.
         /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
         public static void ConjugateTransposeInplace(in this Mat<Complex> target)
         {
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
