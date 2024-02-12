@@ -142,5 +142,55 @@ namespace NumFlatTest
 
             NumAssert.AreSame(expected, x, 1.0E-12);
         }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(3, 3)]
+        [TestCase(3, 5)]
+        public void Transpose(int n, int xStride)
+        {
+            var x = TestMatrix.RandomDouble(42, n, n, xStride);
+
+            var expected = x.Transpose();
+
+            x.TransposeInplace();
+
+            NumAssert.AreSame(expected, x, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(x);
+        }
+
+        [Test]
+        public void Conjugate()
+        {
+            var x = TestMatrix.RandomComplex(42, 10, 5, 11);
+
+            var expected = x.Conjugate();
+
+            x.ConjugateInplace();
+
+            NumAssert.AreSame(expected, x, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(x);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(3, 3)]
+        [TestCase(3, 5)]
+        public void ConjugateTranspose(int n, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, n, n, xStride);
+
+            var expected = x.ConjugateTranspose();
+
+            x.ConjugateTransposeInplace();
+
+            NumAssert.AreSame(expected, x, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(x);
+        }
     }
 }

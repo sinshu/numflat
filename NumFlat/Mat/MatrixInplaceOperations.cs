@@ -127,5 +127,80 @@ namespace NumFlat
         {
             Mat.PointwiseDiv(target, x, target);
         }
+
+        /// <summary>
+        /// Transposes a matrix in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target matrix to be transposed.
+        /// </param>
+        public static void TransposeInplace<T>(in this Mat<T> target) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            if (target.RowCount != target.ColCount)
+            {
+                throw new ArgumentException("The matrix must be a square matrix.");
+            }
+
+            for (var col = 1; col < target.ColCount; col++)
+            {
+                for (var row = 0; row < col; row++)
+                {
+                    (target[row, col], target[col, row]) = (target[col, row], target[row, col]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Conjugates a complex matrix in-place.
+        /// </summary>
+        /// <param name="target">
+        /// The target complex matrix to be conjugated.
+        /// </param>
+        public static void ConjugateInplace(in this Mat<Complex> target)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            Mat.Conjugate(target, target);
+        }
+
+        /// <summary>
+        /// Conjugates and transposes a complex matrix in-place.
+        /// </summary>
+        /// <param name="target">
+        /// The target complex matrix to be conjugated and transposed.
+        /// </param>
+        public static void ConjugateTransposeInplace(in this Mat<Complex> target)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            if (target.RowCount != target.ColCount)
+            {
+                throw new ArgumentException("The matrix must be a square matrix.");
+            }
+
+            for (var col = 0; col < target.ColCount; col++)
+            {
+                for (var row = 0; row <= col; row++)
+                {
+                    if (row == col)
+                    {
+                        var tmp = target[row, col];
+                        target[row, col] = tmp.Conjugate();
+                    }
+                    else
+                    {
+                        var tmp1 = target[row, col];
+                        var tmp2 = target[col, row];
+                        target[row, col] = tmp2.Conjugate();
+                        target[col, row] = tmp1.Conjugate();
+                    }
+                }
+            }
+        }
     }
 }

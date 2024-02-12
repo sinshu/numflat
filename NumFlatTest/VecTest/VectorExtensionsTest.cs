@@ -55,6 +55,31 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 1)]
+        [TestCase(3, 4)]
+        [TestCase(4, 1)]
+        [TestCase(4, 2)]
+        [TestCase(5, 1)]
+        [TestCase(5, 3)]
+        public void Reverse(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var expected = x.ToArray().Reverse().ToVector();
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Reverse();
+            }
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 2, 1, 3)]
         [TestCase(2, 1, 2, 1)]

@@ -156,6 +156,33 @@ namespace NumFlatTest
         }
 
         [TestCase(1, 1, 1)]
+        [TestCase(1, 3, 4)]
+        [TestCase(2, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(3, 1, 1)]
+        [TestCase(3, 4, 2)]
+        [TestCase(4, 1, 1)]
+        [TestCase(4, 2, 2)]
+        [TestCase(5, 1, 1)]
+        [TestCase(5, 3, 3)]
+        public void Reverse(int count, int xStride, int dstStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var expected = x.ToArray().Reverse().ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Vec.Reverse(x, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 0);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]
         [TestCase(3, 1, 1)]
         [TestCase(3, 3, 2)]

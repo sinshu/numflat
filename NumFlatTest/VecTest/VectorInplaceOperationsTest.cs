@@ -87,6 +87,52 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, x, 1.0E-12);
         }
 
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 1)]
+        [TestCase(3, 4)]
+        [TestCase(4, 1)]
+        [TestCase(4, 2)]
+        [TestCase(5, 1)]
+        [TestCase(5, 3)]
+        public void Reverse(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var expected = x.ToArray().Reverse().ToVector();
+
+            x.ReverseInplace();
+
+            NumAssert.AreSame(expected, x, 0);
+
+            TestVector.FailIfOutOfRangeWrite(x);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 1)]
+        [TestCase(3, 4)]
+        [TestCase(4, 1)]
+        [TestCase(4, 2)]
+        [TestCase(5, 1)]
+        [TestCase(5, 3)]
+        public void Conjugate(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var expected = x.Conjugate();
+
+            x.ConjugateInplace();
+
+            NumAssert.AreSame(expected, x, 0);
+
+            TestVector.FailIfOutOfRangeWrite(x);
+        }
+
         [Test]
         public void NormalizeSingle_Arg0()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace NumFlat
 {
@@ -126,6 +127,43 @@ namespace NumFlat
         public static void PointwiseDivInplace<T>(in this Vec<T> target, in Vec<T> x) where T : unmanaged, INumberBase<T>
         {
             Vec.PointwiseDiv(target, x, target);
+        }
+
+        /// <summary>
+        /// Reverses the order of elements in a vector.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target vector to be reversed.
+        /// </param>
+        public static void ReverseInplace<T>(in this Vec<T> target) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            var span = target.Memory.Span;
+            var p1 = 0;
+            var p2 = span.Length - 1;
+            while(p1 < p2)
+            {
+                (span[p1], span[p2]) = (span[p2], span[p1]);
+                p1 += target.Stride;
+                p2 -= target.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Conjugates the complex vector.
+        /// </summary>
+        /// <param name="target">
+        /// The target complex vector to be conjugated.
+        /// </param>
+        public static void ConjugateInplace(in this Vec<Complex> target)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            Vec.Conjugate(target, target);
         }
 
         /// <summary>

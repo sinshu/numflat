@@ -242,6 +242,41 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Reverses the order of elements in a vector.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector to be reversed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the reversed vector.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// This method does not support in-place reversal.
+        /// To reverse a vector in-place, use <see cref="VectorInplaceOperations.ReverseInplace{T}(in Vec{T})"/> instead.
+        /// </remarks>
+        public static void Reverse<T>(in Vec<T> x, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfDifferentSize(x, destination);
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = sx.Length - 1;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px];
+                px -= x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
         /// Computes a dot product of vectors, x^T * y.
         /// </summary>
         /// <param name="x">

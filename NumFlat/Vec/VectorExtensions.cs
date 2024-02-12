@@ -69,6 +69,31 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Reverses the order of elements in a vector.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector to be reversed.
+        /// </param>
+        /// <returns>
+        /// The reversed vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Reverse{T}(in Vec{T}, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> Reverse<T>(in this Vec<T> x) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var destination = new Vec<T>(x.Count);
+            Vec.Reverse(x, destination);
+            return destination;
+        }
+
+        /// <summary>
         /// Computes an outer product of vectors, x * y^T.
         /// </summary>
         /// <param name="x">

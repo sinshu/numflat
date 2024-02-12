@@ -310,8 +310,8 @@ namespace NumFlat
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.
-        /// Since in-place transposition is not supported,
-        /// <paramref name="x"/> and <paramref name="destination"/> must be different.
+        /// This method does not support in-place transposition.
+        /// To transpose a matrix in-place, use <see cref="MatrixInplaceOperations.TransposeInplace{T}(in Mat{T})"/> instead.
         /// To efficiently perform matrix multiplication with matrix transposition,
         /// use <see cref="Mat.Mul(in Mat{double}, in Mat{double}, in Mat{double}, bool, bool)"/>.
         /// </remarks>
