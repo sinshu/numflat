@@ -1,3 +1,13 @@
+# v0.3.2
+
+* Added the following in-place operations.
+    - `Vec<T>.ReverseInplace()`
+    - `Vec<Complex>.ConjugateInplace()`
+    - `Mat<T>.TransposeInplace()`
+    - `Mat<Complex>.ConjugateInplace()`
+    - `Mat<Complex>.ConjugateTransposeInplace()`
+* Matrix decomposition methods now support `Solve()` against matrices as a set of RHS vectors.
+
 # v0.3.1
 
 * Added the weighted version of `Mean`, `Variance`, `Covariance`, `StandardDeviation` for vectors.
