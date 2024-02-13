@@ -28,7 +28,6 @@ public class Program
             {
                 var transformed = lda.Transform(x);
                 writer.WriteLine(transformed[0] + "," + transformed[1]);
-                Console.WriteLine(x);
             }
         }
     }

@@ -20,6 +20,8 @@ Other types can be used as well, but support beyond simple arithmetic operations
 
 ## Installation
 
+.NET 8 is required.
+
 [The NuGet package](https://www.nuget.org/packages/NumFlat) is available.
 
 ```ps1
