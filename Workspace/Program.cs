@@ -15,18 +15,20 @@ public class Program
         VectorExamples.Run();
         MatrixExamples.Run();
 
-        var xs = Read().ToArray();
-        var pca = xs.Pca();
+        var data = ReadWithLabel().ToArray();
+        var xs = data.Select(pair => pair.Item1).ToArray();
+        var ys = data.Select(pair => pair.Item2).ToArray();
 
-        Console.WriteLine();
+        var lda = new LinearDiscriminantAnalysis(xs, ys);
 
         using (var writer = new StreamWriter("out.csv"))
         {
             writer.WriteLine("1st,2nd");
             foreach (var x in xs)
             {
-                var transformed = pca.Transform(x);
+                var transformed = lda.Transform(x);
                 writer.WriteLine(transformed[0] + "," + transformed[1]);
+                Console.WriteLine(x);
             }
         }
     }
@@ -36,6 +38,24 @@ public class Program
         foreach (var line in File.ReadLines("iris.csv").Skip(1))
         {
             yield return line.Split(',').Take(4).Select(value => double.Parse(value)).ToVector();
+        }
+    }
+
+    private static IEnumerable<(Vec<double>, int)> ReadWithLabel()
+    {
+        foreach (var line in File.ReadLines("iris.csv").Skip(1))
+        {
+            var split = line.Split(',');
+            int label;
+            switch (split[4])
+            {
+                case "setosa": label = 0; break;
+                case "versicolor": label = 1; break;
+                case "virginica": label = 2; break;
+                default: throw new Exception();
+            }
+            var vec = line.Split(',').Take(4).Select(value => double.Parse(value)).ToVector();
+            yield return (vec, label);
         }
     }
 }
