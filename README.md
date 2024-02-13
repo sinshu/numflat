@@ -429,6 +429,33 @@ Matrix 3x3-Double
 7  8  9
 ```
 
+### In-place operations
+
+Most of the operations have an in-place version, which directly modifies the target vector or matrix without creating a new one.
+
+```cs
+// Some vector.
+Vec<double> vector = [1, 2, 3];
+
+// This allocates a new vector.
+var normalized = vector.Normalize();
+
+// This modifies the original vector.
+vector.NormalizeInplace();
+
+// Some matrix.
+var matrix = new double[,]
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 },
+}
+.ToMatrix();
+
+// In-place methods can also directly modify a part of vector or matrix.
+matrix.Rows[0].NormalizeInplace();
+```
+
 ### Reducing memory allocation
 
 Most of the operations have a non-allocation version, which requires a destination buffer provided by user. Below is an example of matrix addition without heap allocation.
@@ -457,33 +484,6 @@ var destination = new Mat<double>(2, 2);
 
 // This is the same as 'x + y', but does not allocate heap.
 Mat.Add(x, y, destination);
-```
-
-### In-place operations
-
-Most of the operations have an in-place version, which directly modifies the target vector or matrix without creating a new one.
-
-```cs
-// Some vector.
-Vec<double> vector = [1, 2, 3];
-
-// This allocates a new vector.
-var normalized = vector.Normalize();
-
-// This modifies the original vector.
-vector.NormalizeInplace();
-
-// Some matrix.
-var matrix = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-}
-.ToMatrix();
-
-// In-place methods can also directly modify a part of vector or matrix.
-matrix.Rows[0].NormalizeInplace();
 ```
 
 
