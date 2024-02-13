@@ -356,7 +356,7 @@ Matrix 5x5-Double
 3  3    3  3  3
 ```
 
-### Treat matrix as a set of vectors
+### Matrix as a set of vectors
 
 Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties.
 Similar to a submatrix, changes to the view will affect the original matrix.
@@ -392,117 +392,9 @@ var rowMean = x.Rows.Mean();
 var colCov = x.Cols.Covariance();
 ```
 
-### LU decomposition
+### Matrix decomposition
 
-The LU decomposition can be obtained by calling the extension method `Lu()`.
-
-#### Code
-```cs
-// Some matrix.
-var x = new double[,]
-{
-    { 1, 2, 3 },
-    { 1, 4, 9 },
-    { 1, 3, 7 },
-}
-.ToMatrix();
-
-// Do LU decomposition.
-var decomposition = x.Lu();
-
-// Decomposed matrices.
-var p = decomposition.GetPermutationMatrix();
-var l = decomposition.L;
-var u = decomposition.U;
-
-// Reconstruct the matrix.
-var reconstructed = p * l * u;
-
-// Show the reconstructed matrix.
-Console.WriteLine(reconstructed);
-```
-#### Output
-```console
-Matrix 3x3-Double
-1  2  3
-1  4  9
-1  3  7
-```
-
-### QR decomposition
-
-The QR decomposition can be obtained by calling the extension method `Qr()`.
-
-#### Code
-```cs
-// Some matrix.
-var x = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-}
-.ToMatrix();
-
-// Do QR decomposition.
-var decomposition = x.Qr();
-
-// Decomposed matrices.
-var q = decomposition.Q;
-var r = decomposition.R;
-
-// Reconstruct the matrix.
-var reconstructed = q * r;
-
-// Show the reconstructed matrix.
-Console.WriteLine(reconstructed);
-```
-#### Output
-```console
-Matrix 3x3-Double
-1  2  3
-4  5  6
-7  8  9
-```
-
-### Cholesky decomposition
-
-The Cholesky decomposition can be obtained by calling the extension method `Cholesky()`.
-
-#### Code
-```cs
-// Some matrix.
-var x = new double[,]
-{
-    { 3, 2, 1 },
-    { 2, 3, 2 },
-    { 1, 2, 3 },
-}
-.ToMatrix();
-
-// Do Cholesky decomposition.
-var decomposition = x.Cholesky();
-
-// Decomposed matrix.
-var l = decomposition.L;
-
-// Reconstruct the matrix.
-var reconstructed = l * l.Transpose();
-
-// Show the reconstructed matrix.
-Console.WriteLine(reconstructed);
-```
-#### Output
-```console
-Matrix 3x3-Double
-1  2  3
-4  5  6
-7  8  9
-```
-
-### Singular value decomposition
-
-The singular value decomposition can be obtained by calling the extension method `Svd()`.
+The LU, QR, Cholesky, SVD, EVD, and GEVD for all three major number types `float`, `double`, and `Complex` are available. Below is an example to decompose a matrix using SVD.
 
 #### Code
 ```cs
@@ -535,6 +427,63 @@ Matrix 3x3-Double
 1  2  3
 4  5  6
 7  8  9
+```
+
+### Reducing memory allocation
+
+Most of the operations have a non-allocation version, which requires a destination buffer provided by user. Below is an example of matrix addition without heap allocation.
+
+```cs
+// Some matrices.
+var x = new double[,]
+{
+    { 1, 2 },
+    { 3, 4 } ,
+}
+.ToMatrix();
+
+var y = new double[,]
+{
+    { 5, 6 },
+    { 7, 8 } ,
+}
+.ToMatrix();
+
+// This allocates a new matrix.
+var answer = x + y;
+
+// The buffer to store the answer.
+var destination = new Mat<double>(2, 2);
+
+// This is the same as 'x + y', but does not allocate heap.
+Mat.Add(x, y, destination);
+```
+
+### In-place operations
+
+Most of the operations have an in-place version, which directly modifies the target vector or matrix without creating a new one.
+
+```cs
+// Some vector.
+Vec<double> vector = [1, 2, 3];
+
+// This allocates a new vector.
+var normalized = vector.Normalize();
+
+// This modifies the original vector.
+vector.NormalizeInplace();
+
+// Some matrix.
+var matrix = new double[,]
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 },
+}
+.ToMatrix();
+
+// In-place methods can also directly modify a part of vector or matrix.
+matrix.Rows[0].NormalizeInplace();
 ```
 
 
