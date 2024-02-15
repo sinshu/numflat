@@ -143,11 +143,7 @@ namespace NumFlat
         public static void TransposeInplace<T>(in this Mat<T> target) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
-
-            if (target.RowCount != target.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(target, nameof(target));
 
             for (var col = 1; col < target.ColCount; col++)
             {
@@ -186,11 +182,7 @@ namespace NumFlat
         public static void ConjugateTransposeInplace(in this Mat<Complex> target)
         {
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
-
-            if (target.RowCount != target.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(target, nameof(target));
 
             for (var col = 0; col < target.ColCount; col++)
             {

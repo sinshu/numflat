@@ -280,12 +280,12 @@ namespace NumFlat
 
                 if ((uint)row >= rowCount)
                 {
-                    throw new IndexOutOfRangeException("'row' must be within the number of rows.");
+                    throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
                 }
 
                 if ((uint)col >= colCount)
                 {
-                    throw new IndexOutOfRangeException("'col' must be within the number of columns.");
+                    throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
                 }
 
                 return memory.Span[stride * col + row];
@@ -300,12 +300,12 @@ namespace NumFlat
 
                 if ((uint)row >= rowCount)
                 {
-                    throw new IndexOutOfRangeException("'row' must be within the number of rows.");
+                    throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
                 }
 
                 if ((uint)col >= colCount)
                 {
-                    throw new IndexOutOfRangeException("'col' must be within the number of columns.");
+                    throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
                 }
 
                 memory.Span[stride * col + row] = value;

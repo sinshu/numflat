@@ -359,11 +359,7 @@ namespace NumFlat
         public static T Trace<T>(in this Mat<T> x) where T : unmanaged, INumberBase<T>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
-
-            if (x.RowCount != x.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
 
             var trace = T.Zero;
             for (var i = 0; i < x.RowCount; i++)
@@ -453,12 +449,12 @@ namespace NumFlat
 
             if (destination.RowCount != m.count)
             {
-                throw new ArgumentException($"The dimensions of 'destination' must match '{m.name}'.");
+                throw new ArgumentException($"'destination.RowCount' must match '{m.name}'.");
             }
 
             if (destination.ColCount != n.count)
             {
-                throw new ArgumentException($"The dimensions of 'destination' must match '{n.name}'.");
+                throw new ArgumentException($"'destination.ColCount' must match '{n.name}'.");
             }
 
             return (m.count, n.count, k.count);

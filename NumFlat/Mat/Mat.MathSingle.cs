@@ -133,11 +133,7 @@ namespace NumFlat
         public static unsafe float Determinant(in this Mat<float> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
-
-            if (x.RowCount != x.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
 
             using var utmp = TemporalMatrix.CopyFrom(x);
             ref readonly var tmp = ref utmp.Item;
@@ -187,12 +183,8 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
             ThrowHelper.ThrowIfDifferentSize(x, destination);
-
-            if (x.RowCount != x.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
 
             x.CopyTo(destination);
 

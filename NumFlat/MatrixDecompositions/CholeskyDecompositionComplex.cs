@@ -28,11 +28,7 @@ namespace NumFlat
         public CholeskyDecompositionComplex(in Mat<Complex> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
 
             var l = new Mat<Complex>(a.RowCount, a.ColCount);
             Decompose(a, l);
@@ -61,12 +57,8 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(l, nameof(l));
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
             ThrowHelper.ThrowIfDifferentSize(a, l);
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("'a' must be a square matrix.");
-            }
 
             if (l.RowCount != a.RowCount || l.ColCount != a.ColCount)
             {

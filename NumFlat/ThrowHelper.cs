@@ -49,7 +49,7 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount)
             {
-                throw new ArgumentException("The matrices must have the same number of rows and columns.");
+                throw new ArgumentException("The matrices must have the same dimensions.");
             }
         }
 
@@ -57,7 +57,15 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount || m1.RowCount != m3.RowCount || m1.ColCount != m3.ColCount)
             {
-                throw new ArgumentException("The matrices must have the same number of rows and columns.");
+                throw new ArgumentException("The matrices must have the same dimensions.");
+            }
+        }
+
+        internal static void ThrowIfNonSquare<T>(in Mat<T> m, string name) where T : unmanaged, INumberBase<T>
+        {
+            if (m.RowCount != m.ColCount)
+            {
+                throw new ArgumentException("The matrix must be a square matrix.", name);
             }
         }
     }

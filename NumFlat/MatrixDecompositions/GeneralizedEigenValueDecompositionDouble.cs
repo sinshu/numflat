@@ -32,16 +32,8 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("'a' must be a square matrix.");
-            }
-
-            if (b.RowCount != a.RowCount || b.ColCount != a.ColCount)
-            {
-                throw new ArgumentException("The order of 'b' must match 'a'.");
-            }
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
+            ThrowHelper.ThrowIfDifferentSize(a, b);
 
             var d = new Vec<double>(a.RowCount);
             var v = new Mat<double>(a.RowCount, a.ColCount);
@@ -80,25 +72,12 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(d, nameof(d));
             ThrowHelper.ThrowIfEmpty(v, nameof(v));
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("'a' must be a square matrix.");
-            }
-
-            if (b.RowCount != a.RowCount || b.ColCount != a.ColCount)
-            {
-                throw new ArgumentException("The order of 'b' must match 'a'.");
-            }
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
+            ThrowHelper.ThrowIfDifferentSize(a, b, v);
 
             if (d.Count != a.RowCount)
             {
                 throw new ArgumentException("'d.Count' must match 'a.RowCount'.");
-            }
-
-            if (v.RowCount != a.RowCount || v.ColCount != a.ColCount)
-            {
-                throw new ArgumentException("The order of 'v' must match 'a'.");
             }
 
             using var utmp = TemporalMatrix.CopyFrom(b);

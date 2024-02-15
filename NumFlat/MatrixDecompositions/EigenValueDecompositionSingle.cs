@@ -28,11 +28,7 @@ namespace NumFlat
         public EigenValueDecompositionSingle(in Mat<float> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("The matrix must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
 
             var d = new Vec<float>(a.RowCount);
             var v = new Mat<float>(a.RowCount, a.RowCount);
@@ -67,11 +63,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(d, nameof(d));
             ThrowHelper.ThrowIfEmpty(v, nameof(v));
-
-            if (a.RowCount != a.ColCount)
-            {
-                throw new ArgumentException("'a' must be a square matrix.");
-            }
+            ThrowHelper.ThrowIfNonSquare(a, nameof(a));
 
             if (d.Count != a.RowCount)
             {

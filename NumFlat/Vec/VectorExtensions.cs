@@ -282,6 +282,8 @@ namespace NumFlat
         /// </remarks>
         public static Vec<float> Normalize(in this Vec<float> x)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
             var normalized = new Vec<float>(x.Count);
             Vec.Noramlize(x, normalized);
             return normalized;
@@ -303,6 +305,8 @@ namespace NumFlat
         /// </remarks>
         public static Vec<double> Normalize(in this Vec<double> x)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
             var normalized = new Vec<double>(x.Count);
             Vec.Noramlize(x, normalized);
             return normalized;
@@ -324,6 +328,8 @@ namespace NumFlat
         /// </remarks>
         public static Vec<Complex> Normalize(in this Vec<Complex> x)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
             var normalized = new Vec<Complex>(x.Count);
             Vec.Noramlize(x, normalized);
             return normalized;
@@ -347,6 +353,13 @@ namespace NumFlat
         /// </remarks>
         public static Vec<float> Normalize(in this Vec<float> x, float p)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
             var normalized = new Vec<float>(x.Count);
             Vec.Noramlize(x, normalized, p);
             return normalized;
@@ -370,6 +383,13 @@ namespace NumFlat
         /// </remarks>
         public static Vec<double> Normalize(in this Vec<double> x, double p)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
             var normalized = new Vec<double>(x.Count);
             Vec.Noramlize(x, normalized, p);
             return normalized;
@@ -393,6 +413,13 @@ namespace NumFlat
         /// </remarks>
         public static Vec<Complex> Normalize(in this Vec<Complex> x, double p)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+            }
+
             var normalized = new Vec<Complex>(x.Count);
             Vec.Noramlize(x, normalized, p);
             return normalized;
