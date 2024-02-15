@@ -31,7 +31,7 @@ namespace NumFlat
                     throw new ArgumentException("All the source vectors must have the same length as the destination.");
                 }
 
-                Vec.Add(destination, x, destination);
+                destination.AddInplace(x);
                 count++;
             }
 
@@ -40,7 +40,7 @@ namespace NumFlat
                 throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
-            Vec.Div(destination, count, destination);
+            destination.DivInplace(count);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace NumFlat
                     throw new ArgumentException("All the vectors must have the same length.");
                 }
 
-                Vec.Add(destination, x, destination);
+                destination.AddInplace(x);
                 count++;
             }
 
@@ -85,7 +85,7 @@ namespace NumFlat
                 throw new ArgumentException("The sequence must contain at least one vector.");
             }
 
-            Vec.Div(destination, count, destination);
+            destination.DivInplace(count);
 
             return destination;
         }
@@ -140,7 +140,7 @@ namespace NumFlat
                 throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
-            Vec.Div(destination, count - ddof, destination);
+            destination.DivInplace(count - ddof);
         }
 
         /// <summary>
@@ -212,8 +212,13 @@ namespace NumFlat
                 throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
+            var i = 0;
+            foreach (var col in destination.Cols)
+            {
+                col.Subvector(i, col.Count - i).DivInplace(count - ddof);
+
+            }
             Special.LowerTriangularToHermitianInplace(destination);
-            Mat.Div(destination, count - ddof, destination);
         }
 
         /// <summary>

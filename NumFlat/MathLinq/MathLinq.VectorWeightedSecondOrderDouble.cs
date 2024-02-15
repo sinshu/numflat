@@ -69,7 +69,7 @@ namespace NumFlat
                     throw new ArgumentException("The number of source vectors is not sufficient.");
                 }
 
-                Vec.Div(destination, w1Sum, destination);
+                destination.DivInplace(w1Sum);
             }
         }
 
@@ -147,7 +147,7 @@ namespace NumFlat
                 throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
-            Vec.Div(destination, w1Sum, destination);
+            destination.DivInplace(w1Sum);
 
             return destination;
         }
@@ -234,7 +234,7 @@ namespace NumFlat
                     throw new ArgumentException("The number of source vectors is not sufficient.");
                 }
 
-                Vec.Div(destination, den, destination);
+                destination.DivInplace(den);
             }
         }
 
@@ -339,8 +339,13 @@ namespace NumFlat
                     throw new ArgumentException("The number of source vectors is not sufficient.");
                 }
 
+                var i = 0;
+                foreach (var col in destination.Cols)
+                {
+                    col.Subvector(i, col.Count - i).DivInplace(den);
+
+                }
                 Special.LowerTriangularToHermitianInplace(destination);
-                Mat.Div(destination, den, destination);
             }
         }
 
