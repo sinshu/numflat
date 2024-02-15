@@ -185,6 +185,13 @@ namespace NumFlat
 
             ThrowHelper.ThrowIfDifferentSize(this, destination);
 
+            if (this.count == destination.count &&
+                this.stride == destination.stride &&
+                this.memory.Equals(destination.memory))
+            {
+                return;
+            }
+
             var st = this.memory.Span;
             var sd = destination.memory.Span;
             var pt = 0;

@@ -192,5 +192,41 @@ namespace NumFlatTest
 
             TestMatrix.FailIfOutOfRangeWrite(x);
         }
+
+        [Test]
+        public void InverseInplace_Single()
+        {
+            var x = TestMatrix.RandomSingle(42, 3, 3, 3);
+
+            var expected = x.Inverse();
+
+            x.InverseInplace();
+
+            NumAssert.AreSame(expected, x, 1.0E-6F);
+        }
+
+        [Test]
+        public void InverseInplace_Double()
+        {
+            var x = TestMatrix.RandomDouble(42, 3, 3, 3);
+
+            var expected = x.Inverse();
+
+            x.InverseInplace();
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
+        public void InverseInplace_Complex()
+        {
+            var x = TestMatrix.RandomComplex(42, 3, 3, 3);
+
+            var expected = x.Inverse();
+
+            x.InverseInplace();
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
     }
 }

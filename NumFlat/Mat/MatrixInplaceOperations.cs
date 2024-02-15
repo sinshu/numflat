@@ -203,5 +203,38 @@ namespace NumFlat
                 }
             }
         }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="target">
+        /// The target matrix to be inverted.
+        /// </param>
+        public static void InverseInplace(in this Mat<float> target)
+        {
+            Mat.Inverse(target, target);
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="target">
+        /// The target matrix to be inverted.
+        /// </param>
+        public static void InverseInplace(in this Mat<double> target)
+        {
+            Mat.Inverse(target, target);
+        }
+
+        /// <summary>
+        /// Computes a matrix inversion, X^-1.
+        /// </summary>
+        /// <param name="target">
+        /// The target matrix to be inverted.
+        /// </param>
+        public static void InverseInplace(in this Mat<Complex> target)
+        {
+            Mat.Inverse(target, target);
+        }
     }
 }
