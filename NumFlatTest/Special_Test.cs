@@ -92,5 +92,34 @@ namespace NumFlatTest
 
             TestMatrix.FailIfOutOfRangeWrite(x);
         }
+
+        [Test]
+        public void ReverseEigenValueOrder()
+        {
+            var a = TestMatrix.RandomDouble(42, 10, 5, 10).Rows.Covariance();
+            var evd = a.Evd();
+
+            Special.ReverseEigenValueOrder(evd);
+
+            var reconstructed = evd.V * evd.D.ToDiagonalMatrix() * evd.V.Transpose();
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
+        }
+
+        [Test]
+        public void ReverseEigenValueOrder_General()
+        {
+            var a = TestMatrix.RandomDouble(42, 10, 5, 10).Rows.Covariance();
+            var b = TestMatrix.RandomDouble(57, 10, 5, 10).Rows.Covariance();
+            var gevd = a.Gevd(b);
+
+            Special.ReverseEigenValueOrder(gevd);
+
+            for (var i = 0; i < a.RowCount; i++)
+            {
+                var left = a * gevd.V.Cols[i];
+                var right = gevd.D[i] * b * gevd.V.Cols[i];
+                NumAssert.AreSame(left, right, 1.0E-12);
+            }
+        }
     }
 }

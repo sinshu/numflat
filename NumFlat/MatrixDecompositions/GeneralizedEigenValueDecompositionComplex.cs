@@ -5,7 +5,7 @@ using OpenBlasSharp;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides the generalized eigen value decomposition (GEVD).
+    /// Provides the generalized eigenvalue decomposition (GEVD).
     /// </summary>
     public class GeneralizedEigenValueDecompositionComplex
     {

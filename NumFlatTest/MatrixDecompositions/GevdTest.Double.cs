@@ -22,7 +22,7 @@ namespace NumFlatTest
         public void Decompose(int n, int aStride, int bStride, int dStride, int vStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = CreateHermitianMatrix(42, n, bStride);
+            var b = CreateHermitianMatrix(57, n, bStride);
 
             var d = TestVector.RandomDouble(0, n, dStride);
             var v = TestMatrix.RandomDouble(0, n, n, vStride);
@@ -34,8 +34,8 @@ namespace NumFlatTest
 
             for (var i = 0; i < n; i++)
             {
-                var left = a * v.Cols[0];
-                var right = d[i] * b * v.Cols[0];
+                var left = a * v.Cols[i];
+                var right = d[i] * b * v.Cols[i];
                 NumAssert.AreSame(left, right, 1.0E-12);
             }
 
@@ -56,7 +56,7 @@ namespace NumFlatTest
         public void ExtensionMethod(int n, int aStride, int bStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = CreateHermitianMatrix(42, n, bStride);
+            var b = CreateHermitianMatrix(57, n, bStride);
 
             GeneralizedEigenValueDecompositionDouble gevd;
             using (a.EnsureUnchanged())
@@ -67,8 +67,8 @@ namespace NumFlatTest
 
             for (var i = 0; i < n; i++)
             {
-                var left = a * gevd.V.Cols[0];
-                var right = gevd.D[i] * b * gevd.V.Cols[0];
+                var left = a * gevd.V.Cols[i];
+                var right = gevd.D[i] * b * gevd.V.Cols[i];
                 NumAssert.AreSame(left, right, 1.0E-12);
             }
         }

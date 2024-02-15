@@ -127,5 +127,47 @@ namespace NumFlat
                 }
             }
         }
+
+        /// <summary>
+        /// Reverts the order of the eigenvalues and corresponding eigenvectors.
+        /// </summary>
+        /// <param name="evd">
+        /// The target EVD result to be modified.
+        /// </param>
+        /// <remarks>
+        /// The EVD orders the eigenvalues in ascending order by default.
+        /// Reversing the order of the eigenvalues is useful when the significant eigenvalues should come first.
+        /// </remarks>
+        public static void ReverseEigenValueOrder(EigenValueDecompositionDouble evd)
+        {
+            ThrowHelper.ThrowIfNull(evd, nameof(evd));
+
+            evd.D.ReverseInplace();
+            foreach (var row in evd.V.Rows)
+            {
+                row.ReverseInplace();
+            }
+        }
+
+        /// <summary>
+        /// Reverts the order of the eigenvalues and corresponding eigenvectors.
+        /// </summary>
+        /// <param name="gevd">
+        /// The target GEVD result to be modified.
+        /// </param>
+        /// <remarks>
+        /// The EVD orders the eigenvalues in ascending order by default.
+        /// Reversing the order of the eigenvalues is useful when the significant eigenvalues should come first.
+        /// </remarks>
+        public static void ReverseEigenValueOrder(GeneralizedEigenValueDecompositionDouble gevd)
+        {
+            ThrowHelper.ThrowIfNull(gevd, nameof(gevd));
+
+            gevd.D.ReverseInplace();
+            foreach (var row in gevd.V.Rows)
+            {
+                row.ReverseInplace();
+            }
+        }
     }
 }

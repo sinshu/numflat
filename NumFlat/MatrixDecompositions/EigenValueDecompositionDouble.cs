@@ -4,7 +4,7 @@ using OpenBlasSharp;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides the eigen value decomposition (EVD).
+    /// Provides the eigenvalue decomposition (EVD).
     /// </summary>
     public class EigenValueDecompositionDouble : MatrixDecompositionBase<double>
     {
