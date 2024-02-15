@@ -431,6 +431,41 @@ Matrix 3x3-Double
 7  8  9
 ```
 
+### Solving linear equations
+
+Linear equations like `Ax = b` can be solved with the matrix decomposition methods above. Use `Solve()` method to get the solution vector of a given right-hand side vector `b`.
+
+#### Code
+```cs
+// Some coefficient matrix.
+var a = new double[,]
+{
+    { 1, 2, 3 },
+    { 1, 4, 9 },
+    { 2, 3, 5 },
+}
+.ToMatrix();
+
+// Do SVD.
+var svd = a.Svd();
+
+// The right-hand vector.
+Vec<double> b = [1, 2, 3];
+
+// Compute the solution vector.
+var x = svd.Solve(b);
+
+// Show the solution.
+Console.WriteLine(x);
+```
+#### Output
+```console
+Vector 3-Double
+ 2.25
+-1.75
+ 0.75
+```
+
 ### In-place operations
 
 Most of the operations have an in-place version, which directly modifies the target vector or matrix without creating a new one.
