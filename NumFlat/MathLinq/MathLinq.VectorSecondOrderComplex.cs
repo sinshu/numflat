@@ -210,19 +210,12 @@ namespace NumFlat
                 }
             }
 
-            for (var col = 1; col < destination.ColCount; col++)
-            {
-                for (var row = 0; row < col; row++)
-                {
-                    destination[row, col] = destination[col, row].Conjugate();
-                }
-            }
-
             if (count - ddof <= 0)
             {
                 throw new ArgumentException("The number of source vectors is not sufficient.");
             }
 
+            Special.LowerTriangularToHermitianInplace(destination);
             Mat.Div(destination, count - ddof, destination);
         }
 

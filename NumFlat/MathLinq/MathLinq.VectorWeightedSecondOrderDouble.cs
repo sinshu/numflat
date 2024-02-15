@@ -333,20 +333,13 @@ namespace NumFlat
                     }
                 }
 
-                for (var col = 1; col < destination.ColCount; col++)
-                {
-                    for (var row = 0; row < col; row++)
-                    {
-                        destination[row, col] = destination[col, row];
-                    }
-                }
-
                 var den = w1Sum - ddof * (w2Sum / w1Sum);
                 if (den <= 0)
                 {
                     throw new ArgumentException("The number of source vectors is not sufficient.");
                 }
 
+                Special.LowerTriangularToHermitianInplace(destination);
                 Mat.Div(destination, den, destination);
             }
         }

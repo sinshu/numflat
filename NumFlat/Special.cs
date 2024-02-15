@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace NumFlat
 {
@@ -73,6 +74,52 @@ namespace NumFlat
             }
 
             return BitConverter.Int64BitsToDouble(bits) - x;
+        }
+
+        /// <summary>
+        /// Copy the lower triangular part to the upper triangular part to generate a Hermitian matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The target matrix.
+        /// </param>
+        public static void LowerTriangularToHermitianInplace(in Mat<double> x)
+        {
+            var rows = x.Rows;
+            var cols = x.Cols;
+            for (var i = 0; i < x.RowCount - 1; i++)
+            {
+                var start = i + 1;
+                var count = x.RowCount - start;
+                if (count > 0)
+                {
+                    var src = cols[i].Subvector(start, count);
+                    var dst = rows[i].Subvector(start, count);
+                    src.CopyTo(dst);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy the lower triangular part to the upper triangular part to generate a Hermitian matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The target matrix.
+        /// </param>
+        public static void LowerTriangularToHermitianInplace(in Mat<Complex> x)
+        {
+            var rows = x.Rows;
+            var cols = x.Cols;
+            for (var i = 0; i < x.RowCount - 1; i++)
+            {
+                var start = i + 1;
+                var count = x.RowCount - start;
+                if (count > 0)
+                {
+                    var src = cols[i].Subvector(start, count);
+                    var dst = rows[i].Subvector(start, count);
+                    Vec.Conjugate(src, dst);
+                }
+            }
         }
     }
 }
