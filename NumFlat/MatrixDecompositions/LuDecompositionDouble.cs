@@ -133,20 +133,11 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ThrowIfInvalidSize(b, destination);
 
             if (l.RowCount != u.ColCount)
             {
                 throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
-            }
-
-            if (b.Count != l.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the order of L.");
-            }
-
-            if (destination.Count != l.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match the order of L.");
             }
 
             for (var i = 0; i < destination.Count; i++)

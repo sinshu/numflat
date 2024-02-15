@@ -113,16 +113,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (b.Count != q.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the number of rows of Q.");
-            }
-
-            if (destination.Count != r.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match the number of columns of R.");
-            }
+            ThrowIfInvalidSize(b, destination);
 
             Mat.Mul(q, b, destination, true);
 

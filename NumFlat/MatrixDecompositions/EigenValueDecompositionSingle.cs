@@ -102,16 +102,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (b.Count != v.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the order of V.");
-            }
-
-            if (destination.Count != v.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match the order of V.");
-            }
+            ThrowIfInvalidSize(b, destination);
 
             using var utmp = new TemporalVector<float>(v.RowCount);
             ref readonly var tmp = ref utmp.Item;

@@ -164,16 +164,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (b.Count != u.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the number of rows of U.");
-            }
-
-            if (destination.Count != vt.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match the number of columns of V^T.");
-            }
+            ThrowIfInvalidSize(b, destination);
 
             using var utmp = new TemporalVector<Complex>(vt.RowCount);
             ref readonly var tmp = ref utmp.Item;

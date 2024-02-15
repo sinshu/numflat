@@ -87,16 +87,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (b.Count != l.RowCount)
-            {
-                throw new ArgumentException("'b.Count' must match the order of L.");
-            }
-
-            if (destination.Count != l.RowCount)
-            {
-                throw new ArgumentException("'destination.Count' must match the order of L.");
-            }
+            ThrowIfInvalidSize(b, destination);
 
             using var ucdst = TemporalContiguousVector.EnsureContiguous(destination, false);
             ref readonly var cdst = ref ucdst.Item;

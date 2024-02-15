@@ -49,11 +49,7 @@ namespace NumFlat
         public Vec<T> Solve(in Vec<T> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.Count != rhsVectorLength)
-            {
-                throw new ArgumentException("The length of the right-hand side vector does not meet the requirement.");
-            }
+            ThrowIfInvalidSize(b);
 
             var x = new Vec<T>(solutionVectorLength);
             Solve(b, x);
@@ -73,21 +69,7 @@ namespace NumFlat
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (b.RowCount != rhsVectorLength)
-            {
-                throw new ArgumentException("The length of the right-hand side vectors does not meet the requirement.");
-            }
-
-            if (destination.RowCount != solutionVectorLength)
-            {
-                throw new ArgumentException("The length of the solution vectors does not meet the requirement.");
-            }
-
-            if (b.ColCount != destination.ColCount)
-            {
-                throw new ArgumentException("The number of the right-hand side vectors and solution vectors must match.");
-            }
+            ThrowIfInvalidSize(b, destination);
 
             var bCols = b.Cols;
             var destinationCols = destination.Cols;
@@ -111,15 +93,58 @@ namespace NumFlat
         public Mat<T> Solve(in Mat<T> b)
         {
             ThrowHelper.ThrowIfEmpty(b, nameof(b));
-
-            if (b.RowCount != rhsVectorLength)
-            {
-                throw new ArgumentException("The length of the right-hand side vectors does not meet the requirement.");
-            }
+            ThrowIfInvalidSize(b);
 
             var destination = new Mat<T>(solutionVectorLength, b.ColCount);
             Solve(b, destination);
             return destination;
+        }
+
+        internal void ThrowIfInvalidSize(in Vec<T> b)
+        {
+            if (b.Count != rhsVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.");
+            }
+        }
+
+        internal void ThrowIfInvalidSize(in Vec<T> b, in Vec<T> destination)
+        {
+            if (b.Count != rhsVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.");
+            }
+
+            if (destination.Count != solutionVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.Count}.");
+            }
+        }
+
+        internal void ThrowIfInvalidSize(in Mat<T> b)
+        {
+            if (b.RowCount != rhsVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.");
+            }
+        }
+
+        internal void ThrowIfInvalidSize(in Mat<T> b, in Mat<T> destination)
+        {
+            if (b.RowCount != rhsVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.");
+            }
+
+            if (destination.RowCount != solutionVectorLength)
+            {
+                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.RowCount}.");
+            }
+
+            if (b.ColCount != destination.ColCount)
+            {
+                throw new ArgumentException("The number of the right-hand side vectors and solution vectors must match.");
+            }
         }
     }
 }
