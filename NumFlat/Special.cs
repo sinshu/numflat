@@ -84,6 +84,9 @@ namespace NumFlat
         /// </param>
         public static void LowerTriangularToHermitianInplace(in Mat<double> x)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
+
             var rows = x.Rows;
             var cols = x.Cols;
             for (var i = 0; i < x.RowCount - 1; i++)
@@ -107,6 +110,9 @@ namespace NumFlat
         /// </param>
         public static void LowerTriangularToHermitianInplace(in Mat<Complex> x)
         {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
+
             var rows = x.Rows;
             var cols = x.Cols;
             for (var i = 0; i < x.RowCount - 1; i++)
