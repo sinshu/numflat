@@ -205,7 +205,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion in-place.
         /// </summary>
         /// <param name="target">
         /// The target matrix to be inverted.
@@ -216,7 +216,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion in-place.
         /// </summary>
         /// <param name="target">
         /// The target matrix to be inverted.
@@ -227,7 +227,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion in-place.
         /// </summary>
         /// <param name="target">
         /// The target matrix to be inverted.
