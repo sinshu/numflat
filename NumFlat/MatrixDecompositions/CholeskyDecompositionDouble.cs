@@ -59,11 +59,6 @@ namespace NumFlat
             ThrowHelper.ThrowIfNonSquare(a, nameof(a));
             ThrowHelper.ThrowIfDifferentSize(a, l);
 
-            if (l.RowCount != a.RowCount || l.ColCount != a.ColCount)
-            {
-                throw new ArgumentException("The order of 'l' must match 'a'.");
-            }
-
             a.CopyTo(l);
 
             fixed (double* pl = l.Memory.Span)
