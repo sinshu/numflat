@@ -69,7 +69,6 @@ namespace NumFlatTest
             {
                 var left = a * gevd.V.Cols[i];
                 var right = gevd.D[i] * b * gevd.V.Cols[i];
-                Console.WriteLine(right);
                 NumAssert.AreSame(left, right, 1.0E-12);
             }
         }
