@@ -31,8 +31,8 @@ namespace NumFlat.MultivariateAnalyses
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
-            ThrowHelper.ThrowIfDifferentSize(source, destination);
-            VectorToVectorTransform.ThrowIfInvalidSize(this, source);
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination);
 
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
@@ -45,8 +45,8 @@ namespace NumFlat.MultivariateAnalyses
         public void InverseTransform(in Vec<double> source, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
-            ThrowHelper.ThrowIfDifferentSize(source, destination);
-            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source);
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination);
 
             Mat.Mul(svd.U, source, destination, false);
             destination.AddInplace(mean);
