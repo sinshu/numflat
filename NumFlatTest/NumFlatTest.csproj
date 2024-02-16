@@ -23,4 +23,17 @@
     <ProjectReference Include="..\NumFlat\NumFlat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="dataset\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="dataset\iris.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="dataset\iris_pca_gpt4.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

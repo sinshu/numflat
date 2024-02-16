@@ -8,7 +8,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class Special_Test
+    public class SpecialTest
     {
         [TestCase(2.3F)]
         [TestCase(-2.3F)]
