@@ -23,12 +23,12 @@ namespace NumFlat
         public void Transform(in Vec<T> source, in Vec<T> destination);
 
         /// <summary>
-        /// The required length of source vectors.
+        /// The required length of a source vector.
         /// </summary>
         public int SourceVectorLength { get; }
 
         /// <summary>
-        /// The required length of destination vectors.
+        /// The required length of a destination vector.
         /// </summary>
         public int DestinationVectorLength { get; }
     }
@@ -57,9 +57,32 @@ namespace NumFlat
         /// </returns>
         public static Vec<T> Transform<T>(this IVectorToVectorTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
         {
+            method.ThrowIfInvalidSize(source);
+
             var destination = new Vec<T>(method.DestinationVectorLength);
             method.Transform(source, destination);
             return destination;
+        }
+
+        internal static void ThrowIfInvalidSize<T>(this IVectorToVectorTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
+        {
+            if (source.Count != method.SourceVectorLength)
+            {
+                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceVectorLength}, but was {source.Count}.", nameof(source));
+            }
+        }
+
+        internal static void ThrowIfInvalidSize<T>(this IVectorToVectorTransform<T> method, in Vec<T> source, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            if (source.Count != method.SourceVectorLength)
+            {
+                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceVectorLength}, but was {source.Count}.", nameof(source));
+            }
+
+            if (destination.Count != method.DestinationVectorLength)
+            {
+                throw new ArgumentException($"The transform requires the length of the destination vector to be {method.DestinationVectorLength}, but was {destination.Count}.", nameof(destination));
+            }
         }
     }
 }

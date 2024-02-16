@@ -40,11 +40,7 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfDifferentSize(source, destination);
-
-            if (source.Count != mean.Count)
-            {
-                throw new ArgumentException("The length of the source vector does not meet the requirement.");
-            }
+            this.ThrowIfInvalidSize(source);
 
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
