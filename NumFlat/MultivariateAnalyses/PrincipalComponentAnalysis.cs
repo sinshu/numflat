@@ -8,8 +8,8 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
-        private Vec<double> mean;
-        private EigenValueDecompositionDouble evd;
+        private readonly Vec<double> mean;
+        private readonly EigenValueDecompositionDouble evd;
 
         /// <summary>
         /// Performs principal component analysis.
@@ -71,6 +71,16 @@ namespace NumFlat.MultivariateAnalyses
             Mat.Mul(evd.V, source, destination, false);
             destination.AddInplace(mean);
         }
+
+        /// <summary>
+        /// Gets the mean vector of the source vectors.
+        /// </summary>
+        public ref readonly Vec<double> Mean => ref mean;
+
+        /// <summary>
+        /// Gets the EVD result of the covariance matrix.
+        /// </summary>
+        public EigenValueDecompositionDouble Evd => evd;
 
         /// <inheritdoc/>
         public int SourceVectorLength => mean.Count;
