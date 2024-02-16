@@ -104,7 +104,7 @@ namespace NumFlat
         {
             if (b.Count != rhsVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.");
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.", nameof(b));
             }
         }
 
@@ -112,12 +112,12 @@ namespace NumFlat
         {
             if (b.Count != rhsVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.");
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.Count}.", nameof(b));
             }
 
             if (destination.Count != solutionVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.Count}.");
+                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.Count}.", nameof(destination));
             }
         }
 
@@ -125,7 +125,7 @@ namespace NumFlat
         {
             if (b.RowCount != rhsVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.");
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.", nameof(b));
             }
         }
 
@@ -133,12 +133,12 @@ namespace NumFlat
         {
             if (b.RowCount != rhsVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.");
+                throw new ArgumentException($"The solver requires the length of the right-hand side vector to be {rhsVectorLength}, but was {b.RowCount}.", nameof(b));
             }
 
             if (destination.RowCount != solutionVectorLength)
             {
-                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.RowCount}.");
+                throw new ArgumentException($"The solver requires the length of the solution vector to be {solutionVectorLength}, but was {destination.RowCount}.", nameof(destination));
             }
 
             if (b.ColCount != destination.ColCount)
