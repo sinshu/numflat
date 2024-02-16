@@ -9,7 +9,7 @@ namespace NumFlat.MultivariateAnalyses
     public class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
         private Vec<double> mean;
-        private SingularValueDecompositionDouble svd;
+        private EigenValueDecompositionDouble evd;
 
         /// <summary>
         /// Performs principal component analysis.
@@ -21,10 +21,30 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            var (mean, covariance) = xs.MeanAndCovariance();
+            Vec<double> mean;
+            Mat<double> covariance;
+            try
+            {
+                (mean, covariance) = xs.MeanAndCovariance();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Failed to compute the covariance matdix.", e);
+            }
+
+            EigenValueDecompositionDouble evd;
+            try
+            {
+                evd = covariance.Evd();
+                Special.ReverseEigenValueOrder(evd);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Failed to compute the EVD.", e);
+            }
 
             this.mean = mean;
-            this.svd = covariance.Svd();
+            this.evd = evd;
         }
 
         /// <inheritdoc/>
@@ -38,7 +58,7 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, mean, tmp);
-            Mat.Mul(svd.U, tmp, destination, true);
+            Mat.Mul(evd.V, tmp, destination, true);
         }
 
         /// <inheritdoc/>
@@ -48,7 +68,7 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination);
 
-            Mat.Mul(svd.U, source, destination, false);
+            Mat.Mul(evd.V, source, destination, false);
             destination.AddInplace(mean);
         }
 
