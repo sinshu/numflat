@@ -57,14 +57,14 @@ namespace NumFlat
         /// </returns>
         public static Vec<T> Transform<T>(this IVectorToVectorTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
         {
-            method.ThrowIfInvalidSize(source);
+            ThrowIfInvalidSize(method, source);
 
             var destination = new Vec<T>(method.DestinationVectorLength);
             method.Transform(source, destination);
             return destination;
         }
 
-        internal static void ThrowIfInvalidSize<T>(this IVectorToVectorTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfInvalidSize<T>(IVectorToVectorTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
         {
             if (source.Count != method.SourceVectorLength)
             {
@@ -72,7 +72,7 @@ namespace NumFlat
             }
         }
 
-        internal static void ThrowIfInvalidSize<T>(this IVectorToVectorTransform<T> method, in Vec<T> source, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfInvalidSize<T>(IVectorToVectorTransform<T> method, in Vec<T> source, in Vec<T> destination) where T : unmanaged, INumberBase<T>
         {
             if (source.Count != method.SourceVectorLength)
             {

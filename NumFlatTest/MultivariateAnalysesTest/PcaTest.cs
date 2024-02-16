@@ -13,19 +13,49 @@ namespace NumFlatTest
     public class PcaTest
     {
         [Test]
-        public void Iris()
+        public void Iris_Reference()
         {
             var dataset = ReadIris("iris.csv").ToArray();
             var reference = ReadIris("iris_pca_gpt4.csv").ToArray();
 
             var pca = dataset.Pca();
-            var transformed = dataset.Select(x => pca.Transform(x)).ToArray();
+
+            var transformed = dataset.Select(x =>
+            {
+                using (x.EnsureUnchanged())
+                {
+                    return pca.Transform(x);
+                }
+            }).ToArray();
+
             var signs = GetSigns(transformed[0], reference[0]);
             transformed = transformed.Select(x => x.PointwiseMul(signs)).ToArray();
 
             foreach (var (expected, actual) in reference.Zip(transformed))
             {
                 NumAssert.AreSame(expected, actual, 1.0E-6);
+            }
+        }
+
+        [Test]
+        public void Iris_Inverse()
+        {
+            var dataset = ReadIris("iris.csv").ToArray();
+
+            var pca = dataset.Pca();
+            var transformed = dataset.Select(x => pca.Transform(x)).ToArray();
+
+            var inverseTransformed = transformed.Select(x =>
+            {
+                using (x.EnsureUnchanged())
+                {
+                    return pca.InverseTransform(x);
+                }
+            }).ToArray();
+
+            foreach (var (expected, actual) in dataset.Zip(inverseTransformed))
+            {
+                NumAssert.AreSame(expected, actual, 1.0E-12);
             }
         }
 

@@ -6,7 +6,7 @@ namespace NumFlat.MultivariateAnalyses
     /// <summary>
     /// Provides principal component analysis.
     /// </summary>
-    public class PrincipalComponentAnalysis : IVectorToVectorTransform<double>
+    public class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
         private Vec<double> mean;
         private SingularValueDecompositionDouble svd;
@@ -27,26 +27,29 @@ namespace NumFlat.MultivariateAnalyses
             this.svd = covariance.Svd();
         }
 
-        /// <summary>
-        /// Transforms a vector.
-        /// </summary>
-        /// <param name="source">
-        /// The source vector to be transformed.
-        /// </param>
-        /// <param name="destination">
-        /// The destination of the transformed vector.
-        /// </param>
+        /// <inheritdoc/>
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfDifferentSize(source, destination);
-            this.ThrowIfInvalidSize(source);
+            VectorToVectorTransform.ThrowIfInvalidSize(this, source);
 
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, mean, tmp);
             Mat.Mul(svd.U, tmp, destination, true);
+        }
+
+        /// <inheritdoc/>
+        public void InverseTransform(in Vec<double> source, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfDifferentSize(source, destination);
+            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source);
+
+            Mat.Mul(svd.U, source, destination, false);
+            destination.AddInplace(mean);
         }
 
         /// <inheritdoc/>
