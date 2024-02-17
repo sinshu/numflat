@@ -23,5 +23,25 @@ namespace NumFlat.MultivariateAnalyses
 
             return new PrincipalComponentAnalysis(xs);
         }
+
+        /// <summary>
+        /// Performs linear discriminant analysis.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="LinearDiscriminantAnalysis"/>.
+        /// </returns>
+        public static LinearDiscriminantAnalysis Lda(this IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(ys, nameof(ys));
+
+            return new LinearDiscriminantAnalysis(xs, ys);
+        }
     }
 }

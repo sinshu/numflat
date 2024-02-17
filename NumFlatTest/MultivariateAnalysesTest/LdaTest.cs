@@ -20,13 +20,12 @@ namespace NumFlatTest
 
             var xs = dataset.Select(tpl => tpl.Item1).ToArray();
             var ys = dataset.Select(tpl => tpl.Item2).ToArray();
-            var lda = new LinearDiscriminantAnalysis(xs, ys); // TODO: use extension method
+            var lda = xs.Lda(ys);
 
             var transformed = xs.Select(x =>
             {
                 using (x.EnsureUnchanged())
                 {
-                    // TODO: remove take(2)
                     return lda.Transform(x).Take(2).ToVector();
                 }
             }).ToArray();

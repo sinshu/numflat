@@ -29,7 +29,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the covariance matdix.", e);
+                throw new ArgumentException("Failed to compute the covariance matrix.", e);
             }
 
             EigenValueDecompositionDouble evd;
@@ -78,7 +78,7 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Vec<double> Mean => ref mean;
 
         /// <summary>
-        /// Gets the EVD result of the covariance matrix.
+        /// Gets the eigenvalue decomposition of the covariance matrix.
         /// </summary>
         public EigenValueDecompositionDouble Evd => evd;
 

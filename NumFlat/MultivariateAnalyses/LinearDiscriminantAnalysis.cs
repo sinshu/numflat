@@ -4,34 +4,81 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
+    /// <summary>
+    /// Provides linear discriminant analysis.
+    /// </summary>
     public class LinearDiscriminantAnalysis : IVectorToVectorTransform<double>
     {
-        private Vec<double> mean;
-        private GeneralizedEigenValueDecompositionDouble gevd;
+        private readonly Vec<double> mean;
+        private readonly GeneralizedEigenValueDecompositionDouble gevd;
 
+        /// <summary>
+        /// Performs linear discriminant analysis.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
         public LinearDiscriminantAnalysis(IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {
-            var mean = xs.Mean();
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(ys, nameof(ys));
 
-            var centered = xs.Select(x => x - mean);
-            var grouped = centered.Zip(ys).GroupBy(pair => pair.Second).ToArray();
-            var meanAndCovarianceList = grouped.Select(g => g.Select(pair => pair.First).MeanAndCovariance()).ToArray();
+            var groups = ArgumentHelper.GroupByClassIndex(xs, ys);
 
-            var sb = meanAndCovarianceList.Select(mac => mac.Mean).Covariance();
-            var sw = meanAndCovarianceList.Select(mac => mac.Covariance).Mean();
+            Mat<double> sb;
+            Mat<double> sw;
+            try
+            {
+                var meanCovariancePairs = groups.Select(group => group.MeanAndCovariance()).ToArray();
+                sb = meanCovariancePairs.Select(mac => mac.Mean).Covariance();
+                sw = meanCovariancePairs.Select(mac => mac.Covariance).Mean();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Failed to compute the covariance matrices.", e);
+            }
 
-            var gevd = sb.Gevd(sw);
+            GeneralizedEigenValueDecompositionDouble gevd;
+            try
+            {
+                gevd = sb.Gevd(sw);
+                Special.ReverseEigenValueOrder(gevd);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Failed to compute the GEVD.", e);
+            }
 
-            this.mean = mean;
+            this.mean = xs.Mean();
             this.gevd = gevd;
         }
 
+        /// <inheritdoc/>
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
-            var tmp = source - mean;
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination);
+
+            using var utmp = new TemporalVector<double>(source.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            Vec.Sub(source, mean, tmp);
             Mat.Mul(gevd.V, tmp, destination, true);
-            destination.ReverseInplace();
         }
+
+        /// <summary>
+        /// Gets the mean vector of the source vectors.
+        /// </summary>
+        public ref readonly Vec<double> Mean => ref mean;
+
+        /// <summary>
+        /// Gets the eigenvalue decomposition of the covariance matrices.
+        /// </summary>
+        public GeneralizedEigenValueDecompositionDouble Gevd => gevd;
 
         /// <inheritdoc/>
         public int SourceVectorLength => mean.Count;
