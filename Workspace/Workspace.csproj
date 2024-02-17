@@ -16,4 +16,10 @@
     <ProjectReference Include="..\NumFlat\NumFlat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="iris.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

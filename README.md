@@ -49,9 +49,7 @@ using NumFlat;
 ## Usage
 
 ### Create a new vector
-
 A new vector can be created by listing elements inside `[]`.
-
 #### Code
 ```cs
 // Create a new vector.
@@ -69,10 +67,8 @@ Vector 3-Double
 ```
 
 ### Create a new vector from `IEnumerable<T>`
-
 Vectors can also be created from objects that implement `IEnumerable<T>`.
 Since the vector itself is an `IEnumerable<T>`, it is also possible to call LINQ methods on the vector if needed.
-
 #### Code
 ```cs
 // Some enumerable.
@@ -100,9 +96,7 @@ Vector 10-Double
 ```
 
 ### Indexer access for vectors
-
 Elements in a vector can be accessed or modified through the indexer.
-
 #### Code
 ```cs
 // Create a new vector.
@@ -125,9 +119,7 @@ Vector 3-Double
 ```
 
 ### Vector arithmetic
-
 Basic operations on vectors are provided through operator overloading and extension methods.
-
 #### Code
 ```cs
 // Some vectors.
@@ -172,10 +164,8 @@ var normalized = x.Normalize();
 ```
 
 ### Subvector
-
 A subvector can be created from a vector.
 The subvector acts as a view of the original vector, and changes to the subvector will affect the original vector.
-
 #### Code
 ```cs
 // Some vector.
@@ -201,9 +191,7 @@ Vector 5-Double
 ```
 
 ### Creating matrix
-
 Matrices can be generated from 2D arrays.
-
 #### Code
 ```cs
 // The source array.
@@ -229,9 +217,7 @@ Matrix 3x3-Double
 ```
 
 ### Indexer access for matrices
-
 Elements in a matrix can be accessed or modified through the indexer.
-
 #### Code
 ```cs
 // Creat a new matrix.
@@ -258,9 +244,7 @@ Matrix 3x3-Double
 ```
 
 ### Matrix arithmetic
-
 Basic operations on matrices are provided through operator overloading and extension methods.
-
 #### Code
 ```cs
 // Some matrices.
@@ -330,9 +314,7 @@ var infinityNorm = x.InfinityNorm();
 ```
 
 ### Submatrix
-
 A submatrix can be created from a matrix. The submatrix acts as a view of the original matrix, and changes to the submatrix will affect the original matrix.
-
 #### Code
 ```cs
 // Creat a new matrix.
@@ -359,11 +341,9 @@ Matrix 5x5-Double
 ```
 
 ### Matrix as a set of vectors
-
 Views of rows or columns as vectors can be obtained through the `Rows` or `Cols` properties.
 Similar to a submatrix, changes to the view will affect the original matrix.
 These properties implement `IEnumerable<Vec<T>>`, allowing for LINQ methods to be called on collections of vectors.
-
 #### Code
 ```cs
 // Some matrix.
@@ -395,9 +375,7 @@ var colCov = x.Cols.Covariance();
 ```
 
 ### Matrix decomposition
-
 The LU, QR, Cholesky, SVD, EVD, and GEVD for all three major number types `float`, `double`, and `Complex` are available. Below is an example to decompose a matrix using SVD.
-
 #### Code
 ```cs
 // Some matrix.
@@ -432,9 +410,7 @@ Matrix 3x3-Double
 ```
 
 ### Solving linear equations
-
 Linear equations like `Ax = b` can be solved with the matrix decomposition methods above. Use `Solve()` method to get the solution vector of a given right-hand side vector `b`.
-
 #### Code
 ```cs
 // Some coefficient matrix.
@@ -467,9 +443,8 @@ Vector 3-Double
 ```
 
 ### In-place operations
-
 Most of the operations have an in-place version, which directly modifies the target vector or matrix without creating a new one.
-
+#### Code
 ```cs
 // Some vector.
 Vec<double> vector = [1, 2, 3];
@@ -494,9 +469,8 @@ matrix.Rows[0].NormalizeInplace();
 ```
 
 ### Reducing memory allocation
-
 Most of the operations have a non-allocation version, which requires a destination buffer provided by user. Below is an example of matrix addition without heap allocation.
-
+#### Code
 ```cs
 // Some matrices.
 var x = new double[,]
@@ -521,6 +495,58 @@ var destination = new Mat<double>(2, 2);
 
 // This is the same as 'x + y', but does not allocate heap.
 Mat.Add(x, y, destination);
+```
+
+### Multivariate analyses
+The `NumFlat.MultivariateAnalyses` namespace provides functionality related to multivariate analysis.
+It currently supports the following methods, with plans to add more methods in the future.
+* Principal component analysis (PCA)
+* Linear discriminant analysis (LDA)
+#### Code
+```cs
+using NumFlat.MultivariateAnalyses;
+
+// Read some data.
+IEnumerable<Vec<double>> xs = ReadSomeData();
+
+// Do PCA.
+var pca = xs.Pca();
+
+foreach (var x in xs)
+{
+    // Transform the vector based on the PCA.
+    var transformed = pca.Transform(x);
+}
+
+// Read some label.
+IEnumerable<int> ys = ReadSomeLabel();
+
+// Do LDA.
+var lda = xs.Lda(ys);
+
+foreach (var x in xs)
+{
+    // Transform the vector based on the LDA.
+    var transformed = lda.Transform(x);
+}
+```
+
+### Fourier transform
+The `NumFlat.FourierTransform` namespace provides functionality related to the Fourier transform.
+It currently supports 1D FFT and IFFT.
+#### Code
+```cs
+using NumFlat.FourierTransform;
+
+// Some complex vector.
+var samples = new Vec<Complex>(256);
+samples[0] = 1;
+
+// Do FFT.
+var spectrum = samples.Fft();
+
+// Do IFFT.
+samples = spectrum.Ifft();
 ```
 
 

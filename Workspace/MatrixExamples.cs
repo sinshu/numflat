@@ -13,9 +13,6 @@ public static class MatrixExamples
         Example4();
         Example5();
         Example6();
-        Example7();
-        Example8();
-        Example9();
     }
 
     public static void Example1()
@@ -200,99 +197,6 @@ public static class MatrixExamples
     public static void Example6()
     {
         Console.WriteLine("=== MatrixExample 6 ===");
-        Console.WriteLine();
-
-        // Some matrix.
-        var x = new double[,]
-        {
-            { 1, 2, 3 },
-            { 1, 4, 9 },
-            { 1, 3, 7 },
-        }
-        .ToMatrix();
-
-        // Do LU decomposition.
-        var decomposition = x.Lu();
-
-        // Decomposed matrices.
-        var p = decomposition.GetPermutationMatrix();
-        var l = decomposition.L;
-        var u = decomposition.U;
-
-        // Reconstruct the matrix.
-        var reconstructed = p * l * u;
-
-        // Show the reconstructed matrix.
-        Console.WriteLine(reconstructed);
-
-        Console.WriteLine();
-        Console.WriteLine();
-    }
-
-    public static void Example7()
-    {
-        Console.WriteLine("=== MatrixExample 7 ===");
-        Console.WriteLine();
-
-        // Some matrix.
-        var x = new double[,]
-        {
-            { 1, 2, 3 },
-            { 4, 5, 6 },
-            { 7, 8, 9 },
-        }
-        .ToMatrix();
-
-        // Do QR decomposition.
-        var decomposition = x.Qr();
-
-        // Decomposed matrices.
-        var q = decomposition.Q;
-        var r = decomposition.R;
-
-        // Reconstruct the matrix.
-        var reconstructed = q * r;
-
-        // Show the reconstructed matrix.
-        Console.WriteLine(reconstructed);
-
-        Console.WriteLine();
-        Console.WriteLine();
-    }
-
-    public static void Example8()
-    {
-        Console.WriteLine("=== MatrixExample 8 ===");
-        Console.WriteLine();
-
-        // Some matrix.
-        var x = new double[,]
-        {
-            { 3, 2, 1 },
-            { 2, 3, 2 },
-            { 1, 2, 3 },
-        }
-        .ToMatrix();
-
-        // Do Cholesky decomposition.
-        var decomposition = x.Cholesky();
-
-        // Decomposed matrix.
-        var l = decomposition.L;
-
-        // Reconstruct the matrix.
-        var reconstructed = l * l.Transpose();
-
-        // Show the reconstructed matrix.
-        Console.WriteLine(reconstructed);
-
-        Console.WriteLine();
-        Console.WriteLine();
-    }
-
-    public static void Example9()
-    {
-        Console.WriteLine("=== MatrixExample 9 ===");
         Console.WriteLine();
 
         // Some matrix.

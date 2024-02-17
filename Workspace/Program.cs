@@ -11,9 +11,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var test = new Vec<Complex>(8);
-        test[0] = 1;
-        test.FftInplace();
-        Console.WriteLine(test);
+        VectorExamples.Run();
+        MatrixExamples.Run();
+        OtherExamples.Run();
     }
 }
