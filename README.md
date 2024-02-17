@@ -568,8 +568,8 @@ Mat.Add(x, y, destination);
     - ⬜ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
-    - ⬜ PCA
-    - ⬜ LDA
+    - ✅ PCA
+    - ✅ LDA
     - ⬜ ICA
     - ⬜ NMF
 * ⬜ Distributions

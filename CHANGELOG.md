@@ -1,3 +1,9 @@
+# v0.4.0
+
+* Improved error handling and error messages.
+* Added `Mat<T>.InverseInplace()`.
+* Added PCA and LDA.
+
 # v0.3.2
 
 * Added the following in-place operations.
