@@ -1,3 +1,7 @@
+# v0.5.0
+
+* Added FFT.
+
 # v0.4.0
 
 * Improved error handling and error messages.

@@ -579,9 +579,13 @@ Mat.Add(x, y, destination);
     - ⬜ GMM
 * ⬜ Time series
     - ⬜ HMM
-* ⬜ DSP
-    - ⬜ FFT
+* ⬜ Signal processing
+    - ✅ FFT
+    - ⬜ STFT
     - ⬜ Filtering
+* ⬜ File IO
+    - ⬜ CSV
+    - ⬜ WAV
 
 
 
@@ -591,5 +595,6 @@ NumFlat depends on the following libraries.
 
 * [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS) ([BSD-3-Clause license](https://github.com/OpenMathLib/OpenBLAS/blob/develop/LICENSE))
 * [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp) ([BSD-3-Clause license](https://github.com/sinshu/OpenBlasSharp/blob/main/LICENSE.txt))
+* [FftFlat](https://github.com/sinshu/fftflat) ([MIT license](https://github.com/sinshu/fftflat/blob/main/LICENSE.md))
 
-NumFlat is available under [MIT license](LICENSE.txt).
+NumFlat is available under [the MIT license](LICENSE.txt).
