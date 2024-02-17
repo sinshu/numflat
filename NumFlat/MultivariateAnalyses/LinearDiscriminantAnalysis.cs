@@ -32,9 +32,9 @@ namespace NumFlat.MultivariateAnalyses
             Mat<double> sw;
             try
             {
-                var meanCovariancePairs = groups.Select(group => group.MeanAndCovariance()).ToArray();
-                sb = meanCovariancePairs.Select(mac => mac.Mean).Covariance();
-                sw = meanCovariancePairs.Select(mac => mac.Covariance).Mean();
+                var pairs = groups.Select(group => group.MeanAndCovariance()).ToArray();
+                sb = pairs.Select(pair => pair.Mean).Covariance();
+                sw = pairs.Select(pair => pair.Covariance).Mean();
             }
             catch (Exception e)
             {
