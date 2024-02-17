@@ -7,7 +7,7 @@ namespace NumFlat
 {
     internal static class ArgumentHelper
     {
-        internal static List<Vec<T>>[] GroupByClassIndex<T>(IEnumerable<Vec<T>> xs, IEnumerable<int> ys) where T : unmanaged, INumberBase<T>
+        internal static IReadOnlyList<IReadOnlyList<Vec<T>>> GroupByClassIndex<T>(IEnumerable<Vec<T>> xs, IEnumerable<int> ys) where T : unmanaged, INumberBase<T>
         {
             var dic = new Dictionary<int, List<Vec<T>>>();
             using (var exs = xs.GetEnumerator())
