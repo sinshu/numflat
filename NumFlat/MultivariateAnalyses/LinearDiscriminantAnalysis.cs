@@ -7,7 +7,7 @@ namespace NumFlat.MultivariateAnalyses
     /// <summary>
     /// Provides linear discriminant analysis.
     /// </summary>
-    public class LinearDiscriminantAnalysis : IVectorToVectorTransform<double>
+    public sealed class LinearDiscriminantAnalysis : IVectorToVectorTransform<double>
     {
         private readonly Vec<double> mean;
         private readonly GeneralizedEigenValueDecompositionDouble gevd;

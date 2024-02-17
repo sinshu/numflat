@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the singular value decomposition (SVD).
     /// </summary>
-    public class SingularValueDecompositionDouble : MatrixDecompositionBase<double>
+    public sealed class SingularValueDecompositionDouble : MatrixDecompositionBase<double>
     {
         private readonly Vec<double> s;
         private readonly Mat<double> u;

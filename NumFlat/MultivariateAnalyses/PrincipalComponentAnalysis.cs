@@ -6,7 +6,7 @@ namespace NumFlat.MultivariateAnalyses
     /// <summary>
     /// Provides principal component analysis.
     /// </summary>
-    public class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
+    public sealed class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
         private readonly Vec<double> mean;
         private readonly EigenValueDecompositionDouble evd;

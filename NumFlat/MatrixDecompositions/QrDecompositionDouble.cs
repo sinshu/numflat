@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the QR decomposition.
     /// </summary>
-    public class QrDecompositionDouble : MatrixDecompositionBase<double>
+    public sealed class QrDecompositionDouble : MatrixDecompositionBase<double>
     {
         private Mat<double> q;
         private Mat<double> r;

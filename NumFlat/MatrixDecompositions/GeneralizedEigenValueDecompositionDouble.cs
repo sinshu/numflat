@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the generalized eigenvalue decomposition (GEVD).
     /// </summary>
-    public class GeneralizedEigenValueDecompositionDouble
+    public sealed class GeneralizedEigenValueDecompositionDouble
     {
         private readonly Vec<double> d;
         private readonly Mat<double> v;

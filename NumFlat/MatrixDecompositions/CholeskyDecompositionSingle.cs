@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the Cholesky decomposition.
     /// </summary>
-    public class CholeskyDecompositionSingle : MatrixDecompositionBase<float>
+    public sealed class CholeskyDecompositionSingle : MatrixDecompositionBase<float>
     {
         private Mat<float> l;
 

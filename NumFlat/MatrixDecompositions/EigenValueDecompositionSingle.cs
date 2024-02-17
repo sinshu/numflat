@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the eigenvalue decomposition (EVD).
     /// </summary>
-    public class EigenValueDecompositionSingle : MatrixDecompositionBase<float>
+    public sealed class EigenValueDecompositionSingle : MatrixDecompositionBase<float>
     {
         private readonly Vec<float> d;
         private readonly Mat<float> v;

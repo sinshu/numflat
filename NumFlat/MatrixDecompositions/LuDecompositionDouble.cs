@@ -7,7 +7,7 @@ namespace NumFlat
     /// <summary>
     /// Provides the LU decomposition.
     /// </summary>
-    public class LuDecompositionDouble : MatrixDecompositionBase<double>
+    public sealed class LuDecompositionDouble : MatrixDecompositionBase<double>
     {
         private Mat<double> l;
         private Mat<double> u;
