@@ -598,8 +598,10 @@ samples = spectrum.Ifft();
     - ✅ LDA
     - ⬜ ICA
     - ⬜ NMF
+    - ⬜ Logistic regression
 * ⬜ Distributions
     - ⬜ Gaussian
+    - ⬜ Diagonal Gaussian
 * ⬜ Clustering
     - ⬜ k-means
     - ⬜ GMM
@@ -609,6 +611,7 @@ samples = spectrum.Ifft();
     - ✅ FFT
     - ⬜ STFT
     - ⬜ Filtering
+    - ⬜ Resampling
 * ⬜ File IO
     - ⬜ CSV
     - ⬜ WAV
