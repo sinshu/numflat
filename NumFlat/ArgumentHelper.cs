@@ -27,12 +27,13 @@ namespace NumFlat
                         var x = exs.Current;
                         var y = eys.Current;
 
-                        if (!dic.ContainsKey(y))
+                        List<Vec<T>>? list;
+                        if (!dic.TryGetValue(y, out list))
                         {
-                            dic.Add(y, new List<Vec<T>>());
+                            list = new List<Vec<T>>();
+                            dic.Add(y, list);
                         }
-
-                        dic[y].Add(x);
+                        list.Add(x);
                     }
                     else
                     {
