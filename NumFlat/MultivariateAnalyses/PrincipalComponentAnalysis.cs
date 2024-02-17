@@ -40,7 +40,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the EVD.", e);
+                throw new ArgumentException("Failed to compute the EVD of the covariance matrix.", e);
             }
 
             this.mean = mean;

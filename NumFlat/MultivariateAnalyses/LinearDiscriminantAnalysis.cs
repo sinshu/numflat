@@ -49,7 +49,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the GEVD.", e);
+                throw new ArgumentException("Failed to compute the GEVD of the covariance matrices.", e);
             }
 
             this.mean = xs.Mean();
