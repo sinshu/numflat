@@ -17,6 +17,7 @@ namespace NumFlat.Distributions
         /// </param>
         /// <param name="regularization">
         /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
         /// The Gaussian distribution.
@@ -54,6 +55,7 @@ namespace NumFlat.Distributions
         /// </param>
         /// <param name="regularization">
         /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
         /// The Gaussian distribution.
@@ -88,6 +90,7 @@ namespace NumFlat.Distributions
         /// </param>
         /// <param name="regularization">
         /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
         /// The diagonal Gaussian distribution.
@@ -125,6 +128,7 @@ namespace NumFlat.Distributions
         /// </param>
         /// <param name="regularization">
         /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
         /// The diagonal Gaussian distribution.
