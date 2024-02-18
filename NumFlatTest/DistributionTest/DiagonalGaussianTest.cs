@@ -59,5 +59,35 @@ namespace NumFlatTest
 
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
+
+        [Test]
+        public void ToDiagonalGaussian()
+        {
+            var data = TestMatrix.RandomDouble(42, 10, 3, 10);
+            var xs = data.Rows;
+
+            var actual = xs.ToDiagonalGaussian();
+
+            var (mean, variance) = xs.MeanAndVariance();
+
+            NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
+            NumAssert.AreSame(actual.Variance, variance, 1.0E-12);
+        }
+
+        [Test]
+        public void ToDiagonalGaussian_Weighted()
+        {
+            var data = TestMatrix.RandomDouble(42, 10, 3, 10);
+            var random = new Random(57);
+            var xs = data.Rows;
+            var weights = xs.Select(x => random.NextDouble() + 1).ToArray();
+
+            var actual = xs.ToDiagonalGaussian(weights);
+
+            var (mean, variance) = xs.MeanAndVariance(weights);
+
+            NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
+            NumAssert.AreSame(actual.Variance, variance, 1.0E-12);
+        }
     }
 }

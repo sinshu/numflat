@@ -38,17 +38,4 @@ namespace NumFlat.Distributions
         /// </summary>
         public int Dimension { get; }
     }
-
-
-
-    internal static class MultivariateDistribution
-    {
-        internal static void ThrowIfInvalidSize<T>(IMultivariateDistribution<T> distribution, in Vec<T> x, string name) where T : unmanaged, INumberBase<T>
-        {
-            if (x.Count != distribution.Dimension)
-            {
-                throw new ArgumentException($"The PDF requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
-            }
-        }
-    }
 }
