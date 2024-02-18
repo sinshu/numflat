@@ -18,6 +18,9 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The Gaussian distribution.
         /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -30,7 +33,7 @@ namespace NumFlat.Distributions
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
             }
 
             return new Gaussian(mean, covariance);
@@ -48,6 +51,9 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The Gaussian distribution.
         /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -60,7 +66,7 @@ namespace NumFlat.Distributions
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
             }
 
             return new Gaussian(mean, covariance);
@@ -75,6 +81,9 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The diagonal Gaussian distribution.
         /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -87,7 +96,7 @@ namespace NumFlat.Distributions
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the pointwise variance.", e);
+                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
             }
 
             return new DiagonalGaussian(mean, variance);
@@ -105,6 +114,9 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The diagonal Gaussian distribution.
         /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -117,7 +129,7 @@ namespace NumFlat.Distributions
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the pointwise variance.", e);
+                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
             }
 
             return new DiagonalGaussian(mean, variance);

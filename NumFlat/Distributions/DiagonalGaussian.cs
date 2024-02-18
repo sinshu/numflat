@@ -22,6 +22,9 @@ namespace NumFlat.Distributions
         /// <param name="variance">
         /// The diagonal elements of the covariance matrix.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public DiagonalGaussian(in Vec<double> mean, in Vec<double> variance)
         {
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -42,7 +45,7 @@ namespace NumFlat.Distributions
                 }
                 else
                 {
-                    throw new ArgumentException("Variance is too small.");
+                    throw new FittingFailureException("Variance is too small.");
                 }
             }
 

@@ -17,6 +17,9 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="xs">
         /// The source vectors.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public PrincipalComponentAnalysis(IEnumerable<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -29,7 +32,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
             }
 
             EigenValueDecompositionDouble evd;
@@ -40,7 +43,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the EVD of the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the EVD of the covariance matrix.", e);
             }
 
             this.mean = mean;

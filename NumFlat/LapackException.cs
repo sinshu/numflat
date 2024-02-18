@@ -6,7 +6,7 @@ namespace NumFlat
     /// <summary>
     /// Represents errors from LAPACK functions.
     /// </summary>
-    public class LapackException : Exception, ISerializable
+    public class LapackException : NumFlatException, ISerializable
     {
         private string? functionName = null;
         private int errorCode = 0;

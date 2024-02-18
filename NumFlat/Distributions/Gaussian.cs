@@ -21,6 +21,9 @@ namespace NumFlat.Distributions
         /// <param name="covariance">
         /// The covariance matrix.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public Gaussian(in Vec<double> mean, in Mat<double> covariance)
         {
             ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
@@ -39,7 +42,7 @@ namespace NumFlat.Distributions
             }
             catch (Exception e)
             {
-                throw new AggregateException("Failed to compute the Cholesky decomposition of the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the Cholesky decomposition of the covariance matrix.", e);
             }
 
             var logNormalizationTerm = -(Math.Log(2 * Math.PI) * mean.Count + cholesky.LogDeterminant()) / 2;

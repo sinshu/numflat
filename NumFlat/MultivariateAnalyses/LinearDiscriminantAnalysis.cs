@@ -21,6 +21,9 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="ys">
         /// The class indices for each source vector.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public LinearDiscriminantAnalysis(IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -38,7 +41,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the covariance matrices.", e);
+                throw new FittingFailureException("Failed to compute the covariance matrices.", e);
             }
 
             GeneralizedEigenValueDecompositionDouble gevd;
@@ -49,7 +52,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Failed to compute the GEVD of the covariance matrices.", e);
+                throw new FittingFailureException("Failed to compute the GEVD of the covariance matrices.", e);
             }
 
             this.mean = xs.Mean();
