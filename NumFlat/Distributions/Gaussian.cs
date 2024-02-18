@@ -5,7 +5,7 @@ namespace NumFlat.Distributions
     /// <summary>
     /// Represents a Gaussian distribution.
     /// </summary>
-    public sealed class Gaussian
+    public sealed class Gaussian : IMultivariateDistribution<double>
     {
         private readonly Vec<double> mean;
         private readonly Mat<double> covariance;
@@ -50,23 +50,11 @@ namespace NumFlat.Distributions
             this.logNormalizationTerm = logNormalizationTerm;
         }
 
-        /// <summary>
-        /// Computes the log probability density function of the given vector.
-        /// </summary>
-        /// <param name="x">
-        /// The source vector.
-        /// </param>
-        /// <returns>
-        /// The value of the log probability density function.
-        /// </returns>
+        /// <inheritdoc/>
         public double LogPdf(in Vec<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
-
-            if (x.Count != mean.Count)
-            {
-                throw new ArgumentException($"The PDF requires the length of the vector to be {mean.Count}, but was '{x.Count}'.");
-            }
+            MultivariateDistribution.ThrowIfInvalidSize(this, x, nameof(x));
 
             using var ud = new TemporalVector<double>(mean.Count);
             ref readonly var d = ref ud.Item;
@@ -79,15 +67,7 @@ namespace NumFlat.Distributions
             return logNormalizationTerm - d * isd / 2;
         }
 
-        /// <summary>
-        /// Computes the log probability density function of the given vector.
-        /// </summary>
-        /// <param name="x">
-        /// The source vector.
-        /// </param>
-        /// <returns>
-        /// The value of the log probability density function.
-        /// </returns>
+        /// <inheritdoc/>
         public double Pdf(in Vec<double> x)
         {
             return Math.Exp(LogPdf(x));
@@ -102,5 +82,8 @@ namespace NumFlat.Distributions
         /// Gets the covariance matrix.
         /// </summary>
         public ref readonly Mat<double> Covariance => ref covariance;
+
+        /// <inheritdoc/>
+        public int Dimension => mean.Count;
     }
 }

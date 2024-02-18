@@ -47,31 +47,31 @@ namespace NumFlat
         /// </returns>
         public static Vec<T> InverseTransform<T>(this IVectorToVectorInverseTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
         {
-            ThrowIfInvalidSize(method, source);
+            ThrowIfInvalidSize(method, source, nameof(source));
 
             var destination = new Vec<T>(method.SourceVectorLength);
             method.InverseTransform(source, destination);
             return destination;
         }
 
-        internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
         {
             if (source.Count != method.DestinationVectorLength)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", name);
             }
         }
 
-        internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source, in Vec<T> destination, string sourceName, string destinationName) where T : unmanaged, INumberBase<T>
         {
             if (source.Count != method.DestinationVectorLength)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", sourceName);
             }
 
             if (destination.Count != method.SourceVectorLength)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be {method.SourceVectorLength}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be {method.SourceVectorLength}, but was {destination.Count}.", destinationName);
             }
         }
     }

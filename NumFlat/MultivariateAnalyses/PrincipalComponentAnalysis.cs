@@ -52,7 +52,7 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination);
+            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
@@ -66,7 +66,7 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination);
+            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
             Mat.Mul(evd.V, source, destination, false);
             destination.AddInplace(mean);
