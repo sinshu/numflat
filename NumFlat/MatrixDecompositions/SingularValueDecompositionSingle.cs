@@ -82,7 +82,7 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("Failed to compute the SVD.", nameof(Lapack.Sgesvd), (int)info);
+                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Sgesvd), (int)info);
                 }
             }
         }

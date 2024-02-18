@@ -92,7 +92,7 @@ namespace NumFlat
                     pcd);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("Failed to compute the EVD.", nameof(Lapack.Dsyev), (int)info);
+                    throw new LapackException("The EVD did not converge.", nameof(Lapack.Dsyev), (int)info);
                 }
             }
         }

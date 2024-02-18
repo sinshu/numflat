@@ -103,7 +103,14 @@ namespace NumFlat
                     pcd);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("Failed to compute the GEVD.", nameof(Lapack.Dsygv), (int)info);
+                    if ((int)info <= d.Count)
+                    {
+                        throw new LapackException("The GEVD did not converge.", nameof(Lapack.Dsygv), (int)info);
+                    }
+                    else
+                    {
+                        throw new LapackException("The right-hand side matrix is ill-conditioned.", nameof(Lapack.Dsygv), (int)info);
+                    }
                 }
             }
         }
