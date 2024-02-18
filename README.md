@@ -531,6 +531,26 @@ foreach (var x in xs)
 }
 ```
 
+### Distributions
+The `NumFlat.Distributions` namespace provides functionality related to probability distributions.
+It currently supports the multivariate Gaussian.
+#### Code
+```cs
+using NumFlat.Distributions;
+
+// Read some data.
+IEnumerable<Vec<double>> xs = ReadSomeData();
+
+// Compute the maximum likelihood Gaussian distribution.
+var gaussian = xs.ToGaussian();
+
+foreach (var x in xs)
+{
+    // Compute the log PDF.
+    var pdf = gaussian.LogPdf(x);
+}
+```
+
 ### Fourier transform
 The `NumFlat.FourierTransform` namespace provides functionality related to the Fourier transform.
 It currently supports 1D FFT and IFFT.
@@ -600,8 +620,9 @@ samples = spectrum.Ifft();
     - ⬜ NMF
     - ⬜ Logistic regression
 * ⬜ Distributions
-    - ⬜ Gaussian
-    - ⬜ Diagonal Gaussian
+    - ✅ Gaussian
+    - ✅ Diagonal Gaussian
+    - ⬜ Other distributions
 * ⬜ Clustering
     - ⬜ k-means
     - ⬜ GMM

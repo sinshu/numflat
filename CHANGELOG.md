@@ -1,3 +1,8 @@
+# v0.6.0
+
+* Added the Gaussian and diagonal Gaussian distributions.
+* Optimized the Cholesky decomposition implementation.
+
 # v0.5.0
 
 * Added FFT.

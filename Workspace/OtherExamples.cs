@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using NumFlat;
+using NumFlat.Distributions;
 using NumFlat.FourierTransform;
 using NumFlat.MultivariateAnalyses;
 
@@ -13,6 +14,7 @@ public static class OtherExamples
     {
         Example1();
         Example2();
+        Example3();
     }
 
     public static void Example1()
@@ -51,6 +53,29 @@ public static class OtherExamples
     }
 
     public static void Example2()
+    {
+        Console.WriteLine("=== OtherExample 2 ===");
+        Console.WriteLine();
+
+        // using NumFlat.Distributions;
+
+        // Read some data.
+        IEnumerable<Vec<double>> xs = ReadSomeData();
+
+        // Compute the maximum likelihood Gaussian distribution.
+        var gaussian = xs.ToGaussian();
+
+        foreach (var x in xs)
+        {
+            // Compute the log PDF.
+            var pdf = gaussian.LogPdf(x);
+        }
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example3()
     {
         Console.WriteLine("=== OtherExample 2 ===");
         Console.WriteLine();
