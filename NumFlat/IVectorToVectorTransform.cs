@@ -23,12 +23,12 @@ namespace NumFlat
         public void Transform(in Vec<T> source, in Vec<T> destination);
 
         /// <summary>
-        /// The required length of a source vector.
+        /// Gets the required length of a source vector.
         /// </summary>
         public int SourceVectorLength { get; }
 
         /// <summary>
-        /// The required length of a destination vector.
+        /// Gets the required length of a destination vector.
         /// </summary>
         public int DestinationVectorLength { get; }
     }

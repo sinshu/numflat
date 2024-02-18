@@ -34,7 +34,7 @@ namespace NumFlat.Distributions
         public double Pdf(in Vec<T> x);
 
         /// <summary>
-        /// The dimension of the distribution.
+        /// Gets the dimension of the distribution.
         /// </summary>
         public int Dimension { get; }
     }
