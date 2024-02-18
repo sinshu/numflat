@@ -15,13 +15,16 @@ namespace NumFlat.Distributions
         /// <param name="xs">
         /// The source vectors.
         /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// </param>
         /// <returns>
         /// The Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed in the model fitting.
         /// </exception>
-        public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs)
+        public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -30,6 +33,7 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, covariance) = xs.MeanAndCovariance();
+                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
             }
             catch (Exception e)
             {
@@ -48,13 +52,16 @@ namespace NumFlat.Distributions
         /// <param name="weights">
         /// The weights of the source vectors.
         /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// </param>
         /// <returns>
         /// The Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed in the model fitting.
         /// </exception>
-        public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -63,6 +70,7 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, covariance) = xs.MeanAndCovariance(weights);
+                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
             }
             catch (Exception e)
             {
@@ -78,13 +86,16 @@ namespace NumFlat.Distributions
         /// <param name="xs">
         /// The source vectors.
         /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// </param>
         /// <returns>
         /// The diagonal Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed in the model fitting.
         /// </exception>
-        public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs)
+        public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -93,6 +104,7 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, variance) = xs.MeanAndVariance();
+                variance.AddInplace(regularization);
             }
             catch (Exception e)
             {
@@ -111,13 +123,16 @@ namespace NumFlat.Distributions
         /// <param name="weights">
         /// The weights of the source vectors.
         /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// </param>
         /// <returns>
         /// The diagonal Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed in the model fitting.
         /// </exception>
-        public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -126,6 +141,7 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, variance) = xs.MeanAndVariance(weights);
+                variance.AddInplace(regularization);
             }
             catch (Exception e)
             {

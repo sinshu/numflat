@@ -34,6 +34,29 @@ namespace NumFlatTest
             TestVector.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1, 1.5, 1)]
+        [TestCase(1, 3, 2.3, 4)]
+        [TestCase(3, 1, 1.4, 1)]
+        [TestCase(3, 3, 2.7, 4)]
+        [TestCase(5, 1, 2.8, 3)]
+        [TestCase(11, 7, 2.1, 5)]
+        public void Add_Scalar(int count, int xStride, double y, int dstStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var expected = x.Select(value => value + y).ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Vec.Add(x, y, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 3, 2, 4)]
         [TestCase(3, 1, 1, 1)]
@@ -50,6 +73,29 @@ namespace NumFlatTest
             var actual = TestVector.RandomDouble(0, count, dstStride);
             using (x.EnsureUnchanged())
             using (y.EnsureUnchanged())
+            {
+                Vec.Sub(x, y, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1.5, 1)]
+        [TestCase(1, 3, 2.3, 4)]
+        [TestCase(3, 1, 1.4, 1)]
+        [TestCase(3, 3, 2.7, 4)]
+        [TestCase(5, 1, 2.8, 3)]
+        [TestCase(11, 7, 2.1, 5)]
+        public void Sub_Scalar(int count, int xStride, double y, int dstStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            var expected = x.Select(value => value - y).ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
             {
                 Vec.Sub(x, y, actual);
             }

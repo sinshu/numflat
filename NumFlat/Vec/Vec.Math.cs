@@ -50,6 +50,41 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise vector-and-scalar addition.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise vector-and-scalar addition.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Add<T>(in Vec<T> x, T y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px] + y;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
         /// Computes a vector subtraction, x - y.
         /// </summary>
         /// <typeparam name="T">
@@ -85,6 +120,41 @@ namespace NumFlat
                 sd[pd] = sx[px] - sy[py];
                 px += x.Stride;
                 py += y.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Computes a pointwise vector-and-scalar subtraction.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise vector-and-scalar subtraction.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Sub<T>(in Vec<T> x, T y, in Vec<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px] - y;
+                px += x.Stride;
                 pd += destination.Stride;
             }
         }

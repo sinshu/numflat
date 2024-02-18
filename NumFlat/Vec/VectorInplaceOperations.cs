@@ -30,6 +30,26 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise vector-and-scalar addition in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target vector to be added.
+        /// </param>
+        /// <param name="x">
+        /// The scalar to add.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void AddInplace<T>(in this Vec<T> target, T x) where T : unmanaged, INumberBase<T>
+        {
+            Vec.Add(target, x, target);
+        }
+
+        /// <summary>
         /// Computes a vector subtraction in-place.
         /// </summary>
         /// <typeparam name="T">
@@ -45,6 +65,26 @@ namespace NumFlat
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void SubInplace<T>(in this Vec<T> target, in Vec<T> x) where T : unmanaged, INumberBase<T>
+        {
+            Vec.Sub(target, x, target);
+        }
+
+        /// <summary>
+        /// Computes a pointwise vector-and-scalar subtraction in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target vector to be subtracted.
+        /// </param>
+        /// <param name="x">
+        /// The scalar to sbtract.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void SubInplace<T>(in this Vec<T> target, T x) where T : unmanaged, INumberBase<T>
         {
             Vec.Sub(target, x, target);
         }

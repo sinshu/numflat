@@ -92,5 +92,39 @@ namespace NumFlatTest
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
         }
+
+        [Test]
+        public void ToGaussian_Regularize()
+        {
+            var data = TestMatrix.RandomDouble(42, 10, 3, 10);
+            var xs = data.Rows;
+            var regularization = 0.3;
+
+            var actual = xs.ToGaussian(regularization);
+
+            var (mean, covariance) = xs.MeanAndCovariance();
+            covariance += regularization * MatrixBuilder.Identity<double>(data.ColCount);
+
+            NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
+            NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
+        }
+
+        [Test]
+        public void ToGaussian_Weighted_Regularize()
+        {
+            var data = TestMatrix.RandomDouble(42, 10, 3, 10);
+            var random = new Random(57);
+            var xs = data.Rows;
+            var weights = xs.Select(x => random.NextDouble() + 1).ToArray();
+            var regularization = 0.3;
+
+            var actual = xs.ToGaussian(weights, regularization);
+
+            var (mean, covariance) = xs.MeanAndCovariance(weights);
+            covariance += regularization * MatrixBuilder.Identity<double>(data.ColCount);
+
+            NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
+            NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
+        }
     }
 }

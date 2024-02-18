@@ -23,12 +23,38 @@ namespace NumFlatTest
         }
 
         [Test]
+        public void AddInplace_Scalar()
+        {
+            Vec<double> x = [1, 2, 3];
+            var y = 0.5;
+
+            var expected = x + y * VectorBuilder.Fill(3, 1.0);
+
+            x.AddInplace(y);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
         public void SubInplace()
         {
             Vec<double> x = [1, 2, 3];
             Vec<double> y = [4, 5, 6];
 
             var expected = x - y;
+
+            x.SubInplace(y);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
+        public void SubInplace_Scalar()
+        {
+            Vec<double> x = [1, 2, 3];
+            var y = 0.5;
+
+            var expected = x - y * VectorBuilder.Fill(3, 1.0);
 
             x.SubInplace(y);
 
