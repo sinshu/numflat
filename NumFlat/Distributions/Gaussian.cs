@@ -56,14 +56,12 @@ namespace NumFlat.Distributions
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             MultivariateDistribution.ThrowIfInvalidSize(this, x, nameof(x));
 
-            using var ud = new TemporalVector<double>(mean.Count);
-            ref readonly var d = ref ud.Item;
+            using var utmp = new TemporalVector2<double>(mean.Count);
+            ref readonly var d = ref utmp.Item1;
+            ref readonly var isd = ref utmp.Item2;
+
             Vec.Sub(x, mean, d);
-
-            using var uisd = new TemporalVector<double>(mean.Count);
-            ref readonly var isd = ref uisd.Item;
             cholesky.Solve(d, isd);
-
             return logNormalizationTerm - d * isd / 2;
         }
 

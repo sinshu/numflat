@@ -89,20 +89,28 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             ThrowIfInvalidSize(b, destination);
 
-            using var ucdst = TemporalContiguousVector.EnsureContiguous(destination, false);
-            ref readonly var cdst = ref ucdst.Item;
-            b.CopyTo(cdst);
+            b.CopyTo(destination);
 
             fixed (Complex* pl = l.Memory.Span)
-            fixed (Complex* pcdst = cdst.Memory.Span)
+            fixed (Complex* pd = destination.Memory.Span)
             {
-                var info = Lapack.Zpotrs(
-                    MatrixLayout.ColMajor,
-                    'L',
+                Blas.Ztrsv(
+                    Order.ColMajor,
+                    Uplo.Lower,
+                    Transpose.NoTrans,
+                    Diag.NonUnit,
                     l.RowCount,
-                    1,
                     pl, l.Stride,
-                    pcdst, cdst.Count);
+                    pd, destination.Stride);
+
+                Blas.Ztrsv(
+                    Order.ColMajor,
+                    Uplo.Lower,
+                    Transpose.ConjTrans,
+                    Diag.NonUnit,
+                    l.RowCount,
+                    pl, l.Stride,
+                    pd, destination.Stride);
             }
         }
 
