@@ -149,5 +149,31 @@ namespace NumFlatTest
             Assert.That(actual1, Is.EqualTo(expected1).Within(1.0E-12));
             Assert.That(actual2, Is.EqualTo(expected2).Within(1.0E-12));
         }
+
+        [Test]
+        public void Bhattacharyya()
+        {
+            var mean1 = new double[] { 1, 2, 3 }.ToVector();
+            var variance1 = new double[] { 3.5, 4.5, 2.5 }.ToVector();
+
+            var mean2 = new double[] { 1.5, 2.4, 3.3 }.ToVector();
+            var variance2 = new double[] { 4.5, 3.5, 2.6 }.ToVector();
+
+            var x = new DiagonalGaussian(mean1, variance1);
+            var y = new DiagonalGaussian(mean2, variance2);
+
+            using (mean1.EnsureUnchanged())
+            using (variance1.EnsureUnchanged())
+            using (mean2.EnsureUnchanged())
+            using (variance2.EnsureUnchanged())
+            {
+                var expected = 0.025194578549721295;
+                var actual = x.Bhattacharyya(y);
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
+
+            Assert.That(x.Bhattacharyya(x), Is.EqualTo(0.0).Within(1.0E-12));
+            Assert.That(y.Bhattacharyya(y), Is.EqualTo(0.0).Within(1.0E-12));
+        }
     }
 }

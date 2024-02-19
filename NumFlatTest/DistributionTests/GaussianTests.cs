@@ -157,5 +157,66 @@ namespace NumFlatTest
             Assert.That(actual1, Is.EqualTo(expected1).Within(1.0E-12));
             Assert.That(actual2, Is.EqualTo(expected2).Within(1.0E-12));
         }
+
+        [Test]
+        public void Bhattacharyya1()
+        {
+            var mean1 = new double[] { 1, 2, 3 }.ToVector();
+            var cov1 = new double[,]
+            {
+                { 3.5, 1.0, 0.1 },
+                { 1.0, 4.5, 0.9 },
+                { 0.1, 0.9, 2.5 },
+            }
+            .ToMatrix();
+
+            var mean2 = new double[] { 1.5, 2.4, 3.3 }.ToVector();
+            var cov2 = new double[,]
+            {
+                { 4.5, 1.1, 0.3 },
+                { 1.1, 3.5, 0.7 },
+                { 0.3, 0.7, 2.6 },
+            }
+            .ToMatrix();
+
+            var x = new Gaussian(mean1, cov1);
+            var y = new Gaussian(mean2, cov2);
+
+            using (mean1.EnsureUnchanged())
+            using (cov1.EnsureUnchanged())
+            using (mean2.EnsureUnchanged())
+            using (cov2.EnsureUnchanged())
+            {
+                var expected = 0.02204707507666583;
+                var actual = x.Bhattacharyya(y);
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
+
+            Assert.That(x.Bhattacharyya(x), Is.EqualTo(0.0).Within(1.0E-12));
+            Assert.That(y.Bhattacharyya(y), Is.EqualTo(0.0).Within(1.0E-12));
+        }
+
+        [Test]
+        public void Bhattacharyya2()
+        {
+            var mean1 = new double[] { 1, 2, 3 }.ToVector();
+            var variance1 = new double[] { 3.5, 4.5, 2.5 }.ToVector();
+
+            var mean2 = new double[] { 1.5, 2.4, 3.3 }.ToVector();
+            var variance2 = new double[] { 4.5, 3.5, 2.6 }.ToVector();
+
+            var x = new Gaussian(mean1, variance1.ToDiagonalMatrix());
+            var y = new Gaussian(mean2, variance2.ToDiagonalMatrix());
+
+            using (mean1.EnsureUnchanged())
+            using (variance1.EnsureUnchanged())
+            using (mean2.EnsureUnchanged())
+            using (variance2.EnsureUnchanged())
+            {
+                var expected = 0.025194578549721295;
+                var actual = x.Bhattacharyya(y);
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
+        }
     }
 }

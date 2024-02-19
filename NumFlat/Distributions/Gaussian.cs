@@ -112,6 +112,34 @@ namespace NumFlat.Distributions
         }
 
         /// <summary>
+        /// Computes the Bhattacharyya distance.
+        /// </summary>
+        /// <param name="x">
+        /// The Gaussian to compute the Bhattacharyya distance.
+        /// </param>
+        /// <returns>
+        /// The Bhattacharyya distance.
+        /// </returns>
+        public double Bhattacharyya(Gaussian x)
+        {
+            ThrowHelper.ThrowIfNull(x, nameof(x));
+
+            if (x.mean.Count != this.mean.Count)
+            {
+                throw new ArgumentException("The distributions must have the same dimension.");
+            }
+
+            var sigma = this.covariance + x.covariance;
+            sigma.MulInplace(0.5);
+            var sigmaCholesky = sigma.Cholesky();
+
+            var d = x.mean - this.mean;
+            var left = d * sigmaCholesky.Solve(d) / 8;
+            var right = (sigmaCholesky.LogDeterminant() - (x.cholesky.LogDeterminant() + this.cholesky.LogDeterminant()) / 2) / 2;
+            return left + right;
+        }
+
+        /// <summary>
         /// Gets the mean vector.
         /// </summary>
         public ref readonly Vec<double> Mean => ref mean;
