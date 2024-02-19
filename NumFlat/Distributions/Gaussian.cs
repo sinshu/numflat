@@ -75,6 +75,43 @@ namespace NumFlat.Distributions
         }
 
         /// <summary>
+        /// Computes the squared Mahalanobis distance.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to compute the Mahalanobis distance.
+        /// </param>
+        /// <returns>
+        /// The squared Mahalanobis distance.
+        /// </returns>
+        public double MahalanobisSquared(in Vec<double> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            MultivariateDistribution.ThrowIfInvalidSize(this, x, nameof(x));
+
+            using var utmp = new TemporalVector2<double>(mean.Count);
+            ref readonly var d = ref utmp.Item1;
+            ref readonly var isd = ref utmp.Item2;
+
+            Vec.Sub(x, mean, d);
+            cholesky.Solve(d, isd);
+            return d * isd;
+        }
+
+        /// <summary>
+        /// Computes the Mahalanobis distance.
+        /// </summary>
+        /// <param name="x">
+        /// The vector to compute the Mahalanobis distance.
+        /// </param>
+        /// <returns>
+        /// The Mahalanobis distance.
+        /// </returns>
+        public double Mahalanobis(in Vec<double> x)
+        {
+            return Math.Sqrt(MahalanobisSquared(x));
+        }
+
+        /// <summary>
         /// Gets the mean vector.
         /// </summary>
         public ref readonly Vec<double> Mean => ref mean;

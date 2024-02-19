@@ -123,5 +123,31 @@ namespace NumFlatTest
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Variance, variance, 1.0E-12);
         }
+
+        [Test]
+        public void Mahalanobis()
+        {
+            var mean = new double[] { 1, 2, 3 }.ToVector();
+            var variance = new double[] { 2, 2.5, 3 }.ToVector();
+            var cov = variance.ToDiagonalMatrix();
+
+            var gaussian = new DiagonalGaussian(mean, variance);
+            var x = new double[] { 4, 5, 6 }.ToVector();
+
+            var d = x - gaussian.Mean;
+            var expected2 = d * (cov.Inverse() * d);
+            var expected1 = Math.Sqrt(expected2);
+
+            double actual1;
+            double actual2;
+            using (x.EnsureUnchanged())
+            {
+                actual1 = gaussian.Mahalanobis(x);
+                actual2 = gaussian.MahalanobisSquared(x);
+            }
+
+            Assert.That(actual1, Is.EqualTo(expected1).Within(1.0E-12));
+            Assert.That(actual2, Is.EqualTo(expected2).Within(1.0E-12));
+        }
     }
 }

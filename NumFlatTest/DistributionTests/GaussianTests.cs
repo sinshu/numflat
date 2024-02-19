@@ -126,5 +126,36 @@ namespace NumFlatTest
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
         }
+
+        [Test]
+        public void Mahalanobis()
+        {
+            var mean = new double[] { 1, 2, 3 }.ToVector();
+            var cov = new double[,]
+            {
+                { 3, 1, 2 },
+                { 1, 3, 1 },
+                { 2, 1, 3 },
+            }
+            .ToMatrix();
+
+            var gaussian = new Gaussian(mean, cov);
+            var x = new double[] { 4, 5, 6 }.ToVector();
+
+            var d = x - gaussian.Mean;
+            var expected2 = d * (gaussian.Covariance.Inverse() * d);
+            var expected1 = Math.Sqrt(expected2);
+
+            double actual1;
+            double actual2;
+            using (x.EnsureUnchanged())
+            {
+                actual1 = gaussian.Mahalanobis(x);
+                actual2 = gaussian.MahalanobisSquared(x);
+            }
+
+            Assert.That(actual1, Is.EqualTo(expected1).Within(1.0E-12));
+            Assert.That(actual2, Is.EqualTo(expected2).Within(1.0E-12));
+        }
     }
 }
