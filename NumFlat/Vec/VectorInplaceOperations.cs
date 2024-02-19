@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using System.Runtime.InteropServices;
 
 namespace NumFlat
 {
@@ -170,7 +169,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Reverses the order of elements in a vector.
+        /// Reverses the order of elements in a vector in-place.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -197,7 +196,26 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Conjugates the complex vector.
+        /// Applies a function to each value of the vector in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target vector to be processed.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        public static void MapInplace<T>(in this Vec<T> target, Func<T, T> func) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            Vec.Map(target, func, target);
+        }
+
+        /// <summary>
+        /// Conjugates the complex vector in-place.
         /// </summary>
         /// <param name="target">
         /// The target complex vector to be conjugated.

@@ -137,6 +137,18 @@ namespace NumFlatTest
         }
 
         [Test]
+        public void MapInplace()
+        {
+            Vec<double> x = [1, 2, 3];
+
+            var expected = x.Map(value => value * value);
+
+            x.MapInplace(value => value * value);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
         public void Conjugate()
         {
             Vec<Complex> x = [new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)];

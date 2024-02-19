@@ -200,6 +200,23 @@ namespace NumFlatTest
         }
 
         [Test]
+        public void MapInplace()
+        {
+            var x = new double[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            }
+            .ToMatrix();
+
+            var expected = x.Map(value => value * value);
+
+            x.MapInplace(value => value * value);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
         public void Conjugate()
         {
             var x = TestMatrix.RandomComplex(42, 10, 5, 11);

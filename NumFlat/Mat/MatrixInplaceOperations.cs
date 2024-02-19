@@ -195,6 +195,25 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Applies a function to each value of the matrix in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target matrix to be processed.
+        /// </param>
+        /// <param name="func">
+        /// The function to be applied.
+        /// </param>
+        public static void MapInplace<T>(in this Mat<T> target, Func<T, T> func) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+
+            Mat.Map(target, func, target);
+        }
+
+        /// <summary>
         /// Conjugates a complex matrix in-place.
         /// </summary>
         /// <param name="target">
