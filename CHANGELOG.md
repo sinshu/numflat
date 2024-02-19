@@ -1,3 +1,9 @@
+# v0.6.2
+
+* Added `MapInplace()` to `Vec<T>` and `Mat<T>`.
+* Added `Bhattacharyya()` to `Gaussian`.
+* Added `GetUnsafeFastIndexer()` to `Vec<T>` and `Mat<T>`.
+
 # v0.6.1
 
 * Added `FittingFailureException` to indicate model fitting failure.
