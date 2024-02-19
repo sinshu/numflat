@@ -119,13 +119,9 @@ namespace NumFlat
         /// <returns>
         /// The determinant of the source matrix.
         /// </returns>
-        public float Determinant()
+        public double Determinant()
         {
-            var value = 1.0F;
-            for (var i = 0; i < l.RowCount; i++)
-            {
-                value *= l[i, i];
-            }
+            var value = Special.DiagonalProduct(l);
             return value * value;
         }
 
@@ -135,13 +131,9 @@ namespace NumFlat
         /// <returns>
         /// The log determinant of the source matrix.
         /// </returns>
-        public float LogDeterminant()
+        public double LogDeterminant()
         {
-            var value = 0.0F;
-            for (var i = 0; i < l.RowCount; i++)
-            {
-                value += MathF.Log(l[i, i]);
-            }
+            var value = Special.DiagonalLogSum(l);
             return 2 * value;
         }
 

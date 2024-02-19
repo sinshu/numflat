@@ -122,11 +122,7 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
-            var value = 1.0;
-            for (var i = 0; i < l.RowCount; i++)
-            {
-                value *= l[i, i].Real;
-            }
+            var value = Special.DiagonalProduct(l);
             return value * value;
         }
 
@@ -138,14 +134,9 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
-            var value = 0.0;
-            for (var i = 0; i < l.RowCount; i++)
-            {
-                value += Math.Log(l[i, i].Real);
-            }
+            var value = Special.DiagonalLogSum(l);
             return 2 * value;
         }
-
         /// <summary>
         /// The matrix L.
         /// </summary>
