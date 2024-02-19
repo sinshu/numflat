@@ -29,6 +29,11 @@ namespace NumFlat.Distributions
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
             Vec<double> mean;
             Mat<double> covariance;
             try
@@ -67,6 +72,11 @@ namespace NumFlat.Distributions
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
             Vec<double> mean;
             Mat<double> covariance;
             try
@@ -101,6 +111,11 @@ namespace NumFlat.Distributions
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
 
             Vec<double> mean;
             Vec<double> variance;
@@ -139,6 +154,11 @@ namespace NumFlat.Distributions
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
 
             Vec<double> mean;
             Vec<double> variance;
