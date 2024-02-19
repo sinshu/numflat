@@ -1,3 +1,11 @@
+# v0.6.1
+
+* Added `FittingFailureException` to indicate model fitting failure.
+* Added `regularization` parameter to `ToGaussian()`.
+* Added pointwise scalar addition and subtraction for vectors and matrices.
+* Added `Distance()` to `Vec<T>`.
+* Added `Mahalanobis()` to `Gaussian`.
+
 # v0.6.0
 
 * Added the Gaussian and diagonal Gaussian distributions.
