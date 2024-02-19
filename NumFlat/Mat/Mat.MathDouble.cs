@@ -151,16 +151,17 @@ namespace NumFlat
                     ppiv);
             }
 
+            var ftmp = tmp.GetUnsafeFastIndexer();
             var determinant = 1.0;
             for (var i = 0; i < tmp.RowCount; i++)
             {
                 if (piv[i] - 1 == i)
                 {
-                    determinant *= tmp[i, i];
+                    determinant *= ftmp[i, i];
                 }
                 else
                 {
-                    determinant *= -tmp[i, i];
+                    determinant *= -ftmp[i, i];
                 }
             }
 

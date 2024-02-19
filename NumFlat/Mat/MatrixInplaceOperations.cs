@@ -185,11 +185,12 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
             ThrowHelper.ThrowIfNonSquare(target, nameof(target));
 
+            var ft = target.GetUnsafeFastIndexer();
             for (var col = 1; col < target.ColCount; col++)
             {
                 for (var row = 0; row < col; row++)
                 {
-                    (target[row, col], target[col, row]) = (target[col, row], target[row, col]);
+                    (ft[row, col], ft[col, row]) = (ft[col, row], ft[row, col]);
                 }
             }
         }
@@ -243,21 +244,22 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
             ThrowHelper.ThrowIfNonSquare(target, nameof(target));
 
+            var ft = target.GetUnsafeFastIndexer();
             for (var col = 0; col < target.ColCount; col++)
             {
                 for (var row = 0; row <= col; row++)
                 {
                     if (row == col)
                     {
-                        var tmp = target[row, col];
-                        target[row, col] = tmp.Conjugate();
+                        var tmp = ft[row, col];
+                        ft[row, col] = tmp.Conjugate();
                     }
                     else
                     {
-                        var tmp1 = target[row, col];
-                        var tmp2 = target[col, row];
-                        target[row, col] = tmp2.Conjugate();
-                        target[col, row] = tmp1.Conjugate();
+                        var tmp1 = ft[row, col];
+                        var tmp2 = ft[col, row];
+                        ft[row, col] = tmp2.Conjugate();
+                        ft[col, row] = tmp1.Conjugate();
                     }
                 }
             }

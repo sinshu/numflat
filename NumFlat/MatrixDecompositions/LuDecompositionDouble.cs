@@ -140,9 +140,11 @@ namespace NumFlat
                 throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
+            var fd = destination.GetUnsafeFastIndexer();
+            var fb = b.GetUnsafeFastIndexer();
             for (var i = 0; i < destination.Count; i++)
             {
-                destination[i] = b[permutation[i]];
+                fd[i] = fb[permutation[i]];
             }
 
             fixed (double* pl = l.Memory.Span)
@@ -181,9 +183,10 @@ namespace NumFlat
         public Mat<double> GetPermutationMatrix()
         {
             var p = new Mat<double>(permutation.Length, permutation.Length);
+            var fp = p.GetUnsafeFastIndexer();
             for (var i = 0; i < permutation.Length; i++)
             {
-                p[permutation[i], i] = 1;
+                fp[permutation[i], i] = 1;
             }
 
             return p;
@@ -197,16 +200,17 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
+            var fu = u.GetUnsafeFastIndexer();
             var determinant = 1.0;
             for (var i = 0; i < pivot.Length; i++)
             {
                 if (pivot[i] == i)
                 {
-                    determinant *= u[i, i];
+                    determinant *= fu[i, i];
                 }
                 else
                 {
-                    determinant *= -u[i, i];
+                    determinant *= -fu[i, i];
                 }
             }
             return determinant;

@@ -139,10 +139,11 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
+            var fr = r.GetUnsafeFastIndexer();
             var determinant = 1.0;
             for (var i = 0; i < r.RowCount; i++)
             {
-                determinant *= Math.Abs(r[i, i]);
+                determinant *= Math.Abs(fr[i, i]);
             }
             return determinant;
         }
@@ -155,10 +156,11 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
+            var fr = r.GetUnsafeFastIndexer();
             var logDeterminant = 0.0;
             for (var i = 0; i < r.RowCount; i++)
             {
-                logDeterminant += Math.Log(Math.Abs(r[i, i]));
+                logDeterminant += Math.Log(Math.Abs(fr[i, i]));
             }
             return logDeterminant;
         }

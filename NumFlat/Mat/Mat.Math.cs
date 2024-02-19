@@ -447,10 +447,11 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfNonSquare(x, nameof(x));
 
+            var fx = x.GetUnsafeFastIndexer();
             var trace = T.Zero;
             for (var i = 0; i < x.RowCount; i++)
             {
-                trace += x[i, i];
+                trace += fx[i, i];
             }
 
             return trace;

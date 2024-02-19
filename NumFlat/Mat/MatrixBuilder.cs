@@ -111,9 +111,10 @@ namespace NumFlat
             }
 
             var identity = new Mat<T>(count, count);
+            var fi = identity.GetUnsafeFastIndexer();
             for (var i = 0; i < count; i++)
             {
-                identity[i, i] = T.One;
+                fi[i, i] = T.One;
             }
             return identity;
         }
@@ -146,10 +147,11 @@ namespace NumFlat
             }
 
             var identity = new Mat<T>(rowCount, colCount);
+            var fi = identity.GetUnsafeFastIndexer();
             var min = Math.Min(rowCount, colCount);
             for (var i = 0; i < min; i++)
             {
-                identity[i, i] = T.One;
+                fi[i, i] = T.One;
             }
             return identity;
         }
@@ -217,9 +219,10 @@ namespace NumFlat
             }
 
             var matrix = new Mat<T>(array.Length, array.Length);
+            var fm = matrix.GetUnsafeFastIndexer();
             for (var i = 0; i < array.Length; i++)
             {
-                matrix[i, i] = array[i];
+                fm[i, i] = array[i];
             }
 
             return matrix;
@@ -252,6 +255,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfNull(elements, nameof(elements));
 
             var matrix = new Mat<T>(rowCount, colCount);
+            var fm = matrix.GetUnsafeFastIndexer();
             var limit = Math.Min(rowCount, colCount);
             var i = 0;
             foreach (var element in elements)
@@ -261,7 +265,7 @@ namespace NumFlat
                     throw new ArgumentException("Too many elements for the size of the matrix.");
                 }
 
-                matrix[i, i] = element;
+                fm[i, i] = element;
                 i++;
             }
 

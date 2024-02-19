@@ -121,7 +121,12 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
-            var value = Special.DiagonalProduct(l);
+            var fl = l.GetUnsafeFastIndexer();
+            var value = 1.0;
+            for (var i = 0; i < l.RowCount; i++)
+            {
+                value *= fl[i, i];
+            }
             return value * value;
         }
 
@@ -133,7 +138,12 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
-            var value = Special.DiagonalLogSum(l);
+            var fl = l.GetUnsafeFastIndexer();
+            var value = 0.0;
+            for (var i = 0; i < l.RowCount; i++)
+            {
+                value += Math.Log(fl[i, i]);
+            }
             return 2 * value;
         }
 
