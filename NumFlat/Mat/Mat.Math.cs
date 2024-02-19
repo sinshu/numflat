@@ -59,6 +59,49 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise matrix-and-scalar addition.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise matrix-and-scalar addition.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Add<T>(in Mat<T> x, T y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px] + y;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        /// <summary>
         /// Computes a matrix subtraction, X - Y.
         /// </summary>
         /// <typeparam name="T">
@@ -104,6 +147,49 @@ namespace NumFlat
                 }
                 ox += x.Stride;
                 oy += y.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Computes a pointwise matrix-and-scalar subtraction.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <param name="y">
+        /// The scalar Y.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the pointwise matrix-and-scalar subtraction.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Sub<T>(in Mat<T> x, T y, in Mat<T> destination) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px] - y;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
                 od += destination.Stride;
             }
         }

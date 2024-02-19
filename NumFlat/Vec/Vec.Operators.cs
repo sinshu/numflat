@@ -34,6 +34,56 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise vector-and-scalar addition.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The pointwise vector-and-scalar addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Add{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator +(in Vec<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<T>(x.count);
+            Vec.Add(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise scalar-and-vector addition.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The pointwise scalar-and-vector addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Add{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator +(T x, in Vec<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+
+            var result = new Vec<T>(y.count);
+            Vec.Add(y, x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a vector subtraction, x + y.
         /// </summary>
         /// <param name="x">
@@ -57,6 +107,56 @@ namespace NumFlat
 
             var result = new Vec<T>(x.count);
             Vec.Sub(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise vector-and-scalar subtraction.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The pointwise vector-and-scalar subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Sub{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator -(in Vec<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<T>(x.count);
+            Vec.Sub(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise scalar-and-vector subtraction.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar x.
+        /// </param>
+        /// <param name="y">
+        /// The vector y.
+        /// </param>
+        /// <returns>
+        /// The pointwise scalar-and-vector subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vectors.
+        /// To avoid the allocation, use <see cref="Vec.Sub{T}(in Vec{T}, T, in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> operator -(T x, in Vec<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+
+            var result = new Vec<T>(y.count);
+            Vec.Sub(y, x, result);
             return result;
         }
 

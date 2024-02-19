@@ -42,6 +42,37 @@ namespace NumFlatTest
             TestMatrix.FailIfOutOfRangeWrite(actual);
         }
 
+        [TestCase(1, 1, 1, 1.1, 1)]
+        [TestCase(1, 1, 3, 4.5, 5)]
+        [TestCase(2, 2, 2, 2.3, 2)]
+        [TestCase(2, 2, 3, 5.5, 7)]
+        [TestCase(3, 3, 3, 3.1, 3)]
+        [TestCase(3, 3, 5, 4.9, 8)]
+        [TestCase(1, 3, 1, 1.6, 1)]
+        [TestCase(1, 3, 5, 2.0, 1)]
+        [TestCase(3, 1, 3, 4.8, 3)]
+        [TestCase(3, 1, 7, 7.8, 7)]
+        [TestCase(2, 3, 2, 4.3, 3)]
+        [TestCase(2, 3, 4, 3.3, 5)]
+        [TestCase(3, 2, 3, 4.7, 6)]
+        [TestCase(3, 2, 6, 4.8, 3)]
+        public void Add_Scalar(int rowCount, int colCount, int xStride, double y, int dstStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+
+            var expected = x.Cols.Select(col => (col + VectorBuilder.Fill(col.Count, y)).AsEnumerable()).ColsToMatrix();
+
+            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Mat.Add(x, y, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestMatrix.FailIfOutOfRangeWrite(actual);
+        }
+
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 5)]
         [TestCase(2, 2, 2, 2, 2)]
@@ -66,6 +97,37 @@ namespace NumFlatTest
             var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
             using (x.EnsureUnchanged())
             using (y.EnsureUnchanged())
+            {
+                Mat.Sub(x, y, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestMatrix.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1, 1.1, 1)]
+        [TestCase(1, 1, 3, 4.5, 5)]
+        [TestCase(2, 2, 2, 2.3, 2)]
+        [TestCase(2, 2, 3, 5.5, 7)]
+        [TestCase(3, 3, 3, 3.1, 3)]
+        [TestCase(3, 3, 5, 4.9, 8)]
+        [TestCase(1, 3, 1, 1.6, 1)]
+        [TestCase(1, 3, 5, 2.0, 1)]
+        [TestCase(3, 1, 3, 4.8, 3)]
+        [TestCase(3, 1, 7, 7.8, 7)]
+        [TestCase(2, 3, 2, 4.3, 3)]
+        [TestCase(2, 3, 4, 3.3, 5)]
+        [TestCase(3, 2, 3, 4.7, 6)]
+        [TestCase(3, 2, 6, 4.8, 3)]
+        public void Sub_Scalar(int rowCount, int colCount, int xStride, double y, int dstStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+
+            var expected = x.Cols.Select(col => (col - VectorBuilder.Fill(col.Count, y)).AsEnumerable()).ColsToMatrix();
+
+            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+            using (x.EnsureUnchanged())
             {
                 Mat.Sub(x, y, actual);
             }

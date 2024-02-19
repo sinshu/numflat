@@ -34,6 +34,25 @@ namespace NumFlatTest
         }
 
         [Test]
+        public void AddInplace_Scalar()
+        {
+            var x = new double[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            }
+            .ToMatrix();
+
+            var y = 0.5;
+
+            var expected = x + MatrixBuilder.Fill(x.RowCount, x.ColCount, y);
+
+            x.AddInplace(y);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
         public void SubInplace()
         {
             var x = new double[,]
@@ -51,6 +70,25 @@ namespace NumFlatTest
             .ToMatrix();
 
             var expected = x - y;
+
+            x.SubInplace(y);
+
+            NumAssert.AreSame(expected, x, 1.0E-12);
+        }
+
+        [Test]
+        public void SubInplace_Scalar()
+        {
+            var x = new double[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            }
+            .ToMatrix();
+
+            var y = 0.5;
+
+            var expected = x - MatrixBuilder.Fill(x.RowCount, x.ColCount, y);
 
             x.SubInplace(y);
 

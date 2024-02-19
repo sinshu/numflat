@@ -29,6 +29,26 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise matrix-and-scalar addition in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target matrix to be added.
+        /// </param>
+        /// <param name="x">
+        /// The scalar to add.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void AddInplace<T>(in this Mat<T> target, T x) where T : unmanaged, INumberBase<T>
+        {
+            Mat.Add(target, x, target);
+        }
+
+        /// <summary>
         /// Computes a matrix subtraction in-place.
         /// </summary>
         /// <typeparam name="T">
@@ -44,6 +64,26 @@ namespace NumFlat
         /// This method does not allocate managed heap memory.
         /// </remarks>
         public static void SubInplace<T>(in this Mat<T> target, in Mat<T> x) where T : unmanaged, INumberBase<T>
+        {
+            Mat.Sub(target, x, target);
+        }
+
+        /// <summary>
+        /// Computes a pointwise matrix-and-scalar subtraction in-place.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target matrix to be subtracted.
+        /// </param>
+        /// <param name="x">
+        /// The scalar to sbtract.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void SubInplace<T>(in this Mat<T> target, T x) where T : unmanaged, INumberBase<T>
         {
             Mat.Sub(target, x, target);
         }

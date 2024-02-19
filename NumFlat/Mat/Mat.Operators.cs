@@ -34,6 +34,56 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes a pointwise matrix-and-scalar addition.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The pointwise matrix-and-scalar addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Add{T}(in Mat{T}, T, in Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> operator +(in Mat<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<T>(x.rowCount, x.colCount);
+            Mat.Add(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise scalar-and-matrix addition.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar x.
+        /// </param>
+        /// <param name="y">
+        /// The matrix y.
+        /// </param>
+        /// <returns>
+        /// The pointwise scalar-and-matrix addition.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Add{T}(in Mat{T}, T, in Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> operator +(T x, in Mat<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+
+            var result = new Mat<T>(y.rowCount, y.colCount);
+            Mat.Add(y, x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a matrix subtraction, X - Y.
         /// </summary>
         /// <param name="x">
@@ -57,6 +107,56 @@ namespace NumFlat
 
             var result = new Mat<T>(x.rowCount, x.colCount);
             Mat.Sub(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise matrix-and-scalar subtraction.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix x.
+        /// </param>
+        /// <param name="y">
+        /// The scalar y.
+        /// </param>
+        /// <returns>
+        /// The pointwise matrix-and-scalar subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Sub{T}(in Mat{T}, T, in Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> operator -(in Mat<T> x, T y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<T>(x.rowCount, x.colCount);
+            Mat.Sub(x, y, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes a pointwise scalar-and-matrix subtraction.
+        /// </summary>
+        /// <param name="x">
+        /// The scalar x.
+        /// </param>
+        /// <param name="y">
+        /// The matrix y.
+        /// </param>
+        /// <returns>
+        /// The pointwise scalar-and-matrix subtraction.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrices.
+        /// To avoid the allocation, use <see cref="Mat.Sub{T}(in Mat{T}, T, in Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> operator -(T x, in Mat<T> y)
+        {
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+
+            var result = new Mat<T>(y.rowCount, y.colCount);
+            Mat.Sub(y, x, result);
             return result;
         }
 
