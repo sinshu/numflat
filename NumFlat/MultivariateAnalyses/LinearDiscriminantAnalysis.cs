@@ -79,9 +79,14 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Vec<double> Mean => ref mean;
 
         /// <summary>
-        /// Gets the eigenvalue decomposition of the covariance matrices.
+        /// Gets the eigenvalues obtained from the generalized eigenvalue decomposition.
         /// </summary>
-        public GeneralizedEigenValueDecompositionDouble Gevd => gevd;
+        public ref readonly Vec<double> EigenValues => ref gevd.D;
+
+        /// <summary>
+        /// Gets the eigenvectors obtained from the generalized eigenvalue decomposition.
+        /// </summary>
+        public ref readonly Mat<double> EigenVectors => ref gevd.V;
 
         /// <inheritdoc/>
         public int SourceVectorLength => mean.Count;

@@ -9,7 +9,8 @@ namespace NumFlat.MultivariateAnalyses
     public sealed class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
         private readonly Vec<double> mean;
-        private readonly EigenValueDecompositionDouble evd;
+        private readonly Vec<double> eigenValues;
+        private readonly Mat<double> eigenVectors;
 
         /// <summary>
         /// Performs principal component analysis.
@@ -35,11 +36,11 @@ namespace NumFlat.MultivariateAnalyses
                 throw new FittingFailureException("Failed to compute the covariance matrix.", e);
             }
 
-            EigenValueDecompositionDouble evd;
+            var eigenValues = new Vec<double>(mean.Count);
+            var eigenVectors = new Mat<double>(mean.Count, mean.Count);
             try
             {
-                evd = covariance.Evd();
-                Special.ReverseEigenValueOrder(evd);
+                SingularValueDecompositionDouble.Decompose(covariance, eigenValues, eigenVectors);
             }
             catch (Exception e)
             {
@@ -47,7 +48,8 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             this.mean = mean;
-            this.evd = evd;
+            this.eigenValues = eigenValues;
+            this.eigenVectors = eigenVectors;
         }
 
         /// <inheritdoc/>
@@ -61,7 +63,7 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, mean, tmp);
-            Mat.Mul(evd.V, tmp, destination, true);
+            Mat.Mul(eigenVectors, tmp, destination, true);
         }
 
         /// <inheritdoc/>
@@ -71,7 +73,7 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
-            Mat.Mul(evd.V, source, destination, false);
+            Mat.Mul(eigenVectors, source, destination, false);
             destination.AddInplace(mean);
         }
 
@@ -81,9 +83,14 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Vec<double> Mean => ref mean;
 
         /// <summary>
-        /// Gets the eigenvalue decomposition of the covariance matrix.
+        /// Gets the eigenvalues of the covariance matrix.
         /// </summary>
-        public EigenValueDecompositionDouble Evd => evd;
+        public ref readonly Vec<double> EigenValues => ref eigenValues;
+
+        /// <summary>
+        /// Gets the eigenvectors of the covariance matrix.
+        /// </summary>
+        public ref readonly Mat<double> EigenVectors => ref eigenVectors;
 
         /// <inheritdoc/>
         public int SourceVectorLength => mean.Count;

@@ -205,7 +205,7 @@ namespace NumFlat
             {
                 var info = Lapack.Dgesvd(
                     MatrixLayout.ColMajor,
-                    'A', 'A',
+                    'A', 'N',
                     tmp.RowCount, tmp.ColCount,
                     ptmp, tmp.Stride,
                     pcs,
