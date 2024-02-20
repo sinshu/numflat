@@ -44,7 +44,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             catch (Exception e)
             {
-                throw new FittingFailureException("Failed to compute the EVD of the covariance matrix.", e);
+                throw new FittingFailureException("Failed to compute the SVD of the covariance matrix.", e);
             }
 
             this.mean = mean;
