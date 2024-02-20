@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NumFlat.Distributions
@@ -31,6 +32,104 @@ namespace NumFlat.Distributions
             ThrowHelper.ThrowIfEmpty(variance, nameof(variance));
             ThrowHelper.ThrowIfDifferentSize(mean, variance);
 
+            var (inverseVariance, logNormalizationTerm) = GetInverseVarianceAndLogNormalizationTerm(mean, variance);
+
+            this.mean = mean;
+            this.variance = variance;
+            this.inverseVariance = inverseVariance;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        /// <summary>
+        /// Computes the maximum likelihood diagonal Gaussian distribution from the source vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
+        public DiagonalGaussian(IEnumerable<Vec<double>> xs, double regularization = 0.0)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
+            Vec<double> mean;
+            Vec<double> variance;
+            try
+            {
+                (mean, variance) = xs.MeanAndVariance();
+                variance.AddInplace(regularization);
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
+            }
+
+            var (inverseVariance, logNormalizationTerm) = GetInverseVarianceAndLogNormalizationTerm(mean, variance);
+
+            this.mean = mean;
+            this.variance = variance;
+            this.inverseVariance = inverseVariance;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        /// <summary>
+        /// Computes the maximum likelihood diagonal Gaussian distribution from the source vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="weights">
+        /// The weights of the source vectors.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
+        public DiagonalGaussian(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(weights, nameof(weights));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
+            Vec<double> mean;
+            Vec<double> variance;
+            try
+            {
+                (mean, variance) = xs.MeanAndVariance(weights);
+                variance.AddInplace(regularization);
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
+            }
+
+            var (inverseVariance, logNormalizationTerm) = GetInverseVarianceAndLogNormalizationTerm(mean, variance);
+
+            this.mean = mean;
+            this.variance = variance;
+            this.inverseVariance = inverseVariance;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        private static (Vec<double>, double) GetInverseVarianceAndLogNormalizationTerm(in Vec<double> mean, in Vec<double> variance)
+        {
             var logDeterminant = variance.Select(value => Math.Log(value)).Sum();
             var logNormalizationTerm = -(Math.Log(2 * Math.PI) * mean.Count + logDeterminant) / 2;
 
@@ -49,10 +148,7 @@ namespace NumFlat.Distributions
                 }
             }
 
-            this.mean = mean;
-            this.variance = variance;
-            this.inverseVariance = inverseVariance;
-            this.logNormalizationTerm = logNormalizationTerm;
+            return (inverseVariance, logNormalizationTerm);
         }
 
         /// <inheritdoc/>

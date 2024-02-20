@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NumFlat.Distributions
 {
@@ -35,6 +36,104 @@ namespace NumFlat.Distributions
                 throw new ArgumentException("The length of the mean vector must match the order of the covariance matrix.");
             }
 
+            var (cholesky, logNormalizationTerm) = GetCholeskyAndLogNormalizationTerm(mean, covariance); 
+
+            this.mean = mean;
+            this.covariance = covariance;
+            this.cholesky = cholesky;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        /// <summary>
+        /// Computes the maximum likelihood Gaussian distribution from the source vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
+        public Gaussian(IEnumerable<Vec<double>> xs, double regularization = 0.0)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
+            Vec<double> mean;
+            Mat<double> covariance;
+            try
+            {
+                (mean, covariance) = xs.MeanAndCovariance();
+                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
+            }
+
+            var (cholesky, logNormalizationTerm) = GetCholeskyAndLogNormalizationTerm(mean, covariance);
+
+            this.mean = mean;
+            this.covariance = covariance;
+            this.cholesky = cholesky;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        /// <summary>
+        /// Computes the maximum likelihood Gaussian distribution from the source vectors.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="weights">
+        /// The weights of the source vectors.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
+        public Gaussian(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(weights, nameof(weights));
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
+            Vec<double> mean;
+            Mat<double> covariance;
+            try
+            {
+                (mean, covariance) = xs.MeanAndCovariance(weights);
+                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
+            }
+
+            var (cholesky, logNormalizationTerm) = GetCholeskyAndLogNormalizationTerm(mean, covariance);
+
+            this.mean = mean;
+            this.covariance = covariance;
+            this.cholesky = cholesky;
+            this.logNormalizationTerm = logNormalizationTerm;
+        }
+
+        private static (CholeskyDecompositionDouble, double) GetCholeskyAndLogNormalizationTerm(in Vec<double> mean, in Mat<double> covariance)
+        {
             CholeskyDecompositionDouble cholesky;
             try
             {
@@ -47,10 +146,7 @@ namespace NumFlat.Distributions
 
             var logNormalizationTerm = -(Math.Log(2 * Math.PI) * mean.Count + cholesky.LogDeterminant()) / 2;
 
-            this.mean = mean;
-            this.covariance = covariance;
-            this.cholesky = cholesky;
-            this.logNormalizationTerm = logNormalizationTerm;
+            return (cholesky, logNormalizationTerm);
         }
 
         /// <inheritdoc/>

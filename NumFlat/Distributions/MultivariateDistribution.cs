@@ -34,19 +34,7 @@ namespace NumFlat.Distributions
                 throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
             }
 
-            Vec<double> mean;
-            Mat<double> covariance;
-            try
-            {
-                (mean, covariance) = xs.MeanAndCovariance();
-                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
-            }
-            catch (Exception e)
-            {
-                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
-            }
-
-            return new Gaussian(mean, covariance);
+            return new Gaussian(xs, regularization);
         }
 
         /// <summary>
@@ -71,25 +59,14 @@ namespace NumFlat.Distributions
         public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(weights, nameof(weights));
 
             if (regularization < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
             }
 
-            Vec<double> mean;
-            Mat<double> covariance;
-            try
-            {
-                (mean, covariance) = xs.MeanAndCovariance(weights);
-                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
-            }
-            catch (Exception e)
-            {
-                throw new FittingFailureException("Failed to compute the covariance matrix.", e);
-            }
-
-            return new Gaussian(mean, covariance);
+            return new Gaussian(xs, weights, regularization);
         }
 
         /// <summary>
@@ -117,19 +94,7 @@ namespace NumFlat.Distributions
                 throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
             }
 
-            Vec<double> mean;
-            Vec<double> variance;
-            try
-            {
-                (mean, variance) = xs.MeanAndVariance();
-                variance.AddInplace(regularization);
-            }
-            catch (Exception e)
-            {
-                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
-            }
-
-            return new DiagonalGaussian(mean, variance);
+            return new DiagonalGaussian(xs, regularization);
         }
 
         /// <summary>
@@ -160,19 +125,7 @@ namespace NumFlat.Distributions
                 throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
             }
 
-            Vec<double> mean;
-            Vec<double> variance;
-            try
-            {
-                (mean, variance) = xs.MeanAndVariance(weights);
-                variance.AddInplace(regularization);
-            }
-            catch (Exception e)
-            {
-                throw new FittingFailureException("Failed to compute the pointwise variance.", e);
-            }
-
-            return new DiagonalGaussian(mean, variance);
+            return new DiagonalGaussian(xs, weights, regularization);
         }
 
         internal static void ThrowIfInvalidSize<T>(IMultivariateDistribution<T> distribution, in Vec<T> x, string name) where T : unmanaged, INumberBase<T>
