@@ -154,7 +154,68 @@ namespace NumFlat
                     pwork);
                 if (info != LapackInfo.None)
                 {
-                    throw new LapackException("Failed to compute the SVD.", nameof(Lapack.Zgesvd), (int)info);
+                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Zgesvd), (int)info);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decomposes the matrix using SVD.
+        /// </summary>
+        /// <param name="a">
+        /// The matrix to be decomposed.
+        /// </param>
+        /// <param name="s">
+        /// The destination of the diagonal elements of the matrix S.
+        /// </param>
+        /// <param name="u">
+        /// The destination of the the matrix U.
+        /// </param>
+        /// <exception cref="LapackException">
+        /// Failed to compute the SVD.
+        /// </exception>
+        public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> s, in Mat<Complex> u)
+        {
+            ThrowHelper.ThrowIfEmpty(a, nameof(a));
+            ThrowHelper.ThrowIfEmpty(s, nameof(s));
+            ThrowHelper.ThrowIfEmpty(u, nameof(u));
+
+            if (s.Count != Math.Min(a.RowCount, a.ColCount))
+            {
+                throw new ArgumentException("'s.Count' must match 'min(a.RowCount, a.ColCount)'.");
+            }
+
+            if (u.RowCount != a.RowCount || u.ColCount != a.RowCount)
+            {
+                throw new ArgumentException("'u.RowCount' and 'u.ColCount' must match 'a.RowCount'.");
+            }
+
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
+
+            using var ucs = s.EnsureContiguous(false);
+            ref readonly var cs = ref ucs.Item;
+
+            using var uwork = MemoryPool<double>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
+            var work = uwork.Memory.Span;
+
+            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (double* pcs = cs.Memory.Span)
+            fixed (Complex* pu = u.Memory.Span)
+            fixed (double* pwork = work)
+            {
+                var info = Lapack.Zgesvd(
+                    MatrixLayout.ColMajor,
+                    'A', 'A',
+                    tmp.RowCount, tmp.ColCount,
+                    ptmp, tmp.Stride,
+                    pcs,
+                    pu, u.Stride,
+                    null, 1,
+                    pwork);
+                if (info != LapackInfo.None)
+                {
+                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Zgesvd), (int)info);
                 }
             }
         }

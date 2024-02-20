@@ -88,6 +88,34 @@ namespace NumFlatTest
             TestMatrix.FailIfOutOfRangeWrite(vt);
         }
 
+        [TestCase(1, 1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 4, 2)]
+        [TestCase(2, 2, 2, 1, 2)]
+        [TestCase(2, 2, 4, 2, 3)]
+        [TestCase(3, 4, 3, 1, 3)]
+        [TestCase(3, 4, 5, 5, 7)]
+        [TestCase(4, 3, 4, 1, 4)]
+        [TestCase(4, 3, 6, 3, 7)]
+        public void Decompose_WithoutVT(int m, int n, int aStride, int sStride, int uStride)
+        {
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+            var s = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
+            var u = TestMatrix.RandomComplex(66, m, m, uStride);
+
+            using (a.EnsureUnchanged())
+            {
+                SingularValueDecompositionComplex.Decompose(a, s, u);
+            }
+
+            var reconstructed = u * s.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * a.Svd().VT;
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
+
+            CheckUnitary(u);
+
+            TestVector.FailIfOutOfRangeWrite(s);
+            TestMatrix.FailIfOutOfRangeWrite(u);
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(1, 1, 3)]
         [TestCase(2, 2, 2)]
