@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using NumFlat;
+using NumFlat.Clustering;
 using NumFlat.Distributions;
 using NumFlat.FourierTransform;
 using NumFlat.MultivariateAnalyses;

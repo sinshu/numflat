@@ -33,14 +33,24 @@ namespace NumFlat.Clustering
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
+            if (clusterCount <= 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+            }
+
             if (random == null)
             {
                 random = new Random();
             }
 
+            this.centroids = GetBestModel(xs, clusterCount, random, 3).centroids;
+        }
+
+        private static KMeans GetBestModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, int tryCount)
+        {
             var minError = double.MaxValue;
             KMeans? best = null;
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < tryCount; i++)
             {
                 var (model, error) = GetModel(xs, clusterCount, random);
                 if (error < minError)
@@ -50,7 +60,7 @@ namespace NumFlat.Clustering
                 }
             }
 
-            this.centroids = best!.centroids;
+            return best!;
         }
 
         private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
@@ -173,7 +183,7 @@ namespace NumFlat.Clustering
             }
 
             using var uprb = MemoryPool<double>.Shared.Rent(xs.Count);
-            var prb = uprb.Memory.Span;
+            var prb = uprb.Memory.Span.Slice(0, xs.Count);
 
             var sum = 0.0;
             var i = 0;
