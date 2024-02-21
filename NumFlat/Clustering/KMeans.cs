@@ -11,12 +11,66 @@ namespace NumFlat.Clustering
     public sealed class KMeans : IClassifier<double>
     {
         private readonly Vec<double>[] centroids;
-        private readonly int iterations;
 
-        private KMeans(Vec<double>[] centroids, int iterations)
+        private KMeans(Vec<double>[] centroids)
         {
             this.centroids = centroids;
-            this.iterations = iterations;
+        }
+
+        /// <summary>
+        /// Cluster the feature vectors using the k-means algorithm.
+        /// </summary>
+        /// <param name="xs">
+        /// The source feature vectors.
+        /// </param>
+        /// <param name="clusterCount">
+        /// The number of desired clusters.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the selection process.
+        /// </param>
+        public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (random == null)
+            {
+                random = new Random();
+            }
+
+            var minError = double.MaxValue;
+            KMeans? best = null;
+            for (var i = 0; i < 3; i++)
+            {
+                var (model, error) = GetModel(xs, clusterCount, random);
+                if (error < minError)
+                {
+                    minError = error;
+                    best = model;
+                }
+            }
+
+            this.centroids = best!.centroids;
+        }
+
+        private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
+        {
+            var model = GetInitialModel(xs, clusterCount, random);
+            var error = model.GetSumOfSquaredDistances(xs);
+            var threshold = error * 1.0E-12;
+            while (true)
+            {
+                var newModel = model.Update(xs);
+                var newError = newModel.GetSumOfSquaredDistances(xs);
+                if (Math.Abs(newError - error) <= threshold)
+                {
+                    break;
+                }
+                model = newModel;
+                error = newError;
+            }
+
+            return (model, error);
         }
 
         /// <inheritdoc/>
@@ -56,6 +110,8 @@ namespace NumFlat.Clustering
         /// </returns>
         public KMeans Update(IReadOnlyList<Vec<double>> xs)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
             var nextCentroids = new Vec<double>[centroids.Length];
             for (var i = 0; i < nextCentroids.Length; i++)
             {
@@ -66,7 +122,7 @@ namespace NumFlat.Clustering
             var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
             counts.Clear();
 
-            foreach (var x in xs)
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
             {
                 var cls = PredictWithSquaredDistance(centroids, x).ClassIndex;
                 nextCentroids[cls].AddInplace(x);
@@ -78,7 +134,7 @@ namespace NumFlat.Clustering
                 nextCentroids[i].DivInplace(counts[i]);
             }
 
-            return new KMeans(nextCentroids, iterations + 1);
+            return new KMeans(nextCentroids);
         }
 
         /// <summary>
@@ -98,13 +154,15 @@ namespace NumFlat.Clustering
         /// </returns>
         public static KMeans GetInitialModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
             var centroids = new Vec<double>[clusterCount];
             for (var i = 0; i < clusterCount; i++)
             {
                 centroids[i] = GetNextInitialCentroid(xs, centroids.AsSpan(0, i), random);
             }
 
-            return new KMeans(centroids, 0);
+            return new KMeans(centroids);
         }
 
         private static Vec<double> GetNextInitialCentroid(IReadOnlyList<Vec<double>> xs, ReadOnlySpan<Vec<double>> centroids, Random random)
@@ -119,7 +177,7 @@ namespace NumFlat.Clustering
 
             var sum = 0.0;
             var i = 0;
-            foreach (var x in xs)
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
             {
                 var distance = PredictWithSquaredDistance(centroids, x).SquaredDistance;
                 sum += distance;
@@ -155,7 +213,7 @@ namespace NumFlat.Clustering
         public double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs)
         {
             var sum = 0.0;
-            foreach (var x in xs)
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
             {
                 sum += PredictWithSquaredDistance(centroids, x).SquaredDistance;
             }
@@ -166,11 +224,6 @@ namespace NumFlat.Clustering
         /// Gets the centroids.
         /// </summary>
         public IReadOnlyList<Vec<double>> Centroids => centroids;
-
-        /// <summary>
-        /// Gets the number of iterations.
-        /// </summary>
-        public int Iterations => iterations;
 
         /// <inheritdoc/>
         public int VectorLength => centroids[0].Count;

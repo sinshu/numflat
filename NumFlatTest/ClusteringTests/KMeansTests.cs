@@ -5,6 +5,7 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 using NumFlat.Clustering;
+using System.IO;
 
 namespace NumFlatTest
 {
@@ -111,6 +112,73 @@ namespace NumFlatTest
                     break;
                 }
                 error = newError;
+            }
+        }
+
+        [Test]
+        public void SimpleData()
+        {
+            var xs = new double[,]
+            {
+                {  1,  0,  1 },
+                {  1,  1,  1 },
+                {  5, -5, -5 },
+                {  6, -4, -6 },
+                {  6, -5, -4 },
+                { -8,  2,  7 },
+                { -9,  1,  8 },
+                { -8,  3,  8 },
+                { -8,  1,  9 },
+            }
+            .ToMatrix().Rows;
+
+            var kmeans = new KMeans(xs, 3, new Random(42));
+            var cls = xs.Select(x => kmeans.Predict(x)).ToArray();
+            Assert.IsTrue(cls[0] == cls[1]);
+            Assert.IsTrue(cls[2] == cls[3]);
+            Assert.IsTrue(cls[2] == cls[4]);
+            Assert.IsTrue(cls[5] == cls[6]);
+            Assert.IsTrue(cls[5] == cls[7]);
+            Assert.IsTrue(cls[5] == cls[8]);
+        }
+
+        [Test]
+        public void Iris()
+        {
+            var xs = ReadIris("iris.csv").ToArray();
+            var ys = ReadIrisReference("iris_kmeans_gpt4.csv");
+
+            var kmeans = new KMeans(xs, 3, new Random(57));
+            var result = new Mat<int>(3, 3);
+            foreach (var (x, y) in xs.Zip(ys))
+            {
+                var actual = kmeans.Predict(x);
+                result[y, actual]++;
+            }
+
+            foreach (var row in result.Rows)
+            {
+                Assert.IsTrue(row.Max() > 0);
+                Assert.IsTrue(row.Count(x => x == 0) == 2);
+            }
+        }
+
+        private static IEnumerable<Vec<double>> ReadIris(string filename)
+        {
+            var path = Path.Combine("dataset", filename);
+            foreach (var line in File.ReadLines(path).Skip(1))
+            {
+                var values = line.Split(',').Take(4).Select(double.Parse);
+                yield return values.ToVector();
+            }
+        }
+
+        private static IEnumerable<int> ReadIrisReference(string filename)
+        {
+            var path = Path.Combine("dataset", filename);
+            foreach (var line in File.ReadLines(path).Skip(1))
+            {
+                yield return int.Parse(line);
             }
         }
     }
