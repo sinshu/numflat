@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace NumFlat
@@ -10,6 +11,14 @@ namespace NumFlat
             if (obj == null)
             {
                 throw new ArgumentNullException(name);
+            }
+        }
+
+        internal static void ThrowIfEmpty<T>(IReadOnlyList<Vec<T>> xs, string name) where T : unmanaged, INumberBase<T>
+        {
+            if (xs.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one vector.", nameof(xs));
             }
         }
 

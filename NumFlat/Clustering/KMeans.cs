@@ -31,9 +31,13 @@ namespace NumFlat.Clustering
         /// <param name="random">
         /// A random number generator for the selection process.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed in the model fitting.
+        /// </exception>
         public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount = 3, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             if (clusterCount <= 1)
             {
@@ -81,13 +85,11 @@ namespace NumFlat.Clustering
                 var newError = newModel.GetSumOfSquaredDistances(xs);
                 if (Math.Abs(newError - error) <= threshold)
                 {
-                    break;
+                    return (newModel, newError);
                 }
                 model = newModel;
                 error = newError;
             }
-
-            return (model, error);
         }
 
         /// <inheritdoc/>
@@ -128,6 +130,7 @@ namespace NumFlat.Clustering
         public KMeans Update(IReadOnlyList<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             var nextCentroids = new Vec<double>[centroids.Length];
             for (var i = 0; i < nextCentroids.Length; i++)
@@ -148,6 +151,11 @@ namespace NumFlat.Clustering
 
             for (var i = 0; i < nextCentroids.Length; i++)
             {
+                if (counts[i] == 0)
+                {
+                    throw new FittingFailureException("A cluster has no vector assigned.");
+                }
+
                 nextCentroids[i].DivInplace(counts[i]);
             }
 
@@ -172,6 +180,7 @@ namespace NumFlat.Clustering
         public static KMeans GetInitialModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             var centroids = new Vec<double>[clusterCount];
             for (var i = 0; i < clusterCount; i++)
@@ -229,6 +238,9 @@ namespace NumFlat.Clustering
         /// </returns>
         public double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
+
             var sum = 0.0;
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
             {
