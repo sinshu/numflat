@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NumFlat.Clustering
 {
@@ -54,24 +55,9 @@ namespace NumFlat.Clustering
                 random = new Random();
             }
 
-            this.centroids = GetBestModel(xs, clusterCount, tryCount, random).Model.centroids;
-        }
+            var best = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random)).MinBy(model => model.Error);
 
-        private static (KMeans Model, double Error) GetBestModel(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount, Random random)
-        {
-            var minError = double.MaxValue;
-            KMeans? bestModel = null;
-            for (var i = 0; i < tryCount; i++)
-            {
-                var (model, error) = GetModel(xs, clusterCount, random);
-                if (error < minError)
-                {
-                    minError = error;
-                    bestModel = model;
-                }
-            }
-
-            return (bestModel!, minError);
+            this.centroids = best.Model.centroids;
         }
 
         private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
@@ -81,14 +67,14 @@ namespace NumFlat.Clustering
             var threshold = error * 1.0E-12;
             while (true)
             {
-                var newModel = model.Update(xs);
-                var newError = newModel.GetSumOfSquaredDistances(xs);
-                if (Math.Abs(newError - error) <= threshold)
+                var nextModel = model.Update(xs);
+                var nextError = nextModel.GetSumOfSquaredDistances(xs);
+                if (Math.Abs(nextError - error) <= threshold)
                 {
-                    return (newModel, newError);
+                    return (nextModel, nextError);
                 }
-                model = newModel;
-                error = newError;
+                model = nextModel;
+                error = nextError;
             }
         }
 
@@ -116,50 +102,6 @@ namespace NumFlat.Clustering
             }
 
             return (predicted, minDistance);
-        }
-
-        /// <summary>
-        /// Executes one iteration of the k-means algorithm to update centroids.
-        /// </summary>
-        /// <param name="xs">
-        /// The source feature vectors.
-        /// </param>
-        /// <returns>
-        /// The result of the update.
-        /// </returns>
-        public KMeans Update(IReadOnlyList<Vec<double>> xs)
-        {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
-
-            var nextCentroids = new Vec<double>[centroids.Length];
-            for (var i = 0; i < nextCentroids.Length; i++)
-            {
-                nextCentroids[i] = new Vec<double>(centroids[0].Count);
-            }
-
-            using var ucounts = MemoryPool<int>.Shared.Rent(centroids.Length);
-            var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
-            counts.Clear();
-
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
-            {
-                var cls = PredictWithSquaredDistance(centroids, x).ClassIndex;
-                nextCentroids[cls].AddInplace(x);
-                counts[cls]++;
-            }
-
-            for (var i = 0; i < nextCentroids.Length; i++)
-            {
-                if (counts[i] == 0)
-                {
-                    throw new FittingFailureException("A cluster has no vector assigned.");
-                }
-
-                nextCentroids[i].DivInplace(counts[i]);
-            }
-
-            return new KMeans(nextCentroids);
         }
 
         /// <summary>
@@ -225,6 +167,50 @@ namespace NumFlat.Clustering
             }
 
             return xs[i - 1];
+        }
+
+        /// <summary>
+        /// Executes one iteration of the k-means algorithm to update centroids.
+        /// </summary>
+        /// <param name="xs">
+        /// The source feature vectors.
+        /// </param>
+        /// <returns>
+        /// The result of the update.
+        /// </returns>
+        public KMeans Update(IReadOnlyList<Vec<double>> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
+
+            var nextCentroids = new Vec<double>[centroids.Length];
+            for (var i = 0; i < nextCentroids.Length; i++)
+            {
+                nextCentroids[i] = new Vec<double>(centroids[0].Count);
+            }
+
+            using var ucounts = MemoryPool<int>.Shared.Rent(centroids.Length);
+            var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
+            counts.Clear();
+
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
+            {
+                var cls = PredictWithSquaredDistance(centroids, x).ClassIndex;
+                nextCentroids[cls].AddInplace(x);
+                counts[cls]++;
+            }
+
+            for (var i = 0; i < nextCentroids.Length; i++)
+            {
+                if (counts[i] == 0)
+                {
+                    throw new FittingFailureException("A cluster has no vector assigned.");
+                }
+
+                nextCentroids[i].DivInplace(counts[i]);
+            }
+
+            return new KMeans(nextCentroids);
         }
 
         /// <summary>
