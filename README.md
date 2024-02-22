@@ -624,7 +624,7 @@ samples = spectrum.Ifft();
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
 * ⬜ Clustering
-    - ⬜ k-means
+    - ✅ k-means
     - ⬜ GMM
 * ⬜ Time series
     - ⬜ HMM

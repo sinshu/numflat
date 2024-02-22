@@ -1,3 +1,10 @@
+# v0.7.0
+
+* Now `Gaussian` has a constructor that requires `IEnumerable<Vec<double>>`.
+* Added another overload of `Svd.Decompose()` that computes only `S` and `U`.
+* Now PCA uses SVD instead of EVD.
+* Added k-means clustering.
+
 # v0.6.2
 
 * Added `MapInplace()` to `Vec<T>` and `Mat<T>`.
