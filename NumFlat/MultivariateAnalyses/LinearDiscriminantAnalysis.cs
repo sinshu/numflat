@@ -22,7 +22,7 @@ namespace NumFlat.MultivariateAnalyses
         /// The class indices for each source vector.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public LinearDiscriminantAnalysis(IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {

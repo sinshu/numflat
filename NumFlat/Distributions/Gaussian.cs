@@ -23,7 +23,7 @@ namespace NumFlat.Distributions
         /// The covariance matrix.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public Gaussian(in Vec<double> mean, in Mat<double> covariance)
         {
@@ -55,7 +55,7 @@ namespace NumFlat.Distributions
         /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public Gaussian(IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
@@ -100,7 +100,7 @@ namespace NumFlat.Distributions
         /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public Gaussian(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {

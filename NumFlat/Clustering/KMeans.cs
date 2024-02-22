@@ -33,7 +33,7 @@ namespace NumFlat.Clustering
         /// A random number generator for the selection process.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount = 3, Random? random = null)
         {

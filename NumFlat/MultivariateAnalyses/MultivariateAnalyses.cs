@@ -18,7 +18,7 @@ namespace NumFlat.MultivariateAnalyses
         /// A new instance of <see cref="PrincipalComponentAnalysis"/>.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static PrincipalComponentAnalysis Pca(this IEnumerable<Vec<double>> xs)
         {
@@ -40,7 +40,7 @@ namespace NumFlat.MultivariateAnalyses
         /// A new instance of <see cref="LinearDiscriminantAnalysis"/>.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static LinearDiscriminantAnalysis Lda(this IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {

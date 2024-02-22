@@ -23,7 +23,7 @@ namespace NumFlat.Distributions
         /// The Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
@@ -54,7 +54,7 @@ namespace NumFlat.Distributions
         /// The Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static Gaussian ToGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {
@@ -83,7 +83,7 @@ namespace NumFlat.Distributions
         /// The diagonal Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, double regularization = 0.0)
         {
@@ -114,7 +114,7 @@ namespace NumFlat.Distributions
         /// The diagonal Gaussian distribution.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static DiagonalGaussian ToDiagonalGaussian(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, double regularization = 0.0)
         {

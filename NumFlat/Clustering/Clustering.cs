@@ -27,7 +27,7 @@ namespace NumFlat.Clustering
         /// The clusters obtained by the k-means algorithm.
         /// </returns>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public static KMeans ToKMeans(this IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount = 3, Random? random = null)
         {

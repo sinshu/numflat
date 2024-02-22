@@ -19,7 +19,7 @@ namespace NumFlat.MultivariateAnalyses
         /// The source vectors.
         /// </param>
         /// <exception cref="FittingFailureException">
-        /// Failed in the model fitting.
+        /// Failed to fit the model.
         /// </exception>
         public PrincipalComponentAnalysis(IEnumerable<Vec<double>> xs)
         {
