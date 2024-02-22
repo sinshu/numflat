@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace NumFlat.Clustering
 {
@@ -26,10 +25,13 @@ namespace NumFlat.Clustering
         /// <param name="clusterCount">
         /// The number of desired clusters.
         /// </param>
+        /// <param name="tryCount">
+        /// Run the k-means algorithm the specified number of times and select the model with the lowest error.
+        /// </param>
         /// <param name="random">
         /// A random number generator for the selection process.
         /// </param>
-        public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, Random? random = null)
+        public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount = 3, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -38,29 +40,34 @@ namespace NumFlat.Clustering
                 throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
             }
 
+            if (tryCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(tryCount), "The number of attempts must be greater than or equal to one.");
+            }
+
             if (random == null)
             {
                 random = new Random();
             }
 
-            this.centroids = GetBestModel(xs, clusterCount, random, 3).centroids;
+            this.centroids = GetBestModel(xs, clusterCount, tryCount, random).Model.centroids;
         }
 
-        private static KMeans GetBestModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, int tryCount)
+        private static (KMeans Model, double Error) GetBestModel(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount, Random random)
         {
             var minError = double.MaxValue;
-            KMeans? best = null;
+            KMeans? bestModel = null;
             for (var i = 0; i < tryCount; i++)
             {
                 var (model, error) = GetModel(xs, clusterCount, random);
                 if (error < minError)
                 {
                     minError = error;
-                    best = model;
+                    bestModel = model;
                 }
             }
 
-            return best!;
+            return (bestModel!, minError);
         }
 
         private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
@@ -95,18 +102,18 @@ namespace NumFlat.Clustering
         private static (int ClassIndex, double SquaredDistance) PredictWithSquaredDistance(ReadOnlySpan<Vec<double>> centroids, in Vec<double> x)
         {
             var minDistance = double.MaxValue;
-            var minIndex = -1;
+            var predicted = -1;
             for (var i = 0; i < centroids.Length; i++)
             {
                 var distance = x.DistanceSquared(centroids[i]);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    minIndex = i;
+                    predicted = i;
                 }
             }
 
-            return (minIndex, minDistance);
+            return (predicted, minDistance);
         }
 
         /// <summary>
