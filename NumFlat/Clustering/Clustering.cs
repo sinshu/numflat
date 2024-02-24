@@ -74,7 +74,7 @@ namespace NumFlat.Clustering
             try
             {
                 var groups = ArgumentHelper.GroupByClassIndex(xs, xs.Select(x => kMeans.Predict(x)));
-                var weights = groups.Select(group => group.Count).ToVector();
+                var weights = groups.Select(group => (double)group.Count).ToVector();
                 weights.DivInplace(weights.Sum());
                 var gaussians = groups.Select(group => group.ToGaussian());
                 var components = weights.Zip(gaussians, (weight, gaussian) => new GaussianMixtureModel.Component(weight, gaussian));

@@ -100,6 +100,11 @@ namespace NumFlat.Clustering
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets the Gaussian components.
+        /// </summary>
+        public IReadOnlyList<Component> Components => components;
+
         /// <inheritdoc/>
         public int Dimension => components[0].Gaussian.Dimension;
 
