@@ -60,7 +60,7 @@ namespace NumFlat.Clustering
             {
                 var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
                 var models = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
-                var best = models.MinBy(model => model.GetSumOfSquaredDistances(xs));
+                var best = models.MinBy(model => GetSumOfSquaredDistances(xs, model.centroids));
                 this.centroids = best!.centroids;
             }
             catch (FittingFailureException)
@@ -252,11 +252,8 @@ namespace NumFlat.Clustering
             return new KMeans(nextCentroids);
         }
 
-        private double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs)
+        private static double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs, ReadOnlySpan<Vec<double>> centroids)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
-
             var sum = 0.0;
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
             {
