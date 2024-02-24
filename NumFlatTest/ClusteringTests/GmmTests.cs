@@ -12,10 +12,10 @@ namespace NumFlatTest
     public class GmmTests
     {
         [Test]
-        public void Iris_Initialize()
+        public void KMeansInitialModel()
         {
             var xs = ReadIris("iris.csv").ToArray();
-            var kmeans = xs.ToKMeans(3);
+            var kmeans = xs.ToKMeans(3, 1, new Random(42));
 
             var groups = Enumerable.Range(0, kmeans.ClassCount).Select(i => xs.Where(x => kmeans.Predict(x) == i).ToArray()).ToArray();
             var expected = groups.Select(group => group.MeanAndCovariance()).ToArray();
