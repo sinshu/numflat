@@ -154,8 +154,12 @@ namespace NumFlatTest
             var logValues = TestVector.RandomDouble(0, length, stride);
             Vec.Map(values, Math.Log, logValues);
             var expected = Math.Log(values.Sum());
-            var actual = Special.LogSum(logValues);
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+
+            using (logValues.EnsureUnchanged())
+            {
+                var actual = Special.LogSum(logValues);
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
         }
     }
 }
