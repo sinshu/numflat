@@ -190,7 +190,7 @@ namespace NumFlat.Clustering
 
             var sum = 0.0;
             var i = 0;
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(centroids[0].Count, nameof(xs)))
             {
                 var distance = PredictWithSquaredDistance(centroids, x).SquaredDistance;
                 sum += distance;
@@ -238,7 +238,7 @@ namespace NumFlat.Clustering
             var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
             counts.Clear();
 
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
             {
                 var cls = PredictWithSquaredDistance(centroids, x).ClassIndex;
                 nextCentroids[cls].AddInplace(x);
@@ -261,7 +261,7 @@ namespace NumFlat.Clustering
         private static double GetError(IReadOnlyList<Vec<double>> xs, ReadOnlySpan<Vec<double>> centroids)
         {
             var sum = 0.0;
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
+            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(centroids[0].Count, nameof(xs)))
             {
                 sum += PredictWithSquaredDistance(centroids, x).SquaredDistance;
             }

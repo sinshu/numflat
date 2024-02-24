@@ -195,5 +195,39 @@ namespace NumFlat
                 row.ReverseInplace();
             }
         }
+
+        /// <summary>
+        /// Calculates the log sum of values in a numerically stable way.
+        /// </summary>
+        /// <param name="values">
+        /// The values to calculate the log sum for.
+        /// </param>
+        /// <returns>
+        /// The log sum of the values.
+        /// </returns>
+        public static double LogSum(ReadOnlySpan<double> values)
+        {
+            if (values.Length == 0)
+            {
+                return double.NegativeInfinity;
+            }
+
+            var max = double.MinValue;
+            foreach (var value in values)
+            {
+                if (value > max)
+                {
+                    max = value;
+                }
+            }
+
+            var sum = 0.0;
+            foreach (var value in values)
+            {
+                sum += Math.Exp(value - max);
+            }
+
+            return max + Math.Log(sum);
+        }
     }
 }

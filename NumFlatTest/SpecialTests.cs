@@ -143,5 +143,15 @@ namespace NumFlatTest
                 NumAssert.AreSame(left, right, 1.0E-12);
             }
         }
+
+        [Test]
+        public void LogSum()
+        {
+            var values = new double[] { 10, 20, 30 };
+            var logValues = values.Select(x => Math.Log(x)).ToArray();
+            var expected = Math.Log(values.Sum());
+            var actual = Special.LogSum(logValues);
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
     }
 }

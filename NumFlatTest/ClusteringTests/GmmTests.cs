@@ -31,6 +31,29 @@ namespace NumFlatTest
                 Assert.That(actual.Components[i].Weight, Is.EqualTo(weight).Within(1.0E-12));
                 Assert.That(actual.Components[i].LogWeight, Is.EqualTo(logWeight).Within(1.0E-12));
             }
+
+            Assert.That(actual.Components.Select(c => c.Weight).Sum(), Is.EqualTo(1.0).Within(1.0E-12));
+        }
+
+        [Test]
+        public void Update()
+        {
+            var xs = ReadIris("iris.csv").ToArray();
+            var kmeans = xs.ToKMeans(3, 3, new Random(42));
+
+            var model = kmeans.ToGmm(xs);
+            var likelihood = xs.Select(x => model.LogPdf(x)).Sum();
+            for (var i = 0; i < 10; i++)
+            {
+                var newModel = model.Update(xs);
+                var newLikelihood = xs.Select(x => newModel.LogPdf(x)).Sum();
+
+                Assert.IsTrue(newLikelihood > likelihood);
+                Assert.That(newModel.Components.Select(c => c.Weight).Sum(), Is.EqualTo(1.0).Within(1.0E-12));
+
+                model = newModel;
+                likelihood = newLikelihood;
+            }
         }
 
         private static IEnumerable<Vec<double>> ReadIris(string filename)
@@ -40,15 +63,6 @@ namespace NumFlatTest
             {
                 var values = line.Split(',').Take(4).Select(double.Parse);
                 yield return values.ToVector();
-            }
-        }
-
-        private static IEnumerable<int> ReadIrisReference(string filename)
-        {
-            var path = Path.Combine("dataset", filename);
-            foreach (var line in File.ReadLines(path).Skip(1))
-            {
-                yield return int.Parse(line);
             }
         }
     }
