@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using NumFlat.Distributions;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace NumFlat.Clustering
 {
@@ -98,7 +99,21 @@ namespace NumFlat.Clustering
         /// <inheritdoc/>
         public void PredictProbability(in Vec<double> x, in Vec<double> destination)
         {
-            throw new NotImplementedException();
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            ProbabilisticClassifier.ThrowIfInvalidSize(this, x, destination, nameof(x), nameof(destination));
+
+            var fd = destination.GetUnsafeFastIndexer();
+            for (var c = 0; c < ClassCount; c++)
+            {
+                var component = components[c];
+                fd[c] = component.LogWeight + component.Gaussian.LogPdf(x);
+            }
+            var logSum = Special.LogSum(destination);
+            for (var c = 0; c < ClassCount; c++)
+            {
+                fd[c] = Math.Exp(fd[c] - logSum);
+            }
         }
 
         /// <summary>
@@ -119,17 +134,23 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
             using var utmp = new TemporalMatrix<double>(ClassCount, xs.Count);
             ref readonly var tmp = ref utmp.Item;
 
             var i = 0;
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
             {
-                var scores = tmp.Cols[i].Memory.Span;
-                for (var c = 0; c < scores.Length; c++)
+                var scores = tmp.Cols[i];
+                var fs = scores.GetUnsafeFastIndexer();
+                for (var c = 0; c < ClassCount; c++)
                 {
                     var component = components[c];
-                    scores[c] = component.LogWeight + component.Gaussian.LogPdf(x);
+                    fs[c] = component.LogWeight + component.Gaussian.LogPdf(x);
                 }
                 i++;
             }
@@ -137,31 +158,47 @@ namespace NumFlat.Clustering
             i = 0;
             foreach (var x in xs)
             {
-                var scores = tmp.Cols[i].Memory.Span;
+                var scores = tmp.Cols[i];
                 var logSum = Special.LogSum(scores);
-                for (var c = 0; c < scores.Length; c++)
+                var fs = scores.GetUnsafeFastIndexer();
+                for (var c = 0; c < ClassCount; c++)
                 {
-                    scores[c] = Math.Exp(scores[c] - logSum);
+                    fs[c] = Math.Exp(fs[c] - logSum);
                 }
                 i++;
             }
 
-            var nextWeights = tmp.Rows.Select(row => row.Sum() / xs.Count);
-            var nextGaussians = tmp.Rows.Select(row => xs.ToGaussian(row, regularization));
-            var nextComponents = nextWeights.Zip(nextGaussians, (weight, gaussian) => new Component(weight, gaussian)).ToArray();
-            return new GaussianMixtureModel(nextComponents);
+            try
+            {
+                var nextWeights = tmp.Rows.Select(row => row.Sum() / xs.Count);
+                var nextGaussians = tmp.Rows.Select(row => xs.ToGaussian(row, regularization));
+                var nextComponents = nextWeights.Zip(nextGaussians, (weight, gaussian) => new Component(weight, gaussian)).ToArray();
+                return new GaussianMixtureModel(nextComponents);
+            }
+            catch (FittingFailureException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to fit the model.", e);
+            }
         }
 
         /// <inheritdoc/>
         public double LogPdf(in Vec<double> x)
         {
-            using var utmp = MemoryPool<double>.Shared.Rent(ClassCount);
-            var tmp = utmp.Memory.Span.Slice(0, ClassCount);
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            MultivariateDistribution.ThrowIfInvalidSize(this, x, nameof(x));
 
-            for (var i = 0; i < tmp.Length; i++)
+            using var utmp = new TemporalVector<double>(ClassCount);
+            ref readonly var tmp = ref utmp.Item;
+            var ft = tmp.GetUnsafeFastIndexer();
+
+            for (var i = 0; i < tmp.Count; i++)
             {
                 var component = components[i];
-                tmp[i] = component.LogWeight + component.Gaussian.LogPdf(x);
+                ft[i] = component.LogWeight + component.Gaussian.LogPdf(x);
             }
 
             return Special.LogSum(tmp);
@@ -170,7 +207,7 @@ namespace NumFlat.Clustering
         /// <inheritdoc/>
         public double Pdf(in Vec<double> x)
         {
-            throw new NotImplementedException();
+            return Math.Exp(LogPdf(x));
         }
 
         /// <summary>

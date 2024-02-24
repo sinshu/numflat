@@ -205,26 +205,28 @@ namespace NumFlat
         /// <returns>
         /// The log sum of the values.
         /// </returns>
-        public static double LogSum(ReadOnlySpan<double> values)
+        public static double LogSum(in Vec<double> values)
         {
-            if (values.Length == 0)
-            {
-                return double.NegativeInfinity;
-            }
+            var span = values.Memory.Span;
 
             var max = double.MinValue;
-            foreach (var value in values)
+            var p = 0;
+            while (p < span.Length)
             {
+                var value = span[p];
                 if (value > max)
                 {
                     max = value;
                 }
+                p += values.Stride;
             }
 
             var sum = 0.0;
-            foreach (var value in values)
+            p = 0;
+            while (p < span.Length)
             {
-                sum += Math.Exp(value - max);
+                sum += Math.Exp(span[p] - max);
+                p += values.Stride;
             }
 
             return max + Math.Log(sum);

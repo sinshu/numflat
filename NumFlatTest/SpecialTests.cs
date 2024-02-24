@@ -144,11 +144,15 @@ namespace NumFlatTest
             }
         }
 
-        [Test]
-        public void LogSum()
+        [TestCase(3, 1)]
+        [TestCase(3, 3)]
+        [TestCase(3, 5)]
+        [TestCase(3, 2)]
+        public void LogSum(int length, int stride)
         {
-            var values = new double[] { 10, 20, 30 };
-            var logValues = values.Select(x => Math.Log(x)).ToArray();
+            var values = TestVector.RandomDouble(42, length, 1);
+            var logValues = TestVector.RandomDouble(0, length, stride);
+            Vec.Map(values, Math.Log, logValues);
             var expected = Math.Log(values.Sum());
             var actual = Special.LogSum(logValues);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
