@@ -97,7 +97,7 @@ namespace NumFlat.Clustering
                     var next = curr.Update(xs, regularization);
                     var nextScore = xs.Select(x => next.LogPdf(x)).Sum();
                     var change = Math.Abs(nextScore - currScore);
-                    if (change < tolerance)
+                    if (change <= tolerance)
                     {
                         this.components = next.components;
                         return;
