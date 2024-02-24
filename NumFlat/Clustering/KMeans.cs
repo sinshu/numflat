@@ -56,11 +56,21 @@ namespace NumFlat.Clustering
                 random = new Random();
             }
 
-            var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
-            var models = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
-            var best = models.MinBy(model => model.GetSumOfSquaredDistances(xs));
-
-            this.centroids = best!.centroids;
+            try
+            {
+                var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
+                var models = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
+                var best = models.MinBy(model => model.GetSumOfSquaredDistances(xs));
+                this.centroids = best!.centroids;
+            }
+            catch (FittingFailureException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to fit the model.", e);
+            }
         }
 
         private static KMeans GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, double tolerance)
