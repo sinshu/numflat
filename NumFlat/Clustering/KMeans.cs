@@ -97,6 +97,24 @@ namespace NumFlat.Clustering
             return PredictWithSquaredDistance(centroids, x).ClassIndex;
         }
 
+        /// <summary>
+        /// Predicts the class of a feature vector and its distance to the corresponding centroid.
+        /// </summary>
+        /// <param name="x">
+        /// The feature vector to be classified.
+        /// </param>
+        /// <returns>
+        /// The index of the predicted class and the distance from the vector to the corresponding centroid.
+        /// </returns>
+        public (int ClassIndex, double Distance) PredictWithDistance(in Vec<double> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            Classifier.ThrowIfInvalidSize(this, x, nameof(x));
+
+            var (classIndex, squaredDistance) = PredictWithSquaredDistance(centroids, x);
+            return (classIndex, Math.Sqrt(squaredDistance));
+        }
+
         private static (int ClassIndex, double SquaredDistance) PredictWithSquaredDistance(ReadOnlySpan<Vec<double>> centroids, in Vec<double> x)
         {
             var minDistance = double.MaxValue;
@@ -224,16 +242,7 @@ namespace NumFlat.Clustering
             return new KMeans(nextCentroids);
         }
 
-        /// <summary>
-        /// Computes the sum of squared distances between each feature vector and its nearest centroid.
-        /// </summary>
-        /// <param name="xs">
-        /// The source feature vectors.
-        /// </param>
-        /// <returns>
-        /// The total sum of squared distances for all vectors to their nearest centroids.
-        /// </returns>
-        public double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs)
+        private double GetSumOfSquaredDistances(IReadOnlyList<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));

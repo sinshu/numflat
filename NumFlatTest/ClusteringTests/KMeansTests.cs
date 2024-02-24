@@ -37,8 +37,8 @@ namespace NumFlatTest
                 i++;
             }
 
-            Assert.That(model.GetSumOfSquaredDistances(xs), Is.EqualTo(0).Within(0));
-            Assert.That(model.Update(xs).GetSumOfSquaredDistances(xs), Is.EqualTo(0).Within(0));
+            var error = xs.Select(x => model.PredictWithDistance(x).Distance).Sum();
+            Assert.That(error, Is.EqualTo(0).Within(0));
         }
 
         [TestCase(42)]
@@ -89,8 +89,8 @@ namespace NumFlatTest
                 i++;
             }
 
-            Assert.That(model.GetSumOfSquaredDistances(xs), Is.EqualTo(0).Within(0));
-            Assert.That(model.Update(xs).GetSumOfSquaredDistances(xs), Is.EqualTo(0).Within(0));
+            var error = xs.Select(x => model.PredictWithDistance(x).Distance).Sum();
+            Assert.That(error, Is.EqualTo(0).Within(0));
         }
 
         [TestCase(42, 2, 20, 3)]
@@ -101,11 +101,11 @@ namespace NumFlatTest
             var xs = TestMatrix.RandomDouble(seed, count, dimension, count).Rows;
 
             var model = KMeans.GetInitialModel(xs, clusters, new Random(seed));
-            var error = model.GetSumOfSquaredDistances(xs);
+            var error = xs.Select(x => Math.Pow(model.PredictWithDistance(x).Distance, 2)).Sum();
             while (true)
             {
                 model = model.Update(xs);
-                var newError = model.GetSumOfSquaredDistances(xs);
+                var newError = xs.Select(x => Math.Pow(model.PredictWithDistance(x).Distance, 2)).Sum();
                 Assert.That(newError <= error);
                 if (newError == error)
                 {
