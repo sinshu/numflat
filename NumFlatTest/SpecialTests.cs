@@ -146,8 +146,8 @@ namespace NumFlatTest
 
         [TestCase(3, 1)]
         [TestCase(3, 3)]
-        [TestCase(3, 5)]
-        [TestCase(3, 2)]
+        [TestCase(5, 1)]
+        [TestCase(5, 2)]
         public void LogSum(int length, int stride)
         {
             var values = TestVector.RandomDouble(42, length, 1);
