@@ -97,9 +97,9 @@ namespace NumFlat.Clustering
         private static double GetModelDiff(KMeans model1, KMeans model2)
         {
             var sum = 0.0;
-            for (var i = 0; i < model1.centroids.Length; i++)
+            for (var c = 0; c < model1.centroids.Length; c++)
             {
-                sum += model1.centroids[i].DistanceSquared(model2.centroids[i]);
+                sum += model1.centroids[c].DistanceSquared(model2.centroids[c]);
             }
             return sum;
         }
@@ -135,13 +135,13 @@ namespace NumFlat.Clustering
         {
             var minDistance = double.MaxValue;
             var predicted = -1;
-            for (var i = 0; i < centroids.Length; i++)
+            for (var c = 0; c < centroids.Length; c++)
             {
-                var distance = x.DistanceSquared(centroids[i]);
+                var distance = x.DistanceSquared(centroids[c]);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    predicted = i;
+                    predicted = c;
                 }
             }
 
@@ -170,9 +170,9 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfNull(random, nameof(random));
 
             var centroids = new Vec<double>[clusterCount];
-            for (var i = 0; i < clusterCount; i++)
+            for (var c = 0; c < clusterCount; c++)
             {
-                centroids[i] = GetNextInitialCentroid(xs, centroids.AsSpan(0, i), random);
+                centroids[c] = GetNextInitialCentroid(xs, centroids.AsSpan(0, c), random);
             }
 
             return new KMeans(centroids);
@@ -229,9 +229,9 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             var nextCentroids = new Vec<double>[centroids.Length];
-            for (var i = 0; i < nextCentroids.Length; i++)
+            for (var c = 0; c < nextCentroids.Length; c++)
             {
-                nextCentroids[i] = new Vec<double>(centroids[0].Count);
+                nextCentroids[c] = new Vec<double>(centroids[0].Count);
             }
 
             using var ucounts = MemoryPool<int>.Shared.Rent(centroids.Length);
@@ -240,19 +240,19 @@ namespace NumFlat.Clustering
 
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
             {
-                var cls = PredictWithSquaredDistance(centroids, x).ClassIndex;
-                nextCentroids[cls].AddInplace(x);
-                counts[cls]++;
+                var c = PredictWithSquaredDistance(centroids, x).ClassIndex;
+                nextCentroids[c].AddInplace(x);
+                counts[c]++;
             }
 
-            for (var i = 0; i < nextCentroids.Length; i++)
+            for (var c = 0; c < nextCentroids.Length; c++)
             {
-                if (counts[i] == 0)
+                if (counts[c] == 0)
                 {
                     throw new FittingFailureException("A cluster has no vector assigned.");
                 }
 
-                nextCentroids[i].DivInplace(counts[i]);
+                nextCentroids[c].DivInplace(counts[c]);
             }
 
             return new KMeans(nextCentroids);

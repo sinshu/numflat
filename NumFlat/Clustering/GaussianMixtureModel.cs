@@ -93,7 +93,22 @@ namespace NumFlat.Clustering
         /// <inheritdoc/>
         public int Predict(in Vec<double> x)
         {
-            throw new NotImplementedException();
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            Classifier.ThrowIfInvalidSize(this, x, nameof(x));
+
+            var maxScore = double.MinValue;
+            var predicted = -1;
+            for (var c = 0; c < ClassCount; c++)
+            {
+                var component = components[c];
+                var score = component.LogWeight + component.Gaussian.LogPdf(x);
+                if (score > maxScore)
+                {
+                    maxScore = score;
+                    predicted = c;
+                }
+            }
+            return predicted;
         }
 
         /// <inheritdoc/>
