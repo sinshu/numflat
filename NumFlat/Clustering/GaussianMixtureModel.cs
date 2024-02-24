@@ -55,7 +55,7 @@ namespace NumFlat.Clustering
         /// <remarks>
         /// An initial GMM is constructed with the k-means algorithm.
         /// </remarks>
-        public GaussianMixtureModel(IReadOnlyList<Vec<double>> xs, int clusterCount, double regularization = 0.0, int kMeansTryCount = 3, Random? random = null)
+        public GaussianMixtureModel(IReadOnlyList<Vec<double>> xs, int clusterCount, double regularization = 1.0E-6, int kMeansTryCount = 3, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
@@ -86,7 +86,35 @@ namespace NumFlat.Clustering
                 random = new Random();
             }
 
-            throw new NotImplementedException();
+            try
+            {
+                // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.
+                var tolerance = 1.0E-3 * xs.Count;
+                var curr = xs.ToKMeans(clusterCount, kMeansTryCount, random).ToGmm(xs);
+                var currScore = xs.Select(x => curr.LogPdf(x)).Sum();
+                for (var i = 0; i < 100; i++)
+                {
+                    var next = curr.Update(xs, regularization);
+                    var nextScore = xs.Select(x => next.LogPdf(x)).Sum();
+                    var change = Math.Abs(nextScore - currScore);
+                    if (change < tolerance)
+                    {
+                        this.components = next.components;
+                        return;
+                    }
+                    curr = next;
+                    currScore = nextScore;
+                }
+                this.components = curr.components;
+            }
+            catch (FittingFailureException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new FittingFailureException("Failed to fit the model.", e);
+            }
         }
 
         /// <inheritdoc/>
@@ -143,7 +171,7 @@ namespace NumFlat.Clustering
         /// <returns>
         /// An updated GMM.
         /// </returns>
-        public GaussianMixtureModel Update(IReadOnlyList<Vec<double>> xs, double regularization = 0.0)
+        public GaussianMixtureModel Update(IReadOnlyList<Vec<double>> xs, double regularization = 1.0E-6)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));

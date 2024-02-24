@@ -51,6 +51,58 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
+        /// Clusters the feature vectors as a Gaussian mixture model (GMM) using the expectation-maximization (EM) algorithm.
+        /// </summary>
+        /// <param name="xs">
+        /// The source feature vectors.
+        /// </param>
+        /// <param name="clusterCount">
+        /// The number of desired clusters.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// This value will be added to the diagonal elements of the covariance matrix.
+        /// </param>
+        /// <param name="kMeansTryCount">
+        /// Runs the k-means algorithm a specified number of times and selects the initial model with the lowest error.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the k-means++ initialization.
+        /// If null, a <see cref="Random"/> object instantiated with the default constructor will be used.
+        /// </param>
+        /// <returns>
+        /// A GMM computed from the source vectors.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        /// <remarks>
+        /// An initial GMM is constructed with the k-means algorithm.
+        /// </remarks>
+        public static GaussianMixtureModel ToGmm(this IReadOnlyList<Vec<double>> xs, int clusterCount, double regularization = 1.0E-6, int kMeansTryCount = 3, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
+
+            if (clusterCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+            }
+
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+            }
+
+            if (kMeansTryCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(kMeansTryCount), "The number of attempts must be greater than or equal to one.");
+            }
+
+            return new GaussianMixtureModel(xs, clusterCount, regularization, kMeansTryCount, random);
+        }
+
+        /// <summary>
         /// Converts a k-means model to a Gaussian mixture model.
         /// </summary>
         /// <param name="kMeans">
