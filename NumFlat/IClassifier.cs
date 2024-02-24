@@ -25,7 +25,7 @@ namespace NumFlat
         /// <summary>
         /// Gets the required length of a feature vector.
         /// </summary>
-        public int VectorLength { get; }
+        public int Dimension { get; }
     }
 
 
@@ -37,9 +37,9 @@ namespace NumFlat
     {
         internal static void ThrowIfInvalidSize<T>(IClassifier<T> method, in Vec<T> x, string name) where T : unmanaged, INumberBase<T>
         {
-            if (x.Count != method.VectorLength)
+            if (x.Count != method.Dimension)
             {
-                throw new ArgumentException($"The classification requires the length of the vector to be {method.VectorLength}, but was {x.Count}.", name);
+                throw new ArgumentException($"The classification requires the length of the vector to be {method.Dimension}, but was {x.Count}.", name);
             }
         }
     }

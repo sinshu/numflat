@@ -56,27 +56,36 @@ namespace NumFlat.Clustering
                 random = new Random();
             }
 
-            var best = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random)).MinBy(model => model.Error);
+            var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
+            var models = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
+            var best = models.MinBy(model => model.GetSumOfSquaredDistances(xs));
 
-            this.centroids = best.Model.centroids;
+            this.centroids = best!.centroids;
         }
 
-        private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
+        private static KMeans GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, double tolerance)
         {
-            var model = GetInitialModel(xs, clusterCount, random);
-            var error = model.GetSumOfSquaredDistances(xs);
-            var threshold = error * 1.0E-12;
-            while (true)
+            var curr = GetInitialModel(xs, clusterCount, random);
+            for (var i = 0; i < 300; i++) // 300 is the default value of sklearn.cluster.KMeans.
             {
-                var nextModel = model.Update(xs);
-                var nextError = nextModel.GetSumOfSquaredDistances(xs);
-                if (Math.Abs(nextError - error) <= threshold)
+                var next = curr.Update(xs);
+                if (GetModelDiff(curr, next) <= tolerance)
                 {
-                    return (nextModel, nextError);
+                    return next;
                 }
-                model = nextModel;
-                error = nextError;
+                curr = next;
             }
+            return curr;
+        }
+
+        private static double GetModelDiff(KMeans model1, KMeans model2)
+        {
+            var sum = 0.0;
+            for (var i = 0; i < model1.centroids.Length; i++)
+            {
+                sum += model1.centroids[i].DistanceSquared(model2.centroids[i]);
+            }
+            return sum;
         }
 
         /// <inheritdoc/>
@@ -243,6 +252,6 @@ namespace NumFlat.Clustering
         public IReadOnlyList<Vec<double>> Centroids => centroids;
 
         /// <inheritdoc/>
-        public int VectorLength => centroids[0].Count;
+        public int Dimension => centroids[0].Count;
     }
 }
