@@ -7,7 +7,7 @@ namespace NumFlat
     /// Provides common functionality across vector-to-vector transform methods.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of elements in the matrix.
+    /// The type of elements in vectors.
     /// </typeparam>
     public interface IVectorToVectorTransform<T> where T : unmanaged, INumberBase<T>
     {
@@ -44,7 +44,7 @@ namespace NumFlat
         /// Transforms the source vector.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of elements in the matrix.
+        /// The type of elements in the vector.
         /// </typeparam>
         /// <param name="method">
         /// The transform method.

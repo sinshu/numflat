@@ -7,7 +7,7 @@ namespace NumFlat
     /// Provides common functionality across vector-to-vector inverse transform methods.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of elements in the matrix.
+    /// The type of elements in vectors.
     /// </typeparam>
     public interface IVectorToVectorInverseTransform<T> : IVectorToVectorTransform<T> where T : unmanaged, INumberBase<T>
     {
@@ -34,7 +34,7 @@ namespace NumFlat
         /// Inverse transforms the source vector.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of elements in the matrix.
+        /// The type of elements in the vector.
         /// </typeparam>
         /// <param name="method">
         /// The inverse transform method.

@@ -269,5 +269,8 @@ namespace NumFlat.Clustering
 
         /// <inheritdoc/>
         public int Dimension => centroids[0].Count;
+
+        /// <inheritdoc/>
+        public int ClassCount => centroids.Length;
     }
 }

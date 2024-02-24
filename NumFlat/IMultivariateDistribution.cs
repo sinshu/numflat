@@ -7,7 +7,7 @@ namespace NumFlat.Distributions
     /// Provides common functionality across multivariate distributions.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of elements in the matrix.
+    /// The type of elements in vectors.
     /// </typeparam>
     public interface IMultivariateDistribution<T> where T : unmanaged, INumberBase<T>
     {

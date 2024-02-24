@@ -26,6 +26,11 @@ namespace NumFlat
         /// Gets the required length of a feature vector.
         /// </summary>
         public int Dimension { get; }
+
+        /// <summary>
+        /// The number of classes.
+        /// </summary>
+        public int ClassCount { get; }
     }
 
 
@@ -39,7 +44,7 @@ namespace NumFlat
         {
             if (x.Count != method.Dimension)
             {
-                throw new ArgumentException($"The classification requires the length of the vector to be {method.Dimension}, but was {x.Count}.", name);
+                throw new ArgumentException($"The classifier requires the length of the vector to be {method.Dimension}, but was {x.Count}.", name);
             }
         }
     }
