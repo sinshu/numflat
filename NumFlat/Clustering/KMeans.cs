@@ -51,14 +51,15 @@ namespace NumFlat.Clustering
                 throw new ArgumentOutOfRangeException(nameof(tryCount), "The number of attempts must be greater than or equal to one.");
             }
 
-            if (random == null)
-            {
-                random = new Random();
-            }
-
             if (clusterCount == 1)
             {
                 this.centroids = new Vec<double>[] { xs.Mean() };
+                return;
+            }
+
+            if (random == null)
+            {
+                random = new Random();
             }
 
             try
