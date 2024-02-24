@@ -51,7 +51,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// Converts a k-means model to a gaussian mixture model.
+        /// Converts a k-means model to a Gaussian mixture model.
         /// </summary>
         /// <param name="kMeans">
         /// The source k-means model.
@@ -60,7 +60,7 @@ namespace NumFlat.Clustering
         /// The source feature vectors.
         /// </param>
         /// <returns>
-        /// The gaussian mixture model converted from the k-means model.
+        /// The Gaussian mixture model converted from the k-means model.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.

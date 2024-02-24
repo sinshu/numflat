@@ -41,9 +41,9 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
-            if (clusterCount <= 1)
+            if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
             }
 
             if (tryCount <= 0)
@@ -54,6 +54,11 @@ namespace NumFlat.Clustering
             if (random == null)
             {
                 random = new Random();
+            }
+
+            if (clusterCount == 1)
+            {
+                this.centroids = new Vec<double>[] { xs.Mean() };
             }
 
             try
