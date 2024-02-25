@@ -49,29 +49,29 @@ namespace NumFlat
         {
             ThrowIfInvalidSize(method, source, nameof(source));
 
-            var destination = new Vec<T>(method.SourceVectorLength);
+            var destination = new Vec<T>(method.SourceDimension);
             method.InverseTransform(source, destination);
             return destination;
         }
 
         internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
         {
-            if (source.Count != method.DestinationVectorLength)
+            if (source.Count != method.DestinationDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", name);
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationDimension}, but was {source.Count}.", name);
             }
         }
 
         internal static void ThrowIfInvalidSize<T>(IVectorToVectorInverseTransform<T> method, in Vec<T> source, in Vec<T> destination, string sourceName, string destinationName) where T : unmanaged, INumberBase<T>
         {
-            if (source.Count != method.DestinationVectorLength)
+            if (source.Count != method.DestinationDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationVectorLength}, but was {source.Count}.", sourceName);
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationDimension}, but was {source.Count}.", sourceName);
             }
 
-            if (destination.Count != method.SourceVectorLength)
+            if (destination.Count != method.SourceDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be {method.SourceVectorLength}, but was {destination.Count}.", destinationName);
+                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be {method.SourceDimension}, but was {destination.Count}.", destinationName);
             }
         }
     }

@@ -93,9 +93,9 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Mat<double> EigenVectors => ref eigenVectors;
 
         /// <inheritdoc/>
-        public int SourceVectorLength => mean.Count;
+        public int SourceDimension => mean.Count;
 
         /// <inheritdoc/>
-        public int DestinationVectorLength => mean.Count;
+        public int DestinationDimension => mean.Count;
     }
 }

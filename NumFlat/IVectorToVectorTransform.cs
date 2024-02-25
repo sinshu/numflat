@@ -25,12 +25,12 @@ namespace NumFlat
         /// <summary>
         /// Gets the required length of a source vector.
         /// </summary>
-        public int SourceVectorLength { get; }
+        public int SourceDimension { get; }
 
         /// <summary>
         /// Gets the required length of a destination vector.
         /// </summary>
-        public int DestinationVectorLength { get; }
+        public int DestinationDimension { get; }
     }
 
 
@@ -59,29 +59,29 @@ namespace NumFlat
         {
             ThrowIfInvalidSize(method, source, nameof(source));
 
-            var destination = new Vec<T>(method.DestinationVectorLength);
+            var destination = new Vec<T>(method.DestinationDimension);
             method.Transform(source, destination);
             return destination;
         }
 
         internal static void ThrowIfInvalidSize<T>(IVectorToVectorTransform<T> method, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
         {
-            if (source.Count != method.SourceVectorLength)
+            if (source.Count != method.SourceDimension)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceVectorLength}, but was {source.Count}.", name);
+                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceDimension}, but was {source.Count}.", name);
             }
         }
 
         internal static void ThrowIfInvalidSize<T>(IVectorToVectorTransform<T> method, in Vec<T> source, in Vec<T> destination, string sourceName, string destinationName) where T : unmanaged, INumberBase<T>
         {
-            if (source.Count != method.SourceVectorLength)
+            if (source.Count != method.SourceDimension)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceVectorLength}, but was {source.Count}.", sourceName);
+                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceDimension}, but was {source.Count}.", sourceName);
             }
 
-            if (destination.Count != method.DestinationVectorLength)
+            if (destination.Count != method.DestinationDimension)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be {method.DestinationVectorLength}, but was {destination.Count}.", destinationName);
+                throw new ArgumentException($"The transform requires the length of the destination vector to be {method.DestinationDimension}, but was {destination.Count}.", destinationName);
             }
         }
     }
