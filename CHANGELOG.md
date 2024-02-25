@@ -1,3 +1,7 @@
+# v0.7.1
+
+* Added GMM.
+
 # v0.7.0
 
 * Now `Gaussian` has a constructor that requires `IEnumerable<Vec<double>>`.

@@ -551,6 +551,25 @@ foreach (var x in xs)
 }
 ```
 
+### Clustering
+The `NumFlat.Clustering` namespace provides functionality related to clustering.
+It currently supports the following methods, with plans to add more methods in the future.
+* k-means
+* GMM
+#### Code
+```cs
+using NumFlat.Clustering;
+
+// Read some data.
+IReadOnlyList<Vec<double>> xs = ReadSomeData();
+
+// Compute a k-means model with 3 clusters.
+var kMeans = xs.ToKMeans(3);
+
+// Compute a GMM with 3 clusters.
+var gmm = xs.ToGmm(3);
+```
+
 ### Fourier transform
 The `NumFlat.FourierTransform` namespace provides functionality related to the Fourier transform.
 It currently supports 1D FFT and IFFT.
@@ -625,7 +644,7 @@ samples = spectrum.Ifft();
     - ⬜ Other distributions
 * ⬜ Clustering
     - ✅ k-means
-    - ⬜ GMM
+    - ✅ GMM
 * ⬜ Time series
     - ⬜ HMM
 * ⬜ Signal processing

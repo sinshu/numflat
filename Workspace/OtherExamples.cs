@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using NumFlat;
+using NumFlat.Clustering;
 using NumFlat.Distributions;
 using NumFlat.FourierTransform;
 using NumFlat.MultivariateAnalyses;
@@ -15,6 +16,7 @@ public static class OtherExamples
         Example1();
         Example2();
         Example3();
+        Example4();
     }
 
     public static void Example1()
@@ -77,7 +79,27 @@ public static class OtherExamples
 
     public static void Example3()
     {
-        Console.WriteLine("=== OtherExample 2 ===");
+        Console.WriteLine("=== OtherExample 3 ===");
+        Console.WriteLine();
+
+        // using NumFlat.Clustering;
+
+        // Read some data.
+        IReadOnlyList<Vec<double>> xs = ReadSomeData();
+
+        // Compute a k-means model with 3 clusters.
+        var kMeans = xs.ToKMeans(3);
+
+        // Compute a GMM with 3 clusters.
+        var gmm = xs.ToGmm(3);
+
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+
+    public static void Example4()
+    {
+        Console.WriteLine("=== OtherExample 4 ===");
         Console.WriteLine();
 
         // using NumFlat.FourierTransform;
@@ -96,7 +118,12 @@ public static class OtherExamples
         Console.WriteLine();
     }
 
-    private static IEnumerable<Vec<double>> ReadSomeData()
+    private static IReadOnlyList<Vec<double>> ReadSomeData()
+    {
+        return ReadSomeDataCore().ToArray();
+    }
+
+    private static IEnumerable<Vec<double>> ReadSomeDataCore()
     {
         foreach (var line in File.ReadLines("iris.csV").Skip(1))
         {
