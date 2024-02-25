@@ -624,7 +624,7 @@ samples = spectrum.Ifft();
     - ✅ EVD
     - ✅ GEVD
 * ⬜ LINQ-like operations
-    - ⬜ Mean, Variance, Covariance for scalars
+    - ✅ Mean, Variance, Covariance for scalars
     - ✅ Mean, Variance, Covariance for vectors
     - ✅ Mean, Variance for matrices
     - ⬜ Weighted Mean, Variance, Covariance for scalars

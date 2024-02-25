@@ -1,3 +1,7 @@
+# v0.7.2
+
+* Now `MathLinq` supports second order statistics for scalars, `double` and `Complex`.
+
 # v0.7.1
 
 * Added GMM.
