@@ -135,6 +135,7 @@ namespace NumFlat.Clustering
                     predicted = c;
                 }
             }
+
             return predicted;
         }
 

@@ -141,6 +141,57 @@ namespace NumFlatTest
             }
         }
 
+        [Test]
+        public void Iris()
+        {
+            var weight1 = 0.36539575;
+            var mean1 = new double[] { 6.54639415, 2.94946365, 5.48364578, 1.98726565 };
+            var cov1 = new double[,]
+            {
+                { 0.38744093, 0.09223276, 0.30244302, 0.06087397 },
+                { 0.09223276, 0.11040914, 0.08385112, 0.05574334 },
+                { 0.30244302, 0.08385112, 0.32589574, 0.07276776 },
+                { 0.06087397, 0.05574334, 0.07276776, 0.08484505 },
+            };
+
+            var weight2 = 0.33333333;
+            var mean2 = new double[] { 5.006, 3.428, 1.462, 0.246 };
+            var cov2 = new double[,]
+            {
+                { 0.121765, 0.097232, 0.016028, 0.010124 },
+                { 0.097232, 0.140817, 0.011464, 0.009112 },
+                { 0.016028, 0.011464, 0.029557, 0.005948 },
+                { 0.010124, 0.009112, 0.005948, 0.010885 },
+            };
+
+            var weight3 = 0.30127092;
+            var mean3 = new double[] { 5.9170732, 2.77804839, 4.20540364, 1.29848217 };
+            var cov3 = new double[,]
+            {
+                { 0.2755171, 0.09662295, 0.18547072, 0.05478901 },
+                { 0.09662295, 0.09255152, 0.09103431, 0.04299899 },
+                { 0.18547072, 0.09103431, 0.20235849, 0.06171383 },
+                { 0.05478901, 0.04299899, 0.06171383, 0.03233775 },
+            };
+
+            var expectedWeights = new double[] { weight1, weight2, weight3 };
+            var expectedMeans = new Vec<double>[] { mean1.ToVector(), mean2.ToVector(), mean3.ToVector() };
+            var expectedCovs = new Mat<double>[] { cov1.ToMatrix(), cov2.ToMatrix(), cov3.ToMatrix() };
+
+            var xs = ReadIris("iris.csv").ToArray();
+            var gmm = xs.ToGmm(3, 1.0E-6, 3, new Random(42));
+            var actual = gmm.Components.OrderByDescending(c => c.Weight).ToArray();
+
+            for (var i = 0; i < 3; i++)
+            {
+                Assert.That(actual[i].Weight, Is.EqualTo(expectedWeights[i]).Within(1.0E-2));
+                NumAssert.AreSame(expectedMeans[i], actual[i].Gaussian.Mean, 1.0E-2);
+                NumAssert.AreSame(expectedCovs[i], actual[i].Gaussian.Covariance, 1.0E-2);
+            }
+
+            Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-1.201311085098418).Within(1.0E-3));
+        }
+
         private static IEnumerable<Vec<double>> ReadIris(string filename)
         {
             var path = Path.Combine("dataset", filename);
