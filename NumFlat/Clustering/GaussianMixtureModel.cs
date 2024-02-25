@@ -197,17 +197,14 @@ namespace NumFlat.Clustering
                 i++;
             }
 
-            i = 0;
-            foreach (var x in xs)
+            foreach (var scores in tmp.Cols)
             {
-                var scores = tmp.Cols[i];
                 var logSum = Special.LogSum(scores);
                 var fs = scores.GetUnsafeFastIndexer();
                 for (var c = 0; c < ClassCount; c++)
                 {
                     fs[c] = Math.Exp(fs[c] - logSum);
                 }
-                i++;
             }
 
             try
