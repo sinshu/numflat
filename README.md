@@ -642,16 +642,17 @@ samples = spectrum.Ifft();
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
-* ⬜ Clustering
+* ✅ Clustering
     - ✅ k-means
     - ✅ GMM
 * ⬜ Time series
     - ⬜ HMM
-* ⬜ Signal processing
+* ⬜ Audio signal processing
     - ✅ FFT
     - ⬜ STFT
     - ⬜ Filtering
     - ⬜ Resampling
+    - ⬜ Feature extraction
 * ⬜ File IO
     - ⬜ CSV
     - ⬜ WAV
