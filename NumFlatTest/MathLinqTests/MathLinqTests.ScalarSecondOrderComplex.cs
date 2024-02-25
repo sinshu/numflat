@@ -95,6 +95,24 @@ namespace NumFlatTest
             Assert.That(actual.StandardDeviation, Is.EqualTo(expectedStandardDeviation).Within(1.0E-12));
         }
 
+        [TestCase(1, 0)]
+        [TestCase(2, 1)]
+        [TestCase(3, 1)]
+        [TestCase(5, 0)]
+        [TestCase(10, 1)]
+        public void Covariance(int count, int ddof)
+        {
+            var random1 = new Random(42);
+            var values1 = Enumerable.Range(0, count).Select(i => new Complex(random1.NextDouble(), random1.NextDouble())).ToArray();
+            var random2 = new Random(57);
+            var values2 = Enumerable.Range(0, count).Select(i => new Complex(random2.NextDouble(), random2.NextDouble())).ToArray();
+
+            var actual = values1.Covariance(values2, ddof);
+            var expected = MathNetCovariance(values1, values2, ddof);
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
+
         private static double MathNetVariance(IEnumerable<Complex> xs, int ddof)
         {
             var mean = xs.Average();
@@ -112,6 +130,20 @@ namespace NumFlatTest
         private static double MathNetStandardDeviation(IEnumerable<Complex> xs, int ddof)
         {
             return Math.Sqrt(MathNetVariance(xs, ddof));
+        }
+
+        private static Complex MathNetCovariance(IEnumerable<Complex> xs, IEnumerable<Complex> ys, int ddof)
+        {
+            var xMean = xs.Average();
+            var yMean = ys.Average();
+            var sum = Complex.Zero;
+            var count = 0;
+            foreach (var (x, y) in xs.Zip(ys))
+            {
+                sum += (x - xMean) * (y - yMean).Conjugate();
+                count++;
+            }
+            return sum / (count - ddof);
         }
     }
 }

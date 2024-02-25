@@ -77,6 +77,23 @@ namespace NumFlatTest
             Assert.That(actual.StandardDeviation, Is.EqualTo(expectedStandardDeviation).Within(1.0E-12));
         }
 
+        [TestCase(1, 0)]
+        [TestCase(2, 1)]
+        [TestCase(3, 1)]
+        [TestCase(5, 0)]
+        [TestCase(10, 1)]
+        public void Covariance(int count, int ddof)
+        {
+            var random1 = new Random(42);
+            var values1 = Enumerable.Range(0, count).Select(i => random1.NextDouble()).ToArray();
+            var random2 = new Random(57);
+            var values2 = Enumerable.Range(0, count).Select(i => random2.NextDouble()).ToArray();
+
+            var actual = values1.Covariance(values2, ddof);
+            var expected = MathNetCovariance(values1, values2, ddof);
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
+
         private static double MathNetVariance(IEnumerable<double> xs, int ddof)
         {
             if (ddof == 0)
@@ -102,6 +119,22 @@ namespace NumFlatTest
             else if (ddof == 1)
             {
                 return MathNet.Numerics.Statistics.Statistics.StandardDeviation(xs);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        private static double MathNetCovariance(IEnumerable<double> xs, IEnumerable<double> ys, int ddof)
+        {
+            if (ddof == 0)
+            {
+                return MathNet.Numerics.Statistics.Statistics.PopulationCovariance(xs, ys);
+            }
+            else if (ddof == 1)
+            {
+                return MathNet.Numerics.Statistics.Statistics.Covariance(xs, ys);
             }
             else
             {

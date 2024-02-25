@@ -99,5 +99,64 @@ namespace NumFlat
         {
             return Math.Sqrt(xs.MeanAndVariance(ddof).Variance);
         }
+
+        /// <summary>
+        /// Computes the covariance from two sequences of values.
+        /// </summary>
+        /// <param name="xs">
+        /// The first sequence of values.
+        /// </param>
+        /// <param name="ys">
+        /// The second sequence of values.
+        /// </param>
+        /// <param name="ddof">
+        /// The delta degrees of freedom.
+        /// </param>
+        /// <returns>
+        /// The covariance of the two sequences of values.
+        /// </returns>
+        public static double Covariance(this IEnumerable<double> xs, IEnumerable<double> ys, int ddof = 1)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(ys, nameof(ys));
+
+            var xMean = xs.Average();
+            var yMean = ys.Average();
+
+            var sum = 0.0;
+            var count = 0;
+            using (var exs = xs.GetEnumerator())
+            using (var eys = ys.GetEnumerator())
+            {
+                while (true)
+                {
+                    var xsHasNext = exs.MoveNext();
+                    var ysHasNext = eys.MoveNext();
+                    if (xsHasNext != ysHasNext)
+                    {
+                        throw new ArgumentException("The number of source values must match.");
+                    }
+
+                    if (xsHasNext)
+                    {
+                        var x = exs.Current;
+                        var y = eys.Current;
+                        sum += (x - xMean) * (y - yMean);
+                        count++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (count - ddof <= 0)
+            {
+                throw new ArgumentException("The number of source values is not sufficient.");
+            }
+
+            return sum / (count - ddof);
+        }
     }
 }
