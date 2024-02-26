@@ -31,13 +31,13 @@ namespace NumFlatTest
             TestMatrix.FailIfOutOfRangeWrite(actual);
         }
 
-        [TestCase(1, 1, 1, 2)]
-        [TestCase(1, 1, 3, 2)]
-        [TestCase(3, 2, 1, 4)]
-        [TestCase(3, 2, 3, 4)]
-        [TestCase(4, 5, 6, 5)]
-        [TestCase(3, 6, 4, 4)]
-        public void Mean_ExtensionMethod(int rowCount, int colCount, int matCount, int dstStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(3, 2, 1)]
+        [TestCase(3, 2, 3)]
+        [TestCase(4, 5, 6)]
+        [TestCase(3, 6, 4)]
+        public void Mean_ExtensionMethod(int rowCount, int colCount, int matCount)
         {
             var data = CreateData(42, rowCount, colCount, matCount);
             var random = new Random(57);
