@@ -27,7 +27,7 @@ namespace NumFlat
             {
                 if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                 {
-                    throw new ArgumentException("All the source matrices must have the same length as the destination.");
+                    throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
                 }
 
                 Mat.Add(destination, x, destination);
