@@ -49,7 +49,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the mean and variance from a sequence of values.
+        /// Computes the mean and standard deviation from a sequence of values.
         /// </summary>
         /// <param name="xs">
         /// The source values.
@@ -58,7 +58,7 @@ namespace NumFlat
         /// The delta degrees of freedom.
         /// </param>
         /// <returns>
-        /// The mean and variance.
+        /// The mean and standard deviation.
         /// </returns>
         public static (double Mean, double StandardDeviation) MeanAndStandardDeviation(this IEnumerable<double> xs, int ddof = 1)
         {
