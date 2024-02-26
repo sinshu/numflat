@@ -49,6 +49,49 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1, 1, 3, 0)]
+        [TestCase(1, 1, 2, 3, 1)]
+        [TestCase(2, 2, 1, 3, 0)]
+        [TestCase(2, 2, 2, 3, 1)]
+        [TestCase(3, 4, 3, 5, 0)]
+        [TestCase(3, 2, 5, 4, 1)]
+        public void Variance(int rowCount, int colCount, int matCount, int dstStride, int ddof)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var random = new Random(57);
+            var weights = data.Select(x => random.NextDouble()).ToArray();
+            var expected = RefVariance(data, weights, ddof);
+
+            var mean = data.Mean(weights);
+            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+            MathLinq.Variance(data, weights, mean, actual, ddof);
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestMatrix.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1, 3, 0)]
+        [TestCase(1, 1, 2, 3, 1)]
+        [TestCase(2, 2, 1, 3, 0)]
+        [TestCase(2, 2, 2, 3, 1)]
+        [TestCase(3, 4, 3, 5, 0)]
+        [TestCase(3, 2, 5, 4, 1)]
+        public void MeanAndVariance(int rowCount, int colCount, int matCount, int dstStride, int ddof)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var random = new Random(57);
+            var weights = data.Select(x => random.NextDouble()).ToArray();
+
+            var expectedMean = RefMean(data, weights);
+            var expectedVariance = RefVariance(data, weights, ddof);
+
+            var actual = data.MeanAndVariance(weights, ddof);
+
+            NumAssert.AreSame(expectedMean, actual.Mean, 1.0E-12);
+            NumAssert.AreSame(expectedVariance, actual.Variance, 1.0E-12);
+        }
+
         private static Mat<double> RefMean(IEnumerable<Mat<double>> xs, IEnumerable<double> weights)
         {
             var first = xs.First();
@@ -58,6 +101,20 @@ namespace NumFlatTest
                 for (var col = 0; col < dst.ColCount; col++)
                 {
                     dst[row, col] = xs.Select(x => x[row, col]).Average(weights);
+                }
+            }
+            return dst;
+        }
+
+        private static Mat<double> RefVariance(IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof)
+        {
+            var first = xs.First();
+            var dst = new Mat<double>(first.RowCount, first.ColCount);
+            for (var row = 0; row < dst.RowCount; row++)
+            {
+                for (var col = 0; col < dst.ColCount; col++)
+                {
+                    dst[row, col] = xs.Select(x => x[row, col]).Variance(weights, ddof);
                 }
             }
             return dst;
