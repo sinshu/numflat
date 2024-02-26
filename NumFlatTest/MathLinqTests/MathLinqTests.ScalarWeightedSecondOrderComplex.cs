@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MathLinqTests_ScalarWeightedSecondOrderDouble
+    public class MathLinqTests_ScalarWeightedSecondOrderComplex
     {
         [TestCase(1)]
         [TestCase(2)]
@@ -17,12 +17,13 @@ namespace NumFlatTest
         public void Average(int count)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.Average(weights);
             var expected = RefAverage(xs, weights);
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
         }
 
         [TestCase(1, 0)]
@@ -35,13 +36,14 @@ namespace NumFlatTest
         public void MeanAndVariance(int count, int ddof)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.MeanAndVariance(weights, ddof);
             var expectedMean = RefAverage(xs, weights);
             var expectedVariance = RefVariance(xs, weights, ddof);
-            Assert.That(actual.Mean, Is.EqualTo(expectedMean).Within(1.0E-12));
+            Assert.That(actual.Mean.Real, Is.EqualTo(expectedMean.Real).Within(1.0E-12));
+            Assert.That(actual.Mean.Imaginary, Is.EqualTo(expectedMean.Imaginary).Within(1.0E-12));
             Assert.That(actual.Variance, Is.EqualTo(expectedVariance).Within(1.0E-12));
         }
 
@@ -55,13 +57,14 @@ namespace NumFlatTest
         public void MeanAndStandardDeviation(int count, int ddof)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.MeanAndStandardDeviation(weights, ddof);
             var expectedMean = RefAverage(xs, weights);
             var expectedStandardDeviation = RefStandardDeviation(xs, weights, ddof);
-            Assert.That(actual.Mean, Is.EqualTo(expectedMean).Within(1.0E-12));
+            Assert.That(actual.Mean.Real, Is.EqualTo(expectedMean.Real).Within(1.0E-12));
+            Assert.That(actual.Mean.Imaginary, Is.EqualTo(expectedMean.Imaginary).Within(1.0E-12));
             Assert.That(actual.StandardDeviation, Is.EqualTo(expectedStandardDeviation).Within(1.0E-12));
         }
 
@@ -75,7 +78,7 @@ namespace NumFlatTest
         public void Variance(int count, int ddof)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.Variance(weights, ddof);
@@ -93,7 +96,7 @@ namespace NumFlatTest
         public void StandardDeviation(int count, int ddof)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.StandardDeviation(weights, ddof);
@@ -111,18 +114,19 @@ namespace NumFlatTest
         public void Covariance(int count, int ddof)
         {
             var random = new Random(42);
-            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
-            var ys = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
+            var ys = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
             var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
 
             var actual = xs.Covariance(ys, weights, ddof);
             var expected = RefCovariance(xs, ys, weights, ddof);
-            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
         }
 
-        private static double RefAverage(IEnumerable<double> xs, IEnumerable<double> weights)
+        private static Complex RefAverage(IEnumerable<Complex> xs, IEnumerable<double> weights)
         {
-            var xSum = 0.0;
+            var xSum = Complex.Zero;
             var wSum = 0.0;
             foreach (var (weight, x) in weights.Zip(xs))
             {
@@ -132,7 +136,7 @@ namespace NumFlatTest
             return xSum / wSum;
         }
 
-        private static double RefVariance(IEnumerable<double> xs, IEnumerable<double> weights, int ddof)
+        private static double RefVariance(IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof)
         {
             var mean = RefAverage(xs, weights);
             var dSum = 0.0;
@@ -141,7 +145,7 @@ namespace NumFlatTest
             foreach (var (weight, x) in weights.Zip(xs))
             {
                 var d = x - mean;
-                dSum += weight * d * d;
+                dSum += weight * d.MagnitudeSquared();
                 w1Sum += weight;
                 w2Sum += weight * weight;
             }
@@ -149,16 +153,16 @@ namespace NumFlatTest
             return dSum / den;
         }
 
-        private static double RefStandardDeviation(IEnumerable<double> xs, IEnumerable<double> weights, int ddof)
+        private static double RefStandardDeviation(IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof)
         {
             return Math.Sqrt(RefVariance(xs, weights, ddof));
         }
 
-        private static double RefCovariance(IEnumerable<double> xs, IEnumerable<double> ys, IEnumerable<double> weights, int ddof)
+        private static Complex RefCovariance(IEnumerable<Complex> xs, IEnumerable<Complex> ys, IEnumerable<double> weights, int ddof)
         {
             var xMean = RefAverage(xs, weights);
             var yMean = RefAverage(ys, weights);
-            var dSum = 0.0;
+            var dSum = Complex.Zero;
             var w1Sum = 0.0;
             var w2Sum = 0.0;
             foreach (var (weight, x, y) in weights.Zip(xs, ys))

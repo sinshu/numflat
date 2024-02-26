@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace NumFlat
 {
@@ -17,12 +18,12 @@ namespace NumFlat
         /// <returns>
         /// The weighted average of the sequence of values.
         /// </returns>
-        public static double Average(this IEnumerable<double> xs, IEnumerable<double> weights)
+        public static Complex Average(this IEnumerable<Complex> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
 
-            var xSum = 0.0;
+            var xSum = Complex.Zero;
             var w1Sum = 0.0;
             using (var exs = xs.GetEnumerator())
             using (var eweights = weights.GetEnumerator())
@@ -79,7 +80,7 @@ namespace NumFlat
         /// <returns>
         /// The weighted mean and variance of the sequence of values.
         /// </returns>
-        public static (double Mean, double Variance) MeanAndVariance(this IEnumerable<double> xs, IEnumerable<double> weights, int ddof = 1)
+        public static (Complex Mean, double Variance) MeanAndVariance(this IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -112,7 +113,7 @@ namespace NumFlat
                         }
 
                         var d = x - mean;
-                        dSum += w * d * d;
+                        dSum += w * d.MagnitudeSquared();
                         w1Sum += w;
                         w2Sum += w * w;
                     }
@@ -147,7 +148,7 @@ namespace NumFlat
         /// <returns>
         /// The weighted mean and standard deviation of the sequence of values.
         /// </returns>
-        public static (double Mean, double StandardDeviation) MeanAndStandardDeviation(this IEnumerable<double> xs, IEnumerable<double> weights, int ddof = 1)
+        public static (Complex Mean, double StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof = 1)
         {
             var (mean, variance) = xs.MeanAndVariance(weights, ddof);
             return (mean, Math.Sqrt(variance));
@@ -168,7 +169,7 @@ namespace NumFlat
         /// <returns>
         /// The weighted variance of the source values.
         /// </returns>
-        public static double Variance(this IEnumerable<double> xs, IEnumerable<double> weights, int ddof = 1)
+        public static double Variance(this IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof = 1)
         {
             return xs.MeanAndVariance(weights, ddof).Variance;
         }
@@ -188,7 +189,7 @@ namespace NumFlat
         /// <returns>
         /// The weighted standard deviation of the source values.
         /// </returns>
-        public static double StandardDeviation(this IEnumerable<double> xs, IEnumerable<double> weights, int ddof = 1)
+        public static double StandardDeviation(this IEnumerable<Complex> xs, IEnumerable<double> weights, int ddof = 1)
         {
             return Math.Sqrt(xs.MeanAndVariance(weights, ddof).Variance);
         }
@@ -211,7 +212,7 @@ namespace NumFlat
         /// <returns>
         /// The weighted covariance of the two sequences of values.
         /// </returns>
-        public static double Covariance(this IEnumerable<double> xs, IEnumerable<double> ys, IEnumerable<double> weights, int ddof = 1)
+        public static Complex Covariance(this IEnumerable<Complex> xs, IEnumerable<Complex> ys, IEnumerable<double> weights, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
@@ -220,7 +221,7 @@ namespace NumFlat
             var xMean = xs.Average(weights);
             var yMean = ys.Average(weights);
 
-            var dSum = 0.0;
+            var dSum = Complex.Zero;
             var w1Sum = 0.0;
             var w2Sum = 0.0;
             using (var exs = xs.GetEnumerator())
