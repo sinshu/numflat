@@ -8,7 +8,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class MathLinqTests_MatrixWeightedSecondOrderDouble
+    public class MathLinqTests_MatrixWeightedSecondOrderComplex
     {
         [TestCase(1, 1, 1, 2)]
         [TestCase(1, 1, 3, 2)]
@@ -23,7 +23,7 @@ namespace NumFlatTest
             var weights = data.Select(x => random.NextDouble()).ToArray();
             var expected = RefMean(data, weights);
 
-            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+            var actual = TestMatrix.RandomComplex(0, rowCount, colCount, dstStride);
             MathLinq.Mean(data, weights, actual);
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
@@ -149,10 +149,10 @@ namespace NumFlatTest
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
-        private static Mat<double> RefMean(IEnumerable<Mat<double>> xs, IEnumerable<double> weights)
+        private static Mat<Complex> RefMean(IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights)
         {
             var first = xs.First();
-            var dst = new Mat<double>(first.RowCount, first.ColCount);
+            var dst = new Mat<Complex>(first.RowCount, first.ColCount);
             for (var row = 0; row < dst.RowCount; row++)
             {
                 for (var col = 0; col < dst.ColCount; col++)
@@ -163,7 +163,7 @@ namespace NumFlatTest
             return dst;
         }
 
-        private static Mat<double> RefVariance(IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof)
+        private static Mat<double> RefVariance(IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             var first = xs.First();
             var dst = new Mat<double>(first.RowCount, first.ColCount);
@@ -177,7 +177,7 @@ namespace NumFlatTest
             return dst;
         }
 
-        private static Mat<double> RefStandardDeviation(IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof)
+        private static Mat<double> RefStandardDeviation(IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof)
         {
             var first = xs.First();
             var dst = new Mat<double>(first.RowCount, first.ColCount);
@@ -191,20 +191,20 @@ namespace NumFlatTest
             return dst;
         }
 
-        private static Mat<double>[] CreateData(int seed, int rowCount, int colCount, int matCount)
+        private static Mat<Complex>[] CreateData(int seed, int rowCount, int colCount, int matCount)
         {
             var random = new Random(seed);
 
-            var data = new List<Mat<double>>();
+            var data = new List<Mat<Complex>>();
 
             for (var i = 0; i < matCount; i++)
             {
-                var x = new Mat<double>(rowCount, colCount);
+                var x = new Mat<Complex>(rowCount, colCount);
                 for (var row = 0; row < rowCount; row++)
                 {
                     for (var col = 0; col < colCount; col++)
                     {
-                        x[row, col] = random.NextDouble();
+                        x[row, col] = new Complex(random.NextDouble(), random.NextDouble());
                     }
                 }
                 data.Add(x);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace NumFlat
 {
@@ -18,7 +19,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the mean matrix.
         /// </param>
-        public static void Mean(IEnumerable<Mat<double>> xs, IEnumerable<double> weights, in Mat<double> destination)
+        public static void Mean(IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, in Mat<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -84,12 +85,12 @@ namespace NumFlat
         /// <returns>
         /// The mean matrix.
         /// </returns>
-        public static Mat<double> Mean(this IEnumerable<Mat<double>> xs, IEnumerable<double> weights)
+        public static Mat<Complex> Mean(this IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
 
-            var destination = new Mat<double>();
+            var destination = new Mat<Complex>();
 
             var w1Sum = 0.0;
             using (var exs = xs.GetEnumerator())
@@ -117,7 +118,7 @@ namespace NumFlat
                                 new ArgumentException("Empty matrices are not allowed.");
                             }
 
-                            destination = new Mat<double>(x.RowCount, x.ColCount);
+                            destination = new Mat<Complex>(x.RowCount, x.ColCount);
                         }
 
                         if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
@@ -169,7 +170,7 @@ namespace NumFlat
         /// <param name="ddof">
         /// The delta degrees of freedom.
         /// </param>
-        public static void Variance(IEnumerable<Mat<double>> xs, IEnumerable<double> weights, in Mat<double> mean, in Mat<double> destination, int ddof)
+        public static void Variance(IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, in Mat<Complex> mean, in Mat<double> destination, int ddof)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -252,7 +253,7 @@ namespace NumFlat
         /// <returns>
         /// The mean matrix and pointwise variance.
         /// </returns>
-        public static (Mat<double> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof = 1)
+        public static (Mat<Complex> Mean, Mat<double> Variance) MeanAndVariance(this IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -283,7 +284,7 @@ namespace NumFlat
         /// <returns>
         /// The mean matrix and pointwise standard deviation.
         /// </returns>
-        public static (Mat<double> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof = 1)
+        public static (Mat<Complex> Mean, Mat<double> StandardDeviation) MeanAndStandardDeviation(this IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof = 1)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -318,7 +319,7 @@ namespace NumFlat
         /// <returns>
         /// The pointwise variance.
         /// </returns>
-        public static Mat<double> Variance(this IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof = 1)
+        public static Mat<double> Variance(this IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof = 1)
         {
             return MeanAndVariance(xs, weights, ddof).Variance;
         }
@@ -338,12 +339,12 @@ namespace NumFlat
         /// <returns>
         /// The pointwise standard deviation.
         /// </returns>
-        public static Mat<double> StandardDeviation(this IEnumerable<Mat<double>> xs, IEnumerable<double> weights, int ddof = 1)
+        public static Mat<double> StandardDeviation(this IEnumerable<Mat<Complex>> xs, IEnumerable<double> weights, int ddof = 1)
         {
             return MeanAndStandardDeviation(xs, weights, ddof).StandardDeviation;
         }
 
-        private static void AccumulateWeightedMean(in Mat<double> x, double w, in Mat<double> destination)
+        private static void AccumulateWeightedMean(in Mat<Complex> x, double w, in Mat<Complex> destination)
         {
             var sx = x.Memory.Span;
             var sd = destination.Memory.Span;
@@ -365,7 +366,7 @@ namespace NumFlat
             }
         }
 
-        private static void AccumulateWeightedVariance(in Mat<double> x, double w, in Mat<double> mean, in Mat<double> destination)
+        private static void AccumulateWeightedVariance(in Mat<Complex> x, double w, in Mat<Complex> mean, in Mat<double> destination)
         {
             var sx = x.Memory.Span;
             var sm = mean.Memory.Span;
@@ -382,7 +383,7 @@ namespace NumFlat
                 while (pd < end)
                 {
                     var delta = sx[px] - sm[pm];
-                    sd[pd] += w * delta * delta;
+                    sd[pd] += w * delta.MagnitudeSquared();
                     px++;
                     pm++;
                     pd++;
