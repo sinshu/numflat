@@ -5,7 +5,7 @@ using System.Numerics;
 using NUnit.Framework;
 using MathNet.Numerics.IntegralTransforms;
 using NumFlat;
-using NumFlat.FourierTransform;
+using NumFlat.SignalProcessing;
 
 namespace NumFlatTest
 {

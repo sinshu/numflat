@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using FftFlat;
 
-namespace NumFlat.FourierTransform
+namespace NumFlat.SignalProcessing
 {
     /// <summary>
     /// Provides the Fourier transform.

@@ -6,7 +6,7 @@ using System.Numerics;
 using NumFlat;
 using NumFlat.Clustering;
 using NumFlat.Distributions;
-using NumFlat.FourierTransform;
+using NumFlat.SignalProcessing;
 using NumFlat.MultivariateAnalyses;
 
 public class Program
