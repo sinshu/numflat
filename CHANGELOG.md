@@ -1,3 +1,10 @@
+# v0.7.4
+
+* Now `MathLinq` supports weighted second order statistics for matrices.
+* Added the following extension methods.
+     - `double Skewness(this IEnumerable<double> xs, bool unbiased = true)`
+     - `double Kurtosis(this IEnumerable<double> xs, bool unbiased = true)`
+
 # v0.7.3
 
 * Now `MathLinq` supports weighted second order statistics for scalars (`double` and `Complex`).
