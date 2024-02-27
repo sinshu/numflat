@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class GevdTest_Single
+    public class GevdComplex
     {
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 2, 3, 2, 4)]
@@ -24,19 +24,19 @@ namespace NumFlatTest
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = CreateHermitianMatrix(57, n, bStride);
 
-            var d = TestVector.RandomSingle(0, n, dStride);
-            var v = TestMatrix.RandomSingle(0, n, n, vStride);
+            var d = TestVector.RandomDouble(0, n, dStride);
+            var v = TestMatrix.RandomComplex(0, n, n, vStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                GeneralizedEigenValueDecompositionSingle.Decompose(a, b, d, v);
+                GeneralizedEigenValueDecompositionComplex.Decompose(a, b, d, v);
             }
 
             for (var i = 0; i < n; i++)
             {
                 var left = a * v.Cols[i];
                 var right = d[i] * b * v.Cols[i];
-                NumAssert.AreSame(left, right, 1.0E-6F);
+                NumAssert.AreSame(left, right, 1.0E-12);
             }
 
             TestVector.FailIfOutOfRangeWrite(d);
@@ -58,7 +58,7 @@ namespace NumFlatTest
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = CreateHermitianMatrix(57, n, bStride);
 
-            GeneralizedEigenValueDecompositionSingle gevd;
+            GeneralizedEigenValueDecompositionComplex gevd;
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
@@ -69,13 +69,13 @@ namespace NumFlatTest
             {
                 var left = a * gevd.V.Cols[i];
                 var right = gevd.D[i] * b * gevd.V.Cols[i];
-                NumAssert.AreSame(left, right, 1.0E-6F);
+                NumAssert.AreSame(left, right, 1.0E-12);
             }
         }
 
-        private static Mat<float> CreateHermitianMatrix(int seed, int n, int stride)
+        private static Mat<Complex> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = TestMatrix.RandomSingle(seed, n, n, stride);
+            var mat = TestMatrix.RandomComplex(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -83,11 +83,11 @@ namespace NumFlatTest
                 {
                     if (row == col)
                     {
-                        mat[row, col] = 2 + 2 * random.NextSingle();
+                        mat[row, col] = 2 + 2 * random.NextDouble();
                     }
                     else
                     {
-                        mat[row, col] = mat[col, row];
+                        mat[row, col] = mat[col, row].Conjugate();
                     }
                 }
             }

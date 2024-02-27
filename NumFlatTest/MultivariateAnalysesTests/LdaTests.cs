@@ -8,7 +8,7 @@ using NUnit.Framework;
 using NumFlat;
 using NumFlat.MultivariateAnalyses;
 
-namespace NumFlatTest
+namespace NumFlatTest.MultivariateAnalysesTests
 {
     public class LdaTests
     {

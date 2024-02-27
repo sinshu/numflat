@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MathLinqTests
 {
-    public class MathLinqTests_ScalarSecondOrderDouble
+    public class ScalarSecondOrderDouble
     {
         [TestCase(1, 0)]
         [TestCase(2, 1)]

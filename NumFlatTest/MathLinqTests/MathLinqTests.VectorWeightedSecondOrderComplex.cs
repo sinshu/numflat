@@ -9,9 +9,9 @@ using NumFlat;
 using MVec = MathNet.Numerics.LinearAlgebra.Vector<System.Numerics.Complex>;
 using MMat = MathNet.Numerics.LinearAlgebra.Matrix<System.Numerics.Complex>;
 
-namespace NumFlatTest
+namespace NumFlatTest.MathLinqTests
 {
-    public class MathLinqTests_VectorWeightedSecondOrderComplex
+    public class VectorWeightedSecondOrderComplex
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 1, 3)]

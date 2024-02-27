@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class QrTest_Single
+    public class QrSingle
     {
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 1, 2, 3, 2)]

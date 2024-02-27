@@ -6,9 +6,9 @@ using NUnit.Framework;
 using NumFlat;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class QrTest_Double
+    public class QrDouble
     {
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 1, 2, 3, 2)]

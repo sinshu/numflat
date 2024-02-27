@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class CholeskyTest_Complex
+    public class CholeskyComplex
     {
         [TestCase(1, 1, 1)]
         [TestCase(1, 2, 3)]

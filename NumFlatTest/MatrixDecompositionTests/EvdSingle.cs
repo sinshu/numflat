@@ -5,77 +5,83 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class CholeskyTest_Single
+    public class EvdSingle
     {
-        [TestCase(1, 1, 1)]
-        [TestCase(1, 2, 3)]
-        [TestCase(2, 2, 2)]
-        [TestCase(2, 3, 3)]
-        [TestCase(3, 3, 3)]
-        [TestCase(3, 5, 3)]
-        [TestCase(5, 5, 5)]
-        [TestCase(5, 8, 6)]
-        public void Decompose(int n, int aStride, int lStride)
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 3, 3, 3)]
+        [TestCase(2, 2, 1, 2)]
+        [TestCase(2, 4, 4, 3)]
+        [TestCase(3, 3, 1, 3)]
+        [TestCase(3, 5, 3, 4)]
+        [TestCase(4, 4, 1, 4)]
+        [TestCase(4, 5, 2, 5)]
+        [TestCase(5, 5, 1, 5)]
+        [TestCase(5, 7, 3, 8)]
+        public void Decompose(int n, int aStride, int dStride, int vStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            var l = TestMatrix.RandomSingle(0, n, n, lStride);
+            var d = TestVector.RandomSingle(0, n, dStride);
+            var v = TestMatrix.RandomSingle(0, n, n, vStride);
             using (a.EnsureUnchanged())
             {
-                CholeskyDecompositionSingle.Decompose(a, l);
+                EigenValueDecompositionSingle.Decompose(a, d, v);
             }
 
-            var reconstructed = l * l.Transpose();
-            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
+            var reconstructed = v * d.ToDiagonalMatrix() * v.Transpose();
+            NumAssert.AreSame(a, reconstructed, 1.0E-5F); // 1.0E-6F is too small.
 
-            TestMatrix.FailIfOutOfRangeWrite(l);
+            TestVector.FailIfOutOfRangeWrite(d);
+            TestMatrix.FailIfOutOfRangeWrite(v);
         }
 
         [TestCase(1, 1)]
-        [TestCase(1, 2)]
+        [TestCase(1, 3)]
         [TestCase(2, 2)]
-        [TestCase(2, 3)]
+        [TestCase(2, 4)]
         [TestCase(3, 3)]
         [TestCase(3, 5)]
+        [TestCase(4, 4)]
+        [TestCase(4, 5)]
         [TestCase(5, 5)]
-        [TestCase(5, 8)]
+        [TestCase(5, 7)]
         public void ExtensionMethod(int n, int aStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            CholeskyDecompositionSingle chol;
+            EigenValueDecompositionSingle evd;
             using (a.EnsureUnchanged())
             {
-                chol = a.Cholesky();
+                evd = a.Evd();
             }
 
-            var reconstructed = chol.L * chol.L.Transpose();
-            NumAssert.AreSame(a, reconstructed, 1.0E-6F);
+            var reconstructed = evd.V * evd.D.ToDiagonalMatrix() * evd.V.Transpose();
+            NumAssert.AreSame(a, reconstructed, 1.0E-5F); // 1.0E-6F is too small.
         }
 
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 2, 3)]
-        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 1, 1)]
         [TestCase(2, 2, 4, 3)]
-        [TestCase(3, 3, 3, 3)]
-        [TestCase(3, 3, 4, 4)]
-        [TestCase(4, 4, 4, 4)]
-        [TestCase(4, 4, 6, 5)]
-        [TestCase(5, 5, 5, 5)]
+        [TestCase(3, 3, 1, 1)]
+        [TestCase(3, 3, 2, 4)]
+        [TestCase(4, 4, 1, 1)]
+        [TestCase(4, 4, 3, 2)]
+        [TestCase(5, 5, 1, 1)]
         [TestCase(5, 5, 8, 7)]
         public void Solve(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = TestVector.RandomSingle(57, a.RowCount, bStride);
-            var chol = a.Cholesky();
+            var evd = a.Evd();
 
             var actual = TestVector.RandomSingle(66, a.ColCount, dstStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                chol.Solve(b, actual);
+                evd.Solve(b, actual);
             }
 
             var expected = a.Svd().Solve(b);
@@ -93,10 +99,10 @@ namespace NumFlatTest
         public void Determinant(int n)
         {
             var a = CreateHermitianMatrix(42, n, n);
-            var chol = a.Cholesky();
+            var evd = a.Evd();
             var expected = a.Determinant();
-            Assert.That(chol.Determinant(), Is.EqualTo(expected).Within(1.0E-5F)); // 1.0E-6F is too small.
-            Assert.That(chol.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-6F));
+            Assert.That(evd.Determinant(), Is.EqualTo(expected).Within(1.0E-4F)); // 1.0E-6F is too small.
+            Assert.That(evd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-6F));
         }
 
         private static Mat<float> CreateHermitianMatrix(int seed, int n, int stride)

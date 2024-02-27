@@ -6,9 +6,9 @@ using MathNet.Numerics.Statistics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MathLinqTests
 {
-    public class MathLinqTests_MatrixWeightedSecondOrderDouble
+    public class MatrixWeightedSecondOrderDouble
     {
         [TestCase(1, 1, 1, 2)]
         [TestCase(1, 1, 3, 2)]

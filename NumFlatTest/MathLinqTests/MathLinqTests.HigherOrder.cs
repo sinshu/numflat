@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MathLinqTests
 {
-    public class MathLinqTests_HigherOrder
+    public class HigherOrder
     {
         [TestCase(2, false)]
         [TestCase(3, false)]

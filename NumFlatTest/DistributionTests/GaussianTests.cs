@@ -6,7 +6,7 @@ using NUnit.Framework;
 using NumFlat;
 using NumFlat.Distributions;
 
-namespace NumFlatTest
+namespace NumFlatTest.DistributionTests
 {
     public class GaussianTests
     {

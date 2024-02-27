@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class SvdTest_Double
+    public class SvdComplex
     {
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]
@@ -19,15 +19,15 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3)]
         public void GetSingularValues(int m, int n, int aStride, int sStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
             var actual = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
             using (a.EnsureUnchanged())
             {
-                SingularValueDecompositionDouble.GetSingularValues(a, actual);
+                SingularValueDecompositionComplex.GetSingularValues(a, actual);
             }
 
-            var expected = Interop.ToMathNet(a).Svd().S;
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c=>c.Real).ToVector();
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
 
@@ -44,7 +44,7 @@ namespace NumFlatTest
         [TestCase(4, 3, 6)]
         public void GetSingularValues_ExtensionMethod(int m, int n, int aStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
             Vec<double> actual;
             using (a.EnsureUnchanged())
@@ -52,7 +52,7 @@ namespace NumFlatTest
                 actual = a.GetSingularValues();
             }
 
-            var expected = Interop.ToMathNet(a).Svd().S;
+            var expected = Interop.ToMathNet(a).Svd().S.Select(c => c.Real).ToVector();
 
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
@@ -67,17 +67,17 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3, 7, 5)]
         public void Decompose(int m, int n, int aStride, int sStride, int uStride, int vtStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
             var s = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
-            var u = TestMatrix.RandomDouble(66, m, m, uStride);
-            var vt = TestMatrix.RandomDouble(77, n, n, vtStride);
+            var u = TestMatrix.RandomComplex(66, m, m, uStride);
+            var vt = TestMatrix.RandomComplex(77, n, n, vtStride);
 
             using (a.EnsureUnchanged())
             {
-                SingularValueDecompositionDouble.Decompose(a, s, u, vt);
+                SingularValueDecompositionComplex.Decompose(a, s, u, vt);
             }
 
-            var reconstructed = u * s.ToDiagonalMatrix(m, n) * vt;
+            var reconstructed = u * s.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * vt;
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             CheckUnitary(u);
@@ -98,16 +98,16 @@ namespace NumFlatTest
         [TestCase(4, 3, 6, 3, 7)]
         public void Decompose_WithoutVT(int m, int n, int aStride, int sStride, int uStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
             var s = TestVector.RandomDouble(57, Math.Min(m, n), sStride);
-            var u = TestMatrix.RandomDouble(66, m, m, uStride);
+            var u = TestMatrix.RandomComplex(66, m, m, uStride);
 
             using (a.EnsureUnchanged())
             {
-                SingularValueDecompositionDouble.Decompose(a, s, u);
+                SingularValueDecompositionComplex.Decompose(a, s, u);
             }
 
-            var reconstructed = u * s.ToDiagonalMatrix(m, n) * a.Svd().VT;
+            var reconstructed = u * s.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * a.Svd().VT;
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             CheckUnitary(u);
@@ -126,15 +126,15 @@ namespace NumFlatTest
         [TestCase(4, 3, 6)]
         public void ExtensionMethod(int m, int n, int aStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
 
-            SingularValueDecompositionDouble svd;
+            SingularValueDecompositionComplex svd;
             using (a.EnsureUnchanged())
             {
                 svd = a.Svd();
             }
 
-            var reconstructed = svd.U * svd.S.ToDiagonalMatrix(m, n) * svd.VT;
+            var reconstructed = svd.U * svd.S.Select(value => (Complex)value).ToDiagonalMatrix(m, n) * svd.VT;
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             CheckUnitary(svd.U);
@@ -155,15 +155,15 @@ namespace NumFlatTest
         [TestCase(3, 7, 4, 3, 3)]
         public void Solve(int m, int n, int aStride, int bStride, int dstStride)
         {
-            var a = TestMatrix.RandomDouble(42, m, n, aStride);
-            var b = TestVector.RandomDouble(57, a.RowCount, bStride);
+            var a = TestMatrix.RandomComplex(42, m, n, aStride);
+            var b = TestVector.RandomComplex(57, a.RowCount, bStride);
             var svd = a.Svd();
 
             var ma = Interop.ToMathNet(a);
             var mb = Interop.ToMathNet(b);
             var expected = ma.Svd().Solve(mb);
 
-            var actual = TestVector.RandomDouble(66, a.ColCount, dstStride);
+            var actual = TestVector.RandomComplex(66, a.ColCount, dstStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
@@ -182,17 +182,17 @@ namespace NumFlatTest
         [TestCase(5)]
         public void Determinant(int n)
         {
-            var a = TestMatrix.RandomDouble(42, n, n, n);
+            var a = TestMatrix.RandomComplex(42, n, n, n);
             var svd = a.Svd();
-            var expected = Math.Abs(a.Determinant());
+            var expected = a.Determinant().Magnitude;
             Assert.That(svd.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
             Assert.That(svd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
         }
 
-        private static void CheckUnitary(Mat<double> mat)
+        private static void CheckUnitary(Mat<Complex> mat)
         {
-            var actual = mat * mat.Transpose();
-            var expected = MatrixBuilder.Identity<double>(actual.RowCount);
+            var actual = mat * mat.ConjugateTranspose();
+            var expected = MatrixBuilder.Identity<Complex>(actual.RowCount);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }

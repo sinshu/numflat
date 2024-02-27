@@ -5,59 +5,53 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class EvdTest_Double
+    public class CholeskyDouble
     {
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(1, 3, 3, 3)]
-        [TestCase(2, 2, 1, 2)]
-        [TestCase(2, 4, 4, 3)]
-        [TestCase(3, 3, 1, 3)]
-        [TestCase(3, 5, 3, 4)]
-        [TestCase(4, 4, 1, 4)]
-        [TestCase(4, 5, 2, 5)]
-        [TestCase(5, 5, 1, 5)]
-        [TestCase(5, 7, 3, 8)]
-        public void Decompose(int n, int aStride, int dStride, int vStride)
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 2, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 3, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 5, 3)]
+        [TestCase(5, 5, 5)]
+        [TestCase(5, 8, 6)]
+        public void Decompose(int n, int aStride, int lStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            var d = TestVector.RandomDouble(0, n, dStride);
-            var v = TestMatrix.RandomDouble(0, n, n, vStride);
+            var l = TestMatrix.RandomDouble(0, n, n, lStride);
             using (a.EnsureUnchanged())
             {
-                EigenValueDecompositionDouble.Decompose(a, d, v);
+                CholeskyDecompositionDouble.Decompose(a, l);
             }
 
-            var reconstructed = v * d.ToDiagonalMatrix() * v.Transpose();
+            var reconstructed = l * l.Transpose();
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
-            TestVector.FailIfOutOfRangeWrite(d);
-            TestMatrix.FailIfOutOfRangeWrite(v);
+            TestMatrix.FailIfOutOfRangeWrite(l);
         }
 
         [TestCase(1, 1)]
-        [TestCase(1, 3)]
+        [TestCase(1, 2)]
         [TestCase(2, 2)]
-        [TestCase(2, 4)]
+        [TestCase(2, 3)]
         [TestCase(3, 3)]
         [TestCase(3, 5)]
-        [TestCase(4, 4)]
-        [TestCase(4, 5)]
         [TestCase(5, 5)]
-        [TestCase(5, 7)]
+        [TestCase(5, 8)]
         public void ExtensionMethod(int n, int aStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            EigenValueDecompositionDouble evd;
+            CholeskyDecompositionDouble chol;
             using (a.EnsureUnchanged())
             {
-                evd = a.Evd();
+                chol = a.Cholesky();
             }
 
-            var reconstructed = evd.V * evd.D.ToDiagonalMatrix() * evd.V.Transpose();
+            var reconstructed = chol.L * chol.L.Transpose();
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
         }
 
@@ -75,13 +69,13 @@ namespace NumFlatTest
         {
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = TestVector.RandomDouble(57, a.RowCount, bStride);
-            var evd = a.Evd();
+            var chol = a.Cholesky();
 
             var actual = TestVector.RandomDouble(66, a.ColCount, dstStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                evd.Solve(b, actual);
+                chol.Solve(b, actual);
             }
 
             var expected = a.Svd().Solve(b);
@@ -99,10 +93,10 @@ namespace NumFlatTest
         public void Determinant(int n)
         {
             var a = CreateHermitianMatrix(42, n, n);
-            var evd = a.Evd();
+            var chol = a.Cholesky();
             var expected = a.Determinant();
-            Assert.That(evd.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
-            Assert.That(evd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
+            Assert.That(chol.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(chol.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
         }
 
         private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)

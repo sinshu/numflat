@@ -7,7 +7,7 @@ using MathNet.Numerics.IntegralTransforms;
 using NumFlat;
 using NumFlat.SignalProcessing;
 
-namespace NumFlatTest
+namespace NumFlatTest.SignalProcessingTests
 {
     public class FourierTransformTests
     {

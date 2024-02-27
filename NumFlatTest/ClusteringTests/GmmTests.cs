@@ -8,7 +8,7 @@ using NumFlat.Clustering;
 using System.IO;
 using NumFlat.Distributions;
 
-namespace NumFlatTest
+namespace NumFlatTest.ClusteringTests
 {
     public class GmmTests
     {

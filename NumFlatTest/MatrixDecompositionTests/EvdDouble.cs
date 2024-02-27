@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class EvdTest_Single
+    public class EvdDouble
     {
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 3, 3, 3)]
@@ -23,15 +23,15 @@ namespace NumFlatTest
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            var d = TestVector.RandomSingle(0, n, dStride);
-            var v = TestMatrix.RandomSingle(0, n, n, vStride);
+            var d = TestVector.RandomDouble(0, n, dStride);
+            var v = TestMatrix.RandomDouble(0, n, n, vStride);
             using (a.EnsureUnchanged())
             {
-                EigenValueDecompositionSingle.Decompose(a, d, v);
+                EigenValueDecompositionDouble.Decompose(a, d, v);
             }
 
             var reconstructed = v * d.ToDiagonalMatrix() * v.Transpose();
-            NumAssert.AreSame(a, reconstructed, 1.0E-5F); // 1.0E-6F is too small.
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
             TestVector.FailIfOutOfRangeWrite(d);
             TestMatrix.FailIfOutOfRangeWrite(v);
@@ -51,14 +51,14 @@ namespace NumFlatTest
         {
             var a = CreateHermitianMatrix(42, n, aStride);
 
-            EigenValueDecompositionSingle evd;
+            EigenValueDecompositionDouble evd;
             using (a.EnsureUnchanged())
             {
                 evd = a.Evd();
             }
 
             var reconstructed = evd.V * evd.D.ToDiagonalMatrix() * evd.V.Transpose();
-            NumAssert.AreSame(a, reconstructed, 1.0E-5F); // 1.0E-6F is too small.
+            NumAssert.AreSame(a, reconstructed, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -74,10 +74,10 @@ namespace NumFlatTest
         public void Solve(int n, int aStride, int bStride, int dstStride)
         {
             var a = CreateHermitianMatrix(42, n, aStride);
-            var b = TestVector.RandomSingle(57, a.RowCount, bStride);
+            var b = TestVector.RandomDouble(57, a.RowCount, bStride);
             var evd = a.Evd();
 
-            var actual = TestVector.RandomSingle(66, a.ColCount, dstStride);
+            var actual = TestVector.RandomDouble(66, a.ColCount, dstStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
@@ -86,7 +86,7 @@ namespace NumFlatTest
 
             var expected = a.Svd().Solve(b);
 
-            NumAssert.AreSame(expected, actual, 1.0E-6F);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
@@ -101,13 +101,13 @@ namespace NumFlatTest
             var a = CreateHermitianMatrix(42, n, n);
             var evd = a.Evd();
             var expected = a.Determinant();
-            Assert.That(evd.Determinant(), Is.EqualTo(expected).Within(1.0E-4F)); // 1.0E-6F is too small.
-            Assert.That(evd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-6F));
+            Assert.That(evd.Determinant(), Is.EqualTo(expected).Within(1.0E-12));
+            Assert.That(evd.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-12));
         }
 
-        private static Mat<float> CreateHermitianMatrix(int seed, int n, int stride)
+        private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = TestMatrix.RandomSingle(seed, n, n, stride);
+            var mat = TestMatrix.RandomDouble(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -115,7 +115,7 @@ namespace NumFlatTest
                 {
                     if (row == col)
                     {
-                        mat[row, col] = 2 + 2 * random.NextSingle();
+                        mat[row, col] = 2 + 2 * random.NextDouble();
                     }
                     else
                     {

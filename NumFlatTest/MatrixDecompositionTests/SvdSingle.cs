@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class SvdTest_Single
+    public class SvdSingle
     {
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]

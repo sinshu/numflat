@@ -7,7 +7,7 @@ using NumFlat;
 using NumFlat.Clustering;
 using System.IO;
 
-namespace NumFlatTest
+namespace NumFlatTest.ClusteringTests
 {
     public class KMeansTests
     {

@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatrixDecompositionTests
 {
-    public class GevdTest_Complex
+    public class GevdDouble
     {
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 2, 3, 2, 4)]
@@ -25,11 +25,11 @@ namespace NumFlatTest
             var b = CreateHermitianMatrix(57, n, bStride);
 
             var d = TestVector.RandomDouble(0, n, dStride);
-            var v = TestMatrix.RandomComplex(0, n, n, vStride);
+            var v = TestMatrix.RandomDouble(0, n, n, vStride);
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
-                GeneralizedEigenValueDecompositionComplex.Decompose(a, b, d, v);
+                GeneralizedEigenValueDecompositionDouble.Decompose(a, b, d, v);
             }
 
             for (var i = 0; i < n; i++)
@@ -58,7 +58,7 @@ namespace NumFlatTest
             var a = CreateHermitianMatrix(42, n, aStride);
             var b = CreateHermitianMatrix(57, n, bStride);
 
-            GeneralizedEigenValueDecompositionComplex gevd;
+            GeneralizedEigenValueDecompositionDouble gevd;
             using (a.EnsureUnchanged())
             using (b.EnsureUnchanged())
             {
@@ -73,9 +73,9 @@ namespace NumFlatTest
             }
         }
 
-        private static Mat<Complex> CreateHermitianMatrix(int seed, int n, int stride)
+        private static Mat<double> CreateHermitianMatrix(int seed, int n, int stride)
         {
-            var mat = TestMatrix.RandomComplex(seed, n, n, stride);
+            var mat = TestMatrix.RandomDouble(seed, n, n, stride);
             var random = new Random(seed);
             for (var col = 0; col < n; col++)
             {
@@ -87,7 +87,7 @@ namespace NumFlatTest
                     }
                     else
                     {
-                        mat[row, col] = mat[col, row].Conjugate();
+                        mat[row, col] = mat[col, row];
                     }
                 }
             }
