@@ -246,7 +246,7 @@ namespace NumFlat
         public double Determinant()
         {
             var determinant = 1.0;
-            foreach (var value in s)
+            foreach (var value in s.FastEnumerate())
             {
                 determinant *= value;
             }
@@ -262,7 +262,7 @@ namespace NumFlat
         public double LogDeterminant()
         {
             var logDeterminant = 0.0;
-            foreach (var value in s)
+            foreach (var value in s.FastEnumerate())
             {
                 logDeterminant += Math.Log(value);
             }

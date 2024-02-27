@@ -248,7 +248,7 @@ namespace NumFlat
             }
 
             var rank = 0;
-            foreach (var value in s)
+            foreach (var value in s.FastEnumerate())
             {
                 if (value > tolerance)
                 {

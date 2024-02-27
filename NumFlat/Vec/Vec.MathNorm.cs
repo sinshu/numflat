@@ -85,7 +85,7 @@ namespace NumFlat
             }
 
             var norm = 0.0F;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += MathF.Pow(MathF.Abs(value), p);
             }
@@ -114,7 +114,7 @@ namespace NumFlat
             }
 
             var norm = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += Math.Pow(Math.Abs(value), p);
             }
@@ -143,7 +143,7 @@ namespace NumFlat
             }
 
             var norm = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += Math.Pow(value.Magnitude, p);
             }
@@ -164,7 +164,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0F;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += MathF.Abs(value);
             }
@@ -185,7 +185,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += Math.Abs(value);
             }
@@ -206,7 +206,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 norm += value.Magnitude;
             }
@@ -227,7 +227,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0F;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 var current = MathF.Abs(value);
                 if (current > max)
@@ -252,7 +252,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 var current = Math.Abs(value);
                 if (current > max)
@@ -277,7 +277,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0;
-            foreach (var value in x)
+            foreach (var value in x.FastEnumerate())
             {
                 var current = value.Magnitude;
                 if (current > max)

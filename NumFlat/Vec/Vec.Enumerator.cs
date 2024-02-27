@@ -66,5 +66,88 @@ namespace NumFlat
                 this.current = default;
             }
         }
+
+
+
+        /// <summary>
+        /// Provides fast enumeration.
+        /// </summary>
+        public ref struct FastEnumerable
+        {
+            ref readonly Vec<T> vector;
+
+            /// <summary>
+            /// Initializes a new enumeration.
+            /// </summary>
+            /// <param name="vector">
+            /// The vector to be enumerated.
+            /// </param>
+            public FastEnumerable(in Vec<T> vector)
+            {
+                this.vector = ref vector;
+            }
+
+            /// <summary>
+            /// Gets an enumerator.
+            /// </summary>
+            /// <returns>
+            /// A new enumerator.
+            /// </returns>
+            public FastEnumerator GetEnumerator() => new FastEnumerator(vector);
+        }
+
+
+
+        /// <summary>
+        /// Enumerates the elements in the vector.
+        /// </summary>
+        public ref struct FastEnumerator
+        {
+            private readonly int stride;
+            private readonly Span<T> memory;
+            private int position;
+            private T current;
+
+            internal FastEnumerator(in Vec<T> vector)
+            {
+                this.stride = vector.stride;
+                this.memory = vector.memory.Span;
+                this.position = -vector.stride;
+                this.current = default;
+            }
+
+            /// <summary>
+            /// Stops the enumerator.
+            /// </summary>
+            public void Dispose()
+            {
+            }
+
+            /// <summary>
+            /// Advances the enumerator.
+            /// </summary>
+            /// <returns>
+            /// True if the enumerator has the next value.
+            /// </returns>
+            public bool MoveNext()
+            {
+                position += stride;
+                if (position < memory.Length)
+                {
+                    current = memory[position];
+                    return true;
+                }
+                else
+                {
+                    current = default;
+                    return false;
+                }
+            }
+
+            /// <summary>
+            /// Gets the current value.
+            /// </summary>
+            public T Current => current;
+        }
     }
 }
