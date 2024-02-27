@@ -227,12 +227,19 @@ namespace NumFlat.Distributions
                 throw new ArgumentException("The distributions must have the same dimension.");
             }
 
-            var sigma = this.variance + x.variance;
+            using var utmp = new TemporalVector3<double>(this.mean.Count);
+            ref readonly var sigma = ref utmp.Item1;
+            ref readonly var d = ref utmp.Item2;
+            ref readonly var tmp = ref utmp.Item3;
+
+            Vec.Add(this.variance, x.variance, sigma);
             sigma.MulInplace(0.5);
 
-            var d = x.mean - this.mean;
-            var left = d * d.PointwiseDiv(sigma) / 8;
+            Vec.Sub(x.mean, this.mean, d);
+            Vec.PointwiseDiv(d, sigma, tmp);
+            var left = Vec.Dot(d, tmp) / 8;
             var right = (LogDeterminant(sigma) - (LogDeterminant(x.variance) + LogDeterminant(this.variance)) / 2) / 2;
+
             return left + right;
         }
 

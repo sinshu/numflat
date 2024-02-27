@@ -225,14 +225,33 @@ namespace NumFlat.Distributions
                 throw new ArgumentException("The distributions must have the same dimension.");
             }
 
-            var sigma = this.covariance + x.covariance;
-            sigma.MulInplace(0.5);
-            var sigmaCholesky = sigma.Cholesky();
+            using var ul = new TemporalMatrix<double>(this.covariance.RowCount, this.covariance.ColCount);
+            ref readonly var l = ref ul.Item;
+            Mat.Add(this.covariance, x.covariance, l);
+            l.MulInplace(0.5);
+            CholeskyDecompositionDouble.Decompose(l, l);
 
-            var d = x.mean - this.mean;
-            var left = d * sigmaCholesky.Solve(d) / 8;
-            var right = (sigmaCholesky.LogDeterminant() - (x.cholesky.LogDeterminant() + this.cholesky.LogDeterminant()) / 2) / 2;
+            using var utmp = new TemporalVector2<double>(this.mean.Count);
+            ref readonly var d = ref utmp.Item1;
+            ref readonly var tmp = ref utmp.Item2;
+
+            Vec.Sub(x.mean, this.mean, d);
+            CholeskyDecompositionDouble.Solve(l, d, tmp);
+            var left = Vec.Dot(d, tmp) / 8;
+            var right = (LogDeterminant(l) - (this.cholesky.LogDeterminant() + x.cholesky.LogDeterminant()) / 2) / 2;
+
             return left + right;
+        }
+
+        private static double LogDeterminant(in Mat<double> l)
+        {
+            var fl = l.GetUnsafeFastIndexer();
+            var value = 0.0;
+            for (var i = 0; i < l.RowCount; i++)
+            {
+                value += Math.Log(fl[i, i]);
+            }
+            return 2 * value;
         }
 
         /// <summary>

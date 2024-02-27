@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using OpenBlasSharp;
 
 namespace NumFlat
@@ -88,6 +89,11 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             ThrowIfInvalidSize(b, destination);
 
+            Solve(l, b, destination);
+        }
+
+        internal static unsafe void Solve(in Mat<double> l, in Vec<double> b, in Vec<double> destination)
+        {
             b.CopyTo(destination);
 
             fixed (double* pl = l.Memory.Span)

@@ -89,6 +89,11 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             ThrowIfInvalidSize(b, destination);
 
+            Solve(l, b, destination);
+        }
+
+        internal static unsafe void Solve(in Mat<Complex> l, in Vec<Complex> b, in Vec<Complex> destination)
+        {
             b.CopyTo(destination);
 
             fixed (Complex* pl = l.Memory.Span)
