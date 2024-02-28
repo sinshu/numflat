@@ -101,5 +101,96 @@ namespace NumFlatTest.SignalProcessingTests
                 }
             }
         }
+
+        [TestCase(5, 3)]
+        [TestCase(3, 5)]
+        public void GetFrameAsComplex_Arg3(int srcLength, int dstLength)
+        {
+            var source = TestVector.RandomDouble(42, srcLength, 1);
+
+            var pad = 10;
+            var paddedSource = new double[pad].Concat(source).Concat(new double[pad]).ToVector();
+
+            using (source.EnsureUnchanged())
+            {
+                for (var start = -dstLength - 3; start <= srcLength + 3; start++)
+                {
+                    var expected = paddedSource.Subvector(pad + start, dstLength).Map(x => (Complex)x);
+                    var actual = TestVector.RandomComplex(0, dstLength, 1);
+                    source.GetFrameAsComplex(start, actual);
+                    NumAssert.AreSame(expected, actual, 0);
+                }
+            }
+        }
+
+        [TestCase(5, 3)]
+        [TestCase(3, 5)]
+        public void GetFrameAsComplex_Arg2(int srcLength, int dstLength)
+        {
+            var source = TestVector.RandomDouble(42, srcLength, 1);
+
+            var pad = 10;
+            var paddedSource = new double[pad].Concat(source).Concat(new double[pad]).ToVector();
+
+            using (source.EnsureUnchanged())
+            {
+                for (var start = -dstLength - 3; start <= srcLength + 3; start++)
+                {
+                    var expected = paddedSource.Subvector(pad + start, dstLength).Map(x => (Complex)x);
+                    var actual = source.GetFrameAsComplex(start, dstLength);
+                    NumAssert.AreSame(expected, actual, 0);
+                }
+            }
+        }
+
+        [TestCase(5, 3, 1, 1, 1)]
+        [TestCase(5, 3, 3, 2, 4)]
+        [TestCase(3, 5, 1, 1, 1)]
+        [TestCase(3, 5, 2, 4, 3)]
+        public void GetWindowedFrameAsComplex_Arg3(int srcLength, int dstLength, int srcStride, int winStride, int dstStride)
+        {
+            var source = TestVector.RandomDouble(42, srcLength, srcStride);
+            var window = TestVector.RandomDouble(57, dstLength, winStride);
+
+            var pad = 10;
+            var paddedSource = new double[pad].Concat(source).Concat(new double[pad]).ToVector();
+
+            using (source.EnsureUnchanged())
+            {
+                for (var start = -dstLength - 3; start <= srcLength + 3; start++)
+                {
+                    var expected = paddedSource.Subvector(pad + start, dstLength).PointwiseMul(window).Map(x => (Complex)x);
+
+                    var actual = TestVector.RandomComplex(0, dstLength, dstStride);
+                    source.GetWindowedFrameAsComplex(start, window, actual);
+
+                    NumAssert.AreSame(expected, actual, 0);
+                    TestVector.FailIfOutOfRangeWrite(actual);
+                }
+            }
+        }
+
+        [TestCase(5, 3, 1, 1)]
+        [TestCase(5, 3, 3, 2)]
+        [TestCase(3, 5, 1, 1)]
+        [TestCase(3, 5, 2, 4)]
+        public void GetWindowedFrameAsComplex_Arg2(int srcLength, int dstLength, int srcStride, int winStride)
+        {
+            var source = TestVector.RandomDouble(42, srcLength, srcStride);
+            var window = TestVector.RandomDouble(57, dstLength, winStride);
+
+            var pad = 10;
+            var paddedSource = new double[pad].Concat(source).Concat(new double[pad]).ToVector();
+
+            using (source.EnsureUnchanged())
+            {
+                for (var start = -dstLength - 3; start <= srcLength + 3; start++)
+                {
+                    var expected = paddedSource.Subvector(pad + start, dstLength).PointwiseMul(window).Map(x => (Complex)x);
+                    var actual = source.GetWindowedFrameAsComplex(start, window);
+                    NumAssert.AreSame(expected, actual, 0);
+                }
+            }
+        }
     }
 }
