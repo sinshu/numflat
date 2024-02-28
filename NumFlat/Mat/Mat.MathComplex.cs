@@ -276,7 +276,7 @@ namespace NumFlat
             }
 
             var rank = 0;
-            foreach (var value in s.FastEnumerate())
+            foreach (var value in s.GetUnsafeFastIndexer())
             {
                 if (value > tolerance)
                 {

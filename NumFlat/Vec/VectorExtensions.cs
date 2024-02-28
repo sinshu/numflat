@@ -424,22 +424,5 @@ namespace NumFlat
             Vec.Noramlize(x, normalized, p);
             return normalized;
         }
-
-        /// <summary>
-        /// Enumerates the values in the vector.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of elements in the vector.
-        /// </typeparam>
-        /// <param name="x">
-        /// The vector to be enumerated.
-        /// </param>
-        /// <returns>
-        /// A fast enumerable object.
-        /// </returns>
-        public static Vec<T>.FastEnumerable FastEnumerate<T>(in this Vec<T> x) where T : unmanaged, INumberBase<T>
-        {
-            return new Vec<T>.FastEnumerable(x);
-        }
     }
 }
