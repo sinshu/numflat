@@ -83,6 +83,11 @@ namespace NumFlat.SignalProcessing
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
 
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "The frame length must be a positive value.");
+            }
+
             var srcStart = start;
             var dstStart = 0;
             var copyLength = length;
