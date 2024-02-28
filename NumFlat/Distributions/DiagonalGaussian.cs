@@ -133,14 +133,15 @@ namespace NumFlat.Distributions
             var logDeterminant = variance.Select(value => Math.Log(value)).Sum();
             var logNormalizationTerm = -(Math.Log(2 * Math.PI) * mean.Count + logDeterminant) / 2;
 
-            var tolerance = Special.Eps(variance.Max()) * mean.Count;
             var inverseVariance = new Vec<double>(mean.Count);
+            var fv = variance.GetUnsafeFastIndexer();
+            var fiv = inverseVariance.GetUnsafeFastIndexer();
             for (var i = 0; i < inverseVariance.Count; i++)
             {
-                var value = variance[i];
-                if (value > tolerance)
+                var value = fv[i];
+                if (value > 1.0E-14) // np.finfo(np.float64).resolution * 10
                 {
-                    inverseVariance[i] = 1 / value;
+                    fiv[i] = 1 / value;
                 }
                 else
                 {

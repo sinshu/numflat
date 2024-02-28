@@ -238,17 +238,18 @@ namespace NumFlat
 
             using var us = new TemporalVector<double>(Math.Min(x.RowCount, x.ColCount));
             ref readonly var s = ref us.Item;
+            var fs = s.GetUnsafeFastIndexer();
 
             SingularValueDecompositionDouble.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.RowCount);
+                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.RowCount);
             }
 
             var rank = 0;
-            foreach (var value in s.GetUnsafeFastIndexer())
+            foreach (var value in fs)
             {
                 if (value > tolerance)
                 {
@@ -309,6 +310,7 @@ namespace NumFlat
 
             using var us = new TemporalVector<double>(Math.Min(a.RowCount, a.ColCount));
             ref readonly var s = ref us.Item;
+            var fs = s.GetUnsafeFastIndexer();
 
             using var uu = new TemporalMatrix<double>(a.RowCount, a.RowCount);
             ref readonly var u = ref uu.Item;
@@ -321,7 +323,7 @@ namespace NumFlat
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(s[0]) * Math.Max(a.RowCount, a.RowCount);
+                tolerance = Special.Eps(fs[0]) * Math.Max(a.RowCount, a.RowCount);
             }
 
             using var utmp = new TemporalMatrix<double>(a.ColCount, a.RowCount);
@@ -334,9 +336,9 @@ namespace NumFlat
                 var vtRows = vt.Rows;
                 for (var i = 0; i < s.Count; i++)
                 {
-                    if (s[i] > tolerance)
+                    if (fs[i] > tolerance)
                     {
-                        Vec.Div(vtRows[i], s[i], tmpCols[i]);
+                        Vec.Div(vtRows[i], fs[i], tmpCols[i]);
                     }
                 }
                 Mat.Mul(tmp, u, destination, false, true);
@@ -347,9 +349,9 @@ namespace NumFlat
                 var uCols = u.Cols;
                 for (var i = 0; i < s.Count; i++)
                 {
-                    if (s[i] > tolerance)
+                    if (fs[i] > tolerance)
                     {
-                        Vec.Div(uCols[i], s[i], tmpRows[i]);
+                        Vec.Div(uCols[i], fs[i], tmpRows[i]);
                     }
                 }
                 Mat.Mul(vt, tmp, destination, true, false);
