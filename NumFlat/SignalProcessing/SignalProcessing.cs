@@ -866,8 +866,23 @@ namespace NumFlat.SignalProcessing
             return (spectrogram, info);
         }
 
+        /// <summary>
+        /// Reconstruct the time-domain signal from a spectrogram using the inverse short-time Fourier transform (ISTFT).
+        /// </summary>
+        /// <param name="spectrogram">
+        /// The spectrogram to be inverse transformed.
+        /// </param>
+        /// <param name="info">
+        /// The settings of the STFT used for the original transformation.
+        /// </param>
+        /// <returns>
+        /// The time-domain signal reconstructed from the spectrogram.
+        /// </returns>
         public static Vec<double> Istft(this IEnumerable<Vec<Complex>> spectrogram, StftInfo info)
         {
+            ThrowHelper.ThrowIfNull(spectrogram, nameof(spectrogram));
+            ThrowHelper.ThrowIfNull(info, nameof(info));
+
             using var uframe = new TemporalVector<double>(info.Window.Count + 2);
             ref readonly var frame = ref uframe.Item;
             var sf = frame.Memory.Span;
