@@ -784,7 +784,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Computes the short-time Fourier transform (STFT) from a time-domain signal.
+        /// Computes the spectrogram from a time-domain signal using the short-time Fourier transform (STFT).
         /// </summary>
         /// <param name="source">
         /// The source signal to be transformed.
@@ -799,12 +799,22 @@ namespace NumFlat.SignalProcessing
         /// The STFT mode.
         /// </param>
         /// <returns>
-        /// The STFT of the source signal and the information of the transformation.
+        /// The spectrogram of the source signal and the information of the transformation.
         /// </returns>
-        public static (Vec<Complex>[] Stft, StftInfo Info) Stft(in this Vec<double> source, in Vec<double> window, int frameShift, StftMode mode = StftMode.Analysis)
+        public static (Vec<Complex>[] Spectrogram, StftInfo Info) Stft(in this Vec<double> source, in Vec<double> window, int frameShift, StftMode mode = StftMode.Analysis)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(window, nameof(window));
+
+            if (frameShift <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(frameShift), "The frame shift must be a positive value.");
+            }
+
+            if (window.Count % frameShift != 0)
+            {
+                throw new ArgumentException("The window length must be divisible by the frame shift.");
+            }
 
             int firstFramePosition;
             int frameCount;
@@ -825,20 +835,20 @@ namespace NumFlat.SignalProcessing
 
             var rft = FourierTransform.GetRftInstance(window.Count);
             var position = firstFramePosition;
-            var stft = new Vec<Complex>[frameCount];
-            for (var i = 0; i < stft.Length; i++)
+            var spectrogram = new Vec<Complex>[frameCount];
+            for (var i = 0; i < spectrogram.Length; i++)
             {
-                var buffer = new Vec<Complex>(window.Count / 2 + 1);
-                var span = buffer.Memory.Span;
+                var spectrum = new Vec<Complex>(window.Count / 2 + 1);
+                var span = spectrum.Memory.Span;
                 source.GetWindowedFrame(position, window, MemoryMarshal.Cast<Complex, double>(span.Slice(0, window.Count / 2)));
                 rft.Forward(MemoryMarshal.Cast<Complex, double>(span));
-                stft[i] = buffer;
+                spectrogram[i] = spectrum;
                 position += frameShift;
             }
 
             var info = new StftInfo(window, firstFramePosition, frameShift, source.Count);
 
-            return (stft, info);
+            return (spectrogram, info);
         }
 
         private static void GetWindowedFrame(in this Vec<double> source, int start, in Vec<double> window, Span<double> destination)
