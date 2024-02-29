@@ -836,7 +836,7 @@ namespace NumFlat.SignalProcessing
             else if (mode == StftMode.Synthesis)
             {
                 firstFramePosition = frameShift - window.Count;
-                frameCount = (source.Count - firstFramePosition) / frameShift;
+                frameCount = (source.Count - firstFramePosition + frameShift - 1) / frameShift;
             }
             else
             {
@@ -904,6 +904,8 @@ namespace NumFlat.SignalProcessing
                 position += info.FrameShift;
             }
 
+            destination.MulInplace(1 / GetWindowGain(info.Window, info.FrameShift));
+
             return destination;
         }
 
@@ -951,6 +953,23 @@ namespace NumFlat.SignalProcessing
                     pd++;
                 }
             }
+        }
+
+        private static double GetWindowGain(in Vec<double> window, int frameShift)
+        {
+            var fw = window.GetUnsafeFastIndexer();
+            var sum = 0.0;
+            for (var i = 0; i < frameShift; i++)
+            {
+                var height = 0.0;
+                for (var j = i; j < window.Count; j += frameShift)
+                {
+                    var value = fw[j];
+                    height += value * value;
+                }
+                sum += height;
+            }
+            return sum / frameShift;
         }
     }
 }
