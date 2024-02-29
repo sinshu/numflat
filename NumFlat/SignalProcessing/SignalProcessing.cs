@@ -987,17 +987,10 @@ namespace NumFlat.SignalProcessing
 
         private static double GetWindowGain(in Vec<double> window, int frameShift)
         {
-            var fw = window.GetUnsafeFastIndexer();
             var sum = 0.0;
-            for (var i = 0; i < frameShift; i++)
+            foreach (var value in window.GetUnsafeFastIndexer())
             {
-                var height = 0.0;
-                for (var j = i; j < window.Count; j += frameShift)
-                {
-                    var value = fw[j];
-                    height += value * value;
-                }
-                sum += height;
+                sum += value * value;
             }
             return sum / frameShift;
         }
