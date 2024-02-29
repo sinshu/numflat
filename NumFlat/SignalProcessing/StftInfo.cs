@@ -63,6 +63,37 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
+        /// Gets the position of a frame by its index.
+        /// </summary>
+        /// <param name="frameIndex">
+        /// The index of the frame.
+        /// </param>
+        /// <returns>
+        /// The position of the frame.
+        /// </returns>
+        public int GetFramePosition(int frameIndex)
+        {
+            return firstFramePosition + frameIndex * FrameShift;
+        }
+
+        /// <summary>
+        /// Gets the frequency by its index;
+        /// </summary>
+        /// <param name="sampleRate">
+        /// The sample rate of the source signal.
+        /// </param>
+        /// <param name="frequencyIndex">
+        /// The index of the frequency.
+        /// </param>
+        /// <returns>
+        /// The specified frequency;
+        /// </returns>
+        public double GetFrequency(int sampleRate, int frequencyIndex)
+        {
+            return (double)(sampleRate * frequencyIndex) / window.Count;
+        }
+
+        /// <summary>
         /// Gets the window function.
         /// </summary>
         public ref readonly Vec<double> Window => ref window;
