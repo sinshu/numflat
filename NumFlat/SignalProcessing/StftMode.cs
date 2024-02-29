@@ -18,7 +18,7 @@ namespace NumFlat.SignalProcessing
         /// <summary>
         /// Computes the STFT for synthesis purposes.
         /// Short-time frames completely cover the entire original signal, allowing for perfect reconstruction.
-        /// However, zero-filling may disturb the frequency response of the beginning and ending short-time frames.
+        /// However, zero-filling may disturb the frequency characteristics of the beginning and ending short-time frames.
         /// </summary>
         Synthesis,
     }
