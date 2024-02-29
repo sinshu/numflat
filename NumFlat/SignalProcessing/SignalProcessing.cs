@@ -835,7 +835,7 @@ namespace NumFlat.SignalProcessing
             }
             else if (mode == StftMode.Synthesis)
             {
-                CheckIfReconstructionIsPossible(window, frameShift);
+                ThrowIfReconstructionIsNotPossible(window, frameShift);
                 firstFramePosition = frameShift - window.Count;
                 frameCount = (source.Count - firstFramePosition + frameShift - 1) / frameShift;
             }
@@ -956,7 +956,7 @@ namespace NumFlat.SignalProcessing
             }
         }
 
-        private static void CheckIfReconstructionIsPossible(in Vec<double> window, int frameShift)
+        private static void ThrowIfReconstructionIsNotPossible(in Vec<double> window, int frameShift)
         {
             var fw = window.GetUnsafeFastIndexer();
             var min = double.MaxValue;
