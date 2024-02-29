@@ -835,6 +835,7 @@ namespace NumFlat.SignalProcessing
             }
             else if (mode == StftMode.Synthesis)
             {
+                CheckIfReconstructionIsPossible(window, frameShift);
                 firstFramePosition = frameShift - window.Count;
                 frameCount = (source.Count - firstFramePosition + frameShift - 1) / frameShift;
             }
@@ -952,6 +953,35 @@ namespace NumFlat.SignalProcessing
                     pw += win.Stride;
                     pd++;
                 }
+            }
+        }
+
+        private static void CheckIfReconstructionIsPossible(in Vec<double> window, int frameShift)
+        {
+            var fw = window.GetUnsafeFastIndexer();
+            var min = double.MaxValue;
+            var max = double.MinValue;
+            for (var i = 0; i < frameShift; i++)
+            {
+                var height = 0.0;
+                for (var j = i; j < window.Count; j += frameShift)
+                {
+                    var value = fw[j];
+                    height += value * value;
+                }
+                if (height < min)
+                {
+                    min = height;
+                }
+                if (height > max)
+                {
+                    max = height;
+                }
+            }
+
+            if (max - min > 1.0E-14) // np.finfo(np.float64).resolution * 10
+            {
+                throw new ArgumentException("Signal reconstruction is not possible with the specified STFT settings.");
             }
         }
 

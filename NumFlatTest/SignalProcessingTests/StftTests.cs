@@ -31,10 +31,8 @@ namespace NumFlatTest.SignalProcessingTests
             }
         }
 
-        [TestCase(1000, 128, 64, 1, 1)]
-        [TestCase(1000, 128, 64, 3, 2)]
-        [TestCase(1500, 64, 16, 1, 1)]
-        [TestCase(1500, 64, 16, 2, 3)]
+        [TestCase(1333, 64, 16, 1, 1)]
+        [TestCase(1333, 64, 16, 2, 3)]
         public void FftConsistency_SynthesisMode(int sourceLength, int frameLength, int frameShift, int srcStride, int winStride)
         {
             var source = TestVector.RandomDouble(42, sourceLength, srcStride);
@@ -63,7 +61,6 @@ namespace NumFlatTest.SignalProcessingTests
             WindowFunctions.Hann(frameLength).CopyTo(window);
 
             var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
-
             var reconstructed = spectrogram.Istft(info);
 
             NumAssert.AreSame(source, reconstructed, 1.0E-12);
@@ -71,8 +68,8 @@ namespace NumFlatTest.SignalProcessingTests
 
         [TestCase(1000, 128, 32, 1, 1)]
         [TestCase(1000, 128, 32, 3, 2)]
-        [TestCase(500, 128, 16, 1, 1)]
-        [TestCase(500, 128, 16, 2, 3)]
+        [TestCase(543, 128, 16, 1, 1)]
+        [TestCase(543, 128, 16, 2, 3)]
         public void ReconstructionHamming(int sourceLength, int frameLength, int frameShift, int srcStride, int winStride)
         {
             var source = TestVector.RandomDouble(42, sourceLength, srcStride);
@@ -80,14 +77,13 @@ namespace NumFlatTest.SignalProcessingTests
             WindowFunctions.Hamming(frameLength).CopyTo(window);
 
             var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
-
             var reconstructed = spectrogram.Istft(info);
 
             NumAssert.AreSame(source, reconstructed, 1.0E-12);
         }
 
-        [TestCase(1000, 128, 64, 1, 1)]
-        [TestCase(1000, 128, 64, 3, 2)]
+        [TestCase(980, 128, 64, 1, 1)]
+        [TestCase(980, 128, 64, 3, 2)]
         public void ReconstructionHannSquared(int sourceLength, int frameLength, int frameShift, int srcStride, int winStride)
         {
             var source = TestVector.RandomDouble(42, sourceLength, srcStride);
@@ -95,7 +91,6 @@ namespace NumFlatTest.SignalProcessingTests
             WindowFunctions.HannSquared(frameLength).CopyTo(window);
 
             var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
-
             var reconstructed = spectrogram.Istft(info);
 
             NumAssert.AreSame(source, reconstructed, 1.0E-12);
