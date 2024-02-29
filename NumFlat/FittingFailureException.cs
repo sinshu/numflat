@@ -8,9 +8,6 @@ namespace NumFlat
     /// </summary>
     public class FittingFailureException : NumFlatException, ISerializable
     {
-        private string? functionName = null;
-        private int errorCode = 0;
-
         /// <inheritdoc/>
         public FittingFailureException() : base()
         {
