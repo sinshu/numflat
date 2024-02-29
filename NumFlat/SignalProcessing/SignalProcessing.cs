@@ -404,9 +404,9 @@ namespace NumFlat.SignalProcessing
         /// <param name="window">
         /// The window function to be applied to the frame.
         /// </param>
-        /// <returns>
-        /// The specified frame.
-        /// </returns>
+        /// <param name="destination">
+        /// The destination of the frame.
+        /// </param>
         /// <remarks>
         /// Unlike <see cref="Vec{T}.Subvector(int, int)"/>,
         /// it is not necessary for the frame to fit within the range of the source signal.
@@ -579,6 +579,64 @@ namespace NumFlat.SignalProcessing
             if (addLength > 0)
             {
                 target.Subvector(trgStart, addLength).AddInplace(frame.Subvector(frmStart, addLength));
+            }
+        }
+
+        /// <summary>
+        /// Adds the values of a frame to the specified position of the target signal.
+        /// The target signal will be modified.
+        /// </summary>
+        /// <param name="target">
+        /// The target signal.
+        /// </param>
+        /// <param name="start">
+        /// The starting position of the frame in the target signal.
+        /// </param>
+        /// <param name="frame">
+        /// The frame to add.
+        /// Only the real parts are utilized, and the imaginary parts are discarded.
+        /// </param>
+        /// <remarks>
+        /// It is not necessary for the frame to fit within the range of the target signal.
+        /// A portion of the frames that do not overlap with the target signal will be discarded.
+        /// </remarks>
+        public static void OverlapAdd(in this Vec<double> target, int start, in Vec<Complex> frame)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+            ThrowHelper.ThrowIfEmpty(frame, nameof(frame));
+
+            var trgStart = start;
+            var frmStart = 0;
+            var addLength = frame.Count;
+
+            if (trgStart < 0)
+            {
+                var trim = -trgStart;
+                trgStart += trim;
+                frmStart += trim;
+                addLength -= trim;
+            }
+
+            if (trgStart + addLength > target.Count)
+            {
+                var trim = trgStart + addLength - target.Count;
+                addLength -= trim;
+            }
+
+            if (addLength > 0)
+            {
+                var trg = target.Subvector(trgStart, addLength);
+                var frm = frame.Subvector(frmStart, addLength);
+                var st = trg.Memory.Span;
+                var sf = frm.Memory.Span;
+                var pt = 0;
+                var pf = 0;
+                while (pt < st.Length)
+                {
+                    st[pt] += sf[pf].Real;
+                    pt += trg.Stride;
+                    pf += frm.Stride;
+                }
             }
         }
     }

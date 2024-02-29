@@ -211,5 +211,31 @@ namespace NumFlatTest.SignalProcessingTests
                 NumAssert.AreSame(expected, target, 1.0E-12);
             }
         }
+
+        [TestCase(5, 3, 1, 1)]
+        [TestCase(5, 3, 3, 2)]
+        [TestCase(3, 5, 1, 1)]
+        [TestCase(3, 5, 2, 4)]
+        public void OverlapAdd_Arg3Complex(int trgLength, int frmLength, int trgStride, int frmStride)
+        {
+            for (var start = -frmLength - 3; start <= trgLength + 3; start++)
+            {
+                var target = TestVector.RandomDouble(42, trgLength, 1);
+                var frame = TestVector.RandomComplex(57, frmLength, 1);
+
+                var pad = 10;
+                var padded = new double[pad].Concat(target).Concat(new double[pad]).ToVector();
+                padded.Subvector(pad + start, frmLength).AddInplace(frame.Map(x => x.Real));
+                var expected = padded.Skip(pad).SkipLast(pad).ToVector();
+
+                target.OverlapAdd(start, frame);
+
+                Console.WriteLine(expected);
+                Console.WriteLine(target);
+                Console.WriteLine("==");
+
+                NumAssert.AreSame(expected, target, 1.0E-12);
+            }
+        }
     }
 }
