@@ -1,3 +1,10 @@
+# v0.7.5
+
+* Moved `FourierTransform` class to `SignalProcessing` namespace.
+* Added the methods for framing and overlap-add.
+* Optimized Bhattacharyya distance.
+* Now `UnsafeFastIndexer` for vectors can be used with `foreach`.
+
 # v0.7.4
 
 * Now `MathLinq` supports weighted second order statistics for matrices.

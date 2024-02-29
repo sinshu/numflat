@@ -6,8 +6,8 @@ using System.Numerics;
 using NumFlat;
 using NumFlat.Clustering;
 using NumFlat.Distributions;
-using NumFlat.SignalProcessing;
 using NumFlat.MultivariateAnalyses;
+using NumFlat.SignalProcessing;
 
 public static class OtherExamples
 {

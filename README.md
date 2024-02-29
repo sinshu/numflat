@@ -570,12 +570,12 @@ var kMeans = xs.ToKMeans(3);
 var gmm = xs.ToGmm(3);
 ```
 
-### Fourier transform
-The `NumFlat.FourierTransform` namespace provides functionality related to the Fourier transform.
-It currently supports 1D FFT and IFFT.
+### Signal processing
+The `NumFlat.SignalProcessing` namespace provides functionality related to signal processing.
+It currently supports framing, overlap-add, 1D FFT and IFFT.
 #### Code
 ```cs
-using NumFlat.FourierTransform;
+using NumFlat.SignalProcessing;
 
 // Some complex vector.
 var samples = new Vec<Complex>(256);
