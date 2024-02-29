@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using FftFlat;
 
 namespace NumFlat.SignalProcessing
 {
@@ -864,6 +864,32 @@ namespace NumFlat.SignalProcessing
             var info = new StftInfo(window, firstFramePosition, frameShift, source.Count);
 
             return (spectrogram, info);
+        }
+
+        public static Vec<double> Istft(this IEnumerable<Vec<Complex>> spectrogram, StftInfo info)
+        {
+            using var uframe = new TemporalVector<double>(info.Window.Count + 2);
+            ref readonly var frame = ref uframe.Item;
+            var sf = frame.Memory.Span;
+
+            var rft = FourierTransform.GetRftInstance(info.Window.Count);
+            var position = info.FirstFramePosition;
+            var destination = new Vec<double>(info.SignalLength);
+            foreach (var spectrum in spectrogram)
+            {
+                if (spectrum.Count != info.Window.Count / 2 + 1)
+                {
+                    throw new ArgumentException("The size of a spectrum is invalid.");
+                }
+
+                var csf = MemoryMarshal.Cast<double, Complex>(sf);
+                spectrum.CopyTo(csf);
+                rft.Inverse(csf);
+                destination.WindowedOverlapAdd(position, info.Window, frame.Subvector(0, info.Window.Count));
+                position += info.FrameShift;
+            }
+
+            return destination;
         }
 
         private static void GetWindowedFrame(in this Vec<double> source, int start, in Vec<double> window, Span<double> destination)
