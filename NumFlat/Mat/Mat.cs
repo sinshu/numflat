@@ -93,7 +93,7 @@ namespace NumFlat
         /// </param>
         public readonly void Fill(T value)
         {
-            if (rowCount == 0 || colCount == 0)
+            if (this.rowCount == 0 || this.colCount == 0)
             {
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
@@ -118,7 +118,7 @@ namespace NumFlat
         /// </summary>
         public readonly void Clear()
         {
-            if (rowCount == 0 || colCount == 0)
+            if (this.rowCount == 0 || this.colCount == 0)
             {
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
@@ -150,7 +150,7 @@ namespace NumFlat
         /// </remarks>
         public readonly Mat<T> Submatrix(int startRow, int startCol, int rowCount, int colCount)
         {
-            if (rowCount == 0 || colCount == 0)
+            if (this.rowCount == 0 || this.colCount == 0)
             {
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
@@ -201,7 +201,7 @@ namespace NumFlat
         /// </remarks>
         public readonly void CopyTo(in Mat<T> destination)
         {
-            if (rowCount == 0 || colCount == 0)
+            if (this.rowCount == 0 || this.colCount == 0)
             {
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
@@ -247,7 +247,7 @@ namespace NumFlat
         /// </remarks>
         public readonly T[,] ToArray()
         {
-            if (rowCount == 0 || colCount == 0)
+            if (this.rowCount == 0 || this.colCount == 0)
             {
                 throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
             }
@@ -281,42 +281,42 @@ namespace NumFlat
         {
             get
             {
-                if (rowCount == 0 || colCount == 0)
+                if (this.rowCount == 0 || this.colCount == 0)
                 {
                     throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
                 }
 
-                if ((uint)row >= rowCount)
+                if ((uint)row >= this.rowCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
                 }
 
-                if ((uint)col >= colCount)
+                if ((uint)col >= this.colCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
                 }
 
-                return memory.Span[stride * col + row];
+                return this.memory.Span[stride * col + row];
             }
 
             set
             {
-                if (rowCount == 0 || colCount == 0)
+                if (this.rowCount == 0 || this.colCount == 0)
                 {
                     throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
                 }
 
-                if ((uint)row >= rowCount)
+                if ((uint)row >= this.rowCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
                 }
 
-                if ((uint)col >= colCount)
+                if ((uint)col >= this.colCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
                 }
 
-                memory.Span[stride * col + row] = value;
+                this.memory.Span[stride * col + row] = value;
             }
         }
 

@@ -97,7 +97,7 @@ namespace NumFlat
         /// </param>
         public readonly void Fill(T value)
         {
-            if (count == 0)
+            if (this.count == 0)
             {
                 throw new InvalidOperationException("Method call against an empty vector is not allowed.");
             }
@@ -116,7 +116,7 @@ namespace NumFlat
         /// </summary>
         public readonly void Clear()
         {
-            if (count == 0)
+            if (this.count == 0)
             {
                 throw new InvalidOperationException("Method call against an empty vector is not allowed.");
             }
@@ -142,7 +142,7 @@ namespace NumFlat
         /// </remarks>
         public readonly Vec<T> Subvector(int startIndex, int count)
         {
-            if (count == 0)
+            if (this.count == 0)
             {
                 throw new InvalidOperationException("Method call against an empty vector is not allowed.");
             }
@@ -178,7 +178,7 @@ namespace NumFlat
         /// </remarks>
         public readonly void CopyTo(in Vec<T> destination)
         {
-            if (count == 0)
+            if (this.count == 0)
             {
                 throw new InvalidOperationException("Method call against an empty vector is not allowed.");
             }
@@ -217,32 +217,32 @@ namespace NumFlat
         {
             get
             {
-                if (count == 0)
+                if (this.count == 0)
                 {
                     throw new InvalidOperationException("Method call against an empty vector is not allowed.");
                 }
 
-                if ((uint)index >= count)
+                if ((uint)index >= this.count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
                 }
 
-                return memory.Span[stride * index];
+                return this.memory.Span[stride * index];
             }
 
             set
             {
-                if (count == 0)
+                if (this.count == 0)
                 {
                     throw new InvalidOperationException("Method call against an empty vector is not allowed.");
                 }
 
-                if ((uint)index >= count)
+                if ((uint)index >= this.count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
                 }
 
-                memory.Span[stride * index] = value;
+                this.memory.Span[stride * index] = value;
             }
         }
 
