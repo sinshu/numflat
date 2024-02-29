@@ -806,9 +806,14 @@ namespace NumFlat.SignalProcessing
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(window, nameof(window));
 
+            if (window.Count < 2)
+            {
+                throw new ArgumentException("The window Length must be greater than or equal to two.", nameof(window));
+            }
+
             if ((window.Count & (window.Count - 1)) != 0)
             {
-                throw new ArgumentException($"The window length must be a power of two.");
+                throw new ArgumentException($"The window length must be a power of two.", nameof(window));
             }
 
             if (frameShift <= 0)
