@@ -780,5 +780,28 @@ namespace NumFlat.SignalProcessing
                 }
             }
         }
+
+        /// <summary>
+        /// Computes the short-time Fourier transform (STFT) from a time-domain signal.
+        /// </summary>
+        /// <param name="source">
+        /// The source signal to be transformed.
+        /// </param>
+        /// <param name="window">
+        /// The window function to be applied to frames.
+        /// </param>
+        /// <param name="frameShift">
+        /// The frame shift.
+        /// </param>
+        /// <param name="mode">
+        /// The STFT mode.
+        /// </param>
+        /// <returns>
+        /// The STFT of the source signal and the information of the transformation.
+        /// </returns>
+        public static (Vec<Complex>[] Stft, StftInfo Info) Stft(in this Vec<double> source, in Vec<double> window, int frameShift, StftMode mode = StftMode.Analysis)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
