@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using FftFlat;
 
 namespace NumFlat.SignalProcessing
 {
@@ -801,7 +803,88 @@ namespace NumFlat.SignalProcessing
         /// </returns>
         public static (Vec<Complex>[] Stft, StftInfo Info) Stft(in this Vec<double> source, in Vec<double> window, int frameShift, StftMode mode = StftMode.Analysis)
         {
-            throw new NotImplementedException();
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(window, nameof(window));
+
+            int firstFramePosition;
+            int frameCount;
+            if (mode == StftMode.Analysis)
+            {
+                firstFramePosition = 0;
+                frameCount = (source.Count - window.Count) / frameShift;
+            }
+            else if (mode == StftMode.Synthesis)
+            {
+                firstFramePosition = frameShift - window.Count;
+                frameCount = (source.Count - firstFramePosition) / frameShift;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid enum value.", nameof(mode));
+            }
+
+            var rft = FourierTransform.GetRftInstance(window.Count);
+            var position = firstFramePosition;
+            var stft = new Vec<Complex>[frameCount];
+            for (var i = 0; i < stft.Length; i++)
+            {
+                var buffer = new Vec<Complex>(window.Count / 2 + 1);
+                var span = buffer.Memory.Span;
+                source.GetWindowedFrame(position, window, MemoryMarshal.Cast<Complex, double>(span.Slice(0, window.Count / 2)));
+                rft.Forward(MemoryMarshal.Cast<Complex, double>(span));
+                stft[i] = buffer;
+                position += frameShift;
+            }
+
+            var info = new StftInfo(window, firstFramePosition, frameShift, source.Count);
+
+            return (stft, info);
+        }
+
+        private static void GetWindowedFrame(in this Vec<double> source, int start, in Vec<double> window, Span<double> destination)
+        {
+            var srcStart = start;
+            var dstStart = 0;
+            var copyLength = destination.Length;
+
+            if (srcStart < 0)
+            {
+                var trim = -srcStart;
+                srcStart += trim;
+                dstStart += trim;
+                copyLength -= trim;
+            }
+
+            if (srcStart + copyLength > source.Count)
+            {
+                var trim = srcStart + copyLength - source.Count;
+                copyLength -= trim;
+            }
+
+            if (copyLength < destination.Length)
+            {
+                destination.Clear();
+            }
+
+            if (copyLength > 0)
+            {
+                var src = source.Subvector(srcStart, copyLength);
+                var win = window.Subvector(dstStart, copyLength);
+                var dst = destination.Slice(dstStart, copyLength);
+                var ss = src.Memory.Span;
+                var sw = win.Memory.Span;
+                var sd = dst;
+                var ps = 0;
+                var pw = 0;
+                var pd = 0;
+                while (pd < sd.Length)
+                {
+                    sd[pd] = sw[pw] * ss[ps];
+                    ps += src.Stride;
+                    pw += win.Stride;
+                    pd++;
+                }
+            }
         }
     }
 }

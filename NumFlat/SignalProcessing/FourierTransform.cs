@@ -11,7 +11,10 @@ namespace NumFlat.SignalProcessing
     public static class FourierTransform
     {
         [ThreadStatic]
-        private static Dictionary<int, FastFourierTransform>? cache;
+        private static Dictionary<int, FastFourierTransform>? fftCache;
+
+        [ThreadStatic]
+        private static Dictionary<int, RealFourierTransform>? rftCache;
 
         /// <summary>
         /// Compute the forward Fourier transform.
@@ -37,7 +40,7 @@ namespace NumFlat.SignalProcessing
             ref readonly var tmp = ref utmp.Item;
             source.CopyTo(tmp);
 
-            GetInstance(tmp.Count).Forward(tmp.Memory.Span);
+            GetFftInstance(tmp.Count).Forward(tmp.Memory.Span);
         }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace NumFlat.SignalProcessing
             ref readonly var tmp = ref utmp.Item;
             source.CopyTo(tmp);
 
-            GetInstance(tmp.Count).Inverse(tmp.Memory.Span);
+            GetFftInstance(tmp.Count).Inverse(tmp.Memory.Span);
         }
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace NumFlat.SignalProcessing
             var dst = new Vec<Complex>(source.Count);
             source.CopyTo(dst);
 
-            GetInstance(dst.Count).Forward(dst.Memory.Span);
+            GetFftInstance(dst.Count).Forward(dst.Memory.Span);
 
             return dst;
         }
@@ -114,7 +117,7 @@ namespace NumFlat.SignalProcessing
             var dst = new Vec<Complex>(source.Count);
             source.CopyTo(dst);
 
-            GetInstance(dst.Count).Inverse(dst.Memory.Span);
+            GetFftInstance(dst.Count).Inverse(dst.Memory.Span);
 
             return dst;
         }
@@ -137,7 +140,7 @@ namespace NumFlat.SignalProcessing
             using var utmp = target.EnsureContiguous(true);
             ref readonly var tmp = ref utmp.Item;
 
-            GetInstance(tmp.Count).Forward(tmp.Memory.Span);
+            GetFftInstance(tmp.Count).Forward(tmp.Memory.Span);
         }
 
         /// <summary>
@@ -158,7 +161,7 @@ namespace NumFlat.SignalProcessing
             using var utmp = target.EnsureContiguous(true);
             ref readonly var tmp = ref utmp.Item;
 
-            GetInstance(tmp.Count).Inverse(tmp.Memory.Span);
+            GetFftInstance(tmp.Count).Inverse(tmp.Memory.Span);
         }
 
         private static void ThrowIfInvalidLength(int length)
@@ -174,21 +177,38 @@ namespace NumFlat.SignalProcessing
             }
         }
 
-        private static FastFourierTransform GetInstance(int length)
+        internal static FastFourierTransform GetFftInstance(int length)
         {
-            if (cache == null)
+            if (fftCache == null)
             {
-                cache = new Dictionary<int, FastFourierTransform>();
+                fftCache = new Dictionary<int, FastFourierTransform>();
             }
 
             FastFourierTransform? fft;
-            if (!cache.TryGetValue(length, out fft))
+            if (!fftCache.TryGetValue(length, out fft))
             {
                 fft = new FastFourierTransform(length);
-                cache.Add(length, fft);
+                fftCache.Add(length, fft);
             }
 
             return fft;
+        }
+
+        internal static RealFourierTransform GetRftInstance(int length)
+        {
+            if (rftCache == null)
+            {
+                rftCache = new Dictionary<int, RealFourierTransform>();
+            }
+
+            RealFourierTransform? rft;
+            if (!rftCache.TryGetValue(length, out rft))
+            {
+                rft = new RealFourierTransform(length);
+                rftCache.Add(length, rft);
+            }
+
+            return rft;
         }
     }
 }

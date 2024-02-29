@@ -205,6 +205,38 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Copies the elements of the vector into a <see cref="Span{T}"/>.
+        /// </summary>
+        /// <param name="destination">
+        /// The destination <see cref="Span{T}"/>.
+        /// </param>
+        /// <remarks>
+        /// The length of the <see cref="Span{T}"/> must match the length of the vector.
+        /// </remarks>
+        public readonly void CopyTo(Span<T> destination)
+        {
+            if (this.count == 0)
+            {
+                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+            }
+
+            if (destination.Length != this.count)
+            {
+                throw new ArgumentException("The length of the destination must match the length of the vector.");
+            }
+
+            var st = this.memory.Span;
+            var pt = 0;
+            var pd = 0;
+            while (pd < destination.Length)
+            {
+                destination[pd] = st[pt];
+                pt += this.stride;
+                pd++;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the element at the specified position in the vector.
         /// </summary>
         /// <param name="index">

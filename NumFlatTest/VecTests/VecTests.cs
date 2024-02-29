@@ -184,8 +184,8 @@ namespace NumFlatTest
         [TestCase(7, 9, 8)]
         public void CopyTo(int count, int srcStride, int dstStride)
         {
-            var source = TestVector.RandomDouble(42, count, dstStride);
-            var destination = TestVector.RandomDouble(0, count, srcStride);
+            var source = TestVector.RandomDouble(42, count, srcStride);
+            var destination = TestVector.RandomDouble(0, count, dstStride);
 
             using (source.EnsureUnchanged())
             {
@@ -195,6 +195,27 @@ namespace NumFlatTest
             NumAssert.AreSame(source, destination, 0);
 
             TestVector.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(3, 3)]
+        [TestCase(3, 4)]
+        [TestCase(5, 9)]
+        [TestCase(7, 9)]
+        public void CopyToSpan(int count, int srcStride)
+        {
+            var source = TestVector.RandomDouble(42, count, srcStride);
+            var destination = new double[source.Count];
+
+            using (source.EnsureUnchanged())
+            {
+                source.CopyTo(destination);
+            }
+
+            NumAssert.AreSame(source, destination.ToVector(), 0);
         }
     }
 }
