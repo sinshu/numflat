@@ -572,7 +572,11 @@ var gmm = xs.ToGmm(3);
 
 ### Signal processing
 The `NumFlat.SignalProcessing` namespace provides functionality related to signal processing.
-It currently supports framing, overlap-add, 1D FFT and IFFT.
+It currently supports the following methods, with plans to add more methods in the future.
+* Extract frames using the window function
+* Overlap addition
+* FFT and IFFT
+* STFT and ISTFT
 #### Code
 ```cs
 using NumFlat.SignalProcessing;
@@ -649,7 +653,7 @@ samples = spectrum.Ifft();
     - ⬜ HMM
 * ⬜ Audio signal processing
     - ✅ FFT
-    - ⬜ STFT
+    - ✅ STFT
     - ⬜ Filtering
     - ⬜ Resampling
     - ⬜ Feature extraction

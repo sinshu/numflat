@@ -1,3 +1,8 @@
+# v0.7.6
+
+* Added STFT and ISTFT.
+* Added `WindowFunctions` class.
+
 # v0.7.5
 
 * Moved `FourierTransform` class to `SignalProcessing` namespace.
