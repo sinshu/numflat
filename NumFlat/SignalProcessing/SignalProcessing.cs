@@ -535,5 +535,51 @@ namespace NumFlat.SignalProcessing
 
             return destination;
         }
+
+        /// <summary>
+        /// Adds the values of a frame to the specified position of the target signal.
+        /// The target signal will be modified.
+        /// </summary>
+        /// <param name="target">
+        /// The target signal.
+        /// </param>
+        /// <param name="start">
+        /// The starting position of the frame in the target signal.
+        /// </param>
+        /// <param name="frame">
+        /// The frame to add.
+        /// </param>
+        /// <remarks>
+        /// It is not necessary for the frame to fit within the range of the target signal.
+        /// A portion of the frames that do not overlap with the target signal will be discarded.
+        /// </remarks>
+        public static void OverlapAdd(in this Vec<double> target, int start, in Vec<double> frame)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+            ThrowHelper.ThrowIfEmpty(frame, nameof(frame));
+
+            var trgStart = start;
+            var frmStart = 0;
+            var addLength = frame.Count;
+
+            if (trgStart < 0)
+            {
+                var trim = -trgStart;
+                trgStart += trim;
+                frmStart += trim;
+                addLength -= trim;
+            }
+
+            if (trgStart + addLength > target.Count)
+            {
+                var trim = trgStart + addLength - target.Count;
+                addLength -= trim;
+            }
+
+            if (addLength > 0)
+            {
+                target.Subvector(trgStart, addLength).AddInplace(frame.Subvector(frmStart, addLength));
+            }
+        }
     }
 }

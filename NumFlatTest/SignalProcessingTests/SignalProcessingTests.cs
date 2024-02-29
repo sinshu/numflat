@@ -192,5 +192,24 @@ namespace NumFlatTest.SignalProcessingTests
                 }
             }
         }
+
+        [TestCase(5, 3)]
+        [TestCase(3, 5)]
+        public void OverlapAdd_Arg3(int trgLength, int frmLength)
+        {
+            for (var start = -frmLength - 3; start <= trgLength + 3; start++)
+            {
+                var target = TestVector.RandomDouble(42, trgLength, 1);
+                var frame = TestVector.RandomDouble(57, frmLength, 1);
+
+                var pad = 10;
+                var padded = new double[pad].Concat(target).Concat(new double[pad]).ToVector();
+                padded.Subvector(pad + start, frmLength).AddInplace(frame);
+                var expected = padded.Skip(pad).SkipLast(pad).ToVector();
+
+                target.OverlapAdd(start, frame);
+                NumAssert.AreSame(expected, target, 1.0E-12);
+            }
+        }
     }
 }
