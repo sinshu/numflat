@@ -639,5 +639,146 @@ namespace NumFlat.SignalProcessing
                 }
             }
         }
+
+        /// <summary>
+        /// Adds the values of a frame to the specified position of the target signal.
+        /// The target signal will be modified.
+        /// </summary>
+        /// <param name="target">
+        /// The target signal.
+        /// </param>
+        /// <param name="start">
+        /// The starting position of the frame in the target signal.
+        /// </param>
+        /// <param name="window">
+        /// The window function to be applied to the frame.
+        /// </param>
+        /// <param name="frame">
+        /// The frame to add.
+        /// </param>
+        /// <remarks>
+        /// It is not necessary for the frame to fit within the range of the target signal.
+        /// A portion of the frames that do not overlap with the target signal will be discarded.
+        /// </remarks>
+        public static void WindowedOverlapAdd(in this Vec<double> target, int start, in Vec<double> window, in Vec<double> frame)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+            ThrowHelper.ThrowIfEmpty(window, nameof(window));
+            ThrowHelper.ThrowIfEmpty(frame, nameof(frame));
+
+            if (window.Count != frame.Count)
+            {
+                throw new ArgumentException("The length of the window and frame must match.");
+            }
+
+            var trgStart = start;
+            var frmStart = 0;
+            var addLength = frame.Count;
+
+            if (trgStart < 0)
+            {
+                var trim = -trgStart;
+                trgStart += trim;
+                frmStart += trim;
+                addLength -= trim;
+            }
+
+            if (trgStart + addLength > target.Count)
+            {
+                var trim = trgStart + addLength - target.Count;
+                addLength -= trim;
+            }
+
+            if (addLength > 0)
+            {
+                var trg = target.Subvector(trgStart, addLength);
+                var win = window.Subvector(frmStart, addLength);
+                var frm = frame.Subvector(frmStart, addLength);
+                var st = trg.Memory.Span;
+                var sw = win.Memory.Span;
+                var sf = frm.Memory.Span;
+                var pt = 0;
+                var pw = 0;
+                var pf = 0;
+                while (pf < sf.Length)
+                {
+                    st[pt] += sw[pw] * sf[pf];
+                    pt += trg.Stride;
+                    pw += win.Stride;
+                    pf += frm.Stride;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the values of a frame to the specified position of the target signal.
+        /// The target signal will be modified.
+        /// </summary>
+        /// <param name="target">
+        /// The target signal.
+        /// </param>
+        /// <param name="start">
+        /// The starting position of the frame in the target signal.
+        /// </param>
+        /// <param name="window">
+        /// The window function to be applied to the frame.
+        /// </param>
+        /// <param name="frame">
+        /// The frame to add.
+        /// Only the real parts are utilized, and the imaginary parts are discarded.
+        /// </param>
+        /// <remarks>
+        /// It is not necessary for the frame to fit within the range of the target signal.
+        /// A portion of the frames that do not overlap with the target signal will be discarded.
+        /// </remarks>
+        public static void WindowedOverlapAdd(in this Vec<double> target, int start, in Vec<double> window, in Vec<Complex> frame)
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+            ThrowHelper.ThrowIfEmpty(window, nameof(window));
+            ThrowHelper.ThrowIfEmpty(frame, nameof(frame));
+
+            if (window.Count != frame.Count)
+            {
+                throw new ArgumentException("The length of the window and frame must match.");
+            }
+
+            var trgStart = start;
+            var frmStart = 0;
+            var addLength = frame.Count;
+
+            if (trgStart < 0)
+            {
+                var trim = -trgStart;
+                trgStart += trim;
+                frmStart += trim;
+                addLength -= trim;
+            }
+
+            if (trgStart + addLength > target.Count)
+            {
+                var trim = trgStart + addLength - target.Count;
+                addLength -= trim;
+            }
+
+            if (addLength > 0)
+            {
+                var trg = target.Subvector(trgStart, addLength);
+                var win = window.Subvector(frmStart, addLength);
+                var frm = frame.Subvector(frmStart, addLength);
+                var st = trg.Memory.Span;
+                var sw = win.Memory.Span;
+                var sf = frm.Memory.Span;
+                var pt = 0;
+                var pw = 0;
+                var pf = 0;
+                while (pf < sf.Length)
+                {
+                    st[pt] += sw[pw] * sf[pf].Real;
+                    pt += trg.Stride;
+                    pw += win.Stride;
+                    pf += frm.Stride;
+                }
+            }
+        }
     }
 }

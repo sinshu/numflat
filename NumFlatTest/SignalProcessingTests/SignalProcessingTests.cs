@@ -195,7 +195,7 @@ namespace NumFlatTest.SignalProcessingTests
 
         [TestCase(5, 3)]
         [TestCase(3, 5)]
-        public void OverlapAdd_Arg3(int trgLength, int frmLength)
+        public void OverlapAdd(int trgLength, int frmLength)
         {
             for (var start = -frmLength - 3; start <= trgLength + 3; start++)
             {
@@ -216,12 +216,12 @@ namespace NumFlatTest.SignalProcessingTests
         [TestCase(5, 3, 3, 2)]
         [TestCase(3, 5, 1, 1)]
         [TestCase(3, 5, 2, 4)]
-        public void OverlapAdd_Arg3Complex(int trgLength, int frmLength, int trgStride, int frmStride)
+        public void OverlapAdd_Complex(int trgLength, int frmLength, int trgStride, int frmStride)
         {
             for (var start = -frmLength - 3; start <= trgLength + 3; start++)
             {
-                var target = TestVector.RandomDouble(42, trgLength, 1);
-                var frame = TestVector.RandomComplex(57, frmLength, 1);
+                var target = TestVector.RandomDouble(42, trgLength, trgStride);
+                var frame = TestVector.RandomComplex(57, frmLength, frmStride);
 
                 var pad = 10;
                 var padded = new double[pad].Concat(target).Concat(new double[pad]).ToVector();
@@ -230,11 +230,61 @@ namespace NumFlatTest.SignalProcessingTests
 
                 target.OverlapAdd(start, frame);
 
-                Console.WriteLine(expected);
-                Console.WriteLine(target);
-                Console.WriteLine("==");
+                NumAssert.AreSame(expected, target, 1.0E-12);
+
+                TestVector.FailIfOutOfRangeWrite(target);
+            }
+        }
+
+        [TestCase(5, 3, 1, 1, 1)]
+        [TestCase(5, 3, 3, 2, 4)]
+        [TestCase(3, 5, 1, 1, 1)]
+        [TestCase(3, 5, 2, 4, 3)]
+        public void WindowedOverlapAdd(int trgLength, int frmLength, int trgStride, int winStride, int frmStride)
+        {
+            for (var start = -frmLength - 3; start <= trgLength + 3; start++)
+            {
+                var target = TestVector.RandomDouble(42, trgLength, trgStride);
+                var window = TestVector.RandomDouble(57, frmLength, winStride);
+                var frame = TestVector.RandomDouble(66, frmLength, frmStride);
+
+                var pad = 10;
+                var padded = new double[pad].Concat(target).Concat(new double[pad]).ToVector();
+                var add = frame.PointwiseMul(window);
+                padded.Subvector(pad + start, frmLength).AddInplace(add);
+                var expected = padded.Skip(pad).SkipLast(pad).ToVector();
+
+                target.WindowedOverlapAdd(start, window, frame);
 
                 NumAssert.AreSame(expected, target, 1.0E-12);
+
+                TestVector.FailIfOutOfRangeWrite(target);
+            }
+        }
+
+        [TestCase(5, 3, 1, 1, 1)]
+        [TestCase(5, 3, 3, 2, 4)]
+        [TestCase(3, 5, 1, 1, 1)]
+        [TestCase(3, 5, 2, 4, 3)]
+        public void WindowedOverlapAdd_Complex(int trgLength, int frmLength, int trgStride, int winStride, int frmStride)
+        {
+            for (var start = -frmLength - 3; start <= trgLength + 3; start++)
+            {
+                var target = TestVector.RandomDouble(42, trgLength, trgStride);
+                var window = TestVector.RandomDouble(57, frmLength, winStride);
+                var frame = TestVector.RandomComplex(66, frmLength, frmStride);
+
+                var pad = 10;
+                var padded = new double[pad].Concat(target).Concat(new double[pad]).ToVector();
+                var add = frame.Map(x => x.Real).PointwiseMul(window);
+                padded.Subvector(pad + start, frmLength).AddInplace(add);
+                var expected = padded.Skip(pad).SkipLast(pad).ToVector();
+
+                target.WindowedOverlapAdd(start, window, frame);
+
+                NumAssert.AreSame(expected, target, 1.0E-12);
+
+                TestVector.FailIfOutOfRangeWrite(target);
             }
         }
     }
