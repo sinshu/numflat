@@ -806,6 +806,11 @@ namespace NumFlat.SignalProcessing
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(window, nameof(window));
 
+            if ((window.Count & (window.Count - 1)) != 0)
+            {
+                throw new ArgumentException($"The window length must be a power of two.");
+            }
+
             if (frameShift <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(frameShift), "The frame shift must be a positive value.");
