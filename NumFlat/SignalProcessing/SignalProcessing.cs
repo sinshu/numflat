@@ -833,6 +833,11 @@ namespace NumFlat.SignalProcessing
                 throw new ArgumentException("Invalid enum value.", nameof(mode));
             }
 
+            if (frameCount == 0)
+            {
+                throw new ArgumentException("The length of the source signal is too short.");
+            }
+
             var rft = FourierTransform.GetRftInstance(window.Count);
             var position = firstFramePosition;
             var spectrogram = new Vec<Complex>[frameCount];
