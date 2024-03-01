@@ -23,9 +23,9 @@ namespace NumFlatTest.SignalProcessingTests
 
         [TestCase(64)]
         [TestCase(100)]
-        public void HannSquared(int length)
+        public void SquareRootHann(int length)
         {
-            var window = WindowFunctions.HannSquared(length);
+            var window = WindowFunctions.SquareRootHann(length);
 
             Assert.That(window.First(), Is.EqualTo(0.0).Within(1.0E-12));
             Assert.That(window[length / 2], Is.EqualTo(1.0).Within(1.0E-12));

@@ -84,11 +84,11 @@ namespace NumFlatTest.SignalProcessingTests
 
         [TestCase(980, 128, 64, 1, 1)]
         [TestCase(980, 128, 64, 3, 2)]
-        public void ReconstructionHannSquared(int sourceLength, int frameLength, int frameShift, int srcStride, int winStride)
+        public void ReconstructionSquareRootHann(int sourceLength, int frameLength, int frameShift, int srcStride, int winStride)
         {
             var source = TestVector.RandomDouble(42, sourceLength, srcStride);
             var window = TestVector.RandomDouble(0, frameLength, winStride);
-            WindowFunctions.HannSquared(frameLength).CopyTo(window);
+            WindowFunctions.SquareRootHann(frameLength).CopyTo(window);
 
             var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
             var reconstructed = spectrogram.Istft(info);

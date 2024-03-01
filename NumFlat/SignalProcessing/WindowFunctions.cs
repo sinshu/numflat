@@ -33,7 +33,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Creates a squared Hann window.
+        /// Creates a square-root Hann window.
         /// </summary>
         /// <param name="length">
         /// The length of the window.
@@ -41,7 +41,7 @@ namespace NumFlat.SignalProcessing
         /// <returns>
         /// The window with the specified length.
         /// </returns>
-        public static Vec<double> HannSquared(int length)
+        public static Vec<double> SquareRootHann(int length)
         {
             if (length <= 0)
             {
