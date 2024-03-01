@@ -221,7 +221,7 @@ namespace NumFlat.Clustering
         /// The source feature vectors.
         /// </param>
         /// <returns>
-        /// An updated k-means model and its sum of squared errors.
+        /// An updated k-means model and its sum of squared errors computed in the update process.
         /// </returns>
         public (KMeans Model, double Error) Update(IReadOnlyList<Vec<double>> xs)
         {
