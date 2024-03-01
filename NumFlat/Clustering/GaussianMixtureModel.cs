@@ -171,6 +171,9 @@ namespace NumFlat.Clustering
         /// </returns>
         public (GaussianMixtureModel Model, double LogLikelihood) Update(IReadOnlyList<Vec<double>> xs, double regularization = 1.0E-6)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
+
             if (regularization < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
