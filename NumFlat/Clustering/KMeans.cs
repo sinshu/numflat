@@ -65,9 +65,9 @@ namespace NumFlat.Clustering
             try
             {
                 var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
-                var models = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
-                var best = models.MinBy(model => GetError(xs, model.centroids));
-                this.centroids = best!.centroids;
+                var candidates = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
+                var best = candidates.MinBy(candidate => candidate.Error).Model;
+                this.centroids = best.centroids;
             }
             catch (FittingFailureException)
             {
@@ -79,13 +79,13 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static KMeans GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, double tolerance)
+        private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, double tolerance)
         {
-            var curr = GetInitialModel(xs, clusterCount, random);
+            var curr = (Model: GetInitialModel(xs, clusterCount, random), Error: double.MaxValue);
             for (var i = 0; i < 300; i++) // 300 is the default value of sklearn.cluster.KMeans.
             {
-                var next = curr.Update(xs).Model;
-                if (GetModelDiff(curr, next) <= tolerance)
+                var next = curr.Model.Update(xs);
+                if (GetModelDiff(curr.Model, next.Model) <= tolerance)
                 {
                     return next;
                 }
@@ -258,16 +258,6 @@ namespace NumFlat.Clustering
             }
 
             return (new KMeans(nextCentroids), error);
-        }
-
-        private static double GetError(IReadOnlyList<Vec<double>> xs, ReadOnlySpan<Vec<double>> centroids)
-        {
-            var sum = 0.0;
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(centroids[0].Count, nameof(xs)))
-            {
-                sum += PredictWithSquaredDistance(centroids, x).SquaredDistance;
-            }
-            return sum;
         }
 
         /// <summary>
