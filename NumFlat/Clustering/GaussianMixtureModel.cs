@@ -90,21 +90,19 @@ namespace NumFlat.Clustering
             {
                 // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.
                 var tolerance = 1.0E-3 * xs.Count;
-                var currModel = xs.ToKMeans(clusterCount, kMeansTryCount, random).ToGmm(xs);
-                var currScore = double.MinValue;
+                var curr = (Model: xs.ToKMeans(clusterCount, kMeansTryCount, random).ToGmm(xs), LogLikelihood: double.MinValue);
                 for (var i = 0; i < 100; i++)
                 {
-                    var (nextModel, nextScore) = currModel.Update(xs, regularization);
-                    var change = Math.Abs(nextScore - currScore);
+                    var next = curr.Model.Update(xs, regularization);
+                    var change = Math.Abs(next.LogLikelihood - curr.LogLikelihood);
                     if (change <= tolerance)
                     {
-                        this.components = nextModel.components;
+                        this.components = next.Model.components;
                         return;
                     }
-                    currModel = nextModel;
-                    currScore = nextScore;
+                    curr = next;
                 }
-                this.components = currModel.components;
+                this.components = curr.Model.components;
             }
             catch (FittingFailureException)
             {
