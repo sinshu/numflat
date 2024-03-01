@@ -43,11 +43,10 @@ namespace NumFlatTest.ClusteringTests
             var kmeans = xs.ToKMeans(3, 3, new Random(42));
 
             var model = kmeans.ToGmm(xs);
-            var likelihood = xs.Select(x => model.LogPdf(x)).Sum();
+            var likelihood = double.MinValue;
             for (var i = 0; i < 10; i++)
             {
-                var newModel = model.Update(xs);
-                var newLikelihood = xs.Select(x => newModel.LogPdf(x)).Sum();
+                var (newModel, newLikelihood) = model.Update(xs);
 
                 Assert.IsTrue(newLikelihood > likelihood);
                 Assert.That(newModel.Components.Select(c => c.Weight).Sum(), Is.EqualTo(1.0).Within(1.0E-12));
@@ -184,12 +183,12 @@ namespace NumFlatTest.ClusteringTests
 
             for (var i = 0; i < 3; i++)
             {
-                Assert.That(actual[i].Weight, Is.EqualTo(expectedWeights[i]).Within(1.0E-2));
-                NumAssert.AreSame(expectedMeans[i], actual[i].Gaussian.Mean, 1.0E-2);
-                NumAssert.AreSame(expectedCovs[i], actual[i].Gaussian.Covariance, 1.0E-2);
+                Assert.That(actual[i].Weight, Is.EqualTo(expectedWeights[i]).Within(1.0E-6));
+                NumAssert.AreSame(expectedMeans[i], actual[i].Gaussian.Mean, 1.0E-6);
+                NumAssert.AreSame(expectedCovs[i], actual[i].Gaussian.Covariance, 1.0E-6);
             }
 
-            Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-1.201311085098418).Within(1.0E-3));
+            Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-1.201311085098418).Within(1.0E-6));
         }
 
         private static IEnumerable<Vec<double>> ReadIris(string filename)

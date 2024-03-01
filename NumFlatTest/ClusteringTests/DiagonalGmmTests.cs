@@ -43,11 +43,10 @@ namespace NumFlatTest.ClusteringTests
             var kmeans = xs.ToKMeans(3, 3, new Random(42));
 
             var model = kmeans.ToDiagonalGmm(xs);
-            var likelihood = xs.Select(x => model.LogPdf(x)).Sum();
+            var likelihood = double.MinValue;
             for (var i = 0; i < 10; i++)
             {
-                var newModel = model.Update(xs);
-                var newLikelihood = xs.Select(x => newModel.LogPdf(x)).Sum();
+                var (newModel, newLikelihood) = model.Update(xs);
 
                 Assert.IsTrue(newLikelihood > likelihood);
                 Assert.That(newModel.Components.Select(c => c.Weight).Sum(), Is.EqualTo(1.0).Within(1.0E-12));
@@ -146,7 +145,7 @@ namespace NumFlatTest.ClusteringTests
         {
             var xs = ReadIris("iris.csv").ToArray();
             var gmm = xs.ToDiagonalGmm(3, 1.0E-6, 3, new Random(42));
-            Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-2.0478794780624234).Within(1.0E-3));
+            Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-2.0478794780624234).Within(1.0E-6));
         }
 
         private static IEnumerable<Vec<double>> ReadIris(string filename)

@@ -90,22 +90,21 @@ namespace NumFlat.Clustering
             {
                 // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.
                 var tolerance = 1.0E-3 * xs.Count;
-                var curr = xs.ToKMeans(clusterCount, kMeansTryCount, random).ToDiagonalGmm(xs);
-                var currScore = xs.Select(x => curr.LogPdf(x)).Sum();
+                var currModel = xs.ToKMeans(clusterCount, kMeansTryCount, random).ToDiagonalGmm(xs);
+                var currScore = double.MinValue;
                 for (var i = 0; i < 100; i++)
                 {
-                    var next = curr.Update(xs, regularization);
-                    var nextScore = xs.Select(x => next.LogPdf(x)).Sum();
+                    var (nextModel, nextScore) = currModel.Update(xs, regularization);
                     var change = Math.Abs(nextScore - currScore);
                     if (change <= tolerance)
                     {
-                        this.components = next.components;
+                        this.components = nextModel.components;
                         return;
                     }
-                    curr = next;
+                    currModel = nextModel;
                     currScore = nextScore;
                 }
-                this.components = curr.components;
+                this.components = currModel.components;
             }
             catch (FittingFailureException)
             {
@@ -170,9 +169,9 @@ namespace NumFlat.Clustering
         /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
-        /// An updated GMM.
+        /// An updated GMM and its log likelihood.
         /// </returns>
-        public DiagonalGaussianMixtureModel Update(IReadOnlyList<Vec<double>> xs, double regularization = 1.0E-6)
+        public (DiagonalGaussianMixtureModel Model, double LogLikelihood) Update(IReadOnlyList<Vec<double>> xs, double regularization = 1.0E-6)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
@@ -198,6 +197,7 @@ namespace NumFlat.Clustering
                 i++;
             }
 
+            var likelihood = 0.0;
             foreach (var scores in tmp.Cols)
             {
                 var logSum = Special.LogSum(scores);
@@ -206,6 +206,7 @@ namespace NumFlat.Clustering
                 {
                     fs[c] = Math.Exp(fs[c] - logSum);
                 }
+                likelihood += logSum;
             }
 
             try
@@ -213,7 +214,7 @@ namespace NumFlat.Clustering
                 var nextWeights = tmp.Rows.Select(row => row.Sum() / xs.Count);
                 var nextGaussians = tmp.Rows.Select(row => xs.ToDiagonalGaussian(row, regularization));
                 var nextComponents = nextWeights.Zip(nextGaussians, (weight, gaussian) => new Component(weight, gaussian)).ToArray();
-                return new DiagonalGaussianMixtureModel(nextComponents);
+                return (new DiagonalGaussianMixtureModel(nextComponents), likelihood);
             }
             catch (FittingFailureException)
             {
