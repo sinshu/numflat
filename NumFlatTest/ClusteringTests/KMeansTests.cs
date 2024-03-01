@@ -104,7 +104,7 @@ namespace NumFlatTest.ClusteringTests
             var error = xs.Select(x => Math.Pow(model.PredictWithDistance(x).Distance, 2)).Sum();
             while (true)
             {
-                model = model.Update(xs);
+                model = model.Update(xs).Model;
                 var newError = xs.Select(x => Math.Pow(model.PredictWithDistance(x).Distance, 2)).Sum();
                 Assert.That(newError <= error);
                 if (newError == error)

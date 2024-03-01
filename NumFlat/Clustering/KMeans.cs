@@ -84,7 +84,7 @@ namespace NumFlat.Clustering
             var curr = GetInitialModel(xs, clusterCount, random);
             for (var i = 0; i < 300; i++) // 300 is the default value of sklearn.cluster.KMeans.
             {
-                var next = curr.Update(xs);
+                var next = curr.Update(xs).Model;
                 if (GetModelDiff(curr, next) <= tolerance)
                 {
                     return next;
@@ -221,9 +221,9 @@ namespace NumFlat.Clustering
         /// The source feature vectors.
         /// </param>
         /// <returns>
-        /// An updated k-means model.
+        /// An updated k-means model and its sum of squared errors.
         /// </returns>
-        public KMeans Update(IReadOnlyList<Vec<double>> xs)
+        public (KMeans Model, double Error) Update(IReadOnlyList<Vec<double>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
@@ -238,11 +238,13 @@ namespace NumFlat.Clustering
             var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
             counts.Clear();
 
+            var error = 0.0;
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
             {
-                var c = PredictWithSquaredDistance(centroids, x).ClassIndex;
-                nextCentroids[c].AddInplace(x);
-                counts[c]++;
+                var (classIndex, distance) = PredictWithSquaredDistance(centroids, x);
+                nextCentroids[classIndex].AddInplace(x);
+                counts[classIndex]++;
+                error += distance;
             }
 
             for (var c = 0; c < nextCentroids.Length; c++)
@@ -255,7 +257,7 @@ namespace NumFlat.Clustering
                 nextCentroids[c].DivInplace(counts[c]);
             }
 
-            return new KMeans(nextCentroids);
+            return (new KMeans(nextCentroids), error);
         }
 
         private static double GetError(IReadOnlyList<Vec<double>> xs, ReadOnlySpan<Vec<double>> centroids)
