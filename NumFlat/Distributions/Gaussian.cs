@@ -70,7 +70,7 @@ namespace NumFlat.Distributions
             Mat<double> covariance;
             try
             {
-                (mean, covariance) = xs.MeanAndCovariance();
+                (mean, covariance) = xs.MeanAndCovariance(0);
                 Special.IncreaseDiagonalElementsInplace(covariance, regularization);
             }
             catch (Exception e)
@@ -116,7 +116,7 @@ namespace NumFlat.Distributions
             Mat<double> covariance;
             try
             {
-                (mean, covariance) = xs.MeanAndCovariance(weights);
+                (mean, covariance) = xs.MeanAndCovariance(weights, 0);
                 Special.IncreaseDiagonalElementsInplace(covariance, regularization);
             }
             catch (Exception e)

@@ -86,10 +86,6 @@ namespace NumFlat.Clustering
                 random = new Random();
             }
 
-            // It seems that scikit-learn's GMM uses sample variance for estimating Gaussian distributions.
-            // NumFlat uses unbiased variance, resulting in slightly lower log-likelihoods compared to scikit-learn's GMM.
-            // Matching scikit-learn's implementation is possible but will be left as is for now due to the hassle.
-
             try
             {
                 // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.

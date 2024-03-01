@@ -66,7 +66,7 @@ namespace NumFlat.Distributions
             Vec<double> variance;
             try
             {
-                (mean, variance) = xs.MeanAndVariance();
+                (mean, variance) = xs.MeanAndVariance(0);
                 variance.AddInplace(regularization);
             }
             catch (Exception e)
@@ -112,7 +112,7 @@ namespace NumFlat.Distributions
             Vec<double> variance;
             try
             {
-                (mean, variance) = xs.MeanAndVariance(weights);
+                (mean, variance) = xs.MeanAndVariance(weights, 0);
                 variance.AddInplace(regularization);
             }
             catch (Exception e)

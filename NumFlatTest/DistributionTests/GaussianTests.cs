@@ -71,7 +71,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToGaussian();
 
-            var (mean, covariance) = xs.MeanAndCovariance();
+            var (mean, covariance) = xs.MeanAndCovariance(0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
@@ -87,7 +87,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToGaussian(weights);
 
-            var (mean, covariance) = xs.MeanAndCovariance(weights);
+            var (mean, covariance) = xs.MeanAndCovariance(weights, 0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Covariance, covariance, 1.0E-12);
@@ -102,7 +102,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToGaussian(regularization);
 
-            var (mean, covariance) = xs.MeanAndCovariance();
+            var (mean, covariance) = xs.MeanAndCovariance(0);
             covariance += regularization * MatrixBuilder.Identity<double>(data.ColCount);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
@@ -120,7 +120,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToGaussian(weights, regularization);
 
-            var (mean, covariance) = xs.MeanAndCovariance(weights);
+            var (mean, covariance) = xs.MeanAndCovariance(weights, 0);
             covariance += regularization * MatrixBuilder.Identity<double>(data.ColCount);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);

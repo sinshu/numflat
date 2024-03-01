@@ -68,7 +68,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToDiagonalGaussian();
 
-            var (mean, variance) = xs.MeanAndVariance();
+            var (mean, variance) = xs.MeanAndVariance(0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Variance, variance, 1.0E-12);
@@ -82,9 +82,9 @@ namespace NumFlatTest.DistributionTests
             var xs = data.Rows;
             var weights = xs.Select(x => random.NextDouble() + 1).ToArray();
 
-            var actual = xs.ToDiagonalGaussian(weights);
+            var actual = xs.ToDiagonalGaussian(weights, 0);
 
-            var (mean, variance) = xs.MeanAndVariance(weights);
+            var (mean, variance) = xs.MeanAndVariance(weights, 0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
             NumAssert.AreSame(actual.Variance, variance, 1.0E-12);
@@ -99,7 +99,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToDiagonalGaussian(regularization);
 
-            var (mean, variance) = xs.MeanAndVariance();
+            var (mean, variance) = xs.MeanAndVariance(0);
             variance += regularization * VectorBuilder.Fill(data.ColCount, 1.0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);
@@ -117,7 +117,7 @@ namespace NumFlatTest.DistributionTests
 
             var actual = xs.ToDiagonalGaussian(weights, regularization);
 
-            var (mean, variance) = xs.MeanAndVariance(weights);
+            var (mean, variance) = xs.MeanAndVariance(weights, 0);
             variance += regularization * VectorBuilder.Fill(data.ColCount, 1.0);
 
             NumAssert.AreSame(actual.Mean, mean, 1.0E-12);

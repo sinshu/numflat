@@ -19,7 +19,7 @@ namespace NumFlatTest.ClusteringTests
             var kmeans = xs.ToKMeans(3, 1, new Random(42));
 
             var groups = Enumerable.Range(0, kmeans.ClassCount).Select(i => xs.Where(x => kmeans.Predict(x) == i).ToArray()).ToArray();
-            var expected = groups.Select(group => group.MeanAndCovariance()).ToArray();
+            var expected = groups.Select(group => group.MeanAndCovariance(0)).ToArray();
 
             var actual = kmeans.ToGmm(xs);
 
