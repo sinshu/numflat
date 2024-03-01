@@ -167,7 +167,7 @@ namespace NumFlat.Clustering
         /// This value will be added to the diagonal elements of the covariance matrix.
         /// </param>
         /// <returns>
-        /// An updated GMM and its log likelihood computed in the E-step.
+        /// An updated GMM and its log-likelihood computed during the E-step.
         /// </returns>
         public (DiagonalGaussianMixtureModel Model, double LogLikelihood) Update(IReadOnlyList<Vec<double>> xs, double regularization = 1.0E-6)
         {

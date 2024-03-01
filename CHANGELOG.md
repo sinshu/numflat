@@ -1,3 +1,8 @@
+# v0.7.7
+
+* Optimized k-means and GMM by omitting some calculations.
+* GMM now behaves the same as sklearn's default GMM.
+
 # v0.7.6
 
 * Added STFT and ISTFT.
