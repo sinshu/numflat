@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -194,6 +195,36 @@ namespace NumFlat.IO
                 default:
                     throw new InvalidDataException($"Unsupported sample format ({(int)sampleFormat}).");
             }
+        }
+
+        public static void Write(string path, IReadOnlyList<Vec<double>> data, int sampleRate)
+        {
+            ThrowHelper.ThrowIfNull(path, nameof(path));
+            ThrowHelper.ThrowIfNull(data, nameof(data));
+
+            if (data.Count == 0)
+            {
+                throw new ArgumentException("The data must contain at least one channel.");
+            }
+
+            if (sampleRate <= 0)
+            {
+                throw new ArgumentException("The sample rate must be a positive value.");
+            }
+
+            var sampleCount = 0;
+            foreach (var channel in data.ThrowIfEmptyOrDifferentSize(nameof(data)))
+            {
+                sampleCount = channel.Count;
+            }
+
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var reader = new BinaryReader(fs))
+            {
+                var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count * sampleCount;
+            }
+
+            throw new NotImplementedException();
         }
 
 
