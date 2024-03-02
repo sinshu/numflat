@@ -11,8 +11,19 @@ namespace NumFlat.IO
     /// </summary>
     public static class WaveFile
     {
+        /// <summary>
+        /// Reads the specified wave file.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the wave file.
+        /// </param>
+        /// <returns>
+        /// The wave data and sample rate.
+        /// </returns>
         public static (Vec<double>[] Data, int SampleRate) Read(string path)
         {
+            ThrowHelper.ThrowIfNull(path, nameof(path));
+
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(fs))
             {
@@ -55,6 +66,21 @@ namespace NumFlat.IO
                 }
                 return (data, sampleRate);
             }
+        }
+
+        /// <summary>
+        /// Reads the specified monaural wave file.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the wave file.
+        /// </param>
+        /// <returns>
+        /// The wave data and sample rate.
+        /// </returns>
+        public static (Vec<double> Data, int SampleRate) ReadMono(string path)
+        {
+            var (data, sampleRate) = Read(path);
+            return (data[0], sampleRate);
         }
 
         private static string ReadFourCC(BinaryReader reader)
