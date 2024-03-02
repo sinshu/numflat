@@ -33,14 +33,14 @@ namespace NumFlat.IO
                 while (true)
                 {
                     var id = ReadFourCC(reader);
-                    var size = reader.ReadInt32();
+                    var size = reader.ReadUInt32();
                     switch (id)
                     {
                         case "fmt ":
-                            (sampleFormat, channels, sampleRate) = ReadFormat(reader, size);
+                            (sampleFormat, channels, sampleRate) = ReadFormat(reader, (int)size);
                             break;
                         case "data":
-                            data = ReadData(reader, size, sampleFormat, channels);
+                            data = ReadData(reader, (int)size, sampleFormat, channels);
                             goto End;
                         default:
                             reader.BaseStream.Position += size;
