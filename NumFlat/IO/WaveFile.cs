@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -12,6 +15,11 @@ namespace NumFlat.IO
     /// </summary>
     public static class WaveFile
     {
+        private const int riffHeader = 0x46464952;
+        private const int waveHeader = 0x45564157;
+        private const int fmtHeader = 0x20746D66;
+        private const int dataHeader = 0x61746164;
+
         /// <summary>
         /// Reads the specified wave file.
         /// </summary>
@@ -28,12 +36,12 @@ namespace NumFlat.IO
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(fs))
             {
-                if (ReadFourCC(reader) != "RIFF")
+                if (reader.ReadInt32() != riffHeader)
                 {
                     throw new InvalidDataException("The RIFF chunk was not found.");
                 }
                 reader.ReadInt32();
-                if (ReadFourCC(reader) != "WAVE")
+                if (reader.ReadInt32() != waveHeader)
                 {
                     throw new InvalidDataException("The file is not a wave file.");
                 }
@@ -44,7 +52,7 @@ namespace NumFlat.IO
                 Vec<double>[]? data = null;
                 while (true)
                 {
-                    var id = ReadFourCC(reader);
+                    var id = reader.ReadInt32();
                     var size = reader.ReadUInt32();
                     if (size % 2 != 0)
                     {
@@ -52,10 +60,10 @@ namespace NumFlat.IO
                     }
                     switch (id)
                     {
-                        case "fmt ":
+                        case fmtHeader:
                             (sampleFormat, channelCount, sampleRate) = ReadFormat(reader, (int)size);
                             break;
-                        case "data":
+                        case dataHeader:
                             data = ReadData(reader, (int)size, sampleFormat, channelCount);
                             goto End;
                         default:
@@ -92,12 +100,12 @@ namespace NumFlat.IO
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(fs))
             {
-                if (ReadFourCC(reader) != "RIFF")
+                if (reader.ReadInt32() != riffHeader)
                 {
                     throw new InvalidDataException("The RIFF chunk was not found.");
                 }
                 reader.ReadInt32();
-                if (ReadFourCC(reader) != "WAVE")
+                if (reader.ReadInt32() != waveHeader)
                 {
                     throw new InvalidDataException("The file is not a wave file.");
                 }
@@ -108,7 +116,7 @@ namespace NumFlat.IO
                 Vec<double> data = default;
                 while (true)
                 {
-                    var id = ReadFourCC(reader);
+                    var id = reader.ReadInt32();
                     var size = reader.ReadUInt32();
                     if (size % 2 != 0)
                     {
@@ -116,10 +124,10 @@ namespace NumFlat.IO
                     }
                     switch (id)
                     {
-                        case "fmt ":
+                        case fmtHeader:
                             (sampleFormat, channelCount, sampleRate) = ReadFormat(reader, (int)size);
                             break;
-                        case "data":
+                        case dataHeader:
                             data = ReadDataSingleChannel(reader, (int)size, sampleFormat, channelCount, channel);
                             goto End;
                         default:
@@ -137,49 +145,44 @@ namespace NumFlat.IO
             }
         }
 
-        private static string ReadFourCC(BinaryReader reader)
-        {
-            var data = reader.ReadBytes(4);
-            for (var i = 0; i < data.Length; i++)
-            {
-                var value = data[i];
-                if (!(32 <= value && value <= 126))
-                {
-                    data[i] = (byte)'?';
-                }
-            }
-            return Encoding.ASCII.GetString(data, 0, data.Length);
-        }
-
         private static (SampleFormat SampleFormat, int ChannelCount, int SampleRate) ReadFormat(BinaryReader reader, int size)
         {
             using var ubuffer = MemoryPool<byte>.Shared.Rent(size);
             var buffer = ubuffer.Memory.Span.Slice(0, size);
             reader.Read(buffer);
 
-            var sampleFormat = (SampleFormat)BitConverter.ToInt16(buffer.Slice(0, 2));
-            if (!Enum.IsDefined(sampleFormat))
+            var formatTag = BitConverter.ToInt16(buffer.Slice(0, 2));
+            var bitsPerSample = BitConverter.ToInt16(buffer.Slice(14, 2));
+            SampleFormat sampleFormat;
+            if (formatTag == 1 && bitsPerSample == 16)
             {
-                throw new InvalidDataException($"Unsupported sample format ({(int)sampleFormat}).");
+                sampleFormat = SampleFormat.Int16;
+            }
+            else if (formatTag == 3 && bitsPerSample == 32)
+            {
+                sampleFormat = SampleFormat.Float32;
+            }
+            else
+            {
+                throw new InvalidDataException("Unsupported sample format.");
             }
 
             var channelCount = (int)BitConverter.ToInt16(buffer.Slice(2, 2));
             if (channelCount <= 0)
             {
-                throw new InvalidDataException($"Invalid channel count ({channelCount}).");
+                throw new InvalidDataException("Invalid channel count.");
             }
 
             var sampleRate = BitConverter.ToInt32(buffer.Slice(4, 4));
             if (sampleRate <= 0)
             {
-                throw new InvalidDataException($"Invalid sample rate ({sampleRate}).");
+                throw new InvalidDataException("Invalid sample rate.");
             }
 
             var blockAlign = (int)BitConverter.ToInt16(buffer.Slice(12, 2));
-            var expected = GetSampleSize(sampleFormat) * channelCount;
-            if (blockAlign != expected)
+            if (blockAlign != GetSampleSize(sampleFormat) * channelCount)
             {
-                throw new InvalidDataException($"Block align is expected to be '{expected}', but was '{blockAlign}'.");
+                throw new InvalidDataException("Invalid block align.");
             }
 
             return (sampleFormat, channelCount, sampleRate);
@@ -197,7 +200,6 @@ namespace NumFlat.IO
             reader.Read(buffer);
 
             var sampleCount = size / (GetSampleSize(sampleFormat) * channelCount);
-
             var data = new Vec<double>[channelCount];
             for (var ch = 0; ch < channelCount; ch++)
             {
@@ -249,7 +251,6 @@ namespace NumFlat.IO
             reader.Read(buffer);
 
             var sampleCount = size / (GetSampleSize(sampleFormat) * channelCount);
-
             var data = new Vec<double>(sampleCount);
 
             if (sampleFormat == SampleFormat.Int16)
@@ -295,6 +296,18 @@ namespace NumFlat.IO
             }
         }
 
+        /// <summary>
+        /// Writes the data as a wave file.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the wave file.
+        /// </param>
+        /// <param name="data">
+        /// The data to be written.
+        /// </param>
+        /// <param name="sampleRate">
+        /// The sample rate.
+        /// </param>
         public static void Write(string path, IReadOnlyList<Vec<double>> data, int sampleRate)
         {
             ThrowHelper.ThrowIfNull(path, nameof(path));
@@ -316,14 +329,97 @@ namespace NumFlat.IO
                 sampleCount = channel.Count;
             }
 
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var writer = new BinaryReader(fs))
-            {
-                var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count * sampleCount;
+            var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count * sampleCount;
 
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var writer = new BinaryWriter(fs))
+            {
+                using var ubuffer = MemoryPool<byte>.Shared.Rent(dataSize);
+                var buffer = ubuffer.Memory.Span.Slice(0, dataSize);
+
+                var dst = MemoryMarshal.Cast<byte, short>(buffer);
+                for (var ch = 0; ch < data.Count; ch++)
+                {
+                    var position = ch;
+                    foreach (var value in data[ch].GetUnsafeFastIndexer())
+                    {
+                        var sample = Math.Clamp((int)(value * 32768), short.MinValue, short.MaxValue);
+                        dst[position] = (short)sample;
+                        position += data.Count;
+                    }
+                }
+
+                writer.Write(riffHeader);
+                writer.Write(dataSize + 36);
+                writer.Write(waveHeader);
+                writer.Write(fmtHeader);
+                writer.Write(16);
+                writer.Write((short)1);
+                writer.Write((short)data.Count);
+                writer.Write(sampleRate);
+                writer.Write(2 * data.Count * sampleRate);
+                writer.Write((short)(2 * data.Count));
+                writer.Write((short)16);
+                writer.Write(dataHeader);
+                writer.Write(dataSize);
+                writer.Write(buffer);
+            }
+        }
+
+        /// <summary>
+        /// Writes the data as a wave file.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the wave file.
+        /// </param>
+        /// <param name="data">
+        /// The data to be written.
+        /// </param>
+        /// <param name="sampleRate">
+        /// The sample rate.
+        /// </param>
+        public static void Write(string path, Vec<double> data, int sampleRate)
+        {
+            ThrowHelper.ThrowIfNull(path, nameof(path));
+            ThrowHelper.ThrowIfEmpty(data, nameof(data));
+
+            if (sampleRate <= 0)
+            {
+                throw new ArgumentException("The sample rate must be a positive value.");
             }
 
-            throw new NotImplementedException();
+            var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count;
+
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var writer = new BinaryWriter(fs))
+            {
+                using var ubuffer = MemoryPool<byte>.Shared.Rent(dataSize);
+                var buffer = ubuffer.Memory.Span.Slice(0, dataSize);
+
+                var dst = MemoryMarshal.Cast<byte, short>(buffer);
+                var position = 0;
+                foreach (var value in data.GetUnsafeFastIndexer())
+                {
+                    var sample = Math.Clamp((int)(value * 32768), short.MinValue, short.MaxValue);
+                    dst[position] = (short)sample;
+                    position++;
+                }
+
+                writer.Write(riffHeader);
+                writer.Write(dataSize + 36);
+                writer.Write(waveHeader);
+                writer.Write(fmtHeader);
+                writer.Write(16);
+                writer.Write((short)1);
+                writer.Write((short)1);
+                writer.Write(sampleRate);
+                writer.Write(2 * sampleRate);
+                writer.Write((short)2);
+                writer.Write((short)16);
+                writer.Write(dataHeader);
+                writer.Write(dataSize);
+                writer.Write(buffer);
+            }
         }
 
 
