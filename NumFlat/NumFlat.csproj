@@ -8,13 +8,13 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>NumFlat</Title>
-    <Version>0.7.7</Version>
+    <Version>0.8.0</Version>
     <Authors>Nobuaki Tanaka</Authors>
     <Description>A numerical computation library for C#</Description>
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>math;numerics;linear;algebra;matrix;vector;lapack;blas;openblas;fft</PackageTags>
+    <PackageTags>math;numerics;linear;algebra;matrix;vector;lapack;blas;openblas;fft;analysis;clustering</PackageTags>
     <PackageReleaseNotes>https://github.com/sinshu/numflat/blob/main/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>

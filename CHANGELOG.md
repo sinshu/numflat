@@ -1,3 +1,8 @@
+# v0.8.0
+
+* Added `NumFlat.IO` namespace for file IO.
+* Added `NumFlat.IO.WaveFile` class for wave file IO.
+
 # v0.7.7
 
 * Optimized k-means and GMM by omitting some calculations.
