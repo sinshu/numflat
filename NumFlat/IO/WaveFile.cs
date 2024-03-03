@@ -219,9 +219,10 @@ namespace NumFlat.IO
             }
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var reader = new BinaryReader(fs))
+            using (var writer = new BinaryReader(fs))
             {
                 var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count * sampleCount;
+
             }
 
             throw new NotImplementedException();

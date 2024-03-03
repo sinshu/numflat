@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace NumFlat
 {
@@ -9,6 +10,7 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the matrix.
     /// </typeparam>
+    [StructLayout(LayoutKind.Auto)]
     public readonly partial struct Mat<T> : IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int rowCount;
