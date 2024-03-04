@@ -1,3 +1,7 @@
+# v0.8.1
+
+* Added `NumFlat.IO.CsvFile` class for CSV file IO.
+
 # v0.8.0
 
 * Added `NumFlat.IO` namespace for file IO.

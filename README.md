@@ -657,8 +657,8 @@ samples = spectrum.Ifft();
     - ⬜ Filtering
     - ⬜ Resampling
     - ⬜ Feature extraction
-* ⬜ File IO
-    - ⬜ CSV
+* ✅ File IO
+    - ✅ CSV
     - ✅ WAV
 
 
