@@ -245,7 +245,7 @@ namespace NumFlat
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (float.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.RowCount);
+                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.ColCount);
             }
 
             var rank = 0;
@@ -323,7 +323,7 @@ namespace NumFlat
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (float.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(fs[0]) * Math.Max(a.RowCount, a.RowCount);
+                tolerance = Special.Eps(fs[0]) * Math.Max(a.RowCount, a.ColCount);
             }
 
             using var utmp = new TemporalMatrix<float>(a.ColCount, a.RowCount);
