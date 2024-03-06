@@ -283,16 +283,16 @@ namespace NumFlat
         /// <summary>
         /// The number of elements in the vector.
         /// </summary>
-        public int Count => count;
+        public readonly int Count => count;
 
         /// <summary>
         /// Gets the stride value for the storage.
         /// </summary>
-        public int Stride => stride;
+        public readonly int Stride => stride;
 
         /// <summary>
         /// Gets the storage of the matrix.
         /// </summary>
-        public Memory<T> Memory => memory;
+        public readonly Memory<T> Memory => memory;
     }
 }
