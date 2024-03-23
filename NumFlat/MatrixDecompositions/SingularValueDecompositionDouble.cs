@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Buffers;
-using OpenBlasSharp;
 using MatFlat;
 
 namespace NumFlat
@@ -65,26 +63,10 @@ namespace NumFlat
             using var ucs = s.EnsureContiguous(false);
             ref readonly var cs = ref ucs.Item;
 
-            using var uwork = MemoryPool<double>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
-            var work = uwork.Memory.Span;
-
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (double* pcs = cs.Memory.Span)
-            fixed (double* pwork = work)
             {
-                var info = Lapack.Dgesvd(
-                    MatrixLayout.ColMajor,
-                    'N', 'N',
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    pcs,
-                    null, 1,
-                    null, 1,
-                    pwork);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Dgesvd), (int)info);
-                }
+                Factorization.Svd(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pcs, null, 0, null, 0);
             }
         }
 
@@ -180,13 +162,9 @@ namespace NumFlat
             using var ucs = s.EnsureContiguous(false);
             ref readonly var cs = ref ucs.Item;
 
-            using var uwork = MemoryPool<double>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
-            var work = uwork.Memory.Span;
-
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (double* pcs = cs.Memory.Span)
             fixed (double* pu = u.Memory.Span)
-            fixed (double* pwork = work)
             {
                 Factorization.Svd(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pcs, pu, u.Stride, null, 0);
             }

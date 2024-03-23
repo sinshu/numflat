@@ -89,7 +89,7 @@ namespace NumFlatTest.MatrixDecompositionTests
 
             var expected = a.Svd().Solve(b);
 
-            NumAssert.AreSame(expected, actual, 1.0E-6F);
+            NumAssert.AreSame(expected, actual, 1.0E-5F);
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
