@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -63,21 +63,7 @@ namespace NumFlat
 
             fixed (float* pl = l.Memory.Span)
             {
-                var info = Lapack.Spotrf(
-                    MatrixLayout.ColMajor,
-                    'L',
-                    l.RowCount,
-                    pl, l.Stride);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Spotrf), (int)info);
-                }
-            }
-
-            var lCols = l.Cols;
-            for (var col = 1; col < lCols.Count; col++)
-            {
-                lCols[col].Subvector(0, col).Clear();
+                Factorization.Cholesky(l.RowCount, pl, l.Stride);
             }
         }
 
@@ -98,20 +84,16 @@ namespace NumFlat
             fixed (float* pl = l.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                Blas.Strsv(
-                    Order.ColMajor,
+                Blas.SolveTriangular(
                     Uplo.Lower,
                     Transpose.NoTrans,
-                    Diag.NonUnit,
                     l.RowCount,
                     pl, l.Stride,
                     pd, destination.Stride);
 
-                Blas.Strsv(
-                    Order.ColMajor,
+                Blas.SolveTriangular(
                     Uplo.Lower,
                     Transpose.Trans,
-                    Diag.NonUnit,
                     l.RowCount,
                     pl, l.Stride,
                     pd, destination.Stride);
