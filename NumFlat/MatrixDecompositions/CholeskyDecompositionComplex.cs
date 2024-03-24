@@ -17,7 +17,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
@@ -45,7 +45,7 @@ namespace NumFlat
         /// <param name="l">
         /// The destination of the the matrix L.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>

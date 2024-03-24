@@ -18,7 +18,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public SingularValueDecompositionSingle(in Mat<float> a) : base(a)
@@ -44,7 +44,7 @@ namespace NumFlat
         /// <param name="s">
         /// The destination of the diagonal elements of the matrix S.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void GetSingularValues(in Mat<float> a, in Vec<float> s)
@@ -85,7 +85,7 @@ namespace NumFlat
         /// <param name="vt">
         /// The destination of the the matrix V^T.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
@@ -137,7 +137,7 @@ namespace NumFlat
         /// <param name="u">
         /// The destination of the the matrix U.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u)
