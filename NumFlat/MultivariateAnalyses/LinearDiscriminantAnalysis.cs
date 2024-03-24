@@ -48,7 +48,6 @@ namespace NumFlat.MultivariateAnalyses
             try
             {
                 gevd = sb.Gevd(sw);
-                Special.ReverseEigenValueOrder(gevd);
             }
             catch (Exception e)
             {
