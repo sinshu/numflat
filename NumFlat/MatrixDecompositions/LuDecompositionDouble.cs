@@ -11,8 +11,8 @@ namespace NumFlat
     {
         private Mat<double> l;
         private Mat<double> u;
-        private int[] pivot;
         private int[] permutation;
+        private int pivotSign;
 
         /// <summary>
         /// Decomposes the matrix using LU decomposition.
@@ -31,24 +31,13 @@ namespace NumFlat
 
             var l = new Mat<double>(a.RowCount, min);
             var u = new Mat<double>(min, a.ColCount);
-            var pivot = new int[min];
+            var permutation = new int[a.RowCount];
 
-            Decompose(a, l, u, pivot);
+            Decompose(a, l, u, permutation);
 
             this.l = l;
             this.u = u;
-            this.pivot = pivot;
-
-            permutation = new int[a.RowCount];
-            for (var i = 0; i < a.RowCount; i++)
-            {
-                permutation[i] = i;
-            }
-            for (var i = 0; i < min; i++)
-            {
-                var j = pivot[i];
-                (permutation[i], permutation[j]) = (permutation[j], permutation[i]);
-            }
+            this.permutation = permutation;
         }
 
         /// <summary>
@@ -63,13 +52,16 @@ namespace NumFlat
         /// <param name="u">
         /// The destination of the matrix U.
         /// </param>
-        /// <param name="piv">
-        /// The destination of the pivot info.
+        /// <param name="permutation">
+        /// The destination of the permutation info.
         /// </param>
+        /// <returns>
+        /// The pivot sign.
+        /// </returns>
         /// <exception cref="LapackException">
         /// The matrix is ill-conditioned.
         /// </exception>
-        public unsafe static void Decompose(in Mat<double> a, in Mat<double> l, in Mat<double> u, Span<int> piv)
+        public unsafe static int Decompose(in Mat<double> a, in Mat<double> l, in Mat<double> u, Span<int> permutation)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(l, nameof(l));
@@ -97,35 +89,25 @@ namespace NumFlat
                 throw new ArgumentException("'u.ColCount' must match 'a.ColCount'.");
             }
 
-            if (piv.Length != min)
+            if (permutation.Length != a.RowCount)
             {
-                throw new ArgumentException("'piv.Length' must match 'min(a.RowCount, a.ColCount)'");
+                throw new ArgumentException("'permutation.Length' must match 'a.RowCount'.");
             }
 
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
+            var sign = 0;
             fixed (double* ptmp = tmp.Memory.Span)
-            fixed (int* ppiv = piv)
+            fixed (int* pprm = permutation)
             {
-                var info = Lapack.Dgetrf(
-                    MatrixLayout.ColMajor,
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    ppiv);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dgetrf), (int)info);
-                }
+                MatFlat.Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm, &sign);
             }
 
             ExtractL(tmp, l);
             ExtractU(tmp, u);
 
-            for (var i = 0; i < piv.Length; i++)
-            {
-                piv[i] -= 1;
-            }
+            return sign;
         }
 
         /// <inheritdoc/>
@@ -202,18 +184,11 @@ namespace NumFlat
         {
             var fu = u.GetUnsafeFastIndexer();
             var determinant = 1.0;
-            for (var i = 0; i < pivot.Length; i++)
+            for (var i = 0; i < u.RowCount; i++)
             {
-                if (pivot[i] == i)
-                {
-                    determinant *= fu[i, i];
-                }
-                else
-                {
-                    determinant *= -fu[i, i];
-                }
+                determinant *= fu[i, i];
             }
-            return determinant;
+            return pivotSign * determinant;
         }
 
         private static void ExtractL(in Mat<double> source, in Mat<double> l)
