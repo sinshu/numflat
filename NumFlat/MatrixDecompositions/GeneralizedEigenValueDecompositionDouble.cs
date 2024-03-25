@@ -26,7 +26,7 @@ namespace NumFlat
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public GeneralizedEigenValueDecompositionDouble(in Mat<double> a, in Mat<double> b)
         {
@@ -64,7 +64,7 @@ namespace NumFlat
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static unsafe void Decompose(in Mat<double> a, in Mat<double> b, in Vec<double> d, in Mat<double> v)
         {

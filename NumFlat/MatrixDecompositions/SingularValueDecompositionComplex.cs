@@ -138,7 +138,7 @@ namespace NumFlat
         /// <param name="u">
         /// The destination of the the matrix U.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> s, in Mat<Complex> u)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -194,13 +195,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="CholeskyDecompositionSingle"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionSingle Cholesky(in this Mat<float> a)
         {
@@ -218,13 +219,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="CholeskyDecompositionDouble"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionDouble Cholesky(in this Mat<double> a)
         {
@@ -242,13 +243,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="CholeskyDecompositionComplex"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionComplex Cholesky(in this Mat<Complex> a)
         {
@@ -266,7 +267,7 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static Vec<float> GetSingularValues(in this Mat<float> a)
@@ -287,7 +288,7 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static Vec<double> GetSingularValues(in this Mat<double> a)
@@ -308,7 +309,7 @@ namespace NumFlat
         /// <returns>
         /// The singular values.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static Vec<double> GetSingularValues(in this Mat<Complex> a)
@@ -329,7 +330,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionSingle"/>'.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static SingularValueDecompositionSingle Svd(in this Mat<float> a)
@@ -348,7 +349,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionDouble"/>'.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static SingularValueDecompositionDouble Svd(in this Mat<double> a)
@@ -367,7 +368,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of '<see cref="SingularValueDecompositionComplex"/>'.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static SingularValueDecompositionComplex Svd(in this Mat<Complex> a)
@@ -389,13 +390,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="GeneralizedEigenValueDecompositionSingle"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionSingle Gevd(in this Mat<float> a, in Mat<float> b)
         {
@@ -417,13 +418,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="GeneralizedEigenValueDecompositionDouble"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionDouble Gevd(in this Mat<double> a, in Mat<double> b)
         {
@@ -445,13 +446,13 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="GeneralizedEigenValueDecompositionComplex"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionComplex Gevd(in this Mat<Complex> a, in Mat<Complex> b)
         {
