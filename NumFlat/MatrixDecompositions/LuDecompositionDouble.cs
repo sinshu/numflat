@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Buffers;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -20,9 +19,6 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public LuDecompositionDouble(in Mat<double> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -59,9 +55,6 @@ namespace NumFlat
         /// <returns>
         /// The pivot sign.
         /// </returns>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public unsafe static int Decompose(in Mat<double> a, in Mat<double> l, in Mat<double> u, Span<int> permutation)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -102,7 +95,7 @@ namespace NumFlat
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (int* pprm = permutation)
             {
-                pivotSign = MatFlat.Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm);
+                pivotSign = Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm);
             }
 
             ExtractL(tmp, l);
@@ -134,23 +127,8 @@ namespace NumFlat
             fixed (double* pu = u.Memory.Span)
             fixed (double* pd = destination.Memory.Span)
             {
-                Blas.Dtrsv(
-                    Order.ColMajor,
-                    Uplo.Lower,
-                    Transpose.NoTrans,
-                    Diag.Unit,
-                    l.RowCount,
-                    pl, l.Stride,
-                    pd, destination.Stride);
-
-                Blas.Dtrsv(
-                    Order.ColMajor,
-                    Uplo.Upper,
-                    Transpose.NoTrans,
-                    Diag.NonUnit,
-                    u.RowCount,
-                    pu, u.Stride,
-                    pd, destination.Stride);
+                Blas.SolveTriangular(Uplo.Lower, Transpose.NoTrans, l.RowCount, pl, l.Stride, pd, destination.Stride);
+                Blas.SolveTriangular(Uplo.Upper, Transpose.NoTrans, u.RowCount, pu, u.Stride, pd, destination.Stride);
             }
         }
 
@@ -183,13 +161,18 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
+            if (l.RowCount != u.ColCount)
+            {
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
+            }
+
             var fu = u.GetUnsafeFastIndexer();
-            var determinant = 1.0;
+            var determinant = (double)pivotSign;
             for (var i = 0; i < u.RowCount; i++)
             {
                 determinant *= fu[i, i];
             }
-            return pivotSign * determinant;
+            return determinant;
         }
 
         private static void ExtractL(in Mat<double> source, in Mat<double> l)
