@@ -22,7 +22,7 @@ namespace NumFlatTest.MatrixDecompositionTests
             var a = TestMatrix.RandomComplex(42, m, n, aStride);
             var l = TestMatrix.RandomComplex(57, m, Math.Min(m, n), lStride);
             var u = TestMatrix.RandomComplex(66, Math.Min(m, n), n, uStride);
-            var piv = new int[Math.Min(m, n)];
+            var piv = new int[m];
 
             using (a.EnsureUnchanged())
             {
