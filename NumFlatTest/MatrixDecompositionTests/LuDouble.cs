@@ -29,10 +29,6 @@ namespace NumFlatTest.MatrixDecompositionTests
                 LuDecompositionDouble.Decompose(a, l, u, prm);
             }
 
-            Console.WriteLine(a);
-            Console.WriteLine(l * u);
-            Console.WriteLine(prm.ToVector());
-
             var reconstructed = a.Lu().GetPermutationMatrix() * l * u;
             NumAssert.AreSame(a, reconstructed, 1.0E-12);
 
