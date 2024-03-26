@@ -90,9 +90,6 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="LuDecompositionSingle"/>.
         /// </returns>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public static LuDecompositionSingle Lu(in this Mat<float> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -109,9 +106,6 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="LuDecompositionDouble"/>.
         /// </returns>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public static LuDecompositionDouble Lu(in this Mat<double> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -128,9 +122,6 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="LuDecompositionComplex"/>.
         /// </returns>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public static LuDecompositionComplex Lu(in this Mat<Complex> a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
