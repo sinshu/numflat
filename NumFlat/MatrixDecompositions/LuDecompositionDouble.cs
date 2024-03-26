@@ -33,11 +33,12 @@ namespace NumFlat
             var u = new Mat<double>(min, a.ColCount);
             var permutation = new int[a.RowCount];
 
-            Decompose(a, l, u, permutation);
+            var pivotSign = Decompose(a, l, u, permutation);
 
             this.l = l;
             this.u = u;
             this.permutation = permutation;
+            this.pivotSign = pivotSign;
         }
 
         /// <summary>
@@ -97,17 +98,17 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
-            var sign = 0;
+            int pivotSign;
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (int* pprm = permutation)
             {
-                MatFlat.Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm, &sign);
+                pivotSign = MatFlat.Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm);
             }
 
             ExtractL(tmp, l);
             ExtractU(tmp, u);
 
-            return sign;
+            return pivotSign;
         }
 
         /// <inheritdoc/>
