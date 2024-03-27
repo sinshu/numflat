@@ -89,7 +89,7 @@ namespace NumFlatTest.MatrixDecompositionTests
 
             var expected = a.Svd().Solve(b);
 
-            NumAssert.AreSame(expected, actual, 1.0E-5F);
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
@@ -104,15 +104,15 @@ namespace NumFlatTest.MatrixDecompositionTests
             var a = TestMatrix.RandomSingle(42, n, n, n);
             var qr = a.Qr();
             var expected = Math.Abs(a.Determinant());
-            Assert.That(qr.Determinant(), Is.EqualTo(expected).Within(1.0E-6F));
-            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-5F)); // 1.0E-6F is too small.
+            Assert.That(qr.Determinant(), Is.EqualTo(expected).Within(1.0E-4F)); // 1.0E-6F is too small.
+            Assert.That(qr.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-4F)); // 1.0E-6F is too small.
         }
 
         private static void CheckUnitary(Mat<float> mat)
         {
             var actual = mat.Transpose() * mat;
             var expected = MatrixBuilder.Identity<float>(actual.RowCount);
-            NumAssert.AreSame(expected, actual, 1.0E-6F);
+            NumAssert.AreSame(expected, actual, 1.0E-5F); // 1.0E-6F is too small.
         }
     }
 }

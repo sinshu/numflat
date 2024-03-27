@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Numerics;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -79,33 +79,20 @@ namespace NumFlat
                 throw new ArgumentException("'r.ColCount' must match 'a.ColCount'.");
             }
 
-            using var utau = MemoryPool<Complex>.Shared.Rent(a.ColCount);
-            var tau = utau.Memory.Span;
+            using var utmp = TemporalMatrix.CopyFrom(a);
+            ref readonly var tmp = ref utmp.Item;
 
-            a.CopyTo(q);
+            using var urdiag = MemoryPool<double>.Shared.Rent(a.ColCount);
+            var rdiag = urdiag.Memory.Span;
 
+            fixed (Complex* ptmp = tmp.Memory.Span)
+            fixed (double* prdiag = rdiag)
             fixed (Complex* pq = q.Memory.Span)
-            fixed (Complex* ptau = tau)
+            fixed (Complex* pr = r.Memory.Span)
             {
-                Lapack.Zgeqrf(
-                    MatrixLayout.ColMajor,
-                    q.RowCount, q.ColCount,
-                    pq, q.Stride,
-                    ptau);
-
-                var qCols = q.Cols;
-                var rCols = r.Cols;
-                r.Clear();
-                for (var col = 0; col < r.ColCount; col++)
-                {
-                    qCols[col].Subvector(0, col + 1).CopyTo(rCols[col].Subvector(0, col + 1));
-                }
-
-                Lapack.Zungqr(
-                    MatrixLayout.ColMajor,
-                    q.RowCount, q.ColCount, q.ColCount,
-                    pq, q.Stride,
-                    ptau);
+                Factorization.Qr(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, prdiag);
+                Factorization.QrOrthogonalFactor(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pq, q.Stride);
+                Factorization.QrUpperTriangularFactor(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pr, r.Stride, prdiag);
             }
         }
 
@@ -121,14 +108,7 @@ namespace NumFlat
             fixed (Complex* pr = r.Memory.Span)
             fixed (Complex* pd = destination.Memory.Span)
             {
-                Blas.Ztrsv(
-                    Order.ColMajor,
-                    Uplo.Upper,
-                    Transpose.NoTrans,
-                    Diag.NonUnit,
-                    r.RowCount,
-                    pr, r.Stride,
-                    pd, destination.Stride);
+                Blas.SolveTriangular(Uplo.Upper, Transpose.NoTrans, r.RowCount, pr, r.Stride, pd, destination.Stride);
             }
         }
 
