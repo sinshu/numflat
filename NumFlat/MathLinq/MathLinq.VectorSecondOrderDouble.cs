@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using OpenBlasSharp;
 
 namespace NumFlat
 {
@@ -196,13 +195,7 @@ namespace NumFlat
                     }
 
                     Vec.Sub(x, mean, centered);
-                    Blas.Dsyr(
-                        Order.ColMajor,
-                        Uplo.Lower,
-                        destination.RowCount,
-                        1.0,
-                        pc, centered.Stride,
-                        pd, destination.Stride);
+                    AccumulateCovariance(centered, destination);
                     count++;
                 }
             }
@@ -218,7 +211,8 @@ namespace NumFlat
                 col.Subvector(i, col.Count - i).DivInplace(count - ddof);
 
             }
-            Special.LowerTriangularToHermitianInplace(destination);
+
+            Special.UpperTriangularToHermitianInplace(destination);
         }
 
         /// <summary>
@@ -372,6 +366,24 @@ namespace NumFlat
                 px += x.Stride;
                 pm += mean.Stride;
                 pd += destination.Stride;
+            }
+        }
+
+        private static void AccumulateCovariance(in Vec<double> centered, in Mat<double> destination)
+        {
+            var sc = centered.Memory.Span;
+            var sd = destination.Memory.Span;
+            var pc1 = 0;
+            for (var col = 0; col < destination.ColCount; col++)
+            {
+                var pd = destination.Stride * col;
+                var pc2 = 0;
+                for (var row = 0; row <= col; row++)
+                {
+                    sd[pd + row] += sc[pc1] * sc[pc2];
+                    pc2 += centered.Stride;
+                }
+                pc1 += centered.Stride;
             }
         }
     }
