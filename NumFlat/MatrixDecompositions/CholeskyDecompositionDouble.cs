@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Numerics;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -17,13 +16,13 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public CholeskyDecompositionDouble(in Mat<double> a) : base(a)
         {
@@ -45,13 +44,13 @@ namespace NumFlat
         /// <param name="l">
         /// The destination of the the matrix L.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static unsafe void Decompose(in Mat<double> a, in Mat<double> l)
         {
@@ -64,21 +63,7 @@ namespace NumFlat
 
             fixed (double* pl = l.Memory.Span)
             {
-                var info = Lapack.Dpotrf(
-                    MatrixLayout.ColMajor,
-                    'L',
-                    l.RowCount,
-                    pl, l.Stride);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Dpotrf), (int)info);
-                }
-            }
-
-            var lCols = l.Cols;
-            for (var col = 1; col < lCols.Count; col++)
-            {
-                lCols[col].Subvector(0, col).Clear();
+                Factorization.Cholesky(l.RowCount, pl, l.Stride);
             }
         }
 
@@ -99,20 +84,16 @@ namespace NumFlat
             fixed (double* pl = l.Memory.Span)
             fixed (double* pd = destination.Memory.Span)
             {
-                Blas.Dtrsv(
-                    Order.ColMajor,
+                Blas.SolveTriangular(
                     Uplo.Lower,
                     Transpose.NoTrans,
-                    Diag.NonUnit,
                     l.RowCount,
                     pl, l.Stride,
                     pd, destination.Stride);
 
-                Blas.Dtrsv(
-                    Order.ColMajor,
+                Blas.SolveTriangular(
                     Uplo.Lower,
                     Transpose.Trans,
-                    Diag.NonUnit,
                     l.RowCount,
                     pl, l.Stride,
                     pd, destination.Stride);

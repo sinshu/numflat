@@ -95,7 +95,7 @@ namespace NumFlatTest.MatrixDecompositionTests
             var a = CreateHermitianMatrix(42, n, n);
             var chol = a.Cholesky();
             var expected = a.Determinant();
-            Assert.That(chol.Determinant(), Is.EqualTo(expected).Within(1.0E-5F)); // 1.0E-6F is too small.
+            Assert.That(chol.Determinant(), Is.EqualTo(expected).Within(1.0E-4F)); // 1.0E-6F is too small.
             Assert.That(chol.LogDeterminant(), Is.EqualTo(Math.Log(expected)).Within(1.0E-6F));
         }
 

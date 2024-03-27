@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Buffers;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -19,7 +18,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public SingularValueDecompositionSingle(in Mat<float> a) : base(a)
@@ -45,7 +44,7 @@ namespace NumFlat
         /// <param name="s">
         /// The destination of the diagonal elements of the matrix S.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void GetSingularValues(in Mat<float> a, in Vec<float> s)
@@ -64,26 +63,10 @@ namespace NumFlat
             using var ucs = s.EnsureContiguous(false);
             ref readonly var cs = ref ucs.Item;
 
-            using var uwork = MemoryPool<float>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
-            var work = uwork.Memory.Span;
-
             fixed (float* ptmp = tmp.Memory.Span)
             fixed (float* pcs = cs.Memory.Span)
-            fixed (float* pwork = work)
             {
-                var info = Lapack.Sgesvd(
-                    MatrixLayout.ColMajor,
-                    'N', 'N',
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    pcs,
-                    null, 1,
-                    null, 1,
-                    pwork);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Sgesvd), (int)info);
-                }
+                Factorization.Svd(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pcs, null, 0, null, 0);
             }
         }
 
@@ -102,7 +85,7 @@ namespace NumFlat
         /// <param name="vt">
         /// The destination of the the matrix V^T.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u, in Mat<float> vt)
@@ -133,28 +116,12 @@ namespace NumFlat
             using var ucs = s.EnsureContiguous(false);
             ref readonly var cs = ref ucs.Item;
 
-            using var uwork = MemoryPool<float>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
-            var work = uwork.Memory.Span;
-
             fixed (float* ptmp = tmp.Memory.Span)
             fixed (float* pcs = cs.Memory.Span)
             fixed (float* pu = u.Memory.Span)
             fixed (float* pvt = vt.Memory.Span)
-            fixed (float* pwork = work)
             {
-                var info = Lapack.Sgesvd(
-                    MatrixLayout.ColMajor,
-                    'A', 'A',
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    pcs,
-                    pu, u.Stride,
-                    pvt, vt.Stride,
-                    pwork);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Sgesvd), (int)info);
-                }
+                Factorization.Svd(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pcs, pu, u.Stride, pvt, vt.Stride);
             }
         }
 
@@ -170,7 +137,7 @@ namespace NumFlat
         /// <param name="u">
         /// The destination of the the matrix U.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static unsafe void Decompose(in Mat<float> a, in Vec<float> s, in Mat<float> u)
@@ -195,27 +162,11 @@ namespace NumFlat
             using var ucs = s.EnsureContiguous(false);
             ref readonly var cs = ref ucs.Item;
 
-            using var uwork = MemoryPool<float>.Shared.Rent(Math.Min(tmp.RowCount, tmp.ColCount) - 1);
-            var work = uwork.Memory.Span;
-
             fixed (float* ptmp = tmp.Memory.Span)
             fixed (float* pcs = cs.Memory.Span)
             fixed (float* pu = u.Memory.Span)
-            fixed (float* pwork = work)
             {
-                var info = Lapack.Sgesvd(
-                    MatrixLayout.ColMajor,
-                    'A', 'N',
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    pcs,
-                    pu, u.Stride,
-                    null, 1,
-                    pwork);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The SVD did not converge.", nameof(Lapack.Sgesvd), (int)info);
-                }
+                Factorization.Svd(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pcs, pu, u.Stride, null, 0);
             }
         }
 

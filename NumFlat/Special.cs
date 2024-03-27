@@ -77,12 +77,12 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Copies the lower triangular part to the upper triangular part to generate a Hermitian matrix.
+        /// Copies the upper triangular part to the lower triangular part to generate a Hermitian matrix.
         /// </summary>
         /// <param name="x">
         /// The target matrix.
         /// </param>
-        public static void LowerTriangularToHermitianInplace(in Mat<double> x)
+        public static void UpperTriangularToHermitianInplace(in Mat<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfNonSquare(x, nameof(x));
@@ -95,20 +95,20 @@ namespace NumFlat
                 var count = x.RowCount - start;
                 if (count > 0)
                 {
-                    var src = cols[i].Subvector(start, count);
-                    var dst = rows[i].Subvector(start, count);
+                    var src = rows[i].Subvector(start, count);
+                    var dst = cols[i].Subvector(start, count);
                     src.CopyTo(dst);
                 }
             }
         }
 
         /// <summary>
-        /// Copies the lower triangular part to the upper triangular part to generate a Hermitian matrix.
+        /// Copies the upper triangular part to the lower triangular part to generate a Hermitian matrix.
         /// </summary>
         /// <param name="x">
         /// The target matrix.
         /// </param>
-        public static void LowerTriangularToHermitianInplace(in Mat<Complex> x)
+        public static void UpperTriangularToHermitianInplace(in Mat<Complex> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfNonSquare(x, nameof(x));
@@ -121,8 +121,8 @@ namespace NumFlat
                 var count = x.RowCount - start;
                 if (count > 0)
                 {
-                    var src = cols[i].Subvector(start, count);
-                    var dst = rows[i].Subvector(start, count);
+                    var src = rows[i].Subvector(start, count);
+                    var dst = cols[i].Subvector(start, count);
                     Vec.Conjugate(src, dst);
                 }
             }

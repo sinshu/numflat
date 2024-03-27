@@ -1,8 +1,9 @@
 # NumFlat
 
-NumFlat is a numerical computation library for C#.
-The goal of this project is to create an easy-to-use C# wrapper for [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS).
-It aims to enable writing numerical computation processes related to linear algebra in natural C# code.
+NumFlat is a numerical computation library written entirely in C#.
+
+The goal of this project is to provide a lightweight package for handling various mathematical and computational tasks,
+including linear algebra, multivariable analysis, clustering, and signal processing, using only C#.
 
 
 
@@ -28,17 +29,7 @@ Other types can be used as well, but support beyond simple arithmetic operations
 Install-Package NumFlat
 ```
 
-This package does not include the native binary for OpenBLAS.
-[The `OpenBlasSharp.Windows` package](https://www.nuget.org/packages/OpenBlasSharp.Windows) provides the native binary for Windows.
-
-```ps1
-Install-Package OpenBlasSharp.Windows
-```
-
-Or, [download the compiled binary](https://github.com/OpenMathLib/OpenBLAS/releases) and put `libopenblas.dll` in the same directory as the executable file.
-Binaries for both x86 and x64 architectures are supported, but [the ILP64 build with the `x64-64` suffix](https://github.com/OpenMathLib/OpenBLAS/blob/develop/docs/distributing.md#ilp64-interface-builds) is not supported.
-
-All the classes are in the `NumFlat` namespace.
+Most classes are in the `NumFlat` namespace.
 
 ```cs
 using NumFlat;
@@ -596,7 +587,6 @@ samples = spectrum.Ifft();
 
 ## Todo
 
-* ✅ OpenBLAS wrapper (see [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp))
 * ✅ Vector operations
     - ✅ Builder
     - ✅ Indexer
@@ -667,8 +657,7 @@ samples = spectrum.Ifft();
 
 NumFlat depends on the following libraries.
 
-* [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS) ([BSD-3-Clause license](https://github.com/OpenMathLib/OpenBLAS/blob/develop/LICENSE))
-* [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp) ([BSD-3-Clause license](https://github.com/sinshu/OpenBlasSharp/blob/main/LICENSE.txt))
+* [MatFlat](https://github.com/sinshu/matflat) ([MIT license](https://github.com/sinshu/matflat/blob/main/LICENSE.txt))
 * [FftFlat](https://github.com/sinshu/fftflat) ([MIT license](https://github.com/sinshu/fftflat/blob/main/LICENSE.md))
 
 NumFlat is available under [the MIT license](LICENSE.txt).

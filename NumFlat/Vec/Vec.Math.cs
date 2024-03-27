@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -367,7 +367,7 @@ namespace NumFlat
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             {
-                return Blas.Sdot(x.Count, px, x.Stride, py, y.Stride);
+                return Blas.Dot(x.Count, px, x.Stride, py, y.Stride);
             }
         }
 
@@ -392,7 +392,7 @@ namespace NumFlat
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
             {
-                return Blas.Ddot(x.Count, px, x.Stride, py, y.Stride);
+                return Blas.Dot(x.Count, px, x.Stride, py, y.Stride);
             }
         }
 
@@ -422,11 +422,11 @@ namespace NumFlat
             {
                 if (conjugateX)
                 {
-                    return Blas.Zdotc(x.Count, px, x.Stride, py, y.Stride);
+                    return Blas.DotConj(x.Count, px, x.Stride, py, y.Stride);
                 }
                 else
                 {
-                    return Blas.Zdotu(x.Count, px, x.Stride, py, y.Stride);
+                    return Blas.Dot(x.Count, px, x.Stride, py, y.Stride);
                 }
             }
         }
@@ -462,19 +462,11 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
             }
 
-            destination.Clear();
-
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                Blas.Sger(
-                    Order.ColMajor,
-                    destination.RowCount, destination.ColCount,
-                    1.0F,
-                    px, x.Stride,
-                    py, y.Stride,
-                    pd, destination.Stride);
+                Blas.Outer(destination.RowCount, destination.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
@@ -509,19 +501,11 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
             }
 
-            destination.Clear();
-
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
             fixed (double* pd = destination.Memory.Span)
             {
-                Blas.Dger(
-                    Order.ColMajor,
-                    destination.RowCount, destination.ColCount,
-                    1.0,
-                    px, x.Stride,
-                    py, y.Stride,
-                    pd, destination.Stride);
+                Blas.Outer(destination.RowCount, destination.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
@@ -559,33 +543,17 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
             }
 
-            var one = Complex.One;
-
-            destination.Clear();
-
             fixed (Complex* px = x.Memory.Span)
             fixed (Complex* py = y.Memory.Span)
             fixed (Complex* pd = destination.Memory.Span)
             {
                 if (conjugateY)
                 {
-                    Blas.Zgerc(
-                        Order.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        &one,
-                        px, x.Stride,
-                        py, y.Stride,
-                        pd, destination.Stride);
+                    Blas.OuterConj(destination.RowCount, destination.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
                 }
                 else
                 {
-                    Blas.Zgeru(
-                        Order.ColMajor,
-                        destination.RowCount, destination.ColCount,
-                        &one,
-                        px, x.Stride,
-                        py, y.Stride,
-                        pd, destination.Stride);
+                    Blas.Outer(destination.RowCount, destination.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
                 }
             }
         }

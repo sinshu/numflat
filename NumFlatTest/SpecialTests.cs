@@ -38,12 +38,12 @@ namespace NumFlatTest
         [TestCase(2, 3)]
         [TestCase(3, 3)]
         [TestCase(3, 4)]
-        public void LowerTriangularToHermitianInplace_Double(int n, int stride)
+        public void UpperTriangularToHermitianInplace_Double(int n, int stride)
         {
             var original = TestMatrix.RandomDouble(42, n, n, n);
 
             var x = TestMatrix.RandomDouble(42, n, n, stride);
-            Special.LowerTriangularToHermitianInplace(x);
+            Special.UpperTriangularToHermitianInplace(x);
 
             for (var row = 0; row < n; row++)
             {
@@ -51,7 +51,7 @@ namespace NumFlatTest
                 {
                     Assert.That(x[row, col], Is.EqualTo(x[col, row]));
 
-                    if (row >= col)
+                    if (row <= col)
                     {
                         Assert.That(x[row, col], Is.EqualTo(original[row, col]));
                     }
@@ -67,12 +67,12 @@ namespace NumFlatTest
         [TestCase(2, 3)]
         [TestCase(3, 3)]
         [TestCase(3, 4)]
-        public void LowerTriangularToHermitianInplace_Complex(int n, int stride)
+        public void UpperTriangularToHermitianInplace_Complex(int n, int stride)
         {
             var original = TestMatrix.RandomComplex(42, n, n, n);
 
             var x = TestMatrix.RandomComplex(42, n, n, stride);
-            Special.LowerTriangularToHermitianInplace(x);
+            Special.UpperTriangularToHermitianInplace(x);
 
             for (var row = 0; row < n; row++)
             {
@@ -83,7 +83,7 @@ namespace NumFlatTest
                         Assert.That(x[row, col], Is.EqualTo(NumFlat.ComplexExtensions.Conjugate(x[col, row])));
                     }
 
-                    if (row >= col)
+                    if (row <= col)
                     {
                         Assert.That(x[row, col], Is.EqualTo(original[row, col]));
                     }

@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -20,13 +20,13 @@ namespace NumFlat
         /// <param name="b">
         /// The source matrix B.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public GeneralizedEigenValueDecompositionDouble(in Mat<double> a, in Mat<double> b)
         {
@@ -58,13 +58,13 @@ namespace NumFlat
         /// <param name="v">
         /// The destination of the the matrix V.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static unsafe void Decompose(in Mat<double> a, in Mat<double> b, in Vec<double> d, in Mat<double> v)
         {
@@ -92,26 +92,7 @@ namespace NumFlat
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (double* pcd = cd.Memory.Span)
             {
-                var info = Lapack.Dsygv(
-                    MatrixLayout.ColMajor,
-                    1,
-                    'V',
-                    'L',
-                    v.RowCount,
-                    pv, v.Stride,
-                    ptmp, tmp.Stride,
-                    pcd);
-                if (info != LapackInfo.None)
-                {
-                    if ((int)info <= d.Count)
-                    {
-                        throw new LapackException("The GEVD did not converge.", nameof(Lapack.Dsygv), (int)info);
-                    }
-                    else
-                    {
-                        throw new LapackException("The right-hand side matrix is ill-conditioned.", nameof(Lapack.Dsygv), (int)info);
-                    }
-                }
+                Factorization.Gevd(v.RowCount, pv, v.Stride, ptmp, tmp.Stride, pcd);
             }
         }
 

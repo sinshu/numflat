@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Buffers;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -11,8 +10,8 @@ namespace NumFlat
     {
         private Mat<float> l;
         private Mat<float> u;
-        private int[] pivot;
         private int[] permutation;
+        private int pivotSign;
 
         /// <summary>
         /// Decomposes the matrix using LU decomposition.
@@ -20,9 +19,6 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
         public LuDecompositionSingle(in Mat<float> a) : base(a)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
@@ -31,25 +27,14 @@ namespace NumFlat
 
             var l = new Mat<float>(a.RowCount, min);
             var u = new Mat<float>(min, a.ColCount);
-            var pivot = new int[min];
+            var permutation = new int[a.RowCount];
 
-
-            Decompose(a, l, u, pivot);
+            var pivotSign = Decompose(a, l, u, permutation);
 
             this.l = l;
             this.u = u;
-            this.pivot = pivot;
-
-            permutation = new int[a.RowCount];
-            for (var i = 0; i < a.RowCount; i++)
-            {
-                permutation[i] = i;
-            }
-            for (var i = 0; i < min; i++)
-            {
-                var j = pivot[i];
-                (permutation[i], permutation[j]) = (permutation[j], permutation[i]);
-            }
+            this.permutation = permutation;
+            this.pivotSign = pivotSign;
         }
 
         /// <summary>
@@ -64,13 +49,13 @@ namespace NumFlat
         /// <param name="u">
         /// The destination of the matrix U.
         /// </param>
-        /// <param name="piv">
-        /// The destination of the pivot info.
+        /// <param name="permutation">
+        /// The destination of the permutation info.
         /// </param>
-        /// <exception cref="LapackException">
-        /// The matrix is ill-conditioned.
-        /// </exception>
-        public unsafe static void Decompose(in Mat<float> a, in Mat<float> l, in Mat<float> u, Span<int> piv)
+        /// <returns>
+        /// The pivot sign.
+        /// </returns>
+        public unsafe static int Decompose(in Mat<float> a, in Mat<float> l, in Mat<float> u, Span<int> permutation)
         {
             ThrowHelper.ThrowIfEmpty(a, nameof(a));
             ThrowHelper.ThrowIfEmpty(l, nameof(l));
@@ -98,35 +83,25 @@ namespace NumFlat
                 throw new ArgumentException("'u.ColCount' must match 'a.ColCount'.");
             }
 
-            if (piv.Length != min)
+            if (permutation.Length != a.RowCount)
             {
-                throw new ArgumentException("'piv.Length' must match 'min(a.RowCount, a.ColCount)'");
+                throw new ArgumentException("'permutation.Length' must match 'a.RowCount'.");
             }
 
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
+            int pivotSign;
             fixed (float* ptmp = tmp.Memory.Span)
-            fixed (int* ppiv = piv)
+            fixed (int* pprm = permutation)
             {
-                var info = Lapack.Sgetrf(
-                    MatrixLayout.ColMajor,
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    ppiv);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
-                }
+                pivotSign = Factorization.Lu(tmp.RowCount, tmp.ColCount, ptmp, tmp.Stride, pprm);
             }
 
             ExtractL(tmp, l);
             ExtractU(tmp, u);
 
-            for (var i = 0; i < piv.Length; i++)
-            {
-                piv[i] -= 1;
-            }
+            return pivotSign;
         }
 
         /// <inheritdoc/>
@@ -152,23 +127,8 @@ namespace NumFlat
             fixed (float* pu = u.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                Blas.Strsv(
-                    Order.ColMajor,
-                    Uplo.Lower,
-                    Transpose.NoTrans,
-                    Diag.Unit,
-                    l.RowCount,
-                    pl, l.Stride,
-                    pd, destination.Stride);
-
-                Blas.Strsv(
-                    Order.ColMajor,
-                    Uplo.Upper,
-                    Transpose.NoTrans,
-                    Diag.NonUnit,
-                    u.RowCount,
-                    pu, u.Stride,
-                    pd, destination.Stride);
+                Blas.SolveTriangular(Uplo.Lower, Transpose.NoTrans, l.RowCount, pl, l.Stride, pd, destination.Stride);
+                Blas.SolveTriangular(Uplo.Upper, Transpose.NoTrans, u.RowCount, pu, u.Stride, pd, destination.Stride);
             }
         }
 
@@ -201,18 +161,16 @@ namespace NumFlat
         /// </returns>
         public float Determinant()
         {
-            var fu = u.GetUnsafeFastIndexer();
-            var determinant = 1.0F;
-            for (var i = 0; i < pivot.Length; i++)
+            if (l.RowCount != u.ColCount)
             {
-                if (pivot[i] == i)
-                {
-                    determinant *= fu[i, i];
-                }
-                else
-                {
-                    determinant *= -fu[i, i];
-                }
+                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
+            }
+
+            var fu = u.GetUnsafeFastIndexer();
+            var determinant = (float)pivotSign;
+            for (var i = 0; i < u.RowCount; i++)
+            {
+                determinant *= fu[i, i];
             }
             return determinant;
         }

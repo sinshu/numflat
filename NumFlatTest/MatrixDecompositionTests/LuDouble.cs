@@ -22,11 +22,11 @@ namespace NumFlatTest.MatrixDecompositionTests
             var a = TestMatrix.RandomDouble(42, m, n, aStride);
             var l = TestMatrix.RandomDouble(57, m, Math.Min(m, n), lStride);
             var u = TestMatrix.RandomDouble(66, Math.Min(m, n), n, uStride);
-            var piv = new int[Math.Min(m, n)];
+            var prm = new int[m];
 
             using (a.EnsureUnchanged())
             {
-                LuDecompositionDouble.Decompose(a, l, u, piv);
+                LuDecompositionDouble.Decompose(a, l, u, prm);
             }
 
             var reconstructed = a.Lu().GetPermutationMatrix() * l * u;

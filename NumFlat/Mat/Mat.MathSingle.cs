@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -56,21 +56,13 @@ namespace NumFlat
                 }
             }
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                Blas.Sgemv(
-                    Order.ColMajor,
-                    transX,
-                    x.RowCount, x.ColCount,
-                    1.0F,
-                    px, x.Stride,
-                    py, y.Stride,
-                    0.0F,
-                    pd, destination.Stride);
+                Blas.MulMatVec(transX, x.RowCount, x.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
@@ -101,23 +93,15 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
+            var transY = transposeY ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
             var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                Blas.Sgemm(
-                    Order.ColMajor,
-                    transX, transY,
-                    m, n, k,
-                    1.0F,
-                    px, x.Stride,
-                    py, y.Stride,
-                    0.0F,
-                    pd, destination.Stride);
+                Blas.MulMatMat(transX, transY, m, n, k, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
@@ -141,30 +125,19 @@ namespace NumFlat
             using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
             var piv = upiv.Memory.Span;
 
+            int sign;
             fixed (float* ptmp = tmp.Memory.Span)
             fixed (int* ppiv = piv)
             {
-                var info = Lapack.Sgetrf(
-                    MatrixLayout.ColMajor,
-                    tmp.RowCount, tmp.ColCount,
-                    ptmp, tmp.Stride,
-                    ppiv);
+                sign = Factorization.Lu(tmp.RowCount, tmp.RowCount, ptmp, tmp.Stride, ppiv);
             }
 
             var ftmp = tmp.GetUnsafeFastIndexer();
-            var determinant = 1.0F;
+            var determinant = (float)sign;
             for (var i = 0; i < tmp.RowCount; i++)
             {
-                if (piv[i] - 1 == i)
-                {
-                    determinant *= ftmp[i, i];
-                }
-                else
-                {
-                    determinant *= -ftmp[i, i];
-                }
+                determinant *= ftmp[i, i];
             }
-
             return determinant;
         }
 
@@ -177,7 +150,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the matrix inversion.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         public static unsafe void Inverse(in Mat<float> x, in Mat<float> destination)
@@ -195,25 +168,8 @@ namespace NumFlat
             fixed (float* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)
             {
-                var info = Lapack.Sgetrf(
-                    MatrixLayout.ColMajor,
-                    destination.RowCount, destination.ColCount,
-                    pd, destination.Stride,
-                    ppiv);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetrf), (int)info);
-                }
-
-                info = Lapack.Sgetri(
-                    MatrixLayout.ColMajor,
-                    destination.RowCount,
-                    pd, destination.Stride,
-                    ppiv);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The matrix is ill-conditioned.", nameof(Lapack.Sgetri), (int)info);
-                }
+                Factorization.Lu(destination.RowCount, destination.RowCount, pd, destination.Stride, ppiv);
+                Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
             }
         }
 
@@ -229,7 +185,7 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static int Rank(in this Mat<float> x, float tolerance)
@@ -269,7 +225,7 @@ namespace NumFlat
         /// <returns>
         /// The rank of the matrix.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static int Rank(in this Mat<float> x)
@@ -290,7 +246,7 @@ namespace NumFlat
         /// <param name="tolerance">
         /// Singular values below this threshold will be replaced with zero.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static void PseudoInverse(in Mat<float> a, in Mat<float> destination, float tolerance)
@@ -367,7 +323,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination the pseudo inversion.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         public static void PseudoInverse(in Mat<float> a, in Mat<float> destination)
