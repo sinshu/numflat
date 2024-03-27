@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>math;numerics;linear;algebra;matrix;vector;lapack;blas;openblas;fft;analysis;clustering</PackageTags>
+    <PackageTags>math;numerics;linear;algebra;matrix;vector;fft;analysis;clustering</PackageTags>
     <PackageReleaseNotes>https://github.com/sinshu/numflat/blob/main/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
