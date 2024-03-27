@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="OpenBlasSharp.Windows" Version="2024.1.25" />
   </ItemGroup>
 
   <ItemGroup>
