@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -18,13 +18,13 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be decomposed.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public EigenValueDecompositionComplex(in Mat<Complex> a) : base(a)
         {
@@ -51,13 +51,13 @@ namespace NumFlat
         /// <param name="v">
         /// The destination of the the matrix V.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static unsafe void Decompose(in Mat<Complex> a, in Vec<double> d, in Mat<Complex> v)
         {
@@ -84,17 +84,7 @@ namespace NumFlat
             fixed (Complex* pv = v.Memory.Span)
             fixed (double* pcd = cd.Memory.Span)
             {
-                var info = Lapack.Zheev(
-                    MatrixLayout.ColMajor,
-                    'V',
-                    'L',
-                    v.RowCount,
-                    pv, v.Stride,
-                    pcd);
-                if (info != LapackInfo.None)
-                {
-                    throw new LapackException("The EVD did not converge.", nameof(Lapack.Zheev), (int)info);
-                }
+                Factorization.Evd(v.RowCount, pv, v.Stride, pcd);
             }
         }
 

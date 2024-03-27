@@ -501,8 +501,6 @@ namespace NumFlat
                 throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
             }
 
-            destination.Clear();
-
             fixed (double* px = x.Memory.Span)
             fixed (double* py = y.Memory.Span)
             fixed (double* pd = destination.Memory.Span)
@@ -544,10 +542,6 @@ namespace NumFlat
             {
                 throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
             }
-
-            var one = Complex.One;
-
-            destination.Clear();
 
             fixed (Complex* px = x.Memory.Span)
             fixed (Complex* py = y.Memory.Span)
