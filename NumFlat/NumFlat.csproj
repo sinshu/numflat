@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="FftFlat" Version="1.0.1" />
-    <PackageReference Include="MatFlat" Version="0.7.0" />
+    <PackageReference Include="MatFlat" Version="0.8.0" />
     <PackageReference Include="OpenBlasSharp" Version="0.3.2" />
   </ItemGroup>
 

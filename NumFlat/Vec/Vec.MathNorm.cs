@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using OpenBlasSharp;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -21,7 +21,7 @@ namespace NumFlat
 
             fixed (float* px = x.Memory.Span)
             {
-                return Blas.Snrm2(x.Count, px, x.Stride);
+                return Blas.L2Norm(x.Count, px, x.Stride);
             }
         }
 
@@ -40,7 +40,7 @@ namespace NumFlat
 
             fixed (double* px = x.Memory.Span)
             {
-                return Blas.Dnrm2(x.Count, px, x.Stride);
+                return Blas.L2Norm(x.Count, px, x.Stride);
             }
         }
 
@@ -59,7 +59,7 @@ namespace NumFlat
 
             fixed (Complex* px = x.Memory.Span)
             {
-                return Blas.Dznrm2(x.Count, px, x.Stride);
+                return Blas.L2Norm(x.Count, px, x.Stride);
             }
         }
 
