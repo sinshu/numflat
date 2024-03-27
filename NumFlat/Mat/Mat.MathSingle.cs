@@ -56,21 +56,13 @@ namespace NumFlat
                 }
             }
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                OpenBlasSharp.Blas.Sgemv(
-                    OpenBlasSharp.Order.ColMajor,
-                    transX,
-                    x.RowCount, x.ColCount,
-                    1.0F,
-                    px, x.Stride,
-                    py, y.Stride,
-                    0.0F,
-                    pd, destination.Stride);
+                Blas.MulMatVec(transX, x.RowCount, x.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 

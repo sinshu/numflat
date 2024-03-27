@@ -60,10 +60,10 @@ namespace NumFlat
                 }
             }
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
             if (conjugateX)
             {
-                transX = transX == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
+                transX = transX == MatFlat.Transpose.Trans ? MatFlat.Transpose.ConjTrans : MatFlat.Transpose.ConjNoTrans;
             }
 
             var one = Complex.One;
@@ -73,15 +73,7 @@ namespace NumFlat
             fixed (Complex* py = y.Memory.Span)
             fixed (Complex* pd = destination.Memory.Span)
             {
-                OpenBlasSharp.Blas.Zgemv(
-                    OpenBlasSharp.Order.ColMajor,
-                    transX,
-                    x.RowCount, x.ColCount,
-                    &one,
-                    px, x.Stride,
-                    py, y.Stride,
-                    &zero,
-                    pd, destination.Stride);
+                Blas.MulMatVec(transX, x.RowCount, x.ColCount, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
