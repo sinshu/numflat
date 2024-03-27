@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using OpenBlasSharp;
 using MatFlat;
 
 namespace NumFlat
@@ -64,7 +63,7 @@ namespace NumFlat
             fixed (float* pd = destination.Memory.Span)
             {
                 OpenBlasSharp.Blas.Sgemv(
-                    Order.ColMajor,
+                    OpenBlasSharp.Order.ColMajor,
                     transX,
                     x.RowCount, x.ColCount,
                     1.0F,
@@ -102,23 +101,15 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
+            var transY = transposeY ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
             var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
 
             fixed (float* px = x.Memory.Span)
             fixed (float* py = y.Memory.Span)
             fixed (float* pd = destination.Memory.Span)
             {
-                OpenBlasSharp.Blas.Sgemm(
-                    Order.ColMajor,
-                    transX, transY,
-                    m, n, k,
-                    1.0F,
-                    px, x.Stride,
-                    py, y.Stride,
-                    0.0F,
-                    pd, destination.Stride);
+                Blas.MulMatMat(transX, transY, m, n, k, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 

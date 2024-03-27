@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Numerics;
-using OpenBlasSharp;
 using MatFlat;
 
 namespace NumFlat
@@ -75,7 +74,7 @@ namespace NumFlat
             fixed (Complex* pd = destination.Memory.Span)
             {
                 OpenBlasSharp.Blas.Zgemv(
-                    Order.ColMajor,
+                    OpenBlasSharp.Order.ColMajor,
                     transX,
                     x.RowCount, x.ColCount,
                     &one,
@@ -119,16 +118,16 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            var transX = transposeX ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
-            var transY = transposeY ? OpenBlasSharp.Transpose.Trans : OpenBlasSharp.Transpose.NoTrans;
+            var transX = transposeX ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
+            var transY = transposeY ? MatFlat.Transpose.Trans : MatFlat.Transpose.NoTrans;
             var (m, n, k) = GetMulArgs(x, transposeX, y, transposeY, destination);
             if (conjugateX)
             {
-                transX = transX == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
+                transX = transX == MatFlat.Transpose.Trans ? MatFlat.Transpose.ConjTrans : MatFlat.Transpose.ConjNoTrans;
             }
             if (conjugateY)
             {
-                transY = transY == OpenBlasSharp.Transpose.Trans ? OpenBlasSharp.Transpose.ConjTrans : OpenBlasSharp.Transpose.ConjNoTrans;
+                transY = transY == MatFlat.Transpose.Trans ? MatFlat.Transpose.ConjTrans : MatFlat.Transpose.ConjNoTrans;
             }
 
             var one = Complex.One;
@@ -138,15 +137,7 @@ namespace NumFlat
             fixed (Complex* py = y.Memory.Span)
             fixed (Complex* pd = destination.Memory.Span)
             {
-                OpenBlasSharp.Blas.Zgemm(
-                    Order.ColMajor,
-                    transX, transY,
-                    m, n, k,
-                    &one,
-                    px, x.Stride,
-                    py, y.Stride,
-                    &zero,
-                    pd, destination.Stride);
+                Blas.MulMatMat(transX, transY, m, n, k, px, x.Stride, py, y.Stride, pd, destination.Stride);
             }
         }
 
