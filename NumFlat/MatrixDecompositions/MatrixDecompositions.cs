@@ -24,7 +24,7 @@ namespace NumFlat
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionSingle Evd(in this Mat<float> a)
         {
@@ -48,7 +48,7 @@ namespace NumFlat
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionDouble Evd(in this Mat<double> a)
         {
@@ -72,7 +72,7 @@ namespace NumFlat
         /// <remarks>
         /// The matrix to be decomposed must be Hermitian symmetric.
         /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the lower triangular part of the input matrix is referenced, and the rest is ignored.
+        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionComplex Evd(in this Mat<Complex> a)
         {
