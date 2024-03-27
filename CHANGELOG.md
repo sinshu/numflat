@@ -1,3 +1,7 @@
+# v0.9.0
+
+* Dropped native dependencies.
+
 # v0.8.1
 
 * Added `NumFlat.IO.CsvFile` class for CSV file IO.
