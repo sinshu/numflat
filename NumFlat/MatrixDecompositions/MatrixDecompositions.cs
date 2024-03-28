@@ -18,7 +18,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="EigenValueDecompositionSingle"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
@@ -42,7 +42,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="EigenValueDecompositionDouble"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
@@ -66,7 +66,7 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="EigenValueDecompositionComplex"/>.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>

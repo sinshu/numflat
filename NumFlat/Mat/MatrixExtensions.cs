@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using MatFlat;
 
 namespace NumFlat
 {
@@ -152,7 +153,7 @@ namespace NumFlat
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
@@ -182,7 +183,7 @@ namespace NumFlat
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
@@ -212,7 +213,7 @@ namespace NumFlat
         /// <returns>
         /// The inverted matrix.
         /// </returns>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
@@ -239,7 +240,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be inverted.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
@@ -264,7 +265,7 @@ namespace NumFlat
         /// <param name="tolerance">
         /// Singular values below this threshold will be replaced with zero.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
@@ -286,7 +287,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be inverted.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
@@ -311,7 +312,7 @@ namespace NumFlat
         /// <param name="tolerance">
         /// Singular values below this threshold will be replaced with zero.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
@@ -333,7 +334,7 @@ namespace NumFlat
         /// <param name="a">
         /// The matrix to be inverted.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
@@ -358,7 +359,7 @@ namespace NumFlat
         /// <param name="tolerance">
         /// Singular values below this threshold will be replaced with zero.
         /// </param>
-        /// <exception cref="LapackException">
+        /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
         /// </exception>
         /// <remarks>
