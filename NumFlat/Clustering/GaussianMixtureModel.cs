@@ -77,7 +77,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount == 1)
             {
-                this.components = new Component[] { new Component(1.0, xs.ToGaussian(regularization)) };
+                this.components = [new Component(1.0, xs.ToGaussian(regularization))];
                 return;
             }
 

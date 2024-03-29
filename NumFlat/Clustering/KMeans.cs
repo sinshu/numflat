@@ -53,7 +53,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount == 1)
             {
-                this.centroids = new Vec<double>[] { xs.Mean() };
+                this.centroids = [xs.Mean()];
                 return;
             }
 
