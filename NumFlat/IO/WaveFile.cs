@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace NumFlat.IO
 {

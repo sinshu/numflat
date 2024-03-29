@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace NumFlat
 {
@@ -17,6 +18,7 @@ namespace NumFlat
         /// <returns>
         /// The conjugated complex number.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Complex Conjugate(this Complex value)
         {
             return new Complex(value.Real, -value.Imaginary);
@@ -31,6 +33,7 @@ namespace NumFlat
         /// <returns>
         /// The the squared magnitude.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double MagnitudeSquared(this Complex value)
         {
             return value.Real * value.Real + value.Imaginary * value.Imaginary;
