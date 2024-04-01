@@ -120,6 +120,11 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
+            if (q.RowCount != q.ColCount)
+            {
+                throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
+            }
+
             var fr = r.GetUnsafeFastIndexer();
             var determinant = 1.0;
             for (var i = 0; i < r.RowCount; i++)
@@ -137,6 +142,11 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
+            if (q.RowCount != q.ColCount)
+            {
+                throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
+            }
+
             var fr = r.GetUnsafeFastIndexer();
             var logDeterminant = 0.0;
             for (var i = 0; i < r.RowCount; i++)

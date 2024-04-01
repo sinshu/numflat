@@ -195,6 +195,11 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
+            if (u.RowCount != vt.ColCount)
+            {
+                throw new InvalidOperationException("Calling this method against a non-square SVD is not allowed.");
+            }
+
             var determinant = 1.0;
             foreach (var value in s.GetUnsafeFastIndexer())
             {
@@ -211,6 +216,11 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
+            if (u.RowCount != vt.ColCount)
+            {
+                throw new InvalidOperationException("Calling this method against a non-square SVD is not allowed.");
+            }
+
             var logDeterminant = 0.0;
             foreach (var value in s.GetUnsafeFastIndexer())
             {
