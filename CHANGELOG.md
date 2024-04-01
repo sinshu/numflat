@@ -1,3 +1,8 @@
+# v0.9.1
+
+* Removed unnecessary code that handle native dependencies.
+* `Determinant()` of matrix decomposition object for non-square matrices now throws an exception.
+
 # v0.9.0
 
 * Dropped native dependencies.
