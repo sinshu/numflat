@@ -507,44 +507,5 @@ namespace NumFlat
                 od += destination.Stride;
             }
         }
-
-        private static (int m, int n, int k) GetMulArgs<T>(in Mat<T> x, bool transposeX, in Mat<T> y, bool transposeY, in Mat<T> destination) where T : unmanaged, INumberBase<T>
-        {
-            var xRowCount = (count: x.RowCount, name: "x.RowCount");
-            var xColCount = (count: x.ColCount, name: "x.ColCount");
-            var yRowCount = (count: y.RowCount, name: "y.RowCount");
-            var yColCount = (count: y.ColCount, name: "y.ColCount");
-
-            if (transposeX)
-            {
-                (xRowCount, xColCount) = (xColCount, xRowCount);
-            }
-
-            if (transposeY)
-            {
-                (yRowCount, yColCount) = (yColCount, yRowCount);
-            }
-
-            if (yRowCount.count != xColCount.count)
-            {
-                throw new ArgumentException($"'{yRowCount.name}' must match '{xColCount.name}'.");
-            }
-
-            var m = xRowCount;
-            var n = yColCount;
-            var k = xColCount;
-
-            if (destination.RowCount != m.count)
-            {
-                throw new ArgumentException($"'destination.RowCount' must match '{m.name}'.");
-            }
-
-            if (destination.ColCount != n.count)
-            {
-                throw new ArgumentException($"'destination.ColCount' must match '{n.name}'.");
-            }
-
-            return (m.count, n.count, k.count);
-        }
     }
 }
