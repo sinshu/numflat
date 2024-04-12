@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
-    public class MatTests_Math
+    public class GenericMathTests
     {
         [TestCase(1, 1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4, 5)]
@@ -56,7 +56,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 3.3, 5)]
         [TestCase(3, 2, 3, 4.7, 6)]
         [TestCase(3, 2, 6, 4.8, 3)]
-        public void Add_Scalar(int rowCount, int colCount, int xStride, double y, int dstStride)
+        public void AddScalar(int rowCount, int colCount, int xStride, double y, int dstStride)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
@@ -120,7 +120,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 3.3, 5)]
         [TestCase(3, 2, 3, 4.7, 6)]
         [TestCase(3, 2, 6, 4.8, 3)]
-        public void Sub_Scalar(int rowCount, int colCount, int xStride, double y, int dstStride)
+        public void SubScalar(int rowCount, int colCount, int xStride, double y, int dstStride)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 

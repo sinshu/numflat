@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
-    public class MatTests_Operators
+    public class OperatorTests
     {
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]
@@ -54,7 +54,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4)]
         [TestCase(3, 2, 3)]
         [TestCase(3, 2, 6)]
-        public void Add_Scalar(int rowCount, int colCount, int xStride)
+        public void AddScalar(int rowCount, int colCount, int xStride)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
             var y = new Random(57).NextDouble();
@@ -127,7 +127,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4)]
         [TestCase(3, 2, 3)]
         [TestCase(3, 2, 6)]
-        public void Sub_Scalar(int rowCount, int colCount, int xStride)
+        public void SubScalar(int rowCount, int colCount, int xStride)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
             var y = new Random(57).NextDouble();
@@ -169,7 +169,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 0.3)]
         [TestCase(3, 2, 3, 4.6)]
         [TestCase(3, 2, 6, 0.4)]
-        public void Mul_Scalar(int rowCount, int colCount, int xStride, double y)
+        public void MulScalar(int rowCount, int colCount, int xStride, double y)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 
@@ -202,7 +202,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 4, 0.3)]
         [TestCase(3, 2, 3, 4.6)]
         [TestCase(3, 2, 6, 0.4)]
-        public void Div(int rowCount, int colCount, int xStride, double y)
+        public void DivScalar(int rowCount, int colCount, int xStride, double y)
         {
             var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
 

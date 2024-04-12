@@ -5,7 +5,7 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
     public class MatrixInplaceOperationsTests
     {
@@ -34,7 +34,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void AddInplace_Scalar()
+        public void AddInplaceScalar()
         {
             var x = new double[,]
             {
@@ -77,7 +77,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void SubInplace_Scalar()
+        public void SubInplaceScalar()
         {
             var x = new double[,]
             {
@@ -186,7 +186,7 @@ namespace NumFlatTest
         [TestCase(2, 4)]
         [TestCase(3, 3)]
         [TestCase(3, 5)]
-        public void Transpose(int n, int xStride)
+        public void TransposeInplace(int n, int xStride)
         {
             var x = TestMatrix.RandomDouble(42, n, n, xStride);
 
@@ -217,7 +217,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void Conjugate()
+        public void ConjugateInplace()
         {
             var x = TestMatrix.RandomComplex(42, 10, 5, 11);
 
@@ -235,7 +235,7 @@ namespace NumFlatTest
         [TestCase(2, 4)]
         [TestCase(3, 3)]
         [TestCase(3, 5)]
-        public void ConjugateTranspose(int n, int xStride)
+        public void ConjugateTransposeInplace(int n, int xStride)
         {
             var x = TestMatrix.RandomComplex(42, n, n, xStride);
 
@@ -249,7 +249,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void InverseInplace_Single()
+        public void InverseInplaceSingle()
         {
             var x = TestMatrix.RandomSingle(42, 3, 3, 3);
 
@@ -261,7 +261,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void InverseInplace_Double()
+        public void InverseInplaceDouble()
         {
             var x = TestMatrix.RandomDouble(42, 3, 3, 3);
 
@@ -273,7 +273,7 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void InverseInplace_Complex()
+        public void InverseInplaceComplex()
         {
             var x = TestMatrix.RandomComplex(42, 3, 3, 3);
 

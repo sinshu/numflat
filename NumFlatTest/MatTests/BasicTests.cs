@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
-    public class MatTests
+    public class BasicTests
     {
         [TestCase(1, 1)]
         [TestCase(2, 2)]

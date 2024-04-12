@@ -5,7 +5,7 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
     public class MatrixExtensionsTests
     {

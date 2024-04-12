@@ -5,11 +5,11 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-using MMat = MathNet.Numerics.LinearAlgebra.Matrix<float>;
+using MMat = MathNet.Numerics.LinearAlgebra.Matrix<double>;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
-    public class MatTests_MathSingleMul
+    public class MulTestsDouble
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]
@@ -19,7 +19,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             Func<MMat, MMat> none = mat => mat;
             Func<MMat, MMat> transpose = mat => mat.Transpose();
@@ -37,21 +37,21 @@ namespace NumFlatTest
                     var mxt = xTranspose ? transpose : none;
                     var myt = yTranspose ? transpose : none;
 
-                    var x = TestMatrix.RandomSingle(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
-                    var y = TestMatrix.RandomSingle(57, yArgs.Item1, yArgs.Item2, yArgs.Item3);
+                    var x = TestMatrix.RandomDouble(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
+                    var y = TestMatrix.RandomDouble(57, yArgs.Item1, yArgs.Item2, yArgs.Item3);
 
                     var mx = Interop.ToMathNet(x);
                     var my = Interop.ToMathNet(y);
                     var expected = mxt(mx) * myt(my);
 
-                    var actual = TestMatrix.RandomSingle(0, m, n, dstStride);
+                    var actual = TestMatrix.RandomDouble(0, m, n, dstStride);
                     using (x.EnsureUnchanged())
                     using (y.EnsureUnchanged())
                     {
                         Mat.Mul(x, y, actual, xTranspose, yTranspose);
                     }
 
-                    NumAssert.AreSame(expected, actual, 1.0E-6F);
+                    NumAssert.AreSame(expected, actual, 1.0E-12);
 
                     TestMatrix.FailIfOutOfRangeWrite(actual);
                 }
@@ -68,7 +68,7 @@ namespace NumFlatTest
         [TestCase(2, 5, 3, 2, 2)]
         [TestCase(7, 3, 7, 1, 1)]
         [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        public void MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
             Func<MMat, MMat> none = mat => mat;
             Func<MMat, MMat> transpose = mat => mat.Transpose();
@@ -81,21 +81,21 @@ namespace NumFlatTest
 
                 var mxt = xTranspose ? transpose : none;
 
-                var x = TestMatrix.RandomSingle(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
-                var y = TestVector.RandomSingle(57, colCount, yStride);
+                var x = TestMatrix.RandomDouble(42, xArgs.Item1, xArgs.Item2, xArgs.Item3);
+                var y = TestVector.RandomDouble(57, colCount, yStride);
 
                 var mx = Interop.ToMathNet(x);
                 var my = Interop.ToMathNet(y);
                 var expected = mxt(mx) * my;
 
-                var actual = TestVector.RandomSingle(0, rowCount, dstStride);
+                var actual = TestVector.RandomDouble(0, rowCount, dstStride);
                 using (x.EnsureUnchanged())
                 using (y.EnsureUnchanged())
                 {
                     Mat.Mul(x, y, actual, xTranspose);
                 }
 
-                NumAssert.AreSame(expected, actual, 1.0E-6F);
+                NumAssert.AreSame(expected, actual, 1.0E-12);
 
                 TestVector.FailIfOutOfRangeWrite(actual);
             }
@@ -109,17 +109,17 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5)]
         [TestCase(8, 7, 9, 8, 9)]
         [TestCase(7, 8, 9, 10, 10)]
-        public void Operator_MatMat(int m, int n, int k, int xStride, int yStride)
+        public void OperatorMatMat(int m, int n, int k, int xStride, int yStride)
         {
-            var x = TestMatrix.RandomSingle(42, m, k, xStride);
-            var y = TestMatrix.RandomSingle(57, k, n, yStride);
+            var x = TestMatrix.RandomDouble(42, m, k, xStride);
+            var y = TestMatrix.RandomDouble(57, k, n, yStride);
 
             var mx = Interop.ToMathNet(x);
             var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;
-            NumAssert.AreSame(expected, actual, 1.0E-6F);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -129,17 +129,17 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 1)]
         [TestCase(7, 3, 7, 1)]
         [TestCase(7, 4, 7, 2)]
-        public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride)
+        public void OperatorMatVec(int rowCount, int colCount, int xStride, int yStride)
         {
-            var x = TestMatrix.RandomSingle(42, rowCount, colCount, xStride);
-            var y = TestVector.RandomSingle(57, colCount, yStride);
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var y = TestVector.RandomDouble(57, colCount, yStride);
 
             var mx = Interop.ToMathNet(x);
             var my = Interop.ToMathNet(y);
 
             var expected = mx * my;
             var actual = x * y;
-            NumAssert.AreSame(expected, actual, 1.0E-6F);
+            NumAssert.AreSame(expected, actual, 1.0E-12);
         }
     }
 }

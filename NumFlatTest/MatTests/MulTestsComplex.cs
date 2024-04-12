@@ -7,9 +7,9 @@ using NumFlat;
 
 using MMat = MathNet.Numerics.LinearAlgebra.Matrix<System.Numerics.Complex>;
 
-namespace NumFlatTest
+namespace NumFlatTest.MatTests
 {
-    public class MatTests_MathComplexMul
+    public class MulTestsComplex
     {
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(1, 1, 1, 2, 3, 4)]
@@ -19,7 +19,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5, 5)]
         [TestCase(8, 7, 9, 8, 9, 8)]
         [TestCase(7, 8, 9, 10, 10, 10)]
-        public void Mul_MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
+        public void MatMat(int m, int n, int k, int xStride, int yStride, int dstStride)
         {
             Func<MMat, MMat> none = mat => mat;
             Func<MMat, MMat> transpose = mat => mat.Transpose();
@@ -81,7 +81,7 @@ namespace NumFlatTest
         [TestCase(2, 5, 3, 2, 2)]
         [TestCase(7, 3, 7, 1, 1)]
         [TestCase(7, 4, 7, 2, 5)]
-        public void Mul_MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
+        public void MatVec(int rowCount, int colCount, int xStride, int yStride, int dstStride)
         {
             Func<MMat, MMat> none = mat => mat;
             Func<MMat, MMat> transpose = mat => mat.Transpose();
@@ -128,7 +128,7 @@ namespace NumFlatTest
         [TestCase(5, 4, 3, 5, 5)]
         [TestCase(8, 7, 9, 8, 9)]
         [TestCase(7, 8, 9, 10, 10)]
-        public void Operator_MatMat(int m, int n, int k, int xStride, int yStride)
+        public void OperatorMatMat(int m, int n, int k, int xStride, int yStride)
         {
             var x = TestMatrix.RandomComplex(42, m, k, xStride);
             var y = TestMatrix.RandomComplex(57, k, n, yStride);
@@ -148,7 +148,7 @@ namespace NumFlatTest
         [TestCase(2, 3, 3, 1)]
         [TestCase(7, 3, 7, 1)]
         [TestCase(7, 4, 7, 2)]
-        public void Operator_MatVec(int rowCount, int colCount, int xStride, int yStride)
+        public void OperatorMatVec(int rowCount, int colCount, int xStride, int yStride)
         {
             var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
             var y = TestVector.RandomComplex(57, colCount, yStride);
