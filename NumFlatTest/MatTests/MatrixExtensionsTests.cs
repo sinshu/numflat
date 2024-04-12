@@ -159,7 +159,7 @@ namespace NumFlatTest.MatTests
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void Inverse_Single(int n, int xStride)
+        public void InverseSingle(int n, int xStride)
         {
             var x = TestMatrix.RandomSingle(42, n, n, xStride);
 
@@ -179,7 +179,7 @@ namespace NumFlatTest.MatTests
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void Inverse_Double(int n, int xStride)
+        public void InverseDouble(int n, int xStride)
         {
             var x = TestMatrix.RandomDouble(42, n, n, xStride);
 
@@ -199,7 +199,7 @@ namespace NumFlatTest.MatTests
         [TestCase(3, 3)]
         [TestCase(3, 4)]
         [TestCase(4, 6)]
-        public void Inverse_Complex(int n, int xStride)
+        public void InverseComplex(int n, int xStride)
         {
             var x = TestMatrix.RandomComplex(42, n, n, xStride);
 
@@ -224,7 +224,7 @@ namespace NumFlatTest.MatTests
         [TestCase(2, 3, 4)]
         [TestCase(6, 3, 7)]
         [TestCase(4, 7, 5)]
-        public void PseudoInverse_Single(int rowCount, int colCount, int aStride)
+        public void PseudoInverseSingle(int rowCount, int colCount, int aStride)
         {
             var a = TestMatrix.RandomSingle(42, rowCount, colCount, aStride);
 
@@ -250,7 +250,7 @@ namespace NumFlatTest.MatTests
         [TestCase(2, 3, 4)]
         [TestCase(6, 3, 7)]
         [TestCase(4, 7, 5)]
-        public void PseudoInverse_Double(int rowCount, int colCount, int aStride)
+        public void PseudoInverseDouble(int rowCount, int colCount, int aStride)
         {
             var a = TestMatrix.RandomDouble(42, rowCount, colCount, aStride);
 
@@ -276,7 +276,7 @@ namespace NumFlatTest.MatTests
         [TestCase(2, 3, 4)]
         [TestCase(6, 3, 7)]
         [TestCase(4, 7, 5)]
-        public void PseudoInverse_Complex(int rowCount, int colCount, int aStride)
+        public void PseudoInverseComplex(int rowCount, int colCount, int aStride)
         {
             var a = TestMatrix.RandomComplex(42, rowCount, colCount, aStride);
 
@@ -312,7 +312,7 @@ namespace NumFlatTest.MatTests
 
             var expected = x.Cols.Select(col => col.Select(value => new Complex(0, -value))).ColsToMatrix();
 
-            Mat <Complex> actual;
+            Mat<Complex> actual;
             using (x.EnsureUnchanged())
             {
                 actual = x.Map(value => new Complex(0, -value));

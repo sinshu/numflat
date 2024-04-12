@@ -4,11 +4,10 @@ using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
-using System.Security.Principal;
 
-namespace NumFlatTest
+namespace NumFlatTest.VecTests
 {
-    public class VecTests
+    public class BasicTests
     {
         [TestCase(1)]
         [TestCase(2)]
