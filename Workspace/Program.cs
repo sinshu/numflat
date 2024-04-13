@@ -48,7 +48,7 @@ public class Program
             {
                 for (var i = 0; i < filter.Coefficients.Count; i++)
                 {
-                    writer.WriteLine((filter.StartFrequencyBinIndex + i) + sep + filter.Coefficients[i]);
+                    writer.WriteLine((filter.FrequencyBinStartIndex + i) + sep + filter.Coefficients[i]);
                 }
                 sep += ",";
             }
@@ -59,7 +59,7 @@ public class Program
         {
             for (var i = 0; i < filter.Coefficients.Count; i++)
             {
-                a[filter.StartFrequencyBinIndex + i] += filter.Coefficients[i];
+                a[filter.FrequencyBinStartIndex + i] += filter.Coefficients[i];
             }
         }
         var k = 0;

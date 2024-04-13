@@ -2,6 +2,9 @@
 
 namespace NumFlat.AudioFeatures
 {
+    /// <summary>
+    /// Represents a frequency domain triangular filter for audio feature extraction.
+    /// </summary>
     public sealed class TriangularFilter
     {
         private readonly int sampleRate;
@@ -10,9 +13,27 @@ namespace NumFlat.AudioFeatures
         private readonly double centerFrequency;
         private readonly double upperFrequency;
 
-        private readonly int startFrequencyBinIndex;
+        private readonly int frequencyBinStartIndex;
         private readonly Vec<double> coefficients;
 
+        /// <summary>
+        /// Initializes a new triangular filter.
+        /// </summary>
+        /// <param name="sampleRate">
+        /// The sample rate of the source signal.
+        /// </param>
+        /// <param name="fftLength">
+        /// The FFT length used for analysis.
+        /// </param>
+        /// <param name="lowerFrequency">
+        /// The lower frequency of the filter.
+        /// </param>
+        /// <param name="centerFrequency">
+        /// The center frequency of the filter.
+        /// </param>
+        /// <param name="upperFrequency">
+        /// The upper frequemcy of the filter.
+        /// </param>
         public TriangularFilter(int sampleRate, int fftLength, double lowerFrequency, double centerFrequency, double upperFrequency)
         {
             if (sampleRate <= 0)
@@ -60,9 +81,9 @@ namespace NumFlat.AudioFeatures
             var centerW = centerFrequency / sampleRate * fftLength;
             var upperW = upperFrequency / sampleRate * fftLength;
 
-            var startFrequencyBinIndex = (int)Math.Floor(lowerW);
-            var endFrequencyBinIndex = (int)Math.Ceiling(upperW);
-            var frequencyBinCount = endFrequencyBinIndex - startFrequencyBinIndex;
+            var frequencyBinStartIndex = (int)Math.Floor(lowerW);
+            var frequencyBinEndIndex = (int)Math.Ceiling(upperW);
+            var frequencyBinCount = frequencyBinEndIndex - frequencyBinStartIndex;
 
             var useLowerPart = centerW - lowerW > 0;
             var useUpperPart = upperW - centerW > 0;
@@ -71,7 +92,7 @@ namespace NumFlat.AudioFeatures
             var fc = coefficients.GetUnsafeFastIndexer();
             for (var i = 0; i < coefficients.Count; i++)
             {
-                var w = startFrequencyBinIndex + i;
+                var w = frequencyBinStartIndex + i;
 
                 if (useLowerPart && w <= (int)centerW)
                 {
@@ -92,16 +113,43 @@ namespace NumFlat.AudioFeatures
                 }
             }
 
-            this.startFrequencyBinIndex = startFrequencyBinIndex;
+            this.frequencyBinStartIndex = frequencyBinStartIndex;
             this.coefficients = coefficients;
         }
 
+        /// <summary>
+        /// The sample rate of the source signal.
+        /// </summary>
         public int SampleRate => sampleRate;
+
+        /// <summary>
+        /// The FFT length used for analysis.
+        /// </summary>
         public int FftLength => fftLength;
+
+        /// <summary>
+        /// The lower frequency of the filter.
+        /// </summary>
         public double LowerFrequency => lowerFrequency;
+
+        /// <summary>
+        /// The center frequency of the filter.
+        /// </summary>
         public double CenterFrequency => centerFrequency;
+
+        /// <summary>
+        /// The upper frequency of the filter.
+        /// </summary>
         public double UpperFrequency => upperFrequency;
-        public int StartFrequencyBinIndex => startFrequencyBinIndex;
+
+        /// <summary>
+        /// The frequency bin index corresponding to the starting point (lower frequency) of the filter.
+        /// </summary>
+        public int FrequencyBinStartIndex => frequencyBinStartIndex;
+
+        /// <summary>
+        /// The coefficients of the filter.
+        /// </summary>
         public ref readonly Vec<double> Coefficients => ref coefficients;
     }
 }
