@@ -42,7 +42,7 @@ namespace NumFlat.AudioFeatures
     public static class PowerSpectrumFeatureExtraction
     {
         /// <summary>
-        /// Transforms the source object to a feature vector.
+        /// Transforms a power spectrum to a feature vector.
         /// </summary>
         /// <param name="method">
         /// The feature extraction method.
