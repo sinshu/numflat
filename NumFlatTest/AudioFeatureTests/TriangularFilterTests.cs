@@ -7,7 +7,7 @@ using NUnit.Framework;
 using NumFlat;
 using NumFlat.AudioFeatures;
 
-namespace NumFlatTest.ClusteringTests
+namespace NumFlatTest.AufioFeatureTests
 {
     public class TriangularFilterTests
     {
