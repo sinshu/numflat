@@ -6,7 +6,7 @@ namespace NumFlat.AudioFeatures
     /// <summary>
     /// Provides a filter bank feature extractor.
     /// </summary>
-    public sealed class FilterBank
+    public sealed class FilterBank : IAudioFeatureExtractor<Vec<double>>
     {
         private int sampleRate;
         private int fftLength;
@@ -122,6 +122,24 @@ namespace NumFlat.AudioFeatures
             return 700 * (Math.Exp(x / 1127) - 1);
         }
 
+        /// <inheritdoc/>
+        public void Transform(in Vec<double> source, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.Count != filters.Length)
+            {
+                throw new ArgumentException("The length of the destination must match the number of filters.", nameof(destination));
+            }
+
+            var fd = destination.GetUnsafeFastIndexer();
+            for (var i = 0; i < filters.Length; i++)
+            {
+                fd[i] = filters[i].GetValue(source);
+            }
+        }
+
         /// <summary>
         /// The sample rate of the source signal.
         /// </summary>
@@ -151,5 +169,8 @@ namespace NumFlat.AudioFeatures
         /// The filters for feature extraction.
         /// </summary>
         public IReadOnlyList<TriangularFilter> Filters => filters;
+
+        /// <inheritdoc/>
+        public int FeatureLength => filters.Length;
     }
 }

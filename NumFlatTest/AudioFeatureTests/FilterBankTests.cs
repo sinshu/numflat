@@ -60,5 +60,26 @@ namespace NumFlatTest.AufioFeatureTests
                 Assert.That(d3 / pd3 > 1.2);
             }
         }
+
+        [TestCase(16000, 1024, 50, 7500, 10, 1, 1)]
+        [TestCase(16000, 1024, 0, 8000, 20, 2, 3)]
+        [TestCase(44100, 2048, 300, 20000, 15, 3, 7)]
+        public void Transform(int sampleRate, int fftLength, double minFreq, double maxFreq, int count, int xStride, int dstStride)
+        {
+            var fb = new FilterBank(sampleRate, fftLength, minFreq, maxFreq, count, FrequencyScale.Linear);
+
+            var x = TestVector.RandomDouble(42, fftLength, xStride);
+
+            var expected = new Vec<double>(count);
+            for (var i = 0; i < count; i++)
+            {
+                expected[i] = fb.Filters[i].GetValue(x);
+            }
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            fb.Transform(x, actual);
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
     }
 }
