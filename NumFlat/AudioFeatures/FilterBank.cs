@@ -6,7 +6,7 @@ namespace NumFlat.AudioFeatures
     /// <summary>
     /// Provides a filter bank feature extractor.
     /// </summary>
-    public sealed class FilterBank : IAudioFeatureExtractor<Vec<double>>
+    public sealed class FilterBank : IPowerSpectrumFeatureExtraction
     {
         private int sampleRate;
         private int fftLength;
@@ -123,9 +123,9 @@ namespace NumFlat.AudioFeatures
         }
 
         /// <inheritdoc/>
-        public void Transform(in Vec<double> source, in Vec<double> destination)
+        public void Transform(in Vec<double> spectrum, in Vec<double> destination)
         {
-            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(spectrum, nameof(spectrum));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (destination.Count != filters.Length)
@@ -136,37 +136,33 @@ namespace NumFlat.AudioFeatures
             var fd = destination.GetUnsafeFastIndexer();
             for (var i = 0; i < filters.Length; i++)
             {
-                fd[i] = filters[i].GetValue(source);
+                fd[i] = filters[i].GetValue(spectrum);
             }
         }
 
-        /// <summary>
-        /// The sample rate of the source signal.
-        /// </summary>
+        /// <inheritdoc/>
         public int SampleRate => sampleRate;
 
-        /// <summary>
-        /// The FFT length used for analysis.
-        /// </summary>
+        /// <inheritdoc/>
         public int FftLength => fftLength;
 
         /// <summary>
-        /// The minimum frequency.
+        /// Gets the minimum frequency.
         /// </summary>
         public double MinFrequency => minFrequency;
 
         /// <summary>
-        /// The maximum frequency.
+        /// Gets the maximum frequency.
         /// </summary>
         public double MaxFrequency => maxFrequency;
 
         /// <summary>
-        /// The frequency scale.
+        /// Gets the frequency scale.
         /// </summary>
         public FrequencyScale Scale => scale;
 
         /// <summary>
-        /// The filters for feature extraction.
+        /// Gets the filters for feature extraction.
         /// </summary>
         public IReadOnlyList<TriangularFilter> Filters => filters;
 

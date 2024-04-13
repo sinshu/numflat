@@ -9,7 +9,7 @@ using NumFlat.AudioFeatures;
 
 namespace NumFlatTest.AufioFeatureTests
 {
-    public class AudioFeatureExtractorTests
+    public class PowerSpectrumFeatureExtractionTests
     {
         [Test]
         public void ExtensionMethod()
