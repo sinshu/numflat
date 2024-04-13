@@ -85,6 +85,11 @@ namespace NumFlat.AudioFeatures
             var frequencyBinEndIndex = (int)Math.Ceiling(upperW);
             var frequencyBinCount = frequencyBinEndIndex - frequencyBinStartIndex;
 
+            if (frequencyBinEndIndex > fftLength / 2 + 1)
+            {
+                throw new ArgumentException("The upper frequency must be within the Nyquist frequency.");
+            }
+
             var useLowerPart = centerW - lowerW > 0;
             var useUpperPart = upperW - centerW > 0;
 
@@ -115,6 +120,38 @@ namespace NumFlat.AudioFeatures
 
             this.frequencyBinStartIndex = frequencyBinStartIndex;
             this.coefficients = coefficients;
+        }
+
+        /// <summary>
+        /// Gets the feature value from a spectrum.
+        /// </summary>
+        /// <param name="spectrum">
+        /// The target spectrum.
+        /// </param>
+        /// <returns>
+        /// The feature value.
+        /// </returns>
+        public double GetValue(in Vec<double> spectrum)
+        {
+            ThrowHelper.ThrowIfEmpty(spectrum, nameof(spectrum));
+
+            if (spectrum.Count < frequencyBinStartIndex + coefficients.Count)
+            {
+                throw new ArgumentException("The length is invalid.", nameof(spectrum));
+            }
+
+            var ss = spectrum.Subvector(frequencyBinStartIndex, coefficients.Count).Memory.Span;
+            var sc = coefficients.Memory.Span;
+            var ps = 0;
+            var pc = 0;
+            var sum = 0.0;
+            while (ps < ss.Length)
+            {
+                sum += ss[ps] * sc[pc];
+                ps += spectrum.Stride;
+                pc += coefficients.Stride;
+            }
+            return sum;
         }
 
         /// <summary>
