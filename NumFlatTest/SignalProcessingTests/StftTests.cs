@@ -95,5 +95,14 @@ namespace NumFlatTest.SignalProcessingTests
 
             NumAssert.AreSame(source, reconstructed, 1.0E-12);
         }
+
+        [Test]
+        public void GetFrequency()
+        {
+            var source = TestVector.RandomDouble(42, 5000, 1);
+            var window = WindowFunctions.Hann(1024);
+            var (spectrogram, info) = source.Stft(window, 512, StftMode.Analysis);
+            Assert.That(info.GetFrequency(16000, 256), Is.EqualTo(4000).Within(1.0E-12));
+        }
     }
 }

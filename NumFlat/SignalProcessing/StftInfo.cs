@@ -82,15 +82,15 @@ namespace NumFlat.SignalProcessing
         /// <param name="sampleRate">
         /// The sample rate of the source signal.
         /// </param>
-        /// <param name="frequencyIndex">
-        /// The index of the frequency.
+        /// <param name="frequencyBinIndex">
+        /// The index of the frequency bin.
         /// </param>
         /// <returns>
         /// The specified frequency;
         /// </returns>
-        public double GetFrequency(int sampleRate, int frequencyIndex)
+        public double GetFrequency(int sampleRate, int frequencyBinIndex)
         {
-            return (double)(sampleRate * frequencyIndex) / window.Count;
+            return (double)(sampleRate * frequencyBinIndex) / window.Count;
         }
 
         /// <summary>
