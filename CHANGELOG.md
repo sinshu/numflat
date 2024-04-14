@@ -1,3 +1,7 @@
+# v0.9.2
+
+* Added filter bank audio feature extraction.
+
 # v0.9.1
 
 * Removed unnecessary code that handle native dependencies.
