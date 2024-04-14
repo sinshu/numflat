@@ -123,20 +123,16 @@ namespace NumFlat.AudioFeatures
         }
 
         /// <inheritdoc/>
-        public void Transform(in Vec<double> spectrum, in Vec<double> destination)
+        public void Transform(in Vec<double> source, in Vec<double> destination)
         {
-            ThrowHelper.ThrowIfEmpty(spectrum, nameof(spectrum));
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-
-            if (destination.Count != filters.Length)
-            {
-                throw new ArgumentException("The length of the destination must match the number of filters.", nameof(destination));
-            }
+            PowerSpectrumFeatureExtraction.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
             var fd = destination.GetUnsafeFastIndexer();
             for (var i = 0; i < filters.Length; i++)
             {
-                fd[i] = filters[i].GetValue(spectrum);
+                fd[i] = filters[i].GetValue(source);
             }
         }
 

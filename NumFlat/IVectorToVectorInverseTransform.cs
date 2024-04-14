@@ -47,6 +47,12 @@ namespace NumFlat
         /// </returns>
         public static Vec<T> InverseTransform<T>(this IVectorToVectorInverseTransform<T> method, in Vec<T> source) where T : unmanaged, INumberBase<T>
         {
+            if (method == null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowIfInvalidSize(method, source, nameof(source));
 
             var destination = new Vec<T>(method.SourceDimension);

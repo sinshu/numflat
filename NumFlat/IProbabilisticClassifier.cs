@@ -60,6 +60,12 @@ namespace NumFlat
         /// </returns>
         public static Vec<T> PredictProbability<T>(this IProbabilisticClassifier<T> method, in Vec<T> x) where T : unmanaged, INumberBase<T>
         {
+            if (method == null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
             Classifier.ThrowIfInvalidSize(method, x, nameof(x));
 
             var destination = new Vec<T>(method.ClassCount);

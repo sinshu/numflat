@@ -134,11 +134,7 @@ namespace NumFlat.AudioFeatures
         public double GetValue(in Vec<double> spectrum)
         {
             ThrowHelper.ThrowIfEmpty(spectrum, nameof(spectrum));
-
-            if (spectrum.Count < frequencyBinStartIndex + coefficients.Count)
-            {
-                throw new ArgumentException("The length is invalid.", nameof(spectrum));
-            }
+            PowerSpectrumFeatureExtraction.ThrowIfInvalidSize(fftLength, spectrum, nameof(spectrum));
 
             var ss = spectrum.Subvector(frequencyBinStartIndex, coefficients.Count).Memory.Span;
             var sc = coefficients.Memory.Span;
