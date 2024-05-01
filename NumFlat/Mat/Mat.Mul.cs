@@ -7,7 +7,7 @@ namespace NumFlat
     public static partial class Mat
     {
         /// <summary>
-        /// Computes a matrix-and-vector multiplication, X * y.
+        /// Computes a matrix-and-vector multiplication, <c>X * y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.
@@ -67,7 +67,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix multiplication, X * Y.
+        /// Computes a matrix multiplication, <c>X * Y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.
@@ -106,7 +106,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix-and-vector multiplication, X * y.
+        /// Computes a matrix-and-vector multiplication, <c>X * y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.
@@ -166,7 +166,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix multiplication, X * Y.
+        /// Computes a matrix multiplication, <c>X * Y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.
@@ -205,7 +205,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix-and-vector multiplication, X * y.
+        /// Computes a matrix-and-vector multiplication, <c>X * y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.
@@ -275,7 +275,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix multiplication, X * Y.
+        /// Computes a matrix multiplication, <c>X * Y</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix X.

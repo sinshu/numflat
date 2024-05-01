@@ -13,7 +13,7 @@ namespace NumFlat.AudioFeatures
         /// </summary>
         /// <param name="source">
         /// The source power spectrum to be transformed.
-        /// The length of the spectrum must match the <see cref="FftLength"/> or <see cref="FftLength"/> / 2 + 1.
+        /// The length of the spectrum must match the <see cref="FftLength"/> or <c>FftLength / 2 + 1</c>.
         /// </param>
         /// <param name="destination">
         /// The destination of the feature vector.

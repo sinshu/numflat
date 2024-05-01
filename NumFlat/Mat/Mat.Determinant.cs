@@ -8,7 +8,7 @@ namespace NumFlat
     public static partial class Mat
     {
         /// <summary>
-        /// Computes the determinant of a matrix, det(X).
+        /// Computes the determinant of a matrix, <c>det(X)</c>.
         /// </summary>
         /// <param name="x">
         /// The target matrix.
@@ -44,7 +44,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the determinant of a matrix, det(X).
+        /// Computes the determinant of a matrix, <c>det(X)</c>.
         /// </summary>
         /// <param name="x">
         /// The target matrix.
@@ -80,7 +80,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the determinant of a matrix, det(X).
+        /// Computes the determinant of a matrix, <c>det(X)</c>.
         /// </summary>
         /// <param name="x">
         /// The target matrix.

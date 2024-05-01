@@ -7,7 +7,7 @@ namespace NumFlat
     public static partial class Mat
     {
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -87,7 +87,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -105,7 +105,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -185,7 +185,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -203,7 +203,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -283,7 +283,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inverse of the matrix, pinv(A).
+        /// Computes a pseudo inverse of the matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.

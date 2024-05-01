@@ -9,7 +9,7 @@ namespace NumFlat
     public static partial class Vec
     {
         /// <summary>
-        /// Computes a vector addition, x + y.
+        /// Computes a vector addition, <c>x + y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -84,7 +84,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector subtraction, x - y.
+        /// Computes a vector subtraction, <c>x - y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -159,7 +159,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector-and-scalar multiplication, x * y.
+        /// Computes a vector-and-scalar multiplication, <c>x * y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -195,7 +195,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector-and-scalar division, x / y.
+        /// Computes a vector-and-scalar division, <c>x / y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -231,7 +231,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise multiplication of vectors, x .* y.
+        /// Computes a pointwise multiplication of vectors, <c>x .* y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -271,7 +271,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise division of vectors, x ./ y.
+        /// Computes a pointwise division of vectors, <c>x ./ y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.

@@ -9,7 +9,7 @@ namespace NumFlat
     public static partial class Mat
     {
         /// <summary>
-        /// Computes a matrix addition, X + Y.
+        /// Computes a matrix addition, <c>X + Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -102,7 +102,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix subtraction, X - Y.
+        /// Computes a matrix subtraction, <c>X - Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -195,7 +195,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix-and-scalar multiplication, X * y.
+        /// Computes a matrix-and-scalar multiplication, <c>X * y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -239,7 +239,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix-and-scalar division, X * y.
+        /// Computes a matrix-and-scalar division, <c>X / y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -283,7 +283,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise multiplication of matrices, X .* Y.
+        /// Computes a pointwise multiplication of matrices, <c>X .* Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -333,7 +333,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise division of matrices, X ./ Y.
+        /// Computes a pointwise division of matrices, <c>X ./ Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -383,7 +383,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix transposition, X^T.
+        /// Computes a matrix transposition, <c>X^T</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -433,7 +433,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the trace of a matrix, tr(X).
+        /// Computes the trace of a matrix, <c>tr(X)</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.

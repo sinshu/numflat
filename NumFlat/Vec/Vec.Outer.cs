@@ -7,7 +7,7 @@ namespace NumFlat
     public static partial class Vec
     {
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of vectors, <c>x * y^T</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -46,7 +46,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of vectors, <c>x * y^T</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -85,7 +85,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of complex vectors, <c>x * y^T</c> or <c>x * y^H</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.

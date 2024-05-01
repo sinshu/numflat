@@ -7,7 +7,7 @@ namespace NumFlat
     public partial struct Vec<T>
     {
         /// <summary>
-        /// Computes a vector addition, x + y.
+        /// Computes a vector addition, <c>x + y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -84,7 +84,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector subtraction, x + y.
+        /// Computes a vector subtraction, <c>x - y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -161,7 +161,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector-and-scalar multiplication, x * y.
+        /// Computes a vector-and-scalar multiplication, <c>x * y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -186,7 +186,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a scalar-and-vector multiplication, x * y.
+        /// Computes a scalar-and-vector multiplication, <c>x * y</c>.
         /// </summary>
         /// <param name="x">
         /// The scalar x.
@@ -211,7 +211,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an dot product of vectors, x^T * y.
+        /// Computes a dot product of vectors, <c>x^T * y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -256,7 +256,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a vector-and-scalar division, x * y.
+        /// Computes a vector-and-scalar division, <c>x / y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.

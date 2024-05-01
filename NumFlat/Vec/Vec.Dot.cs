@@ -7,7 +7,7 @@ namespace NumFlat
     public static partial class Vec
     {
         /// <summary>
-        /// Computes a dot product of vectors, x^T * y.
+        /// Computes a dot product of vectors, <c>x^T * y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -32,7 +32,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a dot product of vectors, x^T * y.
+        /// Computes a dot product of vectors, <c>x^T * y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -57,7 +57,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a dot product of vectors, x^T * y.
+        /// Computes a dot product of vectors, <c>x^T * y</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.

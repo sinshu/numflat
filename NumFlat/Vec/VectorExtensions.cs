@@ -9,7 +9,7 @@ namespace NumFlat
     public static class VectorExtensions
     {
         /// <summary>
-        /// Computes a pointwise multiplication of vectors, x .* y.
+        /// Computes a pointwise multiplication of vectors, <c>x .* y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -39,7 +39,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise division of vectors, x .* y.
+        /// Computes a pointwise division of vectors, <c>x ./ y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the vector.
@@ -94,7 +94,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of vectors, <c>x * y^T</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -120,7 +120,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of vectors, <c>x * y^T</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.
@@ -146,7 +146,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes an outer product of vectors, x * y^T.
+        /// Computes an outer product of complex vectors, <c>x * y^T</c> or <c>x * y^H</c>.
         /// </summary>
         /// <param name="x">
         /// The vector x.

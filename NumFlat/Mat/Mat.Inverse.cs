@@ -8,7 +8,7 @@ namespace NumFlat
     public static partial class Mat
     {
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.
@@ -40,7 +40,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.
@@ -72,7 +72,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.

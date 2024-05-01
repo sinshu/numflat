@@ -10,7 +10,7 @@ namespace NumFlat
     public static class MatrixExtensions
     {
         /// <summary>
-        /// Computes a pointwise multiplication of matrices, X .* Y.
+        /// Computes a pointwise multiplication of matrices, <c>X .* Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -40,7 +40,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pointwise division of matrices, X ./ Y.
+        /// Computes a pointwise division of matrices, <c>X ./ Y</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -70,7 +70,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix transposition, X^T.
+        /// Computes a matrix transposition, <c>X^T</c>.
         /// </summary>
         /// <typeparam name="T">
         /// The type of elements in the matrix.
@@ -121,7 +121,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the Hermitian transpose of a complex matrix, X^H.
+        /// Computes the Hermitian transpose of a complex matrix, <c>X^H</c>.
         /// </summary>
         /// <param name="x">
         /// The complex matrix to be transposed.
@@ -145,7 +145,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.
@@ -175,7 +175,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.
@@ -205,7 +205,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a matrix inversion, X^-1.
+        /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
         /// The matrix to be inverted.
@@ -235,7 +235,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -257,7 +257,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -282,7 +282,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -304,7 +304,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -329,7 +329,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
@@ -351,7 +351,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes a pseudo inversion of a matrix, pinv(A).
+        /// Computes a pseudo inversion of a matrix, <c>pinv(A)</c>.
         /// </summary>
         /// <param name="a">
         /// The matrix to be inverted.
