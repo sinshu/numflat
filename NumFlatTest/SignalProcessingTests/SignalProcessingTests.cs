@@ -286,5 +286,94 @@ namespace NumFlatTest.SignalProcessingTests
                 TestVector.FailIfOutOfRangeWrite(target);
             }
         }
+
+        [TestCase(5, 1, 10, 1, 1, 1)]
+        [TestCase(5, 1, 10, 2, 3, 4)]
+        [TestCase(7, 3, 19, 1, 1, 1)]
+        [TestCase(7, 3, 19, 2, 2, 2)]
+        public void Convolve_Simple(int sigLength, int impLength, int dstLength, int sigStride, int impStride, int dstStride)
+        {
+            var signal = TestVector.RandomDouble(42, sigLength, sigStride);
+            var imp = TestVector.RandomDouble(57, impLength, impStride);
+            var dst = TestVector.RandomDouble(0, dstLength, dstStride);
+
+            signal.Convolve(imp, dst);
+
+            var expected = new Vec<double>(dstLength);
+            var flipped = imp.Reverse();
+            for (var i = 0; i < expected.Count; i++)
+            {
+                expected[i] = signal.GetFrame(i - flipped.Count + 1, flipped.Count) * flipped;
+            }
+
+            NumAssert.AreSame(expected, dst, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(dst);
+        }
+
+        [TestCase(10000, 500, 10030, 1, 1, 1)]
+        [TestCase(10000, 500, 9990, 2, 3, 2)]
+        [TestCase(500, 10000, 9990, 1, 1, 1)]
+        [TestCase(500, 10000, 10030, 2, 3, 2)]
+        [TestCase(9999, 4999, 10000, 1, 1, 1)]
+        public void Convolve_Long(int sigLength, int impLength, int dstLength, int sigStride, int impStride, int dstStride)
+        {
+            var signal = TestVector.RandomDouble(42, sigLength, sigStride);
+            var imp = TestVector.RandomDouble(57, impLength, impStride);
+            var dst = TestVector.RandomDouble(0, dstLength, dstStride);
+
+            signal.Convolve(imp, dst);
+
+            var fftLength = 1;
+            while (fftLength < 2 * Math.Max(sigLength, impLength))
+            {
+                fftLength *= 2;
+            }
+
+            var sigFft = signal.GetFrameAsComplex(0, fftLength);
+            sigFft.FftInplace();
+
+            var impFft = imp.GetFrameAsComplex(0, fftLength);
+            impFft.FftInplace();
+
+            var mul = sigFft.PointwiseMul(impFft);
+            mul.IfftInplace();
+            var expected = mul.Map(x => x.Real).Subvector(0, dstLength);
+
+            NumAssert.AreSame(expected, dst, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(dst);
+        }
+
+        [TestCase(10000, 500, 1, 1)]
+        [TestCase(10000, 500, 2, 3)]
+        [TestCase(500, 10000, 1, 1)]
+        [TestCase(500, 10000, 2, 3)]
+        [TestCase(9999, 4999, 1, 1)]
+        public void Convolve_2Args(int sigLength, int impLength, int sigStride, int impStride)
+        {
+            var signal = TestVector.RandomDouble(42, sigLength, sigStride);
+            var imp = TestVector.RandomDouble(57, impLength, impStride);
+
+            var dst = signal.Convolve(imp);
+
+            var fftLength = 1;
+            while (fftLength < 2 * Math.Max(sigLength, impLength))
+            {
+                fftLength *= 2;
+            }
+
+            var sigFft = signal.GetFrameAsComplex(0, fftLength);
+            sigFft.FftInplace();
+
+            var impFft = imp.GetFrameAsComplex(0, fftLength);
+            impFft.FftInplace();
+
+            var mul = sigFft.PointwiseMul(impFft);
+            mul.IfftInplace();
+            var expected = mul.Map(x => x.Real).Subvector(0, sigLength + impLength - 1);
+
+            NumAssert.AreSame(expected, dst, 1.0E-12);
+        }
     }
 }
