@@ -47,7 +47,7 @@ namespace NumFlat.Clustering
         /// </param>
         /// <param name="random">
         /// A random number generator for the k-means++ initialization.
-        /// If null, a <see cref="Random"/> object instantiated with the default constructor will be used.
+        /// If null, <see cref="Random.Shared"/> is used.
         /// </param>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
