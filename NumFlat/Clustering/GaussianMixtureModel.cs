@@ -81,11 +81,6 @@ namespace NumFlat.Clustering
                 return;
             }
 
-            if (random == null)
-            {
-                random = new Random();
-            }
-
             try
             {
                 // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.
