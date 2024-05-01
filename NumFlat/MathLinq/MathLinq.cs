@@ -50,5 +50,33 @@ namespace NumFlat
                 yield return x;
             }
         }
+
+        private static void AccumulateWeightedSum(in Vec<double> x, double w, in Vec<double> destination)
+        {
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] += w * sx[px];
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        private static void AccumulateWeightedSum(in Vec<Complex> x, double w, in Vec<Complex> destination)
+        {
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] += w * sx[px];
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
     }
 }

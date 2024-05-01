@@ -54,7 +54,7 @@ namespace NumFlat
                             throw new ArgumentException("Negative weight values are not allowed.");
                         }
 
-                        AccumulateWeightedMean(x, w, destination);
+                        AccumulateWeightedSum(x, w, destination);
                         w1Sum += w;
                     }
                     else
@@ -130,7 +130,7 @@ namespace NumFlat
                             throw new ArgumentException("Negative weight values are not allowed.");
                         }
 
-                        AccumulateWeightedMean(x, w, destination);
+                        AccumulateWeightedSum(x, w, destination);
                         w1Sum += w;
                     }
                     else
@@ -498,20 +498,6 @@ namespace NumFlat
         public static Vec<double> StandardDeviation(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights, int ddof = 1)
         {
             return MeanAndStandardDeviation(xs, weights, ddof).StandardDeviation;
-        }
-
-        private static void AccumulateWeightedMean(in Vec<double> x, double w, in Vec<double> destination)
-        {
-            var sx = x.Memory.Span;
-            var sd = destination.Memory.Span;
-            var px = 0;
-            var pd = 0;
-            while (pd < sd.Length)
-            {
-                sd[pd] += w * sx[px];
-                px += x.Stride;
-                pd += destination.Stride;
-            }
         }
 
         private static void AccumulateWeightedVariance(in Vec<double> x, double w, in Vec<double> mean, in Vec<double> destination)
