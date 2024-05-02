@@ -14,6 +14,22 @@ namespace NumFlatTest.MathLinqTests
         [TestCase(3)]
         [TestCase(5)]
         [TestCase(10)]
+        public void Sum(int count)
+        {
+            var random = new Random(42);
+            var xs = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+            var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+
+            var actual = xs.Sum(weights);
+            var expected = RefSum(xs, weights);
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(5)]
+        [TestCase(10)]
         public void Average(int count)
         {
             var random = new Random(42);
@@ -118,6 +134,16 @@ namespace NumFlatTest.MathLinqTests
             var actual = xs.Covariance(ys, weights, ddof);
             var expected = RefCovariance(xs, ys, weights, ddof);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
+
+        private static double RefSum(IEnumerable<double> xs, IEnumerable<double> weights)
+        {
+            var sum = 0.0;
+            foreach (var (weight, x) in weights.Zip(xs))
+            {
+                sum += weight * x;
+            }
+            return sum;
         }
 
         private static double RefAverage(IEnumerable<double> xs, IEnumerable<double> weights)

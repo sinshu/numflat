@@ -7,6 +7,28 @@ namespace NumFlat
     public static partial class MathLinq
     {
         /// <summary>
+        /// Computes the sum of a sequence of values.
+        /// </summary>
+        /// <param name="xs">
+        /// The source values.
+        /// </param>
+        /// <returns>
+        /// The sum of the sequence of values.
+        /// </returns>
+        public static Complex Sum(this IEnumerable<Complex> xs)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            var sum = Complex.Zero;
+            foreach (var x in xs)
+            {
+                sum += x;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
         /// Computes the average of a sequence of values.
         /// </summary>
         /// <param name="xs">

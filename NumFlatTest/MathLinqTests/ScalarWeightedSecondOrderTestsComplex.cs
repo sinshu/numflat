@@ -14,6 +14,23 @@ namespace NumFlatTest.MathLinqTests
         [TestCase(3)]
         [TestCase(5)]
         [TestCase(10)]
+        public void Sum(int count)
+        {
+            var random = new Random(42);
+            var xs = Enumerable.Range(0, count).Select(i => new Complex(random.NextDouble(), random.NextDouble())).ToArray();
+            var weights = Enumerable.Range(0, count).Select(i => random.NextDouble()).ToArray();
+
+            var actual = xs.Sum(weights);
+            var expected = RefSum(xs, weights);
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(5)]
+        [TestCase(10)]
         public void Average(int count)
         {
             var random = new Random(42);
@@ -122,6 +139,16 @@ namespace NumFlatTest.MathLinqTests
             var expected = RefCovariance(xs, ys, weights, ddof);
             Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(1.0E-12));
             Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(1.0E-12));
+        }
+
+        private static Complex RefSum(IEnumerable<Complex> xs, IEnumerable<double> weights)
+        {
+            var sum = Complex.Zero;
+            foreach (var (weight, x) in weights.Zip(xs))
+            {
+                sum += weight * x;
+            }
+            return sum;
         }
 
         private static Complex RefAverage(IEnumerable<Complex> xs, IEnumerable<double> weights)

@@ -7,6 +7,58 @@ namespace NumFlat
     public static partial class MathLinq
     {
         /// <summary>
+        /// Computes the weighted sum of a sequence of values.
+        /// </summary>
+        /// <param name="xs">
+        /// The source values.
+        /// </param>
+        /// <param name="weights">
+        /// The weights of the source values.
+        /// </param>
+        /// <returns>
+        /// The weighted sum of the sequence of values.
+        /// </returns>
+        public static Complex Sum(this IEnumerable<Complex> xs, IEnumerable<double> weights)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(weights, nameof(weights));
+
+            var sum = Complex.Zero;
+            using (var exs = xs.GetEnumerator())
+            using (var eweights = weights.GetEnumerator())
+            {
+                while (true)
+                {
+                    var xsHasNext = exs.MoveNext();
+                    var weightsHasNext = eweights.MoveNext();
+                    if (xsHasNext != weightsHasNext)
+                    {
+                        throw new ArgumentException("The number of source values and weights must match.");
+                    }
+
+                    if (xsHasNext)
+                    {
+                        var x = exs.Current;
+                        var w = eweights.Current;
+
+                        if (w < 0)
+                        {
+                            throw new ArgumentException("Negative weight values are not allowed.");
+                        }
+
+                        sum += w * x;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return sum;
+            }
+        }
+
+        /// <summary>
         /// Computes the weighted average of a sequence of values.
         /// </summary>
         /// <param name="xs">
