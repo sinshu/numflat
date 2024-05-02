@@ -568,6 +568,7 @@ It currently supports the following methods, with plans to add more methods in t
 * Overlap addition
 * FFT and IFFT
 * STFT and ISTFT
+* Convolution
 #### Code
 ```cs
 using NumFlat.SignalProcessing;
@@ -618,12 +619,12 @@ samples = spectrum.Ifft();
     - ✅ EVD
     - ✅ GEVD
 * ✅ LINQ-like operations
-    - ✅ Mean, Variance, Covariance for scalars
-    - ✅ Mean, Variance, Covariance for vectors
-    - ✅ Mean, Variance for matrices
-    - ✅ Weighted Mean, Variance, Covariance for scalars
-    - ✅ Weighted Mean, Variance, Covariance for vectors
-    - ✅ Weighted Mean, Variance for matrices
+    - ✅ Sum, mean, variance, covariance for scalars
+    - ✅ Sum, mean, variance, covariancee for vectors
+    - ✅ Sum, mean, variance for matrices
+    - ✅ Weighted sum, mean, variance, covariance for scalars
+    - ✅ Weighted sum, mean, variance, covariance for vectors
+    - ✅ Weighted sum, mean, variance for matrices
     - ✅ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
@@ -644,9 +645,10 @@ samples = spectrum.Ifft();
 * ⬜ Audio signal processing
     - ✅ FFT
     - ✅ STFT
-    - ⬜ Filtering
+    - ✅ Convolution
     - ⬜ Resampling
-    - ⬜ Feature extraction
+    - 🚧 Feature extraction
+    - ⬜ Filtering
 * ✅ File IO
     - ✅ CSV
     - ✅ WAV

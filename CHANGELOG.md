@@ -1,3 +1,8 @@
+# v0.9.3
+
+* Added convolution.
+* Added (weighted) sum for scalars, vectors, and matrices.
+
 # v0.9.2
 
 * Added filter bank audio feature extraction.
