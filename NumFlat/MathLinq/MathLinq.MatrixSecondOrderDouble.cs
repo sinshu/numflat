@@ -30,7 +30,7 @@ namespace NumFlat
                     throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
                 }
 
-                Mat.Add(destination, x, destination);
+                destination.AddInplace(x);
                 count++;
             }
 
@@ -39,7 +39,7 @@ namespace NumFlat
                 throw new ArgumentException("The sequence must contain at least one matrix.");
             }
 
-            Mat.Div(destination, count, destination);
+            destination.DivInplace(count);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace NumFlat
                     throw new ArgumentException("All the matrices must have the same dimensions.");
                 }
 
-                Mat.Add(destination, x, destination);
+                destination.AddInplace(x);
                 count++;
             }
 
@@ -84,7 +84,7 @@ namespace NumFlat
                 throw new ArgumentException("The sequence must contain at least one matrix.");
             }
 
-            Mat.Div(destination, count, destination);
+            destination.DivInplace(count);
 
             return destination;
         }
@@ -139,7 +139,7 @@ namespace NumFlat
                 throw new ArgumentException("The number of source matrices is not sufficient.");
             }
 
-            Mat.Div(destination, count - ddof, destination);
+            destination.DivInplace(count - ddof);
         }
 
         /// <summary>
