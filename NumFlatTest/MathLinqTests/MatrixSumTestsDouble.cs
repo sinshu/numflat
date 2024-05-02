@@ -46,6 +46,45 @@ namespace NumFlatTest.MathLinqTests
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
 
+        [TestCase(1, 1, 1, 2)]
+        [TestCase(1, 1, 3, 2)]
+        [TestCase(3, 2, 1, 4)]
+        [TestCase(3, 2, 3, 4)]
+        [TestCase(4, 5, 6, 5)]
+        [TestCase(3, 6, 4, 4)]
+        public void WeightedSum(int rowCount, int colCount, int matCount, int dstStride)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var random = new Random(57);
+            var weights = data.Select(x => random.NextDouble()).ToArray();
+            var expected = MathNetSum(data, weights);
+
+            var actual = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+            MathLinq.Sum(data.Select(x => x.ToArray().ToMatrix()), weights, actual);
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+
+            TestMatrix.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(3, 2, 1)]
+        [TestCase(3, 2, 3)]
+        [TestCase(4, 5, 6)]
+        [TestCase(3, 6, 4)]
+        public void WeightedSum_ExtensionMethod(int rowCount, int colCount, int matCount)
+        {
+            var data = CreateData(42, rowCount, colCount, matCount);
+            var random = new Random(57);
+            var weights = data.Select(x => random.NextDouble()).ToArray();
+            var expected = MathNetSum(data, weights);
+
+            var actual = data.Select(x => x.ToArray().ToMatrix()).Sum(weights);
+
+            NumAssert.AreSame(expected, actual, 1.0E-12);
+        }
+
         private static MMat MathNetSum(IEnumerable<MMat> xs)
         {
             var first = xs.First();
@@ -53,6 +92,17 @@ namespace NumFlatTest.MathLinqTests
             foreach (var x in xs)
             {
                 sum += x;
+            }
+            return sum;
+        }
+
+        private static MMat MathNetSum(IEnumerable<MMat> xs, IEnumerable<double> weights)
+        {
+            var first = xs.First();
+            MMat sum = new MathNet.Numerics.LinearAlgebra.Double.DenseMatrix(first.RowCount, first.ColumnCount);
+            foreach (var (w, x) in weights.Zip(xs))
+            {
+                sum += w * x;
             }
             return sum;
         }

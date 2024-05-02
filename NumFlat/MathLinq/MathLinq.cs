@@ -78,5 +78,49 @@ namespace NumFlat
                 pd += destination.Stride;
             }
         }
+
+        private static void AccumulateWeightedSum(in Mat<double> x, double w, in Mat<double> destination)
+        {
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] += w * sx[px];
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        private static void AccumulateWeightedSum(in Mat<Complex> x, double w, in Mat<Complex> destination)
+        {
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] += w * sx[px];
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
     }
 }
