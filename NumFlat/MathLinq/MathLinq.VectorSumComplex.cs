@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace NumFlat
 {
@@ -14,7 +15,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the vector sum.
         /// </param>
-        public static void Sum(IEnumerable<Vec<double>> xs, in Vec<double> destination)
+        public static void Sum(IEnumerable<Vec<Complex>> xs, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -41,11 +42,11 @@ namespace NumFlat
         /// <returns>
         /// The vector sum.
         /// </returns>
-        public static Vec<double> Sum(this IEnumerable<Vec<double>> xs)
+        public static Vec<Complex> Sum(this IEnumerable<Vec<Complex>> xs)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            var destination = new Vec<double>();
+            var destination = new Vec<Complex>();
 
             foreach (var x in xs)
             {
@@ -56,7 +57,7 @@ namespace NumFlat
                         new ArgumentException("Empty vectors are not allowed.");
                     }
 
-                    destination = new Vec<double>(x.Count);
+                    destination = new Vec<Complex>(x.Count);
                 }
 
                 if (x.Count != destination.Count)
@@ -87,7 +88,7 @@ namespace NumFlat
         /// <param name="destination">
         /// The destination of the weighted vector sum.
         /// </param>
-        public static void Sum(IEnumerable<Vec<double>> xs, IEnumerable<double> weights, in Vec<double> destination)
+        public static void Sum(IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
@@ -144,12 +145,12 @@ namespace NumFlat
         /// <returns>
         /// The weighted vector sum.
         /// </returns>
-        public static Vec<double> Sum(this IEnumerable<Vec<double>> xs, IEnumerable<double> weights)
+        public static Vec<Complex> Sum(this IEnumerable<Vec<Complex>> xs, IEnumerable<double> weights)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(weights, nameof(weights));
 
-            var destination = new Vec<double>();
+            var destination = new Vec<Complex>();
 
             using (var exs = xs.GetEnumerator())
             using (var eweights = weights.GetEnumerator())
@@ -176,7 +177,7 @@ namespace NumFlat
                                 new ArgumentException("Empty vectors are not allowed.");
                             }
 
-                            destination = new Vec<double>(x.Count);
+                            destination = new Vec<Complex>(x.Count);
                         }
 
                         if (x.Count != destination.Count)
