@@ -323,6 +323,11 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Returns a value that indicates whether the matrix is empty.
+        /// </summary>
+        public readonly bool IsEmpty => rowCount == 0 || colCount == 0;
+
+        /// <summary>
         /// Gets the number of rows.
         /// </summary>
         public readonly int RowCount => rowCount;

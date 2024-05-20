@@ -281,6 +281,11 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Returns a value that indicates whether the vector is empty.
+        /// </summary>
+        public readonly bool IsEmpty => count == 0;
+
+        /// <summary>
         /// The number of elements in the vector.
         /// </summary>
         public readonly int Count => count;
