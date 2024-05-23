@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NumFlat
@@ -10,8 +13,9 @@ namespace NumFlat
     /// <typeparam name="T">
     /// The type of elements in the matrix.
     /// </typeparam>
+    [CollectionBuilder(typeof(MatrixBuilder), nameof(MatrixBuilder.Create))]
     [StructLayout(LayoutKind.Auto)]
-    public readonly partial struct Mat<T> : IFormattable where T : unmanaged, INumberBase<T>
+    public readonly partial struct Mat<T> : IEnumerable<Vec<T>>, IFormattable where T : unmanaged, INumberBase<T>
     {
         private readonly int rowCount;
         private readonly int colCount;

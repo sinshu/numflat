@@ -366,5 +366,24 @@ namespace NumFlatTest.MatTests
                 }
             }
         }
+
+        [Test]
+        public void VectorView()
+        {
+            Mat<int> mat =
+            [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+            ];
+
+            Assert.That(mat.Rows[0].ToArray(), Is.EqualTo(new int[] { 1, 2, 3 }));
+            Assert.That(mat.Rows[1].ToArray(), Is.EqualTo(new int[] { 4, 5, 6 }));
+            Assert.That(mat.Rows[2].ToArray(), Is.EqualTo(new int[] { 7, 8, 9 }));
+
+            Assert.That(mat.Cols[0].ToArray(), Is.EqualTo(new int[] { 1, 4, 7 }));
+            Assert.That(mat.Cols[1].ToArray(), Is.EqualTo(new int[] { 2, 5, 8 }));
+            Assert.That(mat.Cols[2].ToArray(), Is.EqualTo(new int[] { 3, 6, 9 }));
+        }
     }
 }

@@ -19,21 +19,12 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        var sampleRate = 16000;
-        var fftLength = 1024;
-        var fb = new FilterBank(sampleRate, fftLength, 50, 7500, 15, FrequencyScale.Mel);
-
-        using (var writer = new StreamWriter("test.csv"))
-        {
-            var sep = ",";
-            foreach (var filter in fb.Filters)
-            {
-                for (var i = 0; i < filter.Coefficients.Count; i++)
-                {
-                    writer.WriteLine((filter.FrequencyBinStartIndex + i) + sep + filter.Coefficients[i]);
-                }
-                sep += ",";
-            }
-        }
+        Mat<double> mat =
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ];
+        Console.WriteLine(mat);
     }
 }

@@ -11,6 +11,55 @@ namespace NumFlat
     public static class MatrixBuilder
     {
         /// <summary>
+        /// Creates a new matrix from the specified row vectors.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="rows">
+        /// The row vectors for the new matrix.
+        /// </param>
+        /// <returns>
+        /// A new matrix that contains the specified row vectors.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original storage.
+        /// </remarks>
+        public static Mat<T> Create<T>(ReadOnlySpan<Vec<T>> rows) where T : unmanaged, INumberBase<T>
+        {
+            if (rows.Length == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one row.");
+            }
+
+            var rowCount = rows.Length;
+            var colCount = rows[0].Count;
+
+            foreach (ref readonly var row in rows)
+            {
+                if (row.IsEmpty)
+                {
+                    new ArgumentException("Empty rows are not allowed.");
+                }
+
+                if (row.Count != colCount)
+                {
+                    throw new ArgumentException("All the rows must have the same length.");
+                }
+            }
+
+            var mat = new Mat<T>(rowCount, colCount);
+            var i = 0;
+            foreach (var dst in mat.Rows)
+            {
+                rows[i].CopyTo(dst);
+                i++;
+            }
+
+            return mat;
+        }
+
+        /// <summary>
         /// Creates a new matrix which is filled with a specified value.
         /// </summary>
         /// <typeparam name="T">

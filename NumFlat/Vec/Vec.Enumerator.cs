@@ -9,7 +9,7 @@ namespace NumFlat
         /// <inheritdoc/>
         public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
 

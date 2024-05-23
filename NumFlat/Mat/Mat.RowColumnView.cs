@@ -7,6 +7,18 @@ namespace NumFlat
     public partial struct Mat<T>
     {
         /// <summary>
+        /// Gets a view of the matrix as a list of row vectors.
+        /// </summary>
+        /// <returns>
+        /// A view of the matrix as a list of row vectors.
+        /// </returns>
+        public IEnumerator<Vec<T>> GetEnumerator() => Rows.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
+
+
+
+        /// <summary>
         /// Provides a view of the matrix as a list of row vectors.
         /// </summary>
         public struct RowList : IReadOnlyList<Vec<T>>
