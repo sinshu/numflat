@@ -20,16 +20,13 @@ public static class MatrixExamples
         Console.WriteLine("=== MatrixExample 1 ===");
         Console.WriteLine();
 
-        // The source array.
-        var array = new double[,]
-        {
-            { 1, 2, 3 },
-            { 4, 5, 6 },
-            { 7, 8, 9 },
-        };
-
         // Creat a new matrix.
-        var matrix = array.ToMatrix();
+        Mat<double> matrix =
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ];
 
         // Show the matrix.
         Console.WriteLine(matrix);
@@ -68,21 +65,16 @@ public static class MatrixExamples
         Console.WriteLine();
 
         // Some matrices.
-        var x = new double[,]
-        {
-            { 1, 2, 3 },
-            { 0, 1, 2 },
-            { 0, 0, 1 },
-        }
-        .ToMatrix();
-
-        var y = new double[,]
-        {
-            { 1, 0, 0 },
-            { 2, 1, 0 },
-            { 3, 2, 1 },
-        }
-        .ToMatrix();
+        Mat<double> x = [
+            [1, 2, 3],
+            [0, 1, 2],
+            [0, 0, 1],
+        ];
+        Mat<double> y = [
+            [1, 0, 0],
+            [2, 1, 0],
+            [3, 2, 1],
+        ];
 
         // Addition.
         var add = x + y;
@@ -164,13 +156,12 @@ public static class MatrixExamples
         Console.WriteLine();
 
         // Some matrix.
-        var x = new double[,]
-        {
-            { 1, 2, 3 },
-            { 4, 5, 6 },
-            { 7, 8, 9 },
-        }
-        .ToMatrix();
+        Mat<double> x =
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ];
 
         // Create a view of a row of the matrix.
         Vec<double> row = x.Rows[0];
@@ -200,13 +191,12 @@ public static class MatrixExamples
         Console.WriteLine();
 
         // Some matrix.
-        var x = new double[,]
-        {
-            { 1, 2, 3 },
-            { 4, 5, 6 },
-            { 7, 8, 9 },
-        }
-        .ToMatrix();
+        Mat<double> x =
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ];
 
         // Do SVD.
         var decomposition = x.Svd();
