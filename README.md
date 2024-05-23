@@ -185,16 +185,13 @@ Vector 5-Double
 Matrices can be generated from 2D arrays.
 #### Code
 ```cs
-// The source array.
-var array = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-};
-
 // Creat a new matrix.
-var matrix = array.ToMatrix();
+Mat<double> matrix =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
 
 // Show the matrix.
 Console.WriteLine(matrix);
@@ -239,21 +236,18 @@ Basic operations on matrices are provided through operator overloading and exten
 #### Code
 ```cs
 // Some matrices.
-var x = new double[,]
-{
-    { 1, 2, 3 },
-    { 0, 1, 2 },
-    { 0, 0, 1 },
-}
-.ToMatrix();
-
-var y = new double[,]
-{
-    { 1, 0, 0 },
-    { 2, 1, 0 },
-    { 3, 2, 1 },
-}
-.ToMatrix();
+Mat<double> x =
+[
+    [1, 2, 3],
+    [0, 1, 2],
+    [0, 0, 1],
+];
+Mat<double> y =
+[
+    [1, 0, 0],
+    [2, 1, 0],
+    [3, 2, 1],
+];
 
 // Addition.
 var add = x + y;
@@ -338,13 +332,12 @@ These properties implement `IEnumerable<Vec<T>>`, allowing for LINQ methods to b
 #### Code
 ```cs
 // Some matrix.
-var x = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-}
-.ToMatrix();
+Mat<double> x =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
 
 // Create a view of a row of the matrix.
 Vec<double> row = x.Rows[0];
@@ -370,13 +363,12 @@ The LU, QR, Cholesky, SVD, EVD, and GEVD for all three major number types `float
 #### Code
 ```cs
 // Some matrix.
-var x = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-}
-.ToMatrix();
+Mat<double> x =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
 
 // Do SVD.
 var decomposition = x.Svd();
@@ -405,13 +397,12 @@ Linear equations like `Ax = b` can be solved with the matrix decomposition metho
 #### Code
 ```cs
 // Some coefficient matrix.
-var a = new double[,]
-{
-    { 1, 2, 3 },
-    { 1, 4, 9 },
-    { 2, 3, 5 },
-}
-.ToMatrix();
+Mat<double> x =
+[
+    [1, 2, 3],
+    [1, 4, 9],
+    [2, 3, 5],
+];
 
 // Do SVD.
 var svd = a.Svd();
@@ -447,13 +438,12 @@ var normalized = vector.Normalize();
 vector.NormalizeInplace();
 
 // Some matrix.
-var matrix = new double[,]
-{
-    { 1, 2, 3 },
-    { 4, 5, 6 },
-    { 7, 8, 9 },
-}
-.ToMatrix();
+Mat<double> matrix =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
 
 // In-place methods can also directly modify a part of vector or matrix.
 matrix.Rows[0].NormalizeInplace();
@@ -464,19 +454,16 @@ Most of the operations have a non-allocation version, which requires a destinati
 #### Code
 ```cs
 // Some matrices.
-var x = new double[,]
-{
-    { 1, 2 },
-    { 3, 4 } ,
-}
-.ToMatrix();
-
-var y = new double[,]
-{
-    { 5, 6 },
-    { 7, 8 } ,
-}
-.ToMatrix();
+Mat<double> x =
+[
+    [1, 2],
+    [3, 4],
+];
+Mat<double> y =
+[
+    [5, 6],
+    [7, 8],
+];
 
 // This allocates a new matrix.
 var answer = x + y;
