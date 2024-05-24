@@ -17,6 +17,19 @@ Various linear algebra-related operations can be performed on these types throug
 The primary supported types are `float`, `double`, and `Complex`.
 Other types can be used as well, but support beyond simple arithmetic operations is not provided.
 
+```cs
+Vec<double> vec = [1, 2, 3];
+
+Mat<double> mat =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
+
+Console.WriteLine(mat * vec);
+```
+
 
 
 ## Installation
@@ -397,21 +410,21 @@ Linear equations like `Ax = b` can be solved with the matrix decomposition metho
 #### Code
 ```cs
 // Some coefficient matrix.
-Mat<double> x =
+Mat<double> a =
 [
     [1, 2, 3],
     [1, 4, 9],
     [2, 3, 5],
 ];
 
-// Do SVD.
-var svd = a.Svd();
+// Do LU decomposition.
+var lu = a.Lu();
 
 // The right-hand vector.
 Vec<double> b = [1, 2, 3];
 
 // Compute the solution vector.
-var x = svd.Solve(b);
+var x = lu.Solve(b);
 
 // Show the solution.
 Console.WriteLine(x);

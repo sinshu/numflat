@@ -19,12 +19,15 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
+        Vec<double> vec = [1, 2, 3];
+
         Mat<double> mat =
         [
             [1, 2, 3],
             [4, 5, 6],
             [7, 8, 9],
         ];
-        Console.WriteLine(mat);
+
+        Console.WriteLine(mat * vec);
     }
 }
