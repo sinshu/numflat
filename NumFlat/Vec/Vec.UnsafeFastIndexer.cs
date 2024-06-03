@@ -54,14 +54,12 @@ namespace NumFlat
             private readonly int stride;
             private readonly Span<T> memory;
             private int position;
-            private T current;
 
             internal FastEnumerator(int stride, Span<T> memory)
             {
                 this.stride = stride;
                 this.memory = memory;
                 this.position = -stride;
-                this.current = default;
             }
 
             /// <summary>
@@ -82,12 +80,10 @@ namespace NumFlat
                 position += stride;
                 if (position < memory.Length)
                 {
-                    current = memory[position];
                     return true;
                 }
                 else
                 {
-                    current = default;
                     return false;
                 }
             }
@@ -95,7 +91,7 @@ namespace NumFlat
             /// <summary>
             /// Gets the current value.
             /// </summary>
-            public T Current => current;
+            public ref T Current => ref memory[position];
         }
     }
 }
