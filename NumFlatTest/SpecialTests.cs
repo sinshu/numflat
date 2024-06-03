@@ -121,7 +121,7 @@ namespace NumFlatTest
         [TestCase(5, 2)]
         public void LogSum(int length, int stride)
         {
-            var values = TestVector.RandomDouble(42, length, 1);
+            var values = 10 * TestVector.RandomDouble(42, length, 1).Map(Math.Abs) + 0.001;
             var logValues = TestVector.RandomDouble(0, length, stride);
             Vec.Map(values, Math.Log, logValues);
             var expected = Math.Log(values.Sum());
