@@ -23,17 +23,11 @@ namespace NumFlat
         /// </summary>
         public struct RowList : IReadOnlyList<Vec<T>>
         {
-            private readonly int rowCount;
-            private readonly int colCount;
-            private readonly int stride;
-            private readonly Memory<T> memory;
+            private readonly Mat<T> mat;
 
             internal RowList(in Mat<T> mat)
             {
-                this.rowCount = mat.rowCount;
-                this.colCount = mat.colCount;
-                this.stride = mat.stride;
-                this.memory = mat.memory;
+                this.mat = mat;
             }
 
             /// <summary>
@@ -49,19 +43,19 @@ namespace NumFlat
             {
                 get
                 {
-                    if ((uint)index >= rowCount)
+                    if ((uint)index >= mat.rowCount)
                     {
                         throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the number of rows.");
                     }
 
-                    return new Vec<T>(colCount, stride, memory.Slice(index, stride * (colCount - 1) + 1));
+                    return new Vec<T>(mat.colCount, mat.stride, mat.memory.Slice(index, mat.stride * (mat.colCount - 1) + 1));
                 }
             }
 
             /// <summary>
             /// Gets the number of row vectors.
             /// </summary>
-            public int Count => rowCount;
+            public int Count => mat.rowCount;
 
             /// <inheritdoc/>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
@@ -84,10 +78,10 @@ namespace NumFlat
 
                 internal Enumerator(in Mat<T>.RowList rows)
                 {
-                    this.rowCount = rows.rowCount;
-                    this.colCount = rows.colCount;
-                    this.stride = rows.stride;
-                    this.memory = rows.memory;
+                    this.rowCount = rows.mat.rowCount;
+                    this.colCount = rows.mat.colCount;
+                    this.stride = rows.mat.stride;
+                    this.memory = rows.mat.memory;
                     this.row = -1;
                     this.current = default;
                 }
@@ -136,17 +130,11 @@ namespace NumFlat
         /// </summary>
         public struct ColList : IReadOnlyList<Vec<T>>
         {
-            private readonly int rowCount;
-            private readonly int colCount;
-            private readonly int stride;
-            private readonly Memory<T> memory;
+            private readonly Mat<T> mat;
 
             internal ColList(in Mat<T> mat)
             {
-                this.rowCount = mat.rowCount;
-                this.colCount = mat.colCount;
-                this.stride = mat.stride;
-                this.memory = mat.memory;
+                this.mat = mat;
             }
 
             /// <summary>
@@ -162,19 +150,19 @@ namespace NumFlat
             {
                 get
                 {
-                    if ((uint)index >= colCount)
+                    if ((uint)index >= mat.colCount)
                     {
                         throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the number of columns.");
                     }
 
-                    return new Vec<T>(rowCount, 1, memory.Slice(stride * index, rowCount));
+                    return new Vec<T>(mat.rowCount, 1, mat.memory.Slice(mat.stride * index, mat.rowCount));
                 }
             }
 
             /// <summary>
             /// Gets the number of column vectors.
             /// </summary>
-            public int Count => colCount;
+            public int Count => mat.colCount;
 
             /// <inheritdoc/>
             public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
@@ -196,10 +184,10 @@ namespace NumFlat
 
                 internal Enumerator(in Mat<T>.ColList cols)
                 {
-                    this.rowCount = cols.rowCount;
-                    this.stride = cols.stride;
-                    this.memory = cols.memory;
-                    this.offset = -cols.stride;
+                    this.rowCount = cols.mat.rowCount;
+                    this.stride = cols.mat.stride;
+                    this.memory = cols.mat.memory;
+                    this.offset = -cols.mat.stride;
                     this.current = default;
                 }
 
