@@ -181,11 +181,11 @@ namespace NumFlat.Clustering
             foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
             {
                 var scores = tmp.Cols[i];
-                var fs = scores.GetUnsafeFastIndexer();
-                for (var c = 0; c < ClassCount; c++)
+                var c = 0;
+                foreach (ref var score in scores.GetUnsafeFastIndexer())
                 {
-                    var component = components[c];
-                    fs[c] = component.LogWeight + component.Gaussian.LogPdf(x);
+                    score = components[c].LogWeight + components[c].Gaussian.LogPdf(x);
+                    c++;
                 }
                 i++;
             }
@@ -194,10 +194,9 @@ namespace NumFlat.Clustering
             foreach (var scores in tmp.Cols)
             {
                 var logSum = Special.LogSum(scores);
-                var fs = scores.GetUnsafeFastIndexer();
-                for (var c = 0; c < ClassCount; c++)
+                foreach (ref var score in scores.GetUnsafeFastIndexer())
                 {
-                    fs[c] = Math.Exp(fs[c] - logSum);
+                    score = Math.Exp(score - logSum);
                 }
                 likelihood += logSum;
             }
