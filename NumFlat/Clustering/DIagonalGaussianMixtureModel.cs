@@ -141,7 +141,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private double PredictProbabilityAndReturnLogSum(in Vec<double> x, in Vec<double> destination)
+        private double PredictProbabilityWithLogSum(in Vec<double> x, in Vec<double> destination)
         {
             PredictLogProbability(x, destination);
 
@@ -160,7 +160,7 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             ProbabilisticClassifier.ThrowIfInvalidSize(this, x, destination, nameof(x), nameof(destination));
 
-            PredictProbabilityAndReturnLogSum(x, destination);
+            PredictProbabilityWithLogSum(x, destination);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace NumFlat.Clustering
             var likelihood = 0.0;
             foreach (var (x, scores) in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)).Zip(tmp.Cols))
             {
-                likelihood += PredictProbabilityAndReturnLogSum(x, scores);
+                likelihood += PredictProbabilityWithLogSum(x, scores);
             }
 
             try
