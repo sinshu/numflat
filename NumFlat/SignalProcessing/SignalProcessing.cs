@@ -799,8 +799,12 @@ namespace NumFlat.SignalProcessing
             ThrowHelper.ThrowIfEmpty(impulseResponse, nameof(impulseResponse));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            var fftLength = 1024;
+            var fftLength = 2;
             while (fftLength < 2 * impulseResponse.Count)
+            {
+                fftLength *= 2;
+            }
+            while (fftLength < Math.Min(2 * signal.Count, 1024))
             {
                 fftLength *= 2;
             }
