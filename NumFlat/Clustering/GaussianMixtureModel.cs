@@ -131,6 +131,28 @@ namespace NumFlat.Clustering
             return predicted;
         }
 
+        private void PredictLogProbability(in Vec<double> x, in Vec<double> destination)
+        {
+            var c = 0;
+            foreach (ref var value in destination.GetUnsafeFastIndexer())
+            {
+                value = components[c].LogWeight + components[c].Gaussian.LogPdf(x);
+                c++;
+            }
+        }
+
+        private double PredictProbabilityAndReturnLogSum(in Vec<double> x, in Vec<double> destination)
+        {
+            PredictLogProbability(x, destination);
+
+            var logSum = Special.LogSum(destination);
+            foreach (ref var value in destination.GetUnsafeFastIndexer())
+            {
+                value = Math.Exp(value - logSum);
+            }
+            return logSum;
+        }
+
         /// <inheritdoc/>
         public void PredictProbability(in Vec<double> x, in Vec<double> destination)
         {
@@ -138,17 +160,7 @@ namespace NumFlat.Clustering
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             ProbabilisticClassifier.ThrowIfInvalidSize(this, x, destination, nameof(x), nameof(destination));
 
-            var fd = destination.GetUnsafeFastIndexer();
-            for (var c = 0; c < ClassCount; c++)
-            {
-                var component = components[c];
-                fd[c] = component.LogWeight + component.Gaussian.LogPdf(x);
-            }
-            var logSum = Special.LogSum(destination);
-            for (var c = 0; c < ClassCount; c++)
-            {
-                fd[c] = Math.Exp(fd[c] - logSum);
-            }
+            PredictProbabilityAndReturnLogSum(x, destination);
         }
 
         /// <summary>
@@ -177,28 +189,10 @@ namespace NumFlat.Clustering
             using var utmp = new TemporalMatrix<double>(ClassCount, xs.Count);
             ref readonly var tmp = ref utmp.Item;
 
-            var i = 0;
-            foreach (var x in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)))
-            {
-                var scores = tmp.Cols[i];
-                var c = 0;
-                foreach (ref var score in scores.GetUnsafeFastIndexer())
-                {
-                    score = components[c].LogWeight + components[c].Gaussian.LogPdf(x);
-                    c++;
-                }
-                i++;
-            }
-
             var likelihood = 0.0;
-            foreach (var scores in tmp.Cols)
+            foreach (var (x, scores) in xs.ThrowIfEmptyOrDifferentSize(Dimension, nameof(xs)).Zip(tmp.Cols))
             {
-                var logSum = Special.LogSum(scores);
-                foreach (ref var score in scores.GetUnsafeFastIndexer())
-                {
-                    score = Math.Exp(score - logSum);
-                }
-                likelihood += logSum;
+                likelihood += PredictProbabilityAndReturnLogSum(x, scores);
             }
 
             try
@@ -226,14 +220,8 @@ namespace NumFlat.Clustering
 
             using var utmp = new TemporalVector<double>(ClassCount);
             ref readonly var tmp = ref utmp.Item;
-            var ft = tmp.GetUnsafeFastIndexer();
 
-            for (var i = 0; i < tmp.Count; i++)
-            {
-                var component = components[i];
-                ft[i] = component.LogWeight + component.Gaussian.LogPdf(x);
-            }
-
+            PredictLogProbability(x, tmp);
             return Special.LogSum(tmp);
         }
 
