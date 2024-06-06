@@ -57,5 +57,28 @@ namespace NumFlat.IO
                 }
             }
         }
+
+        /// <summary>
+        /// Writes a <see cref="Vec{T}"/> as a CSV file.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the CSV file.
+        /// </param>
+        /// <param name="vec">
+        /// The <see cref="Vec{T}"/> to be written.
+        /// </param>
+        public static void Write(string path, in Vec<double> vec)
+        {
+            ThrowHelper.ThrowIfNull(path, nameof(path));
+            ThrowHelper.ThrowIfEmpty(vec, nameof(vec));
+
+            using (var writer = new StreamWriter(path))
+            {
+                foreach (var value in vec)
+                {
+                    writer.WriteLine(value);
+                }
+            }
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace NumFlatTest.IOTests
         }
 
         [Test]
-        public void Write()
+        public void WriteMat()
         {
             var expected = new double[,]
             {
@@ -46,6 +46,19 @@ namespace NumFlatTest.IOTests
             var actual = CsvFile.Read("test.csv");
 
             NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [Test]
+        public void WriteVec()
+        {
+            var expected = Enumerable.Range(0, 10).Select(i => (double)i).ToVector();
+
+            CsvFile.Write("test.csv", expected);
+
+            var actual = CsvFile.Read("test.csv");
+            Assert.That(actual.ColCount == 1);
+
+            NumAssert.AreSame(expected, actual.Cols[0], 0);
         }
     }
 }
