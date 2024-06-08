@@ -1,3 +1,11 @@
+# v0.9.5
+
+* `UnsafeFastIndexer` for `Vec<T>` now supports `ref foreach`.
+* Improved `Convolve` method performance for short signals.
+* `CsvFile` now supports writing `Vec<T>` to a file.
+* Avoid memory allocation in enumeration.
+* Some code cleanup.
+
 # v0.9.4
 
 * Matrices can now be created using collection expressions.
