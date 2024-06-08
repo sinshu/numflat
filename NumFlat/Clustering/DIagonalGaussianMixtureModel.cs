@@ -249,9 +249,9 @@ namespace NumFlat.Clustering
         /// </summary>
         public class Component
         {
-            private double weight;
-            private double logWeight;
-            private DiagonalGaussian gaussian;
+            private readonly double weight;
+            private readonly double logWeight;
+            private readonly DiagonalGaussian gaussian;
 
             /// <summary>
             /// Initializes a new Gaussian component.

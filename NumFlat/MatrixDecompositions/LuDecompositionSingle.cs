@@ -8,10 +8,10 @@ namespace NumFlat
     /// </summary>
     public sealed class LuDecompositionSingle : MatrixDecompositionBase<float>
     {
-        private Mat<float> l;
-        private Mat<float> u;
-        private int[] permutation;
-        private int pivotSign;
+        private readonly Mat<float> l;
+        private readonly Mat<float> u;
+        private readonly int[] permutation;
+        private readonly int pivotSign;
 
         /// <summary>
         /// Decomposes the matrix using LU decomposition.

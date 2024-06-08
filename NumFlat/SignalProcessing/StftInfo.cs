@@ -7,10 +7,10 @@ namespace NumFlat.SignalProcessing
     /// </summary>
     public class StftInfo
     {
-        private Vec<double> window;
-        private int firstFramePosition;
-        private int frameShift;
-        private int signalLength;
+        private readonly Vec<double> window;
+        private readonly int firstFramePosition;
+        private readonly int frameShift;
+        private readonly int signalLength;
 
         /// <summary>
         /// Creates a new instance of <see cref="StftInfo"/>.

@@ -9,7 +9,7 @@ namespace NumFlat
     /// </summary>
     public sealed class CholeskyDecompositionComplex : MatrixDecompositionBase<Complex>
     {
-        private Mat<Complex> l;
+        private readonly Mat<Complex> l;
 
         /// <summary>
         /// Decomposes the matrix using Cholesky decomposition.

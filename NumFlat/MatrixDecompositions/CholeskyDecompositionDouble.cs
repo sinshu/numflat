@@ -8,7 +8,7 @@ namespace NumFlat
     /// </summary>
     public sealed class CholeskyDecompositionDouble : MatrixDecompositionBase<double>
     {
-        private Mat<double> l;
+        private readonly Mat<double> l;
 
         /// <summary>
         /// Decomposes the matrix using Cholesky decomposition.

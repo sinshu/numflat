@@ -9,10 +9,10 @@ namespace NumFlat
     /// </summary>
     public sealed class LuDecompositionComplex : MatrixDecompositionBase<Complex>
     {
-        private Mat<Complex> l;
-        private Mat<Complex> u;
-        private int[] permutation;
-        private int pivotSign;
+        private readonly Mat<Complex> l;
+        private readonly Mat<Complex> u;
+        private readonly int[] permutation;
+        private readonly int pivotSign;
 
         /// <summary>
         /// Decomposes the matrix using LU decomposition.

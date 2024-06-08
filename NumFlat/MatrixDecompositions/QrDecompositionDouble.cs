@@ -9,8 +9,8 @@ namespace NumFlat
     /// </summary>
     public sealed class QrDecompositionDouble : MatrixDecompositionBase<double>
     {
-        private Mat<double> q;
-        private Mat<double> r;
+        private readonly Mat<double> q;
+        private readonly Mat<double> r;
 
         /// <summary>
         /// Decomposes the matrix using QR decomposition.

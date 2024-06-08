@@ -10,8 +10,8 @@ namespace NumFlat
     /// </summary>
     public sealed class QrDecompositionComplex : MatrixDecompositionBase<Complex>
     {
-        private Mat<Complex> q;
-        private Mat<Complex> r;
+        private readonly Mat<Complex> q;
+        private readonly Mat<Complex> r;
 
         /// <summary>
         /// Decomposes the matrix using QR decomposition.
