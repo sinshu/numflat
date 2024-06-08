@@ -10,10 +10,11 @@ namespace NumFlat
         /// Gets a view of the matrix as a list of row vectors.
         /// </summary>
         /// <returns>
-        /// A view of the matrix as a list of row vectors.
+        /// An instance of <see cref="RowList.Enumerator"/>.
         /// </returns>
-        public IEnumerator<Vec<T>> GetEnumerator() => Rows.GetEnumerator();
+        public RowList.Enumerator GetEnumerator() => Rows.GetEnumerator();
 
+        IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => Rows.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
 
 
@@ -57,9 +58,15 @@ namespace NumFlat
             /// </summary>
             public int Count => mat.rowCount;
 
-            /// <inheritdoc/>
-            public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
+            /// <summary>
+            /// Gets an enumerator.
+            /// </summary>
+            /// <returns>
+            /// An instance of <see cref="Enumerator"/>.
+            /// </returns>
+            public Enumerator GetEnumerator() => new Enumerator(this);
 
+            IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
 
 
@@ -164,9 +171,15 @@ namespace NumFlat
             /// </summary>
             public int Count => mat.colCount;
 
-            /// <inheritdoc/>
-            public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator(this);
+            /// <summary>
+            /// Gets an enumerator.
+            /// </summary>
+            /// <returns>
+            /// An instance of <see cref="Enumerator"/>.
+            /// </returns>
+            public Enumerator GetEnumerator() => new Enumerator(this);
 
+            IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
 
 

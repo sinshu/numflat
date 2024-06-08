@@ -6,9 +6,15 @@ namespace NumFlat
 {
     public partial struct Vec<T>
     {
-        /// <inheritdoc/>
-        public IEnumerator<T> GetEnumerator() => new Enumerator(this);
+        /// <summary>
+        /// Gets an enumerator.
+        /// </summary>
+        /// <returns>
+        /// An instance of <see cref="Vec{T}.Enumerator"/>.
+        /// </returns>
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
