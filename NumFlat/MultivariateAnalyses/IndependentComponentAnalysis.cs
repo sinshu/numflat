@@ -18,6 +18,11 @@ namespace NumFlat.MultivariateAnalyses
             var whiten = xs.Select(x => pca.Transform(x).PointwiseDiv(scale)).ToArray();
 
             Console.WriteLine(whiten.Covariance());
+
+            // Vectors stored as rows.
+            // Each row corresponds to a component.
+            var w = MatrixBuilder.Identity<double>(componentCount);
+            Console.WriteLine(w);
         }
 
         public void Transform(in Vec<double> source, in Vec<double> destination)
