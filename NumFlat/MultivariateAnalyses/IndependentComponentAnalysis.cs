@@ -20,6 +20,8 @@ namespace NumFlat.MultivariateAnalyses
 
             Console.WriteLine(whiten.Covariance());
 
+            xs = whiten;
+
             // Vectors stored as rows.
             // Each row corresponds to a component.
             var random = new Random(57);
