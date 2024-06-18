@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
@@ -21,22 +22,45 @@ namespace NumFlat.MultivariateAnalyses
 
             // Vectors stored as rows.
             // Each row corresponds to a component.
-            var w = MatrixBuilder.Identity<double>(componentCount);
+            var random = new Random(57);
+            var w = new Mat<double>(componentCount, componentCount);
+            foreach (ref var value in w.Memory.Span)
+            {
+                value = 2 * random.NextDouble() - 1;
+            }
             Console.WriteLine(w);
 
-            for (var c = 0; c < componentCount; c++)
+            Console.ReadKey();
+
+            for (var ite = 0; ite < 30; ite++)
             {
-                var wc = w.Rows[c];
-                var wxs = xs.Select(x => wc * x).ToArray();
-                var gwxs = wxs.Select(G).ToArray();
-                var gpwxs = wxs.Select(Gp).ToArray();
-                var e1 = xs.Zip(gwxs, (x, g) => x * g).Mean();
-                var e2 = gpwxs.Average();
-                var wc2 = e1 - e2 * wc;
-                wc2.CopyTo(wc);
+                var svd = w.Svd();
+                var u = svd.U;
+                var sinv = svd.S.Select(s => 1 / s).ToDiagonalMatrix();
+                var k = u * sinv * u.Transpose();
+                w = k * w;
+                Console.WriteLine(w);
+
+                for (var c = 0; c < componentCount; c++)
+                {
+                    var wc = w.Rows[c];
+                    var wxs = xs.Select(x => wc * x).ToArray();
+                    var gwxs = wxs.Select(G).ToArray();
+                    var gpwxs = wxs.Select(Gp).ToArray();
+                    var e1 = xs.Zip(gwxs, (x, g) => x * g).Mean();
+                    var e2 = gpwxs.Average();
+                    var wc2 = e1 - e2 * wc;
+                    wc2.CopyTo(wc);
+                }
             }
 
-            Console.WriteLine(w);
+            using (var writer = new StreamWriter("ica.csv"))
+            {
+                foreach (var y in xs.Select(x => w * x))
+                {
+                    writer.WriteLine(string.Join(',', y));
+                }
+            }
         }
 
         public void Transform(in Vec<double> source, in Vec<double> destination)
