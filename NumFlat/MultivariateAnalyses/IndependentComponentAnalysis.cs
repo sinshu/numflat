@@ -24,6 +24,10 @@ namespace NumFlat.MultivariateAnalyses
             using var utransformed = new TemporalMatrix<double>(xs[0].Count, xs.Count);
             ref readonly var transformed = ref utransformed.Item;
 
+            using var utmp = new TemporalVector2<double>(xs.Count);
+            ref readonly var gwxs = ref utmp.Item1;
+            ref readonly var gpwxs = ref utmp.Item2;
+
             var scale = pca.EigenValues.Map(Math.Sqrt);
 
             foreach (var (x, a) in xs.Zip(whiten.Cols))
@@ -52,9 +56,10 @@ namespace NumFlat.MultivariateAnalyses
                 for (var c = 0; c < componentCount; c++)
                 {
                     var wc = w1.Rows[c];
-                    var wxs = whiten.Cols.Select(x => wc * x).ToArray();
-                    var gwxs = wxs.Select(G).ToArray();
-                    var gpwxs = wxs.Select(Gp).ToArray();
+                    var wxs = transformed.Rows[c];
+                    Mat.Mul(whiten, wc, wxs, true);
+                    Vec.Map(wxs, G, gwxs);
+                    Vec.Map(wxs, Gp, gpwxs);                 
                     var e1 = whiten.Cols.Zip(gwxs, (x, g) => x * g).Mean();
                     var e2 = gpwxs.Average();
                     var wc2 = e1 - e2 * wc;
