@@ -55,5 +55,13 @@ public class Program
         }
 
         var ica = new IndependentComponentAnalysis(xs, 3);
+
+        using (var writer = new StreamWriter("result.csv"))
+        {
+            foreach (var x in xs)
+            {
+                writer.WriteLine(string.Join(',', ica.Transform(x)));
+            }
+        }
     }
 }

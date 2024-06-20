@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -10,19 +11,17 @@ namespace NumFlat.MultivariateAnalyses
         private PrincipalComponentAnalysis pca;
         private int componentCount;
         private Mat<double> w;
+        private Mat<double> demixingMatrix;
 
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
         {
-            this.pca = xs.Pca();
-            this.componentCount = componentCount;
-
-            using var uwhiten = new TemporalMatrix<double>(xs[0].Count, xs.Count);
+            using var uwhiten = new TemporalMatrix<double>(componentCount, xs.Count);
             ref readonly var whiten = ref uwhiten.Item;
 
-            using var uw2 = new TemporalMatrix<double>(componentCount, componentCount);
-            ref readonly var w2 = ref uw2.Item;
+            using var uprev = new TemporalMatrix<double>(componentCount, componentCount);
+            ref readonly var prev = ref uprev.Item;
 
-            using var utransformed = new TemporalMatrix<double>(xs[0].Count, xs.Count);
+            using var utransformed = new TemporalMatrix<double>(componentCount, xs.Count);
             ref readonly var transformed = ref utransformed.Item;
 
             using var utmp = new TemporalVector2<double>(xs.Count);
@@ -32,6 +31,7 @@ namespace NumFlat.MultivariateAnalyses
             using var ue1 = new TemporalVector<double>(componentCount);
             ref readonly var e1 = ref ue1.Item;
 
+            var pca = xs.Pca();
             var scale = pca.EigenValues.Map(Math.Sqrt);
 
             foreach (var (x, a) in xs.Zip(whiten.Cols))
@@ -40,42 +40,55 @@ namespace NumFlat.MultivariateAnalyses
                 a.PointwiseDivInplace(scale);
             }
 
-            var random = new Random(42);
-            var w1 = GetInitialW(componentCount, random);
-            Orthogonalize(w1, w2);
-            w2.CopyTo(w1);
+            var random = new Random(57);
+            var w = GetInitialW(componentCount, random);
+            Orthogonalize(w);
 
-            for (var ite = 0; ite < 30; ite++)
+            for (var iter = 0; iter < 200; iter++)
             {
-                Orthogonalize(w1, w2);
-                w2.CopyTo(w1);
+                w.CopyTo(prev);
+
                 for (var c = 0; c < componentCount; c++)
                 {
-                    var w1c = w1.Rows[c];
-                    var w2c = w2.Rows[c];
+                    var wc = w.Rows[c];
                     var wxs = transformed.Rows[c];
-                    Mat.Mul(whiten, w1c, wxs, true);
+                    Mat.Mul(whiten, wc, wxs, true);
                     Vec.Map(wxs, G, gwxs);
                     Vec.Map(wxs, Gp, gpwxs);
                     MultiplyAdd(whiten.Cols, gwxs, e1);
                     e1.DivInplace(xs.Count);
                     var e2 = gpwxs.Average();
-                    Vec.Mul(w1c, e2, w1c);
-                    Vec.Sub(e1, w1c, w1c);
+                    Vec.Mul(wc, e2, wc);
+                    Vec.Sub(e1, wc, wc);
+                }
+                Orthogonalize(w);
+
+                if (GetMaximumAbsoluteChange(w, prev) < 1.0E-4)
+                {
+                    break;
                 }
             }
 
-            using (var writer = new StreamWriter("ica.csv"))
+            var demixingMatrix = new Mat<double>(componentCount, componentCount);
+            foreach (var (dmRow, pcaCol, s) in prev.Rows.Zip(pca.EigenVectors.Cols, scale))
             {
-                foreach (var y in whiten.Cols.Select(x => w1 * x))
-                {
-                    writer.WriteLine(string.Join(',', y));
-                }
+                Vec.Div(pcaCol, s, dmRow);
             }
+            Mat.Mul(w, prev, demixingMatrix, false, false);
+
+            this.pca = pca;
+            this.componentCount = componentCount;
+            this.w = w;
+            this.demixingMatrix = demixingMatrix;
         }
 
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
+            using var utmp = new TemporalVector<double>(source.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            Vec.Sub(source, pca.Mean, tmp);
+            Mat.Mul(demixingMatrix, tmp, destination, false);
         }
 
         private static Mat<double> GetInitialW(int componentCount, Random random)
@@ -94,25 +107,45 @@ namespace NumFlat.MultivariateAnalyses
             return w;
         }
 
-        private static void Orthogonalize(in Mat<double> source, in Mat<double> destination)
+        private static void Orthogonalize(in Mat<double> w)
         {
-            using var us = new TemporalVector<double>(source.RowCount);
+            using var us = new TemporalVector<double>(w.RowCount);
             ref readonly var s = ref us.Item;
             var fs = s.GetUnsafeFastIndexer();
 
-            using var uk = new TemporalMatrix<double>(source.RowCount, source.ColCount);
+            using var uk = new TemporalMatrix<double>(w.RowCount, w.ColCount);
             ref readonly var k = ref uk.Item;
 
-            using var utmp = new TemporalMatrix<double>(source.RowCount, source.ColCount);
+            using var uu = new TemporalMatrix<double>(w.RowCount, w.ColCount);
+            ref readonly var u = ref uu.Item;
+
+            using var utmp = new TemporalMatrix<double>(w.RowCount, w.ColCount);
             ref readonly var tmp = ref utmp.Item;
 
-            SingularValueDecompositionDouble.Decompose(source, s, destination);
-            for (var col = 0; col < destination.ColCount; col++)
+            SingularValueDecompositionDouble.Decompose(w, s, u);
+            for (var col = 0; col < u.ColCount; col++)
             {
-                Vec.Div(destination.Cols[col], fs[col], tmp.Cols[col]);
+                Vec.Div(u.Cols[col], fs[col], tmp.Cols[col]);
             }
-            Mat.Mul(tmp, destination, k, false, true);
-            Mat.Mul(k, source, destination, false, false);
+            Mat.Mul(tmp, u, k, false, true);
+            Mat.Mul(k, w, tmp, false, false);
+            tmp.CopyTo(w);
+        }
+
+        private static double GetMaximumAbsoluteChange(in Mat<double> w1, in Mat<double> w2)
+        {
+            using var utmp = new TemporalMatrix<double>(w1.RowCount, w1.ColCount);
+            ref readonly var tmp = ref utmp.Item;
+            var ft = tmp.GetUnsafeFastIndexer();
+
+            Mat.Mul(w1, w2, tmp, true, false);
+
+            var max = 0.0;
+            for (var i = 0; i < w1.RowCount; i++)
+            {
+                max = Math.Max(Math.Abs(Math.Abs(ft[i, i]) - 1), max);
+            }
+            return max;
         }
 
         private static void MultiplyAdd(IEnumerable<Vec<double>> xs, IEnumerable<double> coefficients, Vec<double> destination)
