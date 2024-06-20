@@ -9,6 +9,7 @@ namespace NumFlat.MultivariateAnalyses
     {
         private PrincipalComponentAnalysis pca;
         private int componentCount;
+        private Mat<double> w;
 
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
         {
@@ -28,6 +29,9 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var gwxs = ref utmp.Item1;
             ref readonly var gpwxs = ref utmp.Item2;
 
+            using var ue1 = new TemporalVector<double>(componentCount);
+            ref readonly var e1 = ref ue1.Item;
+
             var scale = pca.EigenValues.Map(Math.Sqrt);
 
             foreach (var (x, a) in xs.Zip(whiten.Cols))
@@ -35,38 +39,30 @@ namespace NumFlat.MultivariateAnalyses
                 pca.Transform(x, a);
                 a.PointwiseDivInplace(scale);
             }
-            Console.WriteLine(whiten.Cols.Covariance());
 
-            // Vectors stored as rows.
-            // Each row corresponds to a component.
             var random = new Random(42);
-            var w1 = new Mat<double>(componentCount, componentCount);
-            foreach (ref var value in w1.Memory.Span)
-            {
-                value = 2 * random.NextDouble() - 1;
-            }
-
-            Console.ReadKey();
+            var w1 = GetInitialW(componentCount, random);
+            Orthogonalize(w1, w2);
+            w2.CopyTo(w1);
 
             for (var ite = 0; ite < 30; ite++)
             {
                 Orthogonalize(w1, w2);
                 w2.CopyTo(w1);
-
                 for (var c = 0; c < componentCount; c++)
                 {
-                    var wc = w1.Rows[c];
+                    var w1c = w1.Rows[c];
+                    var w2c = w2.Rows[c];
                     var wxs = transformed.Rows[c];
-                    Mat.Mul(whiten, wc, wxs, true);
+                    Mat.Mul(whiten, w1c, wxs, true);
                     Vec.Map(wxs, G, gwxs);
-                    Vec.Map(wxs, Gp, gpwxs);                 
-                    var e1 = whiten.Cols.Zip(gwxs, (x, g) => x * g).Mean();
+                    Vec.Map(wxs, Gp, gpwxs);
+                    MultiplyAdd(whiten.Cols, gwxs, e1);
+                    e1.DivInplace(xs.Count);
                     var e2 = gpwxs.Average();
-                    var wc2 = e1 - e2 * wc;
-                    wc2.CopyTo(wc);
+                    Vec.Mul(w1c, e2, w1c);
+                    Vec.Sub(e1, w1c, w1c);
                 }
-
-                Console.WriteLine(ite);
             }
 
             using (var writer = new StreamWriter("ica.csv"))
@@ -80,6 +76,22 @@ namespace NumFlat.MultivariateAnalyses
 
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
+        }
+
+        private static Mat<double> GetInitialW(int componentCount, Random random)
+        {
+            var w = new Mat<double>(componentCount, componentCount);
+            var span = w.Memory.Span;
+            for (var i = 0; i < span.Length; i++)
+            {
+                var sum = 0.0;
+                for (var j = 0; j < 12; j++)
+                {
+                    sum += random.NextDouble();
+                }
+                span[i] = sum - 6;
+            }
+            return w;
         }
 
         private static void Orthogonalize(in Mat<double> source, in Mat<double> destination)
@@ -101,6 +113,24 @@ namespace NumFlat.MultivariateAnalyses
             }
             Mat.Mul(tmp, destination, k, false, true);
             Mat.Mul(k, source, destination, false, false);
+        }
+
+        private static void MultiplyAdd(IEnumerable<Vec<double>> xs, IEnumerable<double> coefficients, Vec<double> destination)
+        {
+            destination.Clear();
+            foreach (var (x, coefficient) in xs.Zip(coefficients))
+            {
+                var sx = x.Memory.Span;
+                var sd = destination.Memory.Span;
+                var px = 0;
+                var pd = 0;
+                while (pd < sd.Length)
+                {
+                    sd[pd] += coefficient * sx[px];
+                    px += x.Stride;
+                    pd += destination.Stride;
+                }
+            }
         }
 
         /// <inheritdoc/>
