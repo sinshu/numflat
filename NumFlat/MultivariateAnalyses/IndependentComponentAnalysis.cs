@@ -4,12 +4,25 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
-    public sealed class IndependentComponentAnalysis : IVectorToVectorTransform<double>
+    /// <summary>
+    /// Provides independent component analysis (ICA).
+    /// </summary>
+    public sealed class IndependentComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
         private PrincipalComponentAnalysis pca;
         private int componentCount;
         private Mat<double> demixingMatrix;
+        private Mat<double> mixingMatrix;
 
+        /// <summary>
+        /// Performs independent component analysis (ICA).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of independent components to be extracted.
+        /// </param>
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
         {
             var pca = xs.Pca();
@@ -78,15 +91,32 @@ namespace NumFlat.MultivariateAnalyses
             this.pca = pca;
             this.componentCount = componentCount;
             this.demixingMatrix = demixingMatrix;
+            this.mixingMatrix = demixingMatrix.PseudoInverse();
         }
 
+        /// <inheritdoc/>
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
+
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, pca.Mean, tmp);
             Mat.Mul(demixingMatrix, tmp, destination, false);
+        }
+
+        /// <inheritdoc/>
+        public void InverseTransform(in Vec<double> source, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
+
+            Mat.Mul(mixingMatrix, source, destination, false);
+            destination.AddInplace(pca.Mean);
         }
 
         private static void GetInitialW(Random random, in Mat<double> destination)
@@ -168,6 +198,26 @@ namespace NumFlat.MultivariateAnalyses
             var tanh = Math.Tanh(value);
             return 1 - tanh * tanh;
         }
+
+        /// <summary>
+        /// Gets the PCA used for preprocessing for ICA.
+        /// </summary>
+        public PrincipalComponentAnalysis Pca => pca;
+
+        /// <summary>
+        /// Gets the mean vector of the source vectors.
+        /// </summary>
+        public ref readonly Vec<double> Mean => ref pca.Mean;
+
+        /// <summary>
+        /// Gets the demixing matrix.
+        /// </summary>
+        public ref readonly Mat<double> DemixingMatrix => ref demixingMatrix;
+
+        /// <summary>
+        /// Gets the mixing matrix.
+        /// </summary>
+        public ref readonly Mat<double> MixingMatrix => ref mixingMatrix;
 
         /// <inheritdoc/>
         public int SourceDimension => pca.SourceDimension;

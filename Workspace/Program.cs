@@ -64,5 +64,14 @@ public class Program
                 writer.WriteLine(string.Join(',', ica.Transform(x)));
             }
         }
+
+        using (var writer = new StreamWriter("reconstruction.csv"))
+        {
+            foreach (var x in xs)
+            {
+                var y = ica.Transform(x);
+                writer.WriteLine(string.Join(',', ica.InverseTransform(y)));
+            }
+        }
     }
 }

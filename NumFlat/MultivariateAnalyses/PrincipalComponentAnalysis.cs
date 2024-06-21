@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace NumFlat.MultivariateAnalyses
 {
     /// <summary>
-    /// Provides principal component analysis.
+    /// Provides principal component analysis (PCA).
     /// </summary>
     public sealed class PrincipalComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
@@ -12,7 +12,7 @@ namespace NumFlat.MultivariateAnalyses
         private readonly EigenValueDecompositionDouble evd;
 
         /// <summary>
-        /// Performs principal component analysis.
+        /// Performs principal component analysis (PCA).
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
