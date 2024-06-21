@@ -4,9 +4,9 @@ using System.Numerics;
 
 namespace NumFlat
 {
-    internal ref struct TemporalMatrix<T> where T : unmanaged, INumberBase<T>
+    internal readonly ref struct TemporalMatrix<T> where T : unmanaged, INumberBase<T>
     {
-        private IMemoryOwner<T>? owner;
+        private readonly IMemoryOwner<T> owner;
         public readonly Mat<T> Item;
 
         public TemporalMatrix(int rowCount, int colCount)
@@ -18,11 +18,7 @@ namespace NumFlat
 
         public void Dispose()
         {
-            if (owner != null)
-            {
-                owner.Dispose();
-                owner = null;
-            }
+            owner.Dispose();
         }
     }
 

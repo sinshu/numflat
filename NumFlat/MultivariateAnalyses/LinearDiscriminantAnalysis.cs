@@ -5,7 +5,7 @@ using System.Linq;
 namespace NumFlat.MultivariateAnalyses
 {
     /// <summary>
-    /// Provides linear discriminant analysis.
+    /// Provides linear discriminant analysis (LDA).
     /// </summary>
     public sealed class LinearDiscriminantAnalysis : IVectorToVectorTransform<double>
     {
@@ -13,7 +13,7 @@ namespace NumFlat.MultivariateAnalyses
         private readonly GeneralizedEigenValueDecompositionDouble gevd;
 
         /// <summary>
-        /// Performs linear discriminant analysis.
+        /// Performs linear discriminant analysis (LDA).
         /// </summary>
         /// <param name="xs">
         /// The source vectors.

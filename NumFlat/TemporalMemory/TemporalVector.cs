@@ -4,9 +4,9 @@ using System.Numerics;
 
 namespace NumFlat
 {
-    internal ref struct TemporalVector<T> where T : unmanaged, INumberBase<T>
+    internal readonly ref struct TemporalVector<T> where T : unmanaged, INumberBase<T>
     {
-        private IMemoryOwner<T>? owner;
+        private readonly IMemoryOwner<T> owner;
         public readonly Vec<T> Item;
 
         public TemporalVector(int count)
@@ -17,11 +17,7 @@ namespace NumFlat
 
         public void Dispose()
         {
-            if (owner != null)
-            {
-                owner.Dispose();
-                owner = null;
-            }
+            owner.Dispose();
         }
     }
 }
