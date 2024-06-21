@@ -23,9 +23,19 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of independent components to be extracted.
         /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
             var pca = xs.Pca();
+
+            if (!(1 <= componentCount && componentCount < pca.SourceDimension))
+            {
+                throw new ArgumentException($"The number of components must be between one and the source dimension {pca.SourceDimension}.", nameof(componentCount));
+            }
 
             using var ux = new TemporalMatrix2<double>(componentCount, xs.Count);
             ref readonly var whiten = ref ux.Item1;

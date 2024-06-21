@@ -9,7 +9,7 @@ namespace NumFlat.MultivariateAnalyses
     public static class MultivariateAnalyses
     {
         /// <summary>
-        /// Performs principal component analysis.
+        /// Performs principal component analysis (PCA).
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
@@ -28,7 +28,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Performs linear discriminant analysis.
+        /// Performs linear discriminant analysis (LDA).
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
@@ -48,6 +48,28 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
 
             return new LinearDiscriminantAnalysis(xs, ys);
+        }
+
+        /// <summary>
+        /// Performs independent component analysis (ICA).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of independent components to be extracted.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="IndependentComponentAnalysis"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public static IndependentComponentAnalysis Ica(this IReadOnlyList<Vec<double>> xs, int componentCount)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            return new IndependentComponentAnalysis(xs, componentCount);
         }
     }
 }
