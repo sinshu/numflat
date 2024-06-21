@@ -9,8 +9,9 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class IndependentComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
     {
-        private PrincipalComponentAnalysis pca;
+        private int sourceDimension;
         private int componentCount;
+        private Vec<double> mean;
         private Mat<double> demixingMatrix;
         private Mat<double> mixingMatrix;
 
@@ -114,7 +115,8 @@ namespace NumFlat.MultivariateAnalyses
                 wmRow.DivInplace(values.Norm());
             }
 
-            this.pca = pca;
+            this.sourceDimension = pca.SourceDimension;
+            this.mean = pca.Mean;
             this.componentCount = componentCount;
             this.demixingMatrix = demixingMatrix;
             this.mixingMatrix = demixingMatrix.PseudoInverse();
@@ -130,7 +132,7 @@ namespace NumFlat.MultivariateAnalyses
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
 
-            Vec.Sub(source, pca.Mean, tmp);
+            Vec.Sub(source, mean, tmp);
             Mat.Mul(demixingMatrix, tmp, destination, false);
         }
 
@@ -142,7 +144,7 @@ namespace NumFlat.MultivariateAnalyses
             VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
             Mat.Mul(mixingMatrix, source, destination, false);
-            destination.AddInplace(pca.Mean);
+            destination.AddInplace(mean);
         }
 
         private static void GetInitialW(Random random, in Mat<double> destination)
@@ -226,14 +228,9 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Gets the PCA used for preprocessing for ICA.
-        /// </summary>
-        public PrincipalComponentAnalysis Pca => pca;
-
-        /// <summary>
         /// Gets the mean vector of the source vectors.
         /// </summary>
-        public ref readonly Vec<double> Mean => ref pca.Mean;
+        public ref readonly Vec<double> Mean => ref mean;
 
         /// <summary>
         /// Gets the demixing matrix.
@@ -246,7 +243,7 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Mat<double> MixingMatrix => ref mixingMatrix;
 
         /// <inheritdoc/>
-        public int SourceDimension => pca.SourceDimension;
+        public int SourceDimension => sourceDimension;
 
         /// <inheritdoc/>
         public int DestinationDimension => componentCount;
