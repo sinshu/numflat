@@ -109,14 +109,10 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var s = ref us.Item;
             var fs = s.GetUnsafeFastIndexer();
 
-            using var uk = new TemporalMatrix<double>(w.RowCount, w.ColCount);
-            ref readonly var k = ref uk.Item;
-
-            using var uu = new TemporalMatrix<double>(w.RowCount, w.ColCount);
-            ref readonly var u = ref uu.Item;
-
-            using var utmp = new TemporalMatrix<double>(w.RowCount, w.ColCount);
-            ref readonly var tmp = ref utmp.Item;
+            using var utmp = new TemporalMatrix3<double>(w.RowCount, w.ColCount);
+            ref readonly var k = ref utmp.Item1;
+            ref readonly var u = ref utmp.Item2;
+            ref readonly var tmp = ref utmp.Item3;
 
             SingularValueDecompositionDouble.Decompose(w, s, u);
             for (var col = 0; col < u.ColCount; col++)
