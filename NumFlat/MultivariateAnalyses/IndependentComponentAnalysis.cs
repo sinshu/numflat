@@ -49,8 +49,8 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var w = ref uw.Item1;
             ref readonly var prev = ref uw.Item2;
 
-            using var utmp = new TemporalMatrix<double>(componentCount, pca.SourceDimension);
-            ref readonly var tmp = ref utmp.Item;
+            using var uwm = new TemporalMatrix<double>(componentCount, pca.SourceDimension);
+            ref readonly var whiteningMatrix = ref uwm.Item;
 
             using var ug = new TemporalVector2<double>(xs.Count);
             ref readonly var gwxs = ref ug.Item1;
@@ -58,6 +58,9 @@ namespace NumFlat.MultivariateAnalyses
 
             using var ue = new TemporalVector<double>(componentCount);
             ref readonly var e1 = ref ue.Item;
+
+            using var utmp = new TemporalVector<double>(pca.SourceDimension);
+            ref readonly var tmp = ref utmp.Item;
 
             var scale = pca.EigenValues.Subvector(0, componentCount).Map(Math.Sqrt);
 
@@ -95,11 +98,21 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
 
-            foreach (var (tmpRow, pcaCol, s) in tmp.Rows.Zip(pca.EigenVectors.Cols, scale))
+            foreach (var (wmRow, pcaCol, s) in whiteningMatrix.Rows.Zip(pca.EigenVectors.Cols, scale))
             {
-                Vec.Div(pcaCol, s, tmpRow);
+                Vec.Div(pcaCol, s, wmRow);
             }
-            var demixingMatrix = w * tmp;
+            var demixingMatrix = w * whiteningMatrix;
+            foreach (var (x, y) in xs.Zip(transformed.Cols))
+            {
+
+                Vec.Sub(x, pca.Mean, tmp);
+                Mat.Mul(demixingMatrix, tmp, y, false);
+            }
+            foreach (var (wmRow, values) in demixingMatrix.Zip(transformed.Rows))
+            {
+                wmRow.DivInplace(values.Norm());
+            }
 
             this.pca = pca;
             this.componentCount = componentCount;

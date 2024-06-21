@@ -23,9 +23,9 @@ public class Program
         var n = 300;
         for (var i = 0; i < n; i++)
         {
-            var value1 = Math.Sin(2 * Math.PI * i / n * 11);
-            var value2 = Math.Sign(Math.Cos(2 * Math.PI * i / n * 7));
-            var value3 = (i % 13) / 13.0 * 2 - 1;
+            var value1 = Math.Sin(2 * Math.PI * i / n * 11) + 1;
+            var value2 = Math.Sign(Math.Cos(2 * Math.PI * i / n * 7)) + 2;
+            var value3 = (i % 13) / 13.0 * 2 - 1 + 3;
             ys.Add([value1, value2, value3]);
         }
 
