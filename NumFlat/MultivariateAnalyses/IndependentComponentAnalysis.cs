@@ -23,10 +23,14 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of independent components to be extracted.
         /// </param>
+        /// <param name="random">
+        /// A random number generator for initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
+        public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
@@ -63,8 +67,7 @@ namespace NumFlat.MultivariateAnalyses
                 a.PointwiseDivInplace(scale);
             }
 
-            var random = new Random(42);
-            GetInitialW(random, w);
+            GetInitialW(random != null ? random : Random.Shared, w);
             Orthogonalize(w);
 
             for (var iter = 0; iter < 200; iter++)
