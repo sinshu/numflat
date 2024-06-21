@@ -74,6 +74,15 @@ namespace NumFlat.MultivariateAnalyses
             destination.AddInplace(mean);
         }
 
+        internal void TruncatedTransform(in Vec<double> source, in Vec<double> destination, int componentCount)
+        {
+            using var utmp = new TemporalVector<double>(source.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            Vec.Sub(source, mean, tmp);
+            Mat.Mul(evd.V.Submatrix(0, 0, mean.Count, componentCount), tmp, destination, true);
+        }
+
         /// <summary>
         /// Gets the mean vector of the source vectors.
         /// </summary>

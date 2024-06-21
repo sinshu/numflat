@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -10,38 +8,40 @@ namespace NumFlat.MultivariateAnalyses
     {
         private PrincipalComponentAnalysis pca;
         private int componentCount;
-        private Mat<double> w;
         private Mat<double> demixingMatrix;
 
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount)
         {
-            using var uwhiten = new TemporalMatrix<double>(componentCount, xs.Count);
-            ref readonly var whiten = ref uwhiten.Item;
-
-            using var uprev = new TemporalMatrix<double>(componentCount, componentCount);
-            ref readonly var prev = ref uprev.Item;
-
-            using var utransformed = new TemporalMatrix<double>(componentCount, xs.Count);
-            ref readonly var transformed = ref utransformed.Item;
-
-            using var utmp = new TemporalVector2<double>(xs.Count);
-            ref readonly var gwxs = ref utmp.Item1;
-            ref readonly var gpwxs = ref utmp.Item2;
-
-            using var ue1 = new TemporalVector<double>(componentCount);
-            ref readonly var e1 = ref ue1.Item;
-
             var pca = xs.Pca();
-            var scale = pca.EigenValues.Map(Math.Sqrt);
+
+            using var ux = new TemporalMatrix2<double>(componentCount, xs.Count);
+            ref readonly var whiten = ref ux.Item1;
+            ref readonly var transformed = ref ux.Item2;
+
+            using var uw = new TemporalMatrix2<double>(componentCount, componentCount);
+            ref readonly var w = ref uw.Item1;
+            ref readonly var prev = ref uw.Item2;
+
+            using var utmp = new TemporalMatrix<double>(componentCount, pca.SourceDimension);
+            ref readonly var tmp = ref utmp.Item;
+
+            using var ug = new TemporalVector2<double>(xs.Count);
+            ref readonly var gwxs = ref ug.Item1;
+            ref readonly var gpwxs = ref ug.Item2;
+
+            using var ue = new TemporalVector<double>(componentCount);
+            ref readonly var e1 = ref ue.Item;
+
+            var scale = pca.EigenValues.Subvector(0, componentCount).Map(Math.Sqrt);
 
             foreach (var (x, a) in xs.Zip(whiten.Cols))
             {
-                pca.Transform(x, a);
+                pca.TruncatedTransform(x, a, componentCount);
                 a.PointwiseDivInplace(scale);
             }
 
-            var random = new Random(57);
-            var w = GetInitialW(componentCount, random);
+            var random = new Random(42);
+            GetInitialW(random, w);
             Orthogonalize(w);
 
             for (var iter = 0; iter < 200; iter++)
@@ -69,16 +69,14 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
 
-            var demixingMatrix = new Mat<double>(componentCount, componentCount);
-            foreach (var (dmRow, pcaCol, s) in prev.Rows.Zip(pca.EigenVectors.Cols, scale))
+            foreach (var (tmpRow, pcaCol, s) in tmp.Rows.Zip(pca.EigenVectors.Cols, scale))
             {
-                Vec.Div(pcaCol, s, dmRow);
+                Vec.Div(pcaCol, s, tmpRow);
             }
-            Mat.Mul(w, prev, demixingMatrix, false, false);
+            var demixingMatrix = w * tmp;
 
             this.pca = pca;
             this.componentCount = componentCount;
-            this.w = w;
             this.demixingMatrix = demixingMatrix;
         }
 
@@ -91,10 +89,9 @@ namespace NumFlat.MultivariateAnalyses
             Mat.Mul(demixingMatrix, tmp, destination, false);
         }
 
-        private static Mat<double> GetInitialW(int componentCount, Random random)
+        private static void GetInitialW(Random random, in Mat<double> destination)
         {
-            var w = new Mat<double>(componentCount, componentCount);
-            var span = w.Memory.Span;
+            var span = destination.Memory.Span;
             for (var i = 0; i < span.Length; i++)
             {
                 var sum = 0.0;
@@ -104,7 +101,6 @@ namespace NumFlat.MultivariateAnalyses
                 }
                 span[i] = sum - 6;
             }
-            return w;
         }
 
         private static void Orthogonalize(in Mat<double> w)
@@ -166,21 +162,21 @@ namespace NumFlat.MultivariateAnalyses
             }
         }
 
+        private double G(double value)
+        {
+            return Math.Tanh(value);
+        }
+
+        private double Gp(double value)
+        {
+            var tanh = Math.Tanh(value);
+            return 1 - tanh * tanh;
+        }
+
         /// <inheritdoc/>
         public int SourceDimension => pca.SourceDimension;
 
         /// <inheritdoc/>
         public int DestinationDimension => componentCount;
-
-        private static double G(double value)
-        {
-            return Math.Tanh(value);
-        }
-
-        private static double Gp(double value)
-        {
-            var tanh = Math.Tanh(value);
-            return 1 - tanh * tanh;
-        }
     }
 }

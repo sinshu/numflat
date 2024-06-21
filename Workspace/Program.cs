@@ -34,6 +34,7 @@ public class Program
             [3, 6, 5],
             [5, 2, 7],
             [6, 4, 4],
+            [1, 2, 3],
         ];
 
         var xs = ys.Select(y => transform * y).ToArray();
