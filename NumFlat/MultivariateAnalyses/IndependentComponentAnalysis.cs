@@ -33,8 +33,22 @@ namespace NumFlat.MultivariateAnalyses
         /// </exception>
         public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
         {
+            //
+            // This is based on the following parallel algorithm implementations.
+            //
+            // Accord.NET
+            // https://github.com/accord-net/framework
+            //
+            // Independent Component Analysis (ICA) implementation from scratch in Python
+            // https://github.com/akcarsten/Independent_Component_Analysis
+            //
+            // scikit-learn
+            // https://github.com/scikit-learn/scikit-learn
+            //
+
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
+            // Do PCA for the whitening preprocess.
             var pca = xs.Pca();
 
             if (!(1 <= componentCount && componentCount < pca.SourceDimension))
@@ -65,54 +79,78 @@ namespace NumFlat.MultivariateAnalyses
 
             var scale = pca.EigenValues.Subvector(0, componentCount).Map(Math.Sqrt);
 
+            // Do the whitening preprocess.
             foreach (var (x, a) in xs.Zip(whiten.Cols))
             {
                 pca.TruncatedTransform(x, a, componentCount);
                 a.PointwiseDivInplace(scale);
             }
 
+            // Make an initial random W.
             GetInitialW(random != null ? random : Random.Shared, w);
+
+            // Orthogonalize W.
             Orthogonalize(w);
 
+            // Loop until convergence.
             for (var iter = 0; iter < 200; iter++)
             {
+                // Save the old W to check convergence later.
                 w.CopyTo(prev);
 
+                // For each component.
                 for (var c = 0; c < componentCount; c++)
                 {
                     var wc = w.Rows[c];
                     var wxs = transformed.Rows[c];
+
+                    // Compute wx = w * x.
                     Mat.Mul(whiten, wc, wxs, true);
+
+                    // Compute g(wx) and g'(wx).
                     Vec.Map(wxs, G, gwxs);
                     Vec.Map(wxs, Gp, gpwxs);
+
+                    // Compute E{ x * g(w * x) }.
                     MultiplyAdd(whiten.Cols, gwxs, e1);
                     e1.DivInplace(xs.Count);
+
+                    // Compute E{ g'(w * x) }.
                     var e2 = gpwxs.Average();
+
+                    // Update W.
                     Vec.Mul(wc, e2, wc);
                     Vec.Sub(e1, wc, wc);
                 }
+
+                // Orthogonalize W.
                 Orthogonalize(w);
 
+                // Chek the convergence.
                 if (GetMaximumAbsoluteChange(w, prev) < 1.0E-4)
                 {
                     break;
                 }
             }
 
-            foreach (var (wmRow, pcaCol, s) in whiteningMatrix.Rows.Zip(pca.EigenVectors.Cols, scale))
+            // Make the demixing matrix.
+            foreach (var (wmRow, evCol, s) in whiteningMatrix.Rows.Zip(pca.EigenVectors.Cols, scale))
             {
-                Vec.Div(pcaCol, s, wmRow);
+                Vec.Div(evCol, s, wmRow);
             }
             var demixingMatrix = w * whiteningMatrix;
+
+            // In the scikit-learn implementation, there is a normalization that makes
+            // the sum of squares of each dimension of the transformed xs equal to 1.
+            // This replicates it.
             foreach (var (x, y) in xs.Zip(transformed.Cols))
             {
-
                 Vec.Sub(x, pca.Mean, tmp);
                 Mat.Mul(demixingMatrix, tmp, y, false);
             }
-            foreach (var (wmRow, values) in demixingMatrix.Zip(transformed.Rows))
+            foreach (var (dmRow, values) in demixingMatrix.Zip(transformed.Rows))
             {
-                wmRow.DivInplace(values.Norm());
+                dmRow.DivInplace(values.Norm());
             }
 
             this.sourceDimension = pca.SourceDimension;
