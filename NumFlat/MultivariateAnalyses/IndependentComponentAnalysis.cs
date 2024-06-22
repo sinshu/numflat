@@ -112,7 +112,7 @@ namespace NumFlat.MultivariateAnalyses
                     Vec.Map(wxs, Gp, gpwxs);
 
                     // Compute E{ x * g(w * x) }.
-                    MultiplyAdd(whiten.Cols, gwxs, e1);
+                    MathLinq.Sum(whiten.Cols, gwxs, e1);
                     e1.DivInplace(xs.Count);
 
                     // Compute E{ g'(w * x) }.
@@ -234,24 +234,6 @@ namespace NumFlat.MultivariateAnalyses
                 max = Math.Max(Math.Abs(Math.Abs(ft[i, i]) - 1), max);
             }
             return max;
-        }
-
-        private static void MultiplyAdd(IEnumerable<Vec<double>> xs, IEnumerable<double> coefficients, Vec<double> destination)
-        {
-            destination.Clear();
-            foreach (var (x, coefficient) in xs.Zip(coefficients))
-            {
-                var sx = x.Memory.Span;
-                var sd = destination.Memory.Span;
-                var px = 0;
-                var pd = 0;
-                while (pd < sd.Length)
-                {
-                    sd[pd] += coefficient * sx[px];
-                    px += x.Stride;
-                    pd += destination.Stride;
-                }
-            }
         }
 
         private double G(double value)

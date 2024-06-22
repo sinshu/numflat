@@ -117,11 +117,6 @@ namespace NumFlat
                             throw new ArgumentException("All the source vectors must have the same length as the destination.");
                         }
 
-                        if (w < 0)
-                        {
-                            throw new ArgumentException("Negative weight values are not allowed.");
-                        }
-
                         AccumulateWeightedSum(x, w, destination);
                     }
                     else
@@ -182,11 +177,6 @@ namespace NumFlat
                         if (x.Count != destination.Count)
                         {
                             throw new ArgumentException("All the vectors must have the same length.");
-                        }
-
-                        if (w < 0)
-                        {
-                            throw new ArgumentException("Negative weight values are not allowed.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);

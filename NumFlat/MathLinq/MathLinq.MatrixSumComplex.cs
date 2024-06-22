@@ -118,11 +118,6 @@ namespace NumFlat
                             throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
                         }
 
-                        if (w < 0)
-                        {
-                            throw new ArgumentException("Negative weight values are not allowed.");
-                        }
-
                         AccumulateWeightedSum(x, w, destination);
                     }
                     else
@@ -183,11 +178,6 @@ namespace NumFlat
                         if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                         {
                             throw new ArgumentException("All the matrices must have the same dimensions.");
-                        }
-
-                        if (w < 0)
-                        {
-                            throw new ArgumentException("Negative weight values are not allowed.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);
