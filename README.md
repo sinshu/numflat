@@ -630,7 +630,7 @@ samples = spectrum.Ifft();
     - ⬜ Linear regression
     - ✅ PCA
     - ✅ LDA
-    - ⬜ ICA
+    - 🚧 ICA
     - ⬜ NMF
     - ⬜ Logistic regression
 * ⬜ Distributions
