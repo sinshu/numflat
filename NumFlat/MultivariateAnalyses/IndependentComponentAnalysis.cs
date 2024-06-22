@@ -51,7 +51,7 @@ namespace NumFlat.MultivariateAnalyses
             // Do PCA for the whitening preprocess.
             var pca = xs.Pca();
 
-            if (!(1 <= componentCount && componentCount < pca.SourceDimension))
+            if (!(1 <= componentCount && componentCount <= pca.SourceDimension))
             {
                 throw new ArgumentException($"The number of components must be between one and the source dimension {pca.SourceDimension}.", nameof(componentCount));
             }
