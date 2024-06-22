@@ -493,6 +493,7 @@ The `NumFlat.MultivariateAnalyses` namespace provides functionality related to m
 It currently supports the following methods, with plans to add more methods in the future.
 * Principal component analysis (PCA)
 * Linear discriminant analysis (LDA)
+* Independent component analysis (ICA)
 #### Code
 ```cs
 using NumFlat.MultivariateAnalyses;
@@ -546,7 +547,7 @@ foreach (var x in xs)
 The `NumFlat.Clustering` namespace provides functionality related to clustering.
 It currently supports the following methods, with plans to add more methods in the future.
 * k-means
-* GMM
+* Gaussian mixture model (GMM)
 #### Code
 ```cs
 using NumFlat.Clustering;
@@ -612,12 +613,12 @@ samples = spectrum.Ifft();
     - ✅ Norm
     - ✅ In-place operations
 * ✅ Matrix Decomposition
-    - ✅ LU
-    - ✅ QR
-    - ✅ Cholesky
-    - ✅ SVD
-    - ✅ EVD
-    - ✅ GEVD
+    - ✅ LU decomposition
+    - ✅ QR decomposition
+    - ✅ Cholesky decomposition
+    - ✅ Singular value decomposition (SVD)
+    - ✅ Eigenvalue decomposition (EVD)
+    - ✅ Generalized eigenvalue decomposition (GEVD)
 * ✅ LINQ-like operations
     - ✅ Sum, mean, variance, covariance for scalars
     - ✅ Sum, mean, variance, covariancee for vectors
@@ -628,10 +629,10 @@ samples = spectrum.Ifft();
     - ✅ Higher-order statistics
 * ⬜ Multivariate analysis
     - ⬜ Linear regression
-    - ✅ PCA
-    - ✅ LDA
-    - 🚧 ICA
-    - ⬜ NMF
+    - ✅ Principal component analysis (PCA)
+    - ✅ Linear discriminant analysis (LDA)
+    - ✅ Independent component analysis (ICA)
+    - ⬜ Non-negative matrix factorization (NMF)
     - ⬜ Logistic regression
 * ⬜ Distributions
     - ✅ Gaussian
@@ -639,12 +640,12 @@ samples = spectrum.Ifft();
     - ⬜ Other distributions
 * ✅ Clustering
     - ✅ k-means
-    - ✅ GMM
+    - ✅ Gaussian mixture model (GMM)
 * ⬜ Time series
     - ⬜ HMM
 * ⬜ Audio signal processing
-    - ✅ FFT
-    - ✅ STFT
+    - ✅ Fast Fourier transform (FFT)
+    - ✅ Short-time Fourier transform (STFT)
     - ✅ Convolution
     - ⬜ Resampling
     - 🚧 Feature extraction
