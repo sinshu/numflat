@@ -19,7 +19,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0F;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += MathF.Abs(value);
             }
@@ -40,7 +40,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += Math.Abs(value);
             }
@@ -61,7 +61,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var norm = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += value.Magnitude;
             }

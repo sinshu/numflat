@@ -27,18 +27,17 @@ namespace NumFlat
 
             using var us = new TemporalVector<float>(Math.Min(x.RowCount, x.ColCount));
             ref readonly var s = ref us.Item;
-            var fs = s.GetUnsafeFastIndexer();
 
             SingularValueDecompositionSingle.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (float.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.ColCount);
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.ColCount);
             }
 
             var rank = 0;
-            foreach (var value in fs)
+            foreach (var value in s)
             {
                 if (value > tolerance)
                 {
@@ -88,18 +87,17 @@ namespace NumFlat
 
             using var us = new TemporalVector<double>(Math.Min(x.RowCount, x.ColCount));
             ref readonly var s = ref us.Item;
-            var fs = s.GetUnsafeFastIndexer();
 
             SingularValueDecompositionDouble.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.ColCount);
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.ColCount);
             }
 
             var rank = 0;
-            foreach (var value in fs)
+            foreach (var value in s)
             {
                 if (value > tolerance)
                 {
@@ -149,18 +147,17 @@ namespace NumFlat
 
             using var us = new TemporalVector<double>(Math.Min(x.RowCount, x.ColCount));
             ref readonly var s = ref us.Item;
-            var fs = s.GetUnsafeFastIndexer();
 
             SingularValueDecompositionComplex.GetSingularValues(x, s);
 
             // If tolerance is NaN, set the tolerance by the Math.NET's method.
             if (double.IsNaN(tolerance))
             {
-                tolerance = Special.Eps(fs[0]) * Math.Max(x.RowCount, x.ColCount);
+                tolerance = Special.Eps(s[0]) * Math.Max(x.RowCount, x.ColCount);
             }
 
             var rank = 0;
-            foreach (var value in fs)
+            foreach (var value in s)
             {
                 if (value > tolerance)
                 {

@@ -134,7 +134,7 @@ namespace NumFlat.Clustering
         private void PredictLogProbability(in Vec<double> x, in Vec<double> destination)
         {
             var c = 0;
-            foreach (ref var value in destination.GetUnsafeFastIndexer())
+            foreach (ref var value in destination)
             {
                 value = components[c].LogWeight + components[c].Gaussian.LogPdf(x);
                 c++;
@@ -146,7 +146,7 @@ namespace NumFlat.Clustering
             PredictLogProbability(x, destination);
 
             var logSum = Special.LogSum(destination);
-            foreach (ref var value in destination.GetUnsafeFastIndexer())
+            foreach (ref var value in destination)
             {
                 value = Math.Exp(value - logSum);
             }

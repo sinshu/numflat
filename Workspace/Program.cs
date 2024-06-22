@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -72,6 +73,21 @@ public class Program
                 var y = ica.Transform(x);
                 writer.WriteLine(string.Join(',', ica.InverseTransform(y)));
             }
+        }
+
+        var ttt = new Vec<double>(1000000);
+        var sum = 0.0;
+        var sw = new Stopwatch();
+        for (var k = 0; k < 10; k++)
+        {
+            sw.Reset();
+            sw.Start();
+            for (var p = 0; p < 1000; p++)
+            {
+                sum += ttt.Sum();
+            }
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed);
         }
     }
 }

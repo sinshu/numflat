@@ -337,7 +337,7 @@ namespace NumFlat.IO
                 for (var ch = 0; ch < data.Count; ch++)
                 {
                     var position = ch;
-                    foreach (var value in data[ch].GetUnsafeFastIndexer())
+                    foreach (var value in data[ch])
                     {
                         var sample = Math.Clamp((int)(value * 32768), short.MinValue, short.MaxValue);
                         dst[position] = (short)sample;
@@ -394,7 +394,7 @@ namespace NumFlat.IO
 
                 var dst = MemoryMarshal.Cast<byte, short>(buffer);
                 var position = 0;
-                foreach (var value in data.GetUnsafeFastIndexer())
+                foreach (var value in data)
                 {
                     var sample = Math.Clamp((int)(value * 32768), short.MinValue, short.MaxValue);
                     dst[position] = (short)sample;

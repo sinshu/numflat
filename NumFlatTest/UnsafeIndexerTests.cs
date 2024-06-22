@@ -22,18 +22,6 @@ namespace NumFlatTest
         }
 
         [Test]
-        public void VecEnumerator()
-        {
-            var vec = TestVector.RandomDouble(42, 10, 3);
-            var i = 0;
-            foreach(var value in vec.GetUnsafeFastIndexer())
-            {
-                Assert.That(vec[i] == value);
-                i++;
-            }
-        }
-
-        [Test]
         public void MatIndexer()
         {
             var mat = TestMatrix.RandomDouble(42, 10, 3, 12);

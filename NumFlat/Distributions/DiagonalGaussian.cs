@@ -247,7 +247,7 @@ namespace NumFlat.Distributions
         private static double LogDeterminant(in Vec<double> variance)
         {
             var sum = 0.0;
-            foreach (var value in variance.GetUnsafeFastIndexer())
+            foreach (var value in variance)
             {
                 sum += Math.Log(value);
             }

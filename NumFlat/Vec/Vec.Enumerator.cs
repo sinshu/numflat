@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace NumFlat
 {
@@ -10,11 +11,20 @@ namespace NumFlat
         /// Gets an enumerator.
         /// </summary>
         /// <returns>
-        /// An instance of <see cref="Vec{T}.Enumerator"/>.
+        /// An instance of <see cref="Vec{T}.RefEnumerator"/>.
         /// </returns>
-        public Enumerator GetEnumerator() => new Enumerator(this);
+        public RefEnumerator GetEnumerator() => new RefEnumerator(stride, memory.Span);
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            if (stride == 1 && MemoryMarshal.TryGetArray<T>(memory, out var segment))
+            {
+                return segment.GetEnumerator();
+            }
+
+            return new Enumerator(this);
+        }
+
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
@@ -22,7 +32,57 @@ namespace NumFlat
         /// <summary>
         /// Enumerates the elements in the vector.
         /// </summary>
-        public struct Enumerator : IEnumerator<T>, IEnumerator
+        public ref struct RefEnumerator
+        {
+            private readonly int stride;
+            private readonly Span<T> memory;
+            private int position;
+
+            internal RefEnumerator(int stride, Span<T> memory)
+            {
+                this.stride = stride;
+                this.memory = memory;
+                this.position = -stride;
+            }
+
+            /// <summary>
+            /// Stops the enumerator.
+            /// </summary>
+            public void Dispose()
+            {
+            }
+
+            /// <summary>
+            /// Advances the enumerator.
+            /// </summary>
+            /// <returns>
+            /// True if the enumerator has the next value.
+            /// </returns>
+            public bool MoveNext()
+            {
+                position += stride;
+                if (position < memory.Length)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            /// <summary>
+            /// Gets the current value.
+            /// </summary>
+            public ref T Current => ref memory[position];
+        }
+
+
+
+        /// <summary>
+        /// Enumerates the elements in the vector.
+        /// </summary>
+        public class Enumerator : IEnumerator<T>, IEnumerator
         {
             private readonly int stride;
             private readonly Memory<T> memory;

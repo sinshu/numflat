@@ -85,7 +85,7 @@ namespace NumFlat
             }
 
             var norm = 0.0F;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += MathF.Pow(MathF.Abs(value), p);
             }
@@ -114,7 +114,7 @@ namespace NumFlat
             }
 
             var norm = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += Math.Pow(Math.Abs(value), p);
             }
@@ -143,7 +143,7 @@ namespace NumFlat
             }
 
             var norm = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 norm += Math.Pow(value.Magnitude, p);
             }

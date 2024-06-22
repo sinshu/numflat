@@ -19,7 +19,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0F;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 var current = MathF.Abs(value);
                 if (current > max)
@@ -44,7 +44,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 var current = Math.Abs(value);
                 if (current > max)
@@ -69,7 +69,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
 
             var max = 0.0;
-            foreach (var value in x.GetUnsafeFastIndexer())
+            foreach (var value in x)
             {
                 var current = value.Magnitude;
                 if (current > max)

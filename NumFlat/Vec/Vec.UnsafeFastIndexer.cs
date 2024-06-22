@@ -34,64 +34,6 @@ namespace NumFlat
             /// The specified element.
             /// </returns>
             public ref T this[int index] => ref memory[stride * index];
-
-            /// <summary>
-            /// Gets an enumerator.
-            /// </summary>
-            /// <returns>
-            /// An instance of <see cref="Vec{T}.FastEnumerator"/>.
-            /// </returns>
-            public FastEnumerator GetEnumerator() => new FastEnumerator(stride, memory);
-        }
-
-
-
-        /// <summary>
-        /// Provides fast enumerator for <see cref="Vec{T}"/>.
-        /// </summary>
-        public ref struct FastEnumerator
-        {
-            private readonly int stride;
-            private readonly Span<T> memory;
-            private int position;
-
-            internal FastEnumerator(int stride, Span<T> memory)
-            {
-                this.stride = stride;
-                this.memory = memory;
-                this.position = -stride;
-            }
-
-            /// <summary>
-            /// Stops the enumerator.
-            /// </summary>
-            public void Dispose()
-            {
-            }
-
-            /// <summary>
-            /// Advances the enumerator.
-            /// </summary>
-            /// <returns>
-            /// True if the enumerator has the next value.
-            /// </returns>
-            public bool MoveNext()
-            {
-                position += stride;
-                if (position < memory.Length)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            /// <summary>
-            /// Gets the current value.
-            /// </summary>
-            public ref T Current => ref memory[position];
         }
     }
 }

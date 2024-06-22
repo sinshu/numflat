@@ -202,7 +202,7 @@ namespace NumFlat
             }
 
             var determinant = 1.0;
-            foreach (var value in s.GetUnsafeFastIndexer())
+            foreach (var value in s)
             {
                 determinant *= value;
             }
@@ -223,7 +223,7 @@ namespace NumFlat
             }
 
             var logDeterminant = 0.0;
-            foreach (var value in s.GetUnsafeFastIndexer())
+            foreach (var value in s)
             {
                 logDeterminant += Math.Log(value);
             }

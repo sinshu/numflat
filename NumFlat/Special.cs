@@ -168,7 +168,7 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(values, nameof(values));
 
             var max = double.MinValue;
-            foreach (var value in values.GetUnsafeFastIndexer())
+            foreach (var value in values)
             {
                 if (value > max)
                 {
@@ -177,7 +177,7 @@ namespace NumFlat
             }
 
             var sum = 0.0;
-            foreach (var value in values.GetUnsafeFastIndexer())
+            foreach (var value in values)
             {
                 sum += Math.Exp(value - max);
             }
