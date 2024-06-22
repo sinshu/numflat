@@ -91,14 +91,12 @@ namespace NumFlat
             private readonly int stride;
             private readonly Memory<T> memory;
             private int position;
-            private T current;
 
             internal MemoryEnumerator(int stride, Memory<T> memory)
             {
                 this.stride = stride;
                 this.memory = memory;
                 this.position = -stride;
-                this.current = default;
             }
 
             public void Dispose()
@@ -110,24 +108,21 @@ namespace NumFlat
                 position += stride;
                 if (position < memory.Length)
                 {
-                    current = memory.Span[position];
                     return true;
                 }
                 else
                 {
-                    current = default;
                     return false;
                 }
             }
 
-            public T Current => current;
+            public T Current => memory.Span[position];
 
-            object? IEnumerator.Current => current;
+            object? IEnumerator.Current => memory.Span[position];
 
             void IEnumerator.Reset()
             {
                 this.position = -stride;
-                this.current = default;
             }
         }
 
@@ -138,14 +133,12 @@ namespace NumFlat
             private readonly int stride;
             private readonly ArraySegment<T> memory;
             private int position;
-            private T current;
 
             internal ArraySegmentEnumerator(int stride, ArraySegment<T> memory)
             {
                 this.stride = stride;
                 this.memory = memory;
                 this.position = -stride;
-                this.current = default;
             }
 
             public void Dispose()
@@ -157,24 +150,21 @@ namespace NumFlat
                 position += stride;
                 if (position < memory.Count)
                 {
-                    current = memory[position];
                     return true;
                 }
                 else
                 {
-                    current = default;
                     return false;
                 }
             }
 
-            public T Current => current;
+            public T Current => memory[position];
 
-            object? IEnumerator.Current => current;
+            object? IEnumerator.Current => memory[position];
 
             void IEnumerator.Reset()
             {
                 this.position = -stride;
-                this.current = default;
             }
         }
     }

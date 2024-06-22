@@ -15,6 +15,7 @@ namespace NumFlat
         public RowList.Enumerator GetEnumerator() => Rows.GetEnumerator();
 
         IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => Rows.GetEnumerator();
+
         IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
 
 
@@ -67,7 +68,8 @@ namespace NumFlat
             public Enumerator GetEnumerator() => new Enumerator(this);
 
             IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
-            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
 
@@ -81,7 +83,6 @@ namespace NumFlat
                 private readonly int stride;
                 private readonly Memory<T> memory;
                 private int row;
-                private Vec<T> current;
 
                 internal Enumerator(in Mat<T>.RowList rows)
                 {
@@ -90,7 +91,6 @@ namespace NumFlat
                     this.stride = rows.mat.stride;
                     this.memory = rows.mat.memory;
                     this.row = -1;
-                    this.current = default;
                 }
 
                 /// <inheritdoc/>
@@ -104,28 +104,22 @@ namespace NumFlat
                     row++;
                     if (row < rowCount)
                     {
-                        current = new Vec<T>(colCount, stride, memory.Slice(row, stride * (colCount - 1) + 1));
                         return true;
                     }
                     else
                     {
-                        current = default;
                         return false;
                     }
                 }
 
                 /// <inheritdoc/>
-                public Vec<T> Current => current;
+                public Vec<T> Current => new Vec<T>(colCount, stride, memory.Slice(row, stride * (colCount - 1) + 1));
 
-                object? IEnumerator.Current
-                {
-                    get => current;
-                }
+                object? IEnumerator.Current => new Vec<T>(colCount, stride, memory.Slice(row, stride * (colCount - 1) + 1));
 
                 void IEnumerator.Reset()
                 {
                     this.row = -1;
-                    this.current = default;
                 }
             }
         }
@@ -180,7 +174,8 @@ namespace NumFlat
             public Enumerator GetEnumerator() => new Enumerator(this);
 
             IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
-            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Vec<T>>)this).GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
 
@@ -193,7 +188,6 @@ namespace NumFlat
                 private readonly int stride;
                 private readonly Memory<T> memory;
                 private int offset;
-                private Vec<T> current;
 
                 internal Enumerator(in Mat<T>.ColList cols)
                 {
@@ -201,7 +195,6 @@ namespace NumFlat
                     this.stride = cols.mat.stride;
                     this.memory = cols.mat.memory;
                     this.offset = -cols.mat.stride;
-                    this.current = default;
                 }
 
                 /// <inheritdoc/>
@@ -215,28 +208,22 @@ namespace NumFlat
                     offset += stride;
                     if (offset < memory.Length)
                     {
-                        current = new Vec<T>(memory.Slice(offset, rowCount));
                         return true;
                     }
                     else
                     {
-                        current = default;
                         return false;
                     }
                 }
 
                 /// <inheritdoc/>
-                public Vec<T> Current => current;
+                public Vec<T> Current => new Vec<T>(memory.Slice(offset, rowCount));
 
-                object? IEnumerator.Current
-                {
-                    get => current;
-                }
+                object? IEnumerator.Current => new Vec<T>(memory.Slice(offset, rowCount));
 
                 void IEnumerator.Reset()
                 {
                     this.offset = -stride;
-                    this.current = default;
                 }
             }
         }
