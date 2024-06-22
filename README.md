@@ -638,9 +638,11 @@ samples = spectrum.Ifft();
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
-* ✅ Clustering
+* ⬜ Clustering
     - ✅ k-means
     - ✅ Gaussian mixture model (GMM)
+    - ⬜ DBSCAN
+    - ⬜ OPTICS
 * ⬜ Time series
     - ⬜ HMM
 * ⬜ Audio signal processing
