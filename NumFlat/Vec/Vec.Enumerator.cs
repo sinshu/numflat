@@ -11,9 +11,9 @@ namespace NumFlat
         /// Gets an enumerator.
         /// </summary>
         /// <returns>
-        /// An instance of <see cref="Vec{T}.RefEnumerator"/>.
+        /// An instance of <see cref="Vec{T}.Enumerator"/>.
         /// </returns>
-        public RefEnumerator GetEnumerator() => new RefEnumerator(stride, memory.Span);
+        public Enumerator GetEnumerator() => new Enumerator(stride, memory.Span);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
@@ -39,13 +39,13 @@ namespace NumFlat
         /// <summary>
         /// Enumerates the elements in the vector.
         /// </summary>
-        public ref struct RefEnumerator
+        public ref struct Enumerator
         {
             private readonly int stride;
             private readonly Span<T> memory;
             private int position;
 
-            internal RefEnumerator(int stride, Span<T> memory)
+            internal Enumerator(int stride, Span<T> memory)
             {
                 this.stride = stride;
                 this.memory = memory;
