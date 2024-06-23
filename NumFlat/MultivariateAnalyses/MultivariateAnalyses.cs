@@ -59,17 +59,21 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of independent components to be extracted.
         /// </param>
+        /// <param name="random">
+        /// A random number generator for initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
         /// <returns>
         /// A new instance of <see cref="IndependentComponentAnalysis"/>.
         /// </returns>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public static IndependentComponentAnalysis Ica(this IReadOnlyList<Vec<double>> xs, int componentCount)
+        public static IndependentComponentAnalysis Ica(this IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            return new IndependentComponentAnalysis(xs, componentCount);
+            return new IndependentComponentAnalysis(xs, componentCount, random);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             var xs = mixing * ys;
 
-            var ica = xs.Cols.Ica(2);
+            var ica = xs.Cols.Ica(2, new Random(42));
 
             var transformed = xs.Cols.Select(x => ica.Transform(x).AsEnumerable()).ColsToMatrix();
 
@@ -65,7 +65,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             var xs = mixing * ys;
 
-            var ica = xs.Cols.Ica(3);
+            var ica = xs.Cols.Ica(3, new Random(57));
 
             var transformed = xs.Cols.Select(x => ica.Transform(x).AsEnumerable()).ColsToMatrix();
 
@@ -102,7 +102,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             var xs = mixing * ys;
 
-            var ica = xs.Cols.Ica(3);
+            var ica = xs.Cols.Ica(3, new Random(66));
 
             var transformed = xs.Cols.Select(x => ica.Transform(x).AsEnumerable()).ColsToMatrix();
 
@@ -140,7 +140,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             var xs = mixing * ys;
 
-            var ica = xs.Cols.Ica(2);
+            var ica = xs.Cols.Ica(2, new Random(77));
 
             var transformed = xs.Cols.Select(x => ica.Transform(x).AsEnumerable()).ColsToMatrix();
 
