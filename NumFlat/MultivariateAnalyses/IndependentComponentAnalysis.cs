@@ -82,7 +82,7 @@ namespace NumFlat.MultivariateAnalyses
             // Do the whitening preprocess.
             foreach (var (x, a) in xs.Zip(whiten.Cols))
             {
-                pca.TruncatedTransform(x, a, componentCount);
+                pca.Transform(x, a);
                 a.PointwiseDivInplace(scale);
             }
 

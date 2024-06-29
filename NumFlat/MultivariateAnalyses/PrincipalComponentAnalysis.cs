@@ -54,13 +54,22 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-            VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
+
+            if (source.Count != mean.Count)
+            {
+                throw new ArgumentException($"The transform requires the length of the source vector to be {mean.Count}, but was {source.Count}.", nameof(source));
+            }
+
+            if (destination.Count > mean.Count)
+            {
+                throw new ArgumentException($"The transform requires the length of the destination vector to be within {mean.Count}, but was {destination.Count}.", nameof(destination));
+            }
 
             using var utmp = new TemporalVector<double>(source.Count);
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, mean, tmp);
-            Mat.Mul(evd.V, tmp, destination, true);
+            Mat.Mul(evd.V.Submatrix(0, 0, mean.Count, destination.Count), tmp, destination, true);
         }
 
         /// <inheritdoc/>
@@ -68,19 +77,19 @@ namespace NumFlat.MultivariateAnalyses
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
-            VectorToVectorInverseTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
-            Mat.Mul(evd.V, source, destination, false);
+            if (source.Count > mean.Count)
+            {
+                throw new ArgumentException($"The transform requires the length of the source vector to be within {mean.Count}, but was {source.Count}.", nameof(source));
+            }
+
+            if (destination.Count != mean.Count)
+            {
+                throw new ArgumentException($"The transform requires the length of the destination vector to be {mean.Count}, but was {destination.Count}.", nameof(destination));
+            }
+
+            Mat.Mul(evd.V.Submatrix(0, 0, mean.Count, source.Count), source, destination, false);
             destination.AddInplace(mean);
-        }
-
-        internal void TruncatedTransform(in Vec<double> source, in Vec<double> destination, int componentCount)
-        {
-            using var utmp = new TemporalVector<double>(source.Count);
-            ref readonly var tmp = ref utmp.Item;
-
-            Vec.Sub(source, mean, tmp);
-            Mat.Mul(evd.V.Submatrix(0, 0, mean.Count, componentCount), tmp, destination, true);
         }
 
         /// <summary>
