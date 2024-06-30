@@ -1,3 +1,9 @@
+# v0.9.7
+
+* Added options for clustering algorithms.
+* Added options for ICA.
+* Some code cleanup.
+
 # v0.9.6
 
 * Fixed bug where SVD does not return if the matrix contains NaN values.
