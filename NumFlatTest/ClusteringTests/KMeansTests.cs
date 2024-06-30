@@ -132,7 +132,11 @@ namespace NumFlatTest.ClusteringTests
             }
             .ToMatrix().Rows;
 
-            var kmeans = xs.ToKMeans(3, 1, new Random(42));
+            var options = new KMeansOptions
+            {
+                TryCount = 1,
+            };
+            var kmeans = xs.ToKMeans(3, options, new Random(42));
             var cls = xs.Select(x => kmeans.Predict(x)).ToArray();
             Assert.IsTrue(cls[0] == cls[1]);
             Assert.IsTrue(cls[2] == cls[3]);
@@ -148,7 +152,7 @@ namespace NumFlatTest.ClusteringTests
             var xs = ReadIris("iris.csv").ToArray();
             var ys = ReadIrisReference("iris_kmeans_gpt4.csv");
 
-            var kmeans = xs.ToKMeans(3, 3, new Random(42));
+            var kmeans = xs.ToKMeans(3, null, new Random(42));
             var result = new Mat<int>(3, 3);
             foreach (var (x, y) in xs.Zip(ys))
             {

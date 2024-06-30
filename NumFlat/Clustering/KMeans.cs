@@ -26,8 +26,8 @@ namespace NumFlat.Clustering
         /// <param name="clusterCount">
         /// The number of desired clusters.
         /// </param>
-        /// <param name="tryCount">
-        /// Runs the k-means algorithm a specified number of times and selects the model with the lowest error.
+        /// <param name="options">
+        /// Specifies options for k-means.
         /// </param>
         /// <param name="random">
         /// A random number generator for the k-means++ initialization.
@@ -36,7 +36,7 @@ namespace NumFlat.Clustering
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, int tryCount = 3, Random? random = null)
+        public KMeans(IReadOnlyList<Vec<double>> xs, int clusterCount, KMeansOptions? options = null, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
@@ -46,15 +46,15 @@ namespace NumFlat.Clustering
                 throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
             }
 
-            if (tryCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(tryCount), "The number of attempts must be greater than or equal to one.");
-            }
-
             if (clusterCount == 1)
             {
                 this.centroids = [xs.Mean()];
                 return;
+            }
+
+            if (options == null)
+            {
+                options = new KMeansOptions();
             }
 
             if (random == null)
@@ -64,8 +64,7 @@ namespace NumFlat.Clustering
 
             try
             {
-                var tolerance = 1.0E-4 * xs.Variance().Average(); // 1.0E-4 is the default value of sklearn.cluster.KMeans.
-                var candidates = Enumerable.Range(0, tryCount).Select(i => GetModel(xs, clusterCount, random, tolerance));
+                var candidates = Enumerable.Range(0, options.TryCount).Select(i => GetModel(xs, clusterCount, options, random));
                 var best = candidates.MinBy(candidate => candidate.Error).Model;
                 this.centroids = best.centroids;
             }
@@ -79,10 +78,11 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random, double tolerance)
+        private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, KMeansOptions options, Random random)
         {
+            var tolerance = options.Tolerance * xs.Variance().Average();
             var curr = (Model: GetInitialModel(xs, clusterCount, random), Error: double.MaxValue);
-            for (var i = 0; i < 300; i++) // 300 is the default value of sklearn.cluster.KMeans.
+            for (var i = 0; i < options.MaxIterations; i++)
             {
                 var next = curr.Model.Update(xs);
                 if (GetModelDiff(curr.Model, next.Model) <= tolerance)

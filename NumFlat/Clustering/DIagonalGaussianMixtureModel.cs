@@ -38,12 +38,8 @@ namespace NumFlat.Clustering
         /// <param name="clusterCount">
         /// The number of desired clusters.
         /// </param>
-        /// <param name="regularization">
-        /// The amount of regularization.
-        /// This value will be added to the diagonal elements of the covariance matrix.
-        /// </param>
-        /// <param name="kMeansTryCount">
-        /// Runs the k-means algorithm a specified number of times and selects the initial model with the lowest error.
+        /// <param name="options">
+        /// Specifies options for GMM.
         /// </param>
         /// <param name="random">
         /// A random number generator for the k-means++ initialization.
@@ -55,7 +51,7 @@ namespace NumFlat.Clustering
         /// <remarks>
         /// An initial GMM is constructed with the k-means algorithm.
         /// </remarks>
-        public DiagonalGaussianMixtureModel(IReadOnlyList<Vec<double>> xs, int clusterCount, double regularization = 1.0E-6, int kMeansTryCount = 3, Random? random = null)
+        public DiagonalGaussianMixtureModel(IReadOnlyList<Vec<double>> xs, int clusterCount, GaussianMixtureModelOptions? options = null, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
@@ -65,30 +61,24 @@ namespace NumFlat.Clustering
                 throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
             }
 
-            if (regularization < 0)
+            if (options == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
-            }
-
-            if (kMeansTryCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(kMeansTryCount), "The number of attempts must be greater than or equal to one.");
+                options = new GaussianMixtureModelOptions();
             }
 
             if (clusterCount == 1)
             {
-                this.components = [new Component(1.0, xs.ToDiagonalGaussian(regularization))];
+                this.components = [new Component(1.0, xs.ToDiagonalGaussian(options.Regularization))];
                 return;
             }
 
             try
             {
-                // Magic numbers here are taken from the default values of sklearn.mixture.GaussianMixture.
-                var tolerance = 1.0E-3 * xs.Count;
-                var curr = (Model: xs.ToKMeans(clusterCount, kMeansTryCount, random).ToDiagonalGmm(xs), LogLikelihood: double.MinValue);
-                for (var i = 0; i < 100; i++)
+                var tolerance = options.Tolerance * xs.Count;
+                var curr = (Model: xs.ToKMeans(clusterCount, options.KMeansOptions, random).ToDiagonalGmm(xs), LogLikelihood: double.MinValue);
+                for (var i = 0; i < options.MaxIterations; i++)
                 {
-                    var next = curr.Model.Update(xs, regularization);
+                    var next = curr.Model.Update(xs, options.Regularization);
                     var change = Math.Abs(next.LogLikelihood - curr.LogLikelihood);
                     if (change <= tolerance)
                     {

@@ -15,8 +15,12 @@ namespace NumFlatTest.ClusteringTests
         [Test]
         public void KMeansInitialModel()
         {
+            var options = new KMeansOptions
+            {
+                TryCount = 1,
+            };
             var xs = ReadIris("iris.csv").ToArray();
-            var kmeans = xs.ToKMeans(3, 1, new Random(42));
+            var kmeans = xs.ToKMeans(3, options, new Random(42));
 
             var groups = Enumerable.Range(0, kmeans.ClassCount).Select(i => xs.Where(x => kmeans.Predict(x) == i).ToArray()).ToArray();
             var expected = groups.Select(group => group.MeanAndCovariance(0)).ToArray();
@@ -40,7 +44,7 @@ namespace NumFlatTest.ClusteringTests
         public void Update()
         {
             var xs = ReadIris("iris.csv").ToArray();
-            var kmeans = xs.ToKMeans(3, 3, new Random(42));
+            var kmeans = xs.ToKMeans(3, null, new Random(42));
 
             var model = kmeans.ToGmm(xs);
             var likelihood = double.MinValue;
@@ -178,7 +182,7 @@ namespace NumFlatTest.ClusteringTests
             var expectedCovs = new Mat<double>[] { cov1.ToMatrix(), cov2.ToMatrix(), cov3.ToMatrix() };
 
             var xs = ReadIris("iris.csv").ToArray();
-            var gmm = xs.ToGmm(3, 1.0E-6, 3, new Random(42));
+            var gmm = xs.ToGmm(3, null, new Random(42));
             var actual = gmm.Components.OrderByDescending(c => c.Weight).ToArray();
 
             for (var i = 0; i < 3; i++)

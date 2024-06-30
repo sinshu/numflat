@@ -15,8 +15,12 @@ namespace NumFlatTest.ClusteringTests
         [Test]
         public void KMeansInitialModel()
         {
+            var options = new KMeansOptions
+            {
+                TryCount = 1,
+            };
             var xs = ReadIris("iris.csv").ToArray();
-            var kmeans = xs.ToKMeans(3, 1, new Random(42));
+            var kmeans = xs.ToKMeans(3, options, new Random(42));
 
             var groups = Enumerable.Range(0, kmeans.ClassCount).Select(i => xs.Where(x => kmeans.Predict(x) == i).ToArray()).ToArray();
             var expected = groups.Select(group => group.MeanAndVariance(0)).ToArray();
@@ -40,7 +44,7 @@ namespace NumFlatTest.ClusteringTests
         public void Update()
         {
             var xs = ReadIris("iris.csv").ToArray();
-            var kmeans = xs.ToKMeans(3, 3, new Random(42));
+            var kmeans = xs.ToKMeans(3, null, new Random(42));
 
             var model = kmeans.ToDiagonalGmm(xs);
             var likelihood = double.MinValue;
@@ -144,7 +148,7 @@ namespace NumFlatTest.ClusteringTests
         public void Iris()
         {
             var xs = ReadIris("iris.csv").ToArray();
-            var gmm = xs.ToDiagonalGmm(3, 1.0E-6, 3, new Random(42));
+            var gmm = xs.ToDiagonalGmm(3, null, new Random(42));
             Assert.That(xs.Select(x => gmm.LogPdf(x)).Average(), Is.EqualTo(-2.0478794780624234).Within(1.0E-6));
         }
 
