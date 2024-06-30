@@ -24,6 +24,9 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of independent components to be extracted.
         /// </param>
+        /// <param name="options">
+        /// Specifies options for ICA.
+        /// </param>
         /// <param name="random">
         /// A random number generator for initialization.
         /// If null, <see cref="Random.Shared"/> is used.
@@ -31,7 +34,7 @@ namespace NumFlat.MultivariateAnalyses
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
+        public IndependentComponentAnalysis(IReadOnlyList<Vec<double>> xs, int componentCount, IndependentComponentAnalysisOptions? options = null, Random? random = null)
         {
             //
             // This is based on the following parallel algorithm implementations.
@@ -54,6 +57,11 @@ namespace NumFlat.MultivariateAnalyses
             if (!(1 <= componentCount && componentCount <= pca.SourceDimension))
             {
                 throw new ArgumentException($"The number of components must be between one and the source dimension {pca.SourceDimension}.", nameof(componentCount));
+            }
+
+            if (options == null)
+            {
+                options = new IndependentComponentAnalysisOptions();
             }
 
             using var ux = new TemporalMatrix2<double>(componentCount, xs.Count);
@@ -93,7 +101,7 @@ namespace NumFlat.MultivariateAnalyses
             Orthogonalize(w);
 
             // Loop until convergence.
-            for (var iter = 0; iter < 200; iter++)
+            for (var iter = 0; iter < options.MaxIterations; iter++)
             {
                 // Save the old W to check convergence later.
                 w.CopyTo(prev);
@@ -127,7 +135,7 @@ namespace NumFlat.MultivariateAnalyses
                 Orthogonalize(w);
 
                 // Chek the convergence.
-                if (GetMaximumAbsoluteChange(w, prev) < 1.0E-4)
+                if (GetMaximumAbsoluteChange(w, prev) < options.Tolerance)
                 {
                     break;
                 }
