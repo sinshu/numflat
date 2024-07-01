@@ -70,7 +70,46 @@ namespace NumFlat.AudioFeatures
             return destination;
         }
 
-        internal static void ThrowIfInvalidSize(IPowerSpectrumFeatureExtraction method, in Vec<double> source, in Vec<double> destination, string sourceName, string destinationName)
+        /// <summary>
+        /// Transforms a spectrum to a feature vector.
+        /// </summary>
+        /// <param name="method">
+        /// The feature extraction method.
+        /// </param>
+        /// <param name="source">
+        /// The source spectrum to be transformed.
+        /// </param>
+        /// <returns>
+        /// The feature vector.
+        /// </returns>
+        public static Vec<double> Transform(this IPowerSpectrumFeatureExtraction method, in Vec<Complex> source)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowIfInvalidSize(method.FftLength, source, nameof(source));
+
+            using var utmp = new TemporalVector<double>(source.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            var ss = source.Memory.Span;
+            var ps = 0;
+            var st = tmp.Memory.Span;
+            for (var i = 0; i < st.Length; i++)
+            {
+                st[i] = ss[i].MagnitudeSquared();
+                ps += source.Stride;
+            }
+
+            var destination = new Vec<double>(method.FeatureLength);
+            method.Transform(tmp, destination);
+            return destination;
+        }
+
+        internal static void ThrowIfInvalidSize<T>(IPowerSpectrumFeatureExtraction method, in Vec<T> source, in Vec<T> destination, string sourceName, string destinationName) where T : unmanaged, INumberBase<T>
         {
             ThrowIfInvalidSize(method.FftLength, source, sourceName);
 
@@ -80,7 +119,7 @@ namespace NumFlat.AudioFeatures
             }
         }
 
-        internal static void ThrowIfInvalidSize(int fftLength, in Vec<double> source, string name)
+        internal static void ThrowIfInvalidSize<T>(int fftLength, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
         {
             var expected1 = fftLength;
             var expected2 = fftLength / 2 + 1;
