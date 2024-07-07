@@ -20,23 +20,40 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        var xs = Enumerable.Range(0, 100).Select(i => new Vec<double>(3)).ToArray();
-        var random = new Random();
-        foreach (var x in xs)
+        Vec<double> w1 = [1, 2, 3, 0, 0];
+        Vec<double> w2 = [0, 3, 1, 4, 0];
+        Vec<double> w3 = [0, 0, 1, 3, 7];
+        Mat<double> w = [w1, w2, w3];
+        w = w.Transpose();
+        Console.WriteLine(w);
+
+        var n = 100;
+
+        var h = new Mat<double>(w.ColCount, n);
+        var random = new Random(42);
+        foreach (var col in h.Cols)
         {
-            foreach (ref var value in x)
+            col.MapInplace(i => 3 * random.NextDouble());
+        }
+        Console.WriteLine(h);
+
+        var v = w * h;
+        Console.WriteLine(v);
+
+        while (true)
+        {
+            var srcW = MatrixBuilder.FromFunc(w.RowCount, w.ColCount, (row, col) => random.NextDouble());
+            var srcH = MatrixBuilder.FromFunc(h.RowCount, h.ColCount, (row, col) => random.NextDouble());
+            var dstW = new Mat<double>(w.RowCount, w.ColCount);
+            var dstH = new Mat<double>(h.RowCount, h.ColCount);
+            NonnegativeMatrixFactorization.Update(v.Cols, srcW, srcH, dstW, dstH);
+            dstW.CopyTo(srcW);
+            dstH.CopyTo(srcH);
+            Console.WriteLine(dstW);
+            if (Console.ReadKey().Key == ConsoleKey.Escape)
             {
-                value = random.NextDouble();
+                break;
             }
         }
-        var pca = xs.Pca();
-        Vec<double> test = [1, 2, 3];
-        Vec<double> dst = new(2);
-        pca.Transform(test, dst);
-        Console.WriteLine(dst);
-        Console.WriteLine(pca.Transform(test));
-        Console.WriteLine(pca.InverseTransform(dst.Append(0.0).ToVector()));
-        pca.InverseTransform(dst, test);
-        Console.WriteLine(test);
     }
 }
