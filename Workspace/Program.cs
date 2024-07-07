@@ -42,18 +42,20 @@ public class Program
 
         var srcW = MatrixBuilder.FromFunc(w.RowCount, w.ColCount, (row, col) => random.NextDouble());
         var srcH = MatrixBuilder.FromFunc(h.RowCount, h.ColCount, (row, col) => random.NextDouble());
+        //w.CopyTo(srcW);
+        //h.CopyTo(srcH);
         var dstW = new Mat<double>(w.RowCount, w.ColCount);
         var dstH = new Mat<double>(h.RowCount, h.ColCount);
-        while (true)
+        for (var i = 0; i < 1000; i++)
         {
             NonnegativeMatrixFactorization.Update(v.Cols, srcW, srcH, dstW, dstH);
             dstW.CopyTo(srcW);
             dstH.CopyTo(srcH);
             Console.WriteLine(dstW);
-            if (Console.ReadKey().Key == ConsoleKey.Escape)
-            {
-                break;
-            }
+            //Console.ReadKey();
         }
+
+        CsvFile.Write("ref.csv", h.Transpose());
+        CsvFile.Write("nmf.csv", dstH.Transpose());
     }
 }
