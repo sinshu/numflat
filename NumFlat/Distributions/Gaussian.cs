@@ -71,14 +71,14 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, covariance) = xs.MeanAndCovariance(0);
-                foreach (ref var value in covariance.EnumerateDiagonalElements())
-                {
-                    value += regularization;
-                }
             }
             catch (Exception e)
             {
                 throw new FittingFailureException("Failed to compute the covariance matrix.", e);
+            }
+            foreach (ref var value in covariance.EnumerateDiagonalElements())
+            {
+                value += regularization;
             }
 
             var (cholesky, logNormalizationTerm) = GetCholeskyAndLogNormalizationTerm(mean, covariance);
