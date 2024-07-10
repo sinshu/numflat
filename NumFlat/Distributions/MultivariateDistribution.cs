@@ -35,6 +35,24 @@ namespace NumFlat.Distributions
         }
 
         /// <summary>
+        /// Generates a random vector from the distribution.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in vectors.</typeparam>
+        /// <param name="distribution">
+        /// The distribution to generate a random vector.
+        /// </param>
+        /// <returns>
+        /// A random vector generated from the distribution.
+        /// </returns>
+        /// <remarks>
+        /// <see cref="Random.Shared"/> is used as the random generator.
+        /// </remarks>
+        public static Vec<T> Generate<T>(this IMultivariateDistribution<T> distribution) where T : unmanaged, INumberBase<T>
+        {
+            return Generate(distribution, Random.Shared);
+        }
+
+        /// <summary>
         /// Computes the maximum likelihood Gaussian distribution from the source vectors.
         /// </summary>
         /// <param name="xs">
