@@ -116,13 +116,12 @@ namespace NumFlat
         /// </returns>
         public double Determinant()
         {
-            var fl = l.GetUnsafeFastIndexer();
-            var value = 1.0;
-            for (var i = 0; i < l.RowCount; i++)
+            var acc = 1.0;
+            foreach (var value in l.EnumerateDiagonalElements())
             {
-                value *= fl[i, i].Real;
+                acc *= value.Real;
             }
-            return value * value;
+            return acc * acc;
         }
 
         /// <summary>
@@ -133,13 +132,12 @@ namespace NumFlat
         /// </returns>
         public double LogDeterminant()
         {
-            var fl = l.GetUnsafeFastIndexer();
-            var value = 0.0;
-            for (var i = 0; i < l.RowCount; i++)
+            var acc = 0.0;
+            foreach (var value in l.EnumerateDiagonalElements())
             {
-                value += Math.Log(fl[i, i].Real);
+                acc += Math.Log(value.Real);
             }
-            return 2 * value;
+            return 2 * acc;
         }
 
         /// <summary>

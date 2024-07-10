@@ -71,7 +71,10 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, covariance) = xs.MeanAndCovariance(0);
-                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
+                foreach (ref var value in covariance.EnumerateDiagonalElements())
+                {
+                    value += regularization;
+                }
             }
             catch (Exception e)
             {
@@ -117,7 +120,10 @@ namespace NumFlat.Distributions
             try
             {
                 (mean, covariance) = xs.MeanAndCovariance(weights, 0);
-                Special.IncreaseDiagonalElementsInplace(covariance, regularization);
+                foreach (ref var value in covariance.EnumerateDiagonalElements())
+                {
+                    value += regularization;
+                }
             }
             catch (Exception e)
             {
@@ -245,13 +251,12 @@ namespace NumFlat.Distributions
 
         private static double LogDeterminant(in Mat<double> l)
         {
-            var fl = l.GetUnsafeFastIndexer();
-            var value = 0.0;
-            for (var i = 0; i < l.RowCount; i++)
+            var sum = 0.0;
+            foreach(var value in l.EnumerateDiagonalElements())
             {
-                value += Math.Log(fl[i, i]);
+                sum += Math.Log(value);
             }
-            return 2 * value;
+            return 2 * sum;
         }
 
         /// <summary>

@@ -167,11 +167,10 @@ namespace NumFlat
                 throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
             }
 
-            var fu = u.GetUnsafeFastIndexer();
             var determinant = (Complex)pivotSign;
-            for (var i = 0; i < u.RowCount; i++)
+            foreach(var value in u.EnumerateDiagonalElements())
             {
-                determinant *= fu[i, i];
+                determinant *= value;
             }
             return determinant;
         }

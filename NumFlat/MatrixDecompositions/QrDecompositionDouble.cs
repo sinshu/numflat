@@ -124,11 +124,10 @@ namespace NumFlat
                 throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
             }
 
-            var fr = r.GetUnsafeFastIndexer();
             var determinant = 1.0;
-            for (var i = 0; i < r.RowCount; i++)
+            foreach (var value in r.EnumerateDiagonalElements())
             {
-                determinant *= Math.Abs(fr[i, i]);
+                determinant *= Math.Abs(value);
             }
             return determinant;
         }
@@ -146,11 +145,10 @@ namespace NumFlat
                 throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
             }
 
-            var fr = r.GetUnsafeFastIndexer();
             var logDeterminant = 0.0;
-            for (var i = 0; i < r.RowCount; i++)
+            foreach (var value in r.EnumerateDiagonalElements())
             {
-                logDeterminant += Math.Log(Math.Abs(fr[i, i]));
+                logDeterminant += Math.Log(Math.Abs(value));
             }
             return logDeterminant;
         }
