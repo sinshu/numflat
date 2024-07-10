@@ -1,3 +1,9 @@
+# v0.10.0
+
+* Audio feature extraction supports complex spectrum.
+* Added random sampling method for distributions.
+* Some code cleanup.
+
 # v0.9.7
 
 * Added options for clustering algorithms.
