@@ -175,5 +175,45 @@ namespace NumFlatTest.DistributionTests
             Assert.That(x.Bhattacharyya(x), Is.EqualTo(0.0).Within(1.0E-12));
             Assert.That(y.Bhattacharyya(y), Is.EqualTo(0.0).Within(1.0E-12));
         }
+
+        [Test]
+        public void Generate1()
+        {
+            Vec<double> expectedMean = [10, 20];
+            Vec<double> expectedVar = [3, 4];
+            var gaussian = new DiagonalGaussian(expectedMean, expectedVar);
+            var random = new Random(42);
+            var xs = new List<Vec<double>>();
+            for (var i = 0; i < 10000; i++)
+            {
+                xs.Add(gaussian.Generate(random));
+            }
+
+            var (actualMean, actualVar) = xs.MeanAndVariance();
+            NumAssert.AreSame(expectedMean, actualMean, 0.1);
+            Console.WriteLine(actualVar);
+            Console.WriteLine(expectedVar);
+            NumAssert.AreSame(expectedVar, actualVar, 0.1);
+        }
+
+        [Test]
+        public void Generate2()
+        {
+            Vec<double> expectedMean = [10, 20, 30];
+            Vec<double> expectedVar = [3, 1, 4];
+            var gaussian = new DiagonalGaussian(expectedMean, expectedVar);
+            var random = new Random(42);
+            var xs = new List<Vec<double>>();
+            for (var i = 0; i < 10000; i++)
+            {
+                xs.Add(gaussian.Generate(random));
+            }
+
+            var (actualMean, actualVar) = xs.MeanAndVariance();
+            NumAssert.AreSame(expectedMean, actualMean, 0.1);
+            Console.WriteLine(actualVar);
+            Console.WriteLine(expectedVar);
+            NumAssert.AreSame(expectedVar, actualVar, 0.1);
+        }
     }
 }
