@@ -35,7 +35,15 @@ namespace NumFlat
             fixed (int* ppiv = piv)
             {
                 Factorization.Lu(destination.RowCount, destination.RowCount, pd, destination.Stride, ppiv);
-                Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+
+                try
+                {
+                    Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("The matrix is not invertible.");
+                }
             }
         }
 
@@ -67,7 +75,15 @@ namespace NumFlat
             fixed (int* ppiv = piv)
             {
                 Factorization.Lu(destination.RowCount, destination.RowCount, pd, destination.Stride, ppiv);
-                Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+
+                try
+                {
+                    Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("The matrix is not invertible.");
+                }
             }
         }
 
@@ -99,7 +115,15 @@ namespace NumFlat
             fixed (int* ppiv = piv)
             {
                 Factorization.Lu(destination.RowCount, destination.RowCount, pd, destination.Stride, ppiv);
-                Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+
+                try
+                {
+                    Factorization.LuInverse(destination.RowCount, pd, destination.Stride, ppiv);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("The matrix is not invertible.");
+                }
             }
         }
     }

@@ -63,7 +63,14 @@ namespace NumFlat
 
             fixed (double* pl = l.Memory.Span)
             {
-                Factorization.Cholesky(l.RowCount, pl, l.Stride);
+                try
+                {
+                    Factorization.Cholesky(l.RowCount, pl, l.Stride);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("Cholesky decomposition failed. The matrix must be positive definite.");
+                }
             }
         }
 
