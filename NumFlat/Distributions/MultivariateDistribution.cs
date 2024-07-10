@@ -26,6 +26,9 @@ namespace NumFlat.Distributions
         /// </returns>
         public static Vec<T> Generate<T>(this IMultivariateDistribution<T> distribution, Random random) where T : unmanaged, INumberBase<T>
         {
+            ThrowHelper.ThrowIfNull(distribution, nameof(distribution));
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+
             var destination = new Vec<T>(distribution.Dimension);
             distribution.Generate(random, destination);
             return destination;
@@ -154,7 +157,7 @@ namespace NumFlat.Distributions
         {
             if (x.Count != distribution.Dimension)
             {
-                throw new ArgumentException($"The PDF requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
+                throw new ArgumentException($"The distribution requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
             }
         }
     }

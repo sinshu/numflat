@@ -178,6 +178,10 @@ namespace NumFlat.Distributions
         /// <inheritdoc/>
         public void Generate(Random random, in Vec<double> destination)
         {
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            MultivariateDistribution.ThrowIfInvalidSize(this, destination, nameof(destination));
+
             var fm = mean.GetUnsafeFastIndexer();
             var fs = standardDeviation.GetUnsafeFastIndexer();
             var fd = destination.GetUnsafeFastIndexer();

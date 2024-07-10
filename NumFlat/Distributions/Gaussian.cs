@@ -179,6 +179,10 @@ namespace NumFlat.Distributions
         /// <inheritdoc/>
         public void Generate(Random random, in Vec<double> destination)
         {
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            MultivariateDistribution.ThrowIfInvalidSize(this, destination, nameof(destination));
+
             using var utmp = new TemporalVector<double>(mean.Count);
             ref readonly var tmp = ref utmp.Item;
 
