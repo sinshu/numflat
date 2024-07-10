@@ -627,7 +627,7 @@ samples = spectrum.Ifft();
     - ✅ Weighted sum, mean, variance, covariance for vectors
     - ✅ Weighted sum, mean, variance for matrices
     - ✅ Higher-order statistics
-* ⬜ Multivariate analysis
+* 🚧 Multivariate analysis
     - ⬜ Linear regression
     - ✅ Principal component analysis (PCA)
     - ✅ Linear discriminant analysis (LDA)
@@ -638,14 +638,14 @@ samples = spectrum.Ifft();
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
-* ⬜ Clustering
+* 🚧 Clustering
     - ✅ k-means
     - ✅ Gaussian mixture model (GMM)
     - ⬜ DBSCAN
     - ⬜ OPTICS
 * ⬜ Time series
     - ⬜ HMM
-* ⬜ Audio signal processing
+* 🚧 Audio signal processing
     - ✅ Fast Fourier transform (FFT)
     - ✅ Short-time Fourier transform (STFT)
     - ✅ Convolution
