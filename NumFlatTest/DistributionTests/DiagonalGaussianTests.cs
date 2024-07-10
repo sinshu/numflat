@@ -191,8 +191,6 @@ namespace NumFlatTest.DistributionTests
 
             var (actualMean, actualVar) = xs.MeanAndVariance();
             NumAssert.AreSame(expectedMean, actualMean, 0.1);
-            Console.WriteLine(actualVar);
-            Console.WriteLine(expectedVar);
             NumAssert.AreSame(expectedVar, actualVar, 0.1);
         }
 
@@ -211,8 +209,6 @@ namespace NumFlatTest.DistributionTests
 
             var (actualMean, actualVar) = xs.MeanAndVariance();
             NumAssert.AreSame(expectedMean, actualMean, 0.1);
-            Console.WriteLine(actualVar);
-            Console.WriteLine(expectedVar);
             NumAssert.AreSame(expectedVar, actualVar, 0.1);
         }
     }
