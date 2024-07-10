@@ -121,6 +121,11 @@ namespace NumFlat.Clustering
             return predicted;
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+        }
+
         private void PredictLogProbability(in Vec<double> x, in Vec<double> destination)
         {
             var c = 0;

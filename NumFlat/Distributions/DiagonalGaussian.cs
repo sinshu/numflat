@@ -173,6 +173,11 @@ namespace NumFlat.Distributions
             return Math.Exp(LogPdf(x));
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+        }
+
         /// <summary>
         /// Computes the squared Mahalanobis distance.
         /// </summary>

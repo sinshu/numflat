@@ -221,6 +221,11 @@ namespace NumFlat.Clustering
             return Math.Exp(LogPdf(x));
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+        }
+
         /// <summary>
         /// Gets the Gaussian components.
         /// </summary>

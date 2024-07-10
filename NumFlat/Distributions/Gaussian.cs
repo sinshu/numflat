@@ -176,6 +176,29 @@ namespace NumFlat.Distributions
             return Math.Exp(LogPdf(x));
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+            using var utmp = new TemporalVector<double>(mean.Count);
+            ref readonly var tmp = ref utmp.Item;
+
+            foreach (ref var value in tmp)
+            {
+                value = random.NextGaussian();
+            }
+
+            var i = 0;
+            foreach (ref var value in destination)
+            {
+                var x = cholesky.L.Rows[i].Subvector(0, i + 1);
+                var y = tmp.Subvector(0, i + 1);
+                value = x * y;
+                i++;
+            }
+
+            destination.AddInplace(mean);
+        }
+
         /// <summary>
         /// Computes the squared Mahalanobis distance.
         /// </summary>

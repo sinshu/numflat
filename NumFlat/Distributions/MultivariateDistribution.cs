@@ -10,6 +10,28 @@ namespace NumFlat.Distributions
     public static class MultivariateDistribution
     {
         /// <summary>
+        /// Generates a random vector from the distribution.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in vectors.
+        /// </typeparam>
+        /// <param name="distribution">
+        /// The distribution to generate a random vector.
+        /// </param>
+        /// <param name="random">
+        /// The random number generator to use.
+        /// </param>
+        /// <returns>
+        /// A random vector generated from the distribution.
+        /// </returns>
+        public static Vec<T> Generate<T>(this IMultivariateDistribution<T> distribution, Random random) where T : unmanaged, INumberBase<T>
+        {
+            var destination = new Vec<T>(distribution.Dimension);
+            distribution.Generate(random, destination);
+            return destination;
+        }
+
+        /// <summary>
         /// Computes the maximum likelihood Gaussian distribution from the source vectors.
         /// </summary>
         /// <param name="xs">

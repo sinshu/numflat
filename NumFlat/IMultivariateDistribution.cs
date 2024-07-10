@@ -34,6 +34,17 @@ namespace NumFlat.Distributions
         public double Pdf(in Vec<T> x);
 
         /// <summary>
+        /// Generates a random vector from the distribution.
+        /// </summary>
+        /// <param name="random">
+        /// The random number generator to use.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the generated random vector.
+        /// </param>
+        public void Generate(Random random, in Vec<T> destination);
+
+        /// <summary>
         /// Gets the dimension of the distribution.
         /// </summary>
         public int Dimension { get; }
