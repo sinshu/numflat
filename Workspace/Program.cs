@@ -20,19 +20,21 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        Mat<double> mat =
+        Vec<double> mean = [1, 2, 3];
+        Mat<double> cov =
         [
-            [1, 2, 3, 100],
-            [4, 5, 6, 101],
-            [7, 8, 9, 102],
+            [4, 1, 2],
+            [1, 5, 3],
+            [2, 3, 6],
         ];
-
-        foreach (ref var value in mat.EnumerateDiagonalElements())
+        var gaussian = new Gaussian(mean, cov);
+        var random = new Random(42);
+        var xs = new List<Vec<double>>();
+        for (var i = 0; i < 10000; i++)
         {
-            Console.WriteLine(value);
-            value += 300;
+            xs.Add(gaussian.Generate(random));
         }
-
-        Console.WriteLine(mat);
+        Console.WriteLine(xs.Mean());
+        Console.WriteLine(xs.Covariance());
     }
 }

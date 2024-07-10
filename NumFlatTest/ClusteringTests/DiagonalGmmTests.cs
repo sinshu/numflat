@@ -161,5 +161,35 @@ namespace NumFlatTest.ClusteringTests
                 yield return values.ToVector();
             }
         }
+
+        [Test]
+        public void Generate()
+        {
+            Vec<double> mean1 = [0, 0, 0];
+            Vec<double> mean2 = [100, 100, 100];
+            Vec<double> mean3 = [200, 200, 200];
+            Vec<double>[] means = [mean1, mean2, mean3];
+            Vec<double> variance = [1, 1, 1];
+            double[] weights = [0.5, 0.2, 0.3];
+
+            var component1 = new DiagonalGaussianMixtureModel.Component(weights[0], new DiagonalGaussian(means[0], variance));
+            var component2 = new DiagonalGaussianMixtureModel.Component(weights[1], new DiagonalGaussian(means[1], variance));
+            var component3 = new DiagonalGaussianMixtureModel.Component(weights[2], new DiagonalGaussian(means[2], variance));
+            var gmm = new DiagonalGaussianMixtureModel([component1, component2, component3]);
+
+            var random = new Random(42);
+            var counts = new int[3];
+            for (var i = 0; i < 10000; i++)
+            {
+                var x = gmm.Generate(random);
+                counts[gmm.Predict(x)]++;
+            }
+
+            var result = counts.Select(x => (double)x / 10000).ToArray();
+            for (var i = 0; i < 3; i++)
+            {
+                Assert.That(result[i], Is.EqualTo(weights[i]).Within(0.01));
+            }
+        }
     }
 }

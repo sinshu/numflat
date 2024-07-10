@@ -218,5 +218,50 @@ namespace NumFlatTest.DistributionTests
                 Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
             }
         }
+
+        [Test]
+        public void Generate1()
+        {
+            Vec<double> expectedMean = [10, 20];
+            Mat<double> expectedCov =
+            [
+                [4, 3],
+                [3, 5],
+            ];
+            var gaussian = new Gaussian(expectedMean, expectedCov);
+            var random = new Random(42);
+            var xs = new List<Vec<double>>();
+            for (var i = 0; i < 10000; i++)
+            {
+                xs.Add(gaussian.Generate(random));
+            }
+
+            var (actualMean, actualCov) = xs.MeanAndCovariance();
+            NumAssert.AreSame(expectedMean, actualMean, 0.1);
+            NumAssert.AreSame(expectedCov, actualCov, 0.1);
+        }
+
+        [Test]
+        public void Generate2()
+        {
+            Vec<double> expectedMean = [10, 20, 30];
+            Mat<double> expectedCov =
+            [
+                [4, 1, 2],
+                [1, 5, 3],
+                [2, 3, 6],
+            ];
+            var gaussian = new Gaussian(expectedMean, expectedCov);
+            var random = new Random(42);
+            var xs = new List<Vec<double>>();
+            for (var i = 0; i < 10000; i++)
+            {
+                xs.Add(gaussian.Generate(random));
+            }
+
+            var (actualMean, actualCov) = xs.MeanAndCovariance();
+            NumAssert.AreSame(expectedMean, actualMean, 0.1);
+            NumAssert.AreSame(expectedCov, actualCov, 0.1);
+        }
     }
 }

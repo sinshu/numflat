@@ -221,6 +221,29 @@ namespace NumFlat.Clustering
             return Math.Exp(LogPdf(x));
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            MultivariateDistribution.ThrowIfInvalidSize(this, destination, nameof(destination));
+
+            var target = random.NextDouble();
+            var position = 0.0;
+            var choice = components[0];
+            foreach (var component in components)
+            {
+                position += component.Weight;
+                if (position > target)
+                {
+                    choice = component;
+                    break;
+                }
+            }
+
+            choice.Gaussian.Generate(random, destination);
+        }
+
         /// <summary>
         /// Gets the Gaussian components.
         /// </summary>
