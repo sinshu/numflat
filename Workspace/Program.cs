@@ -20,23 +20,19 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        var xs = Enumerable.Range(0, 100).Select(i => new Vec<double>(3)).ToArray();
-        var random = new Random();
-        foreach (var x in xs)
+        Mat<double> mat =
+        [
+            [1, 2, 3, 100],
+            [4, 5, 6, 101],
+            [7, 8, 9, 102],
+        ];
+
+        foreach (ref var value in mat.EnumerateDiagonalElements())
         {
-            foreach (ref var value in x)
-            {
-                value = random.NextDouble();
-            }
+            Console.WriteLine(value);
+            value += 300;
         }
-        var pca = xs.Pca();
-        Vec<double> test = [1, 2, 3];
-        Vec<double> dst = new(2);
-        pca.Transform(test, dst);
-        Console.WriteLine(dst);
-        Console.WriteLine(pca.Transform(test));
-        Console.WriteLine(pca.InverseTransform(dst.Append(0.0).ToVector()));
-        pca.InverseTransform(dst, test);
-        Console.WriteLine(test);
+
+        Console.WriteLine(mat);
     }
 }

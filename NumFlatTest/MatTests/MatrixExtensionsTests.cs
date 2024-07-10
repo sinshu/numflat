@@ -320,5 +320,30 @@ namespace NumFlatTest.MatTests
 
             NumAssert.AreSame(expected, actual, 0);
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(7, 9, 7)]
+        [TestCase(7, 9, 11)]
+        [TestCase(11, 7, 11)]
+        [TestCase(11, 7, 17)]
+        public void EnumerateDiagonalElements(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var i = 0;
+            foreach (var value in x.EnumerateDiagonalElements())
+            {
+                Assert.That(value == x[i, i]);
+                i++;
+            }
+        }
     }
 }
