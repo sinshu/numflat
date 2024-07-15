@@ -6,8 +6,8 @@ namespace NumFlat
 {
     internal ref struct TemporalContiguousVector<T> where T : unmanaged, INumberBase<T>
     {
-        private ref readonly Vec<T> original;
-        private IMemoryOwner<T>? owner;
+        private readonly ref readonly Vec<T> original;
+        private readonly IMemoryOwner<T>? owner;
         public readonly Vec<T> Item;
 
         public TemporalContiguousVector(in Vec<T> original, bool useOriginalContent)
@@ -34,7 +34,6 @@ namespace NumFlat
             {
                 Item.CopyTo(original);
                 owner.Dispose();
-                owner = null;
             }
         }
     }

@@ -20,21 +20,11 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        Vec<double> mean = [1, 2, 3];
-        Mat<double> cov =
-        [
-            [4, 1, 2],
-            [1, 5, 3],
-            [2, 3, 6],
-        ];
-        var gaussian = new Gaussian(mean, cov);
-        var random = new Random(42);
-        var xs = new List<Vec<double>>();
-        for (var i = 0; i < 10000; i++)
-        {
-            xs.Add(gaussian.Generate(random));
-        }
-        Console.WriteLine(xs.Mean());
-        Console.WriteLine(xs.Covariance());
+        var n = 50;
+        var source = new Vec<double>(30);
+        source[source.Count / 2] = 1;
+        var destination = new Vec<double>(n * source.Count);
+        SignalProcessing.Resample(source, destination, n, 1, 10);
+        CsvFile.Write("out.csv", destination);
     }
 }
