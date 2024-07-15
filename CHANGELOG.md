@@ -1,3 +1,7 @@
+# v0.10.2
+
+* Fixed issue where resampling failed on long signal.
+
 # v0.10.1
 
 * Added `MultivariateDistribution.Generate()` method without args which uses `Random.Shared`.
