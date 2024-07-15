@@ -95,7 +95,7 @@ namespace NumFlat.SignalProcessing
                 throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resamplin must be greater than or equal to one.");
             }
 
-            var length = (int)((long)source.Count * p / q);
+            var length = (int)Math.Ceiling((double)source.Count * p / q);
             var destination = new Vec<double>(length);
             Resample(source, destination, p, q, a);
             return destination;
