@@ -1,3 +1,8 @@
+# v0.10.1
+
+* Added `MultivariateDistribution.Generate()` method without args which uses `Random.Shared`.
+* Added resampling.
+
 # v0.10.0
 
 * Audio feature extraction supports complex spectrum.

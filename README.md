@@ -570,6 +570,7 @@ It currently supports the following methods, with plans to add more methods in t
 * FFT and IFFT
 * STFT and ISTFT
 * Convolution
+* Resampling
 #### Code
 ```cs
 using NumFlat.SignalProcessing;
@@ -649,7 +650,7 @@ samples = spectrum.Ifft();
     - ✅ Fast Fourier transform (FFT)
     - ✅ Short-time Fourier transform (STFT)
     - ✅ Convolution
-    - ⬜ Resampling
+    - ✅ Resampling
     - 🚧 Feature extraction
     - ⬜ Filtering
 * ✅ File IO
