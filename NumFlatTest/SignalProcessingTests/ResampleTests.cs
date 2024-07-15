@@ -62,7 +62,7 @@ namespace NumFlatTest.SignalProcessingTests
         [TestCase(50, 12, 5, 4, 2, 3)]
         public void Resample(int srcLength, int period, int p, int q, int srcStride, int dstStride)
         {
-            var source = TestVector.RandomDouble(0, 100, srcStride);
+            var source = TestVector.RandomDouble(0, srcLength, srcStride);
             for (var i = 0; i < source.Count; i++)
             {
                 source[i] = Math.Sin(2 * Math.PI * i / period);
@@ -104,6 +104,29 @@ namespace NumFlatTest.SignalProcessingTests
                 NumAssert.AreSame(source, destination.Subvector(0, 50), 0);
                 NumAssert.AreSame(destination.Subvector(50, 10), new Vec<double>(10), 0);
             }
+        }
+
+        [TestCase(100, 10, 2, 4)]
+        [TestCase(100, 10, 4, 2)]
+        [TestCase(50, 12, 9, 5)]
+        [TestCase(50, 12, 5, 9)]
+        public void ExtensionMethod(int srcLength, int period, int p, int q)
+        {
+            var source = TestVector.RandomDouble(0, srcLength, 1);
+            for (var i = 0; i < source.Count; i++)
+            {
+                source[i] = Math.Sin(2 * Math.PI * i / period);
+            }
+
+            var destination = source.Resample(p, q);
+
+            for (var i = 5; i < destination.Count - 5; i++)
+            {
+                var x = Math.Sin(2 * Math.PI * i / period * q / p);
+                Assert.That(destination[i], Is.EqualTo(x).Within(0.05));
+            }
+
+            TestVector.FailIfOutOfRangeWrite(destination);
         }
 
         private static double Lanczos(double x, int a)

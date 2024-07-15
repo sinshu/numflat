@@ -7,8 +7,46 @@ namespace NumFlat.SignalProcessing
 {
     public static partial class SignalProcessing
     {
-        public static void Resample(in Vec<double> source, in Vec<double> destination, int p, int q, int a)
+        /// <summary>
+        /// The given sequence is resampled using sinc function interpolation.
+        /// The interpolation process is performed using Lanczos resampling.
+        /// </summary>
+        /// <param name="source">
+        /// The source signal to be resampled.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the resampled signal.
+        /// </param>
+        /// <param name="p">
+        /// The upsampling factor.
+        /// </param>
+        /// <param name="q">
+        /// The downsampling factor.
+        /// </param>
+        /// <param name="a">
+        /// Specifies the quality of the Lanczos resampling.
+        /// Higher values result in higher quality but require more processing time.
+        /// </param>
+        public static void Resample(in Vec<double> source, in Vec<double> destination, int p, int q, int a = 10)
         {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
+            }
+
+            if (q < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(q), "The downsampling factor must be greater than or equal to one.");
+            }
+
+            if (a < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resamplin must be greater than or equal to one.");
+            }
+
             using var usrc = source.EnsureContiguous(true);
             ref readonly var src = ref usrc.Item;
 
@@ -16,6 +54,50 @@ namespace NumFlat.SignalProcessing
             ref readonly var dst = ref udst.Item;
 
             ResampleCore(src.Memory.Span, dst.Memory.Span, p, q, a);
+        }
+
+        /// <summary>
+        /// The given sequence is resampled using sinc function interpolation.
+        /// The interpolation process is performed using Lanczos resampling.
+        /// </summary>
+        /// <param name="source">
+        /// The source signal to be resampled.
+        /// </param>
+        /// <param name="p">
+        /// The upsampling factor.
+        /// </param>
+        /// <param name="q">
+        /// The downsampling factor.
+        /// </param>
+        /// <param name="a">
+        /// Specifies the quality of the Lanczos resampling.
+        /// Higher values result in higher quality but require more processing time.
+        /// </param>
+        /// <returns>
+        /// The resampled signal.
+        /// </returns>
+        public static Vec<double> Resample(in this Vec<double> source, int p, int q, int a = 10)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
+            }
+
+            if (q < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(q), "The downsampling factor must be greater than or equal to one.");
+            }
+
+            if (a < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resamplin must be greater than or equal to one.");
+            }
+
+            var destination = new Vec<double>(source.Count * p / q);
+            Resample(source, destination, p, q, a);
+            return destination;
         }
 
         private static void ResampleCore(ReadOnlySpan<double> source, Span<double> destination, int p, int q, int a)
