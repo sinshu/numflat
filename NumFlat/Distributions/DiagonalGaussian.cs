@@ -282,6 +282,11 @@ namespace NumFlat.Distributions
         /// </summary>
         public ref readonly Vec<double> Variance => ref variance;
 
+        /// <summary>
+        /// Gets the square roots of the diagonal elements of the covariance matrix.
+        /// </summary>
+        public ref readonly Vec<double> StandardDeviation => ref standardDeviation;
+
         /// <inheritdoc/>
         public int Dimension => mean.Count;
     }

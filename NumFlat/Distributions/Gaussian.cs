@@ -296,6 +296,11 @@ namespace NumFlat.Distributions
         /// </summary>
         public ref readonly Mat<double> Covariance => ref covariance;
 
+        /// <summary>
+        /// Gets the Cholesky decomposition of the covariance matrix.
+        /// </summary>
+        public CholeskyDecompositionDouble CholeskyDecomposition => cholesky;
+
         /// <inheritdoc/>
         public int Dimension => mean.Count;
     }
