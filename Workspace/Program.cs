@@ -20,11 +20,8 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        var n = 50;
-        var source = new Vec<double>(30);
-        source[source.Count / 2] = 1;
-        var destination = new Vec<double>(n * source.Count);
-        SignalProcessing.Resample(source, destination, n, 1, 10);
-        CsvFile.Write("out.csv", destination);
+        var source = WaveFile.ReadMono(@"C:\Users\sinsh\Desktop\kikuri01.wav");
+        var resampled = source.Data.Resample(48000, 44100);
+        WaveFile.Write("out.wav", resampled, 48000);
     }
 }
