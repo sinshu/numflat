@@ -158,5 +158,27 @@ namespace NumFlat
 
             return max + Math.Log(sum);
         }
+
+        /// <summary>
+        /// Calculates the normalized sinc function.
+        /// </summary>
+        /// <param name="x">
+        /// The input value.
+        /// </param>
+        /// <returns>
+        /// The output value of the sinc function.
+        /// </returns>
+        public static double Sinc(double x)
+        {
+            var y = Math.PI * x;
+            if (Math.Abs(y) < 1.0E-15)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return Math.Sin(y) / y;
+            }
+        }
     }
 }

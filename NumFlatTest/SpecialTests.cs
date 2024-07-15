@@ -110,5 +110,17 @@ namespace NumFlatTest
                 Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
             }
         }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(0.5)]
+        [TestCase(-1.5)]
+        [TestCase(2.5)]
+        public void Sinc(double x)
+        {
+            var actual = Special.Sinc(x);
+            var expected = Trig.Sinc(x);
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+        }
     }
 }
