@@ -525,7 +525,8 @@ foreach (var x in xs)
 
 ### Distributions
 The `NumFlat.Distributions` namespace provides functionality related to probability distributions.
-It currently supports the multivariate Gaussian.
+It currently supports the multivariate Gaussian distribution and its diagonal covariance matrix variation.
+Maximum likelihood estimation from data, probability density function calculation, and random number generation are possible.
 #### Code
 ```cs
 using NumFlat.Distributions;
@@ -594,16 +595,16 @@ samples = spectrum.Ifft();
     - ✅ Builder
     - ✅ Indexer
     - ✅ Subvector
-    - ✅ Copy, Fill, Clear
+    - ✅ Copy, fill, clear
     - ✅ Arithmetic operations
-    - ✅ Dot and Outer products
+    - ✅ Dot and outer products
     - ✅ Norm and normalization
     - ✅ In-place operations
 * ✅ Matrix operations
     - ✅ Builder
     - ✅ Indexer
     - ✅ Submatrix
-    - ✅ Copy, Fill, Clear
+    - ✅ Copy, fill, clear
     - ✅ Arithmetic operations
     - ✅ Transposition
     - ✅ Trace
