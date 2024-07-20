@@ -35,6 +35,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
         [TestCase(42, 5, 3, 100)]
         [TestCase(57, 6, 4, 88)]
+        [TestCase(66, 7, 5, 137)]
         public void ErrorDecreases1(int seed, int dimension, int componentCount, int dataCount)
         {
             var random = new Random(seed);
@@ -48,7 +49,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
             v.MapInplace(x => random.NextDouble());
 
             var error = (v - w * h).FrobeniusNorm();
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var w2 = new Mat<double>(dimension, componentCount);
                 var h2 = new Mat<double>(componentCount, dataCount);

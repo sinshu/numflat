@@ -59,12 +59,13 @@ namespace NumFlat.MultivariateAnalyses
             var dataCount = xs.Count;
             var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
 
+            using var utmp0 = new TemporalMatrix2<double>(componentCount, componentCount);
+            ref readonly var wtw = ref utmp0.Item1;
+            ref readonly var hht = ref utmp0.Item2;
+
             //
             // Update H.
             //
-
-            using var uwtw = new TemporalMatrix<double>(componentCount, componentCount);
-            ref readonly var wtw = ref uwtw.Item;
 
             using var utmp1 = new TemporalMatrix3<double>(componentCount, dataCount);
             ref readonly var wtv = ref utmp1.Item1;
@@ -84,9 +85,6 @@ namespace NumFlat.MultivariateAnalyses
             //
             // Update W.
             //
-
-            using var uhht = new TemporalMatrix<double>(componentCount, componentCount);
-            ref readonly var hht = ref uhht.Item;
 
             using var utmp2 = new TemporalMatrix4<double>(dimension, componentCount);
             ref readonly var outer = ref utmp2.Item1;
