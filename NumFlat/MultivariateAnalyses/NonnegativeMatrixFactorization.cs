@@ -54,14 +54,14 @@ namespace NumFlat.MultivariateAnalyses
                 throw new ArgumentException("'sourceH.ColCount' and 'xs.Count' must match.");
             }
 
-            //
-            // Update H.
-            //
-
             var dimension = sourceW.RowCount;
             var componentCount = sourceW.ColCount;
             var dataCount = xs.Count;
             var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
+
+            //
+            // Update H.
+            //
 
             using var uwtw = new TemporalMatrix<double>(componentCount, componentCount);
             ref readonly var wtw = ref uwtw.Item;
