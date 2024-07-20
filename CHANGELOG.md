@@ -1,3 +1,9 @@
+# v0.10.3
+
+* The length of the result of the `Resample()` extension method now matches MATLAB's implementation.
+* Fixed a potential issue where temporary matrix allocation, which is internally used in the library, might fail.
+* Added multiplicative update implementation for NMF.
+
 # v0.10.2
 
 * Fixed issue where resampling failed on long signal.

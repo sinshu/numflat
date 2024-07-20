@@ -634,7 +634,7 @@ samples = spectrum.Ifft();
     - ✅ Principal component analysis (PCA)
     - ✅ Linear discriminant analysis (LDA)
     - ✅ Independent component analysis (ICA)
-    - ⬜ Non-negative matrix factorization (NMF)
+    - 🚧 Non-negative matrix factorization (NMF)
     - ⬜ Logistic regression
 * ⬜ Distributions
     - ✅ Gaussian
