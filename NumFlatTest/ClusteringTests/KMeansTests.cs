@@ -28,7 +28,7 @@ namespace NumFlatTest.ClusteringTests
             }
             .ToMatrix().Rows;
 
-            var model = KMeans.GetInitialModel(xs, 5, new Random(seed));
+            var model = KMeans.GetInitialGuess(xs, 5, new Random(seed));
 
             var i = 0;
             foreach (var centroid in model.Centroids.OrderBy(x => x[0]))
@@ -80,7 +80,7 @@ namespace NumFlatTest.ClusteringTests
             }
             .ToMatrix().Rows;
 
-            var model = KMeans.GetInitialModel(xs, 5, new Random(seed));
+            var model = KMeans.GetInitialGuess(xs, 5, new Random(seed));
 
             var i = 0;
             foreach (var centroid in model.Centroids.OrderBy(x => x[0]))
@@ -100,7 +100,7 @@ namespace NumFlatTest.ClusteringTests
         {
             var xs = TestMatrix.RandomDouble(seed, count, dimension, count).Rows;
 
-            var model = KMeans.GetInitialModel(xs, clusters, new Random(seed));
+            var model = KMeans.GetInitialGuess(xs, clusters, new Random(seed));
             var error = xs.Select(x => Math.Pow(model.PredictWithDistance(x).Distance, 2)).Sum();
             while (true)
             {

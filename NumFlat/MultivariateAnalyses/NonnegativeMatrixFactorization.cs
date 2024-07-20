@@ -77,7 +77,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             Mat.Mul(sourceW, sourceW, wtw, true, false);
             Mat.Mul(wtw, sourceH, wtwh, false, false);
-            ClampNonzeroValues(wtwh);
+            ClampSmallValues(wtwh);
             Mat.PointwiseDiv(wtv, wtwh, frac1);
             Mat.PointwiseMul(sourceH, frac1, destinationH);
 
@@ -102,12 +102,12 @@ namespace NumFlat.MultivariateAnalyses
             }
             Mat.Mul(destinationH, destinationH, hht, false, true);
             Mat.Mul(sourceW, hht, whht, false, false);
-            ClampNonzeroValues(whht);
+            ClampSmallValues(whht);
             Mat.PointwiseDiv(vht, whht, frac2);
             Mat.PointwiseMul(sourceW, frac2, destinationW);
         }
 
-        private static void ClampNonzeroValues(in Mat<double> mat)
+        private static void ClampSmallValues(in Mat<double> mat)
         {
             foreach (var col in mat.Cols)
             {

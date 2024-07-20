@@ -81,7 +81,7 @@ namespace NumFlat.Clustering
         private static (KMeans Model, double Error) GetModel(IReadOnlyList<Vec<double>> xs, int clusterCount, KMeansOptions options, Random random)
         {
             var tolerance = options.Tolerance * xs.Variance().Average();
-            var curr = (Model: GetInitialModel(xs, clusterCount, random), Error: double.MaxValue);
+            var curr = (Model: GetInitialGuess(xs, clusterCount, random), Error: double.MaxValue);
             for (var i = 0; i < options.MaxIterations; i++)
             {
                 var next = curr.Model.Update(xs);
@@ -163,7 +163,7 @@ namespace NumFlat.Clustering
         /// <returns>
         /// An initial k-means model.
         /// </returns>
-        public static KMeans GetInitialModel(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
+        public static KMeans GetInitialGuess(IReadOnlyList<Vec<double>> xs, int clusterCount, Random random)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
