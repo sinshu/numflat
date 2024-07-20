@@ -11,9 +11,10 @@ namespace NumFlat.MultivariateAnalyses
             using var uwtw = new TemporalMatrix<double>(sourceW.ColCount, sourceW.ColCount);
             ref readonly var wtw = ref uwtw.Item;
 
-            using var utmp1 = new TemporalMatrix2<double>(sourceW.ColCount, xs.Count);
+            using var utmp1 = new TemporalMatrix3<double>(sourceW.ColCount, xs.Count);
             ref readonly var wtv = ref utmp1.Item1;
             ref readonly var wtwh = ref utmp1.Item2;
+            ref readonly var frac1 = ref utmp1.Item3;
 
             foreach (var (x, col) in xs.Zip(wtv.Cols))
             {
@@ -21,8 +22,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             Mat.Mul(sourceW, sourceW, wtw, true, false);
             Mat.Mul(wtw, sourceH, wtwh, false, false);
-
-            var frac1 = wtv.PointwiseDiv(wtwh);
+            Mat.PointwiseDiv(wtv, wtwh, frac1);
             Mat.PointwiseMul(sourceH, frac1, destinationH);
 
             var vht = new Mat<double>(sourceW.RowCount, sourceW.ColCount);
