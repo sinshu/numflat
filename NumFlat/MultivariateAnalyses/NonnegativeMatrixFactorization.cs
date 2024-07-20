@@ -10,16 +10,16 @@ namespace NumFlat.MultivariateAnalyses
     public sealed class NonnegativeMatrixFactorization
     {
         /// <summary>
-        /// Updates the matrices W and H using the multiplicative update rule.
+        /// Updates the matrices W and H using the multiplicative update rule for NMF.
         /// </summary>
         /// <param name="xs">
-        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector side by side in matrix V.
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
         /// </param>
         /// <param name="sourceW">
-        /// The source matrix W, expected to have basis vectors arranged horizontally.
+        /// The source matrix W, containing basis vectors as columns.
         /// </param>
         /// <param name="sourceH">
-        /// The source matrix H, expected to have basis vectors arranged vertically.
+        /// The source matrix H, containing activation vectors as columns.
         /// </param>
         /// <param name="destinationW">
         /// The destination matrix where the updated W will be stored.
