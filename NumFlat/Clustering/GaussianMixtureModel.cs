@@ -89,10 +89,6 @@ namespace NumFlat.Clustering
                 }
                 this.components = curr.Model.components;
             }
-            catch (FittingFailureException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
                 throw new FittingFailureException("Failed to fit the model.", e);
@@ -191,10 +187,6 @@ namespace NumFlat.Clustering
                 var nextGaussians = tmp.Rows.Select(row => xs.ToGaussian(row, regularization));
                 var nextComponents = nextWeights.Zip(nextGaussians, (weight, gaussian) => new Component(weight, gaussian)).ToArray();
                 return (new GaussianMixtureModel(nextComponents), likelihood);
-            }
-            catch (FittingFailureException)
-            {
-                throw;
             }
             catch (Exception e)
             {
