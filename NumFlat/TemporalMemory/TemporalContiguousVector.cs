@@ -37,14 +37,4 @@ namespace NumFlat
             }
         }
     }
-
-
-
-    internal static class TemporalContiguousVector
-    {
-        public static TemporalContiguousVector<T> EnsureContiguous<T>(in this Vec<T> original, bool useOriginalContent) where T : unmanaged, INumberBase<T>
-        {
-            return new TemporalContiguousVector<T>(original, useOriginalContent);
-        }
-    }
 }

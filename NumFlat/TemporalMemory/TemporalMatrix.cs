@@ -13,6 +13,9 @@ namespace NumFlat
         {
             var length = rowCount * colCount;
             owner = MemoryPool<T>.Shared.Rent(length);
+#if !RELEASE
+            TemporalMatrix.Randomize(owner);
+#endif
             Item = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(0, length));
         }
 
@@ -32,5 +35,14 @@ namespace NumFlat
             source.CopyTo(tmp.Item);
             return tmp;
         }
+
+#if !RELEASE
+        public static void Randomize<T>(IMemoryOwner<T> owner) where T : unmanaged, INumberBase<T>
+        {
+            var random = new Random(42);
+            var span = System.Runtime.InteropServices.MemoryMarshal.Cast<T, byte>(owner.Memory.Span);
+            random.NextBytes(span);
+        }
+#endif
     }
 }

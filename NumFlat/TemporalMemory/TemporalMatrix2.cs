@@ -14,6 +14,9 @@ namespace NumFlat
         {
             var length = rowCount * colCount;
             owner = MemoryPool<T>.Shared.Rent(2 * length);
+#if !RELEASE
+            TemporalMatrix.Randomize(owner);
+#endif
             Item1 = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(0, length));
             Item2 = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(length, length));
         }

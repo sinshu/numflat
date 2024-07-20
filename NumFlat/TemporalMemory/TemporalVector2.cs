@@ -13,6 +13,9 @@ namespace NumFlat
         public TemporalVector2(int count)
         {
             owner = MemoryPool<T>.Shared.Rent(2 * count);
+#if !RELEASE
+            TemporalVector.Randomize(owner);
+#endif
             Item1 = new Vec<T>(owner.Memory.Slice(0, count));
             Item2 = new Vec<T>(owner.Memory.Slice(count, count));
         }
