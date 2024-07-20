@@ -29,6 +29,31 @@ namespace NumFlat.MultivariateAnalyses
         /// </param>
         public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
+            ThrowHelper.ThrowIfEmpty(sourceW, nameof(sourceW));
+            ThrowHelper.ThrowIfEmpty(sourceH, nameof(sourceH));
+            ThrowHelper.ThrowIfEmpty(destinationW, nameof(destinationW));
+            ThrowHelper.ThrowIfEmpty(destinationH, nameof(destinationH));
+
+            if (sourceW.RowCount != destinationW.RowCount || sourceW.ColCount != destinationW.ColCount)
+            {
+                throw new ArgumentException("The dimensions of 'sourceW' and 'destinationW' must match.");
+            }
+
+            if (sourceH.RowCount != destinationH.RowCount || sourceH.ColCount != destinationH.ColCount)
+            {
+                throw new ArgumentException("The dimensions of 'sourceH' and 'destinationH' must match.");
+            }
+
+            if (sourceW.ColCount != sourceH.RowCount)
+            {
+                throw new ArgumentException("'sourceW.ColCount' and 'sourceH.RowCount' must match.");
+            }
+
+            if (sourceH.ColCount != xs.Count)
+            {
+                throw new ArgumentException("'sourceH.ColCount' and 'xs.Count' must match.");
+            }
+
             //
             // Update H.
             //
@@ -36,6 +61,7 @@ namespace NumFlat.MultivariateAnalyses
             var dimension = sourceW.RowCount;
             var componentCount = sourceW.ColCount;
             var dataCount = xs.Count;
+            var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
 
             using var uwtw = new TemporalMatrix<double>(componentCount, componentCount);
             ref readonly var wtw = ref uwtw.Item;
@@ -45,12 +71,13 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var wtwh = ref utmp1.Item2;
             ref readonly var frac1 = ref utmp1.Item3;
 
-            foreach (var (x, col) in xs.Zip(wtv.Cols))
+            foreach (var (x, col) in v.Zip(wtv.Cols))
             {
                 Mat.Mul(sourceW, x, col, true);
             }
             Mat.Mul(sourceW, sourceW, wtw, true, false);
             Mat.Mul(wtw, sourceH, wtwh, false, false);
+            ClampNonzeroValues(wtwh);
             Mat.PointwiseDiv(wtv, wtwh, frac1);
             Mat.PointwiseMul(sourceH, frac1, destinationH);
 
@@ -68,15 +95,30 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var frac2 = ref utmp2.Item4;
 
             vht.Clear();
-            foreach (var (x, col) in xs.Zip(destinationH.Cols))
+            foreach (var (x, col) in v.Zip(destinationH.Cols))
             {
                 Vec.Outer(x, col, outer);
                 vht.AddInplace(outer);
             }
             Mat.Mul(destinationH, destinationH, hht, false, true);
             Mat.Mul(sourceW, hht, whht, false, false);
+            ClampNonzeroValues(whht);
             Mat.PointwiseDiv(vht, whht, frac2);
             Mat.PointwiseMul(sourceW, frac2, destinationW);
+        }
+
+        private static void ClampNonzeroValues(in Mat<double> mat)
+        {
+            foreach (var col in mat.Cols)
+            {
+                foreach (ref var value in col)
+                {
+                    if (value < 1.0E-9)
+                    {
+                        value = 1.0E-9;
+                    }
+                }
+            }
         }
     }
 }
