@@ -93,28 +93,6 @@ namespace NumFlatTest
             TestMatrix.FailIfOutOfRangeWrite(x);
         }
 
-        [TestCase(1, 1, 0.5)]
-        [TestCase(1, 3, 0.1)]
-        [TestCase(2, 2, 2.6)]
-        [TestCase(2, 3, 3.1)]
-        [TestCase(3, 3, 4.1)]
-        [TestCase(3, 4, 0.1)]
-        [TestCase(4, 4, 4.1)]
-        [TestCase(4, 6, 0.1)]
-        [TestCase(5, 5, 4.1)]
-        [TestCase(5, 7, 0.1)]
-        public void IncreaseDiagonalElementsInplace(int n, int stride, double value)
-        {
-            var x = TestMatrix.RandomDouble(42, n, n, n);
-            var expected = x + value * MatrixBuilder.Identity<double>(n);
-
-            Special.IncreaseDiagonalElementsInplace(x, value);
-
-            NumAssert.AreSame(expected, x, 1.0E-12);
-
-            TestMatrix.FailIfOutOfRangeWrite(x);
-        }
-
         [TestCase(3, 1)]
         [TestCase(3, 3)]
         [TestCase(5, 1)]
@@ -131,6 +109,18 @@ namespace NumFlatTest
                 var actual = Special.LogSum(logValues);
                 Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
             }
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(0.5)]
+        [TestCase(-1.5)]
+        [TestCase(2.5)]
+        public void Sinc(double x)
+        {
+            var actual = Special.Sinc(x);
+            var expected = Trig.Sinc(x);
+            Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
     }
 }

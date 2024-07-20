@@ -10,6 +10,49 @@ namespace NumFlat.Distributions
     public static class MultivariateDistribution
     {
         /// <summary>
+        /// Generates a random vector from the distribution.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in vectors.
+        /// </typeparam>
+        /// <param name="distribution">
+        /// The distribution to generate a random vector.
+        /// </param>
+        /// <param name="random">
+        /// The random number generator to use.
+        /// </param>
+        /// <returns>
+        /// A random vector generated from the distribution.
+        /// </returns>
+        public static Vec<T> Generate<T>(this IMultivariateDistribution<T> distribution, Random random) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfNull(distribution, nameof(distribution));
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+
+            var destination = new Vec<T>(distribution.Dimension);
+            distribution.Generate(random, destination);
+            return destination;
+        }
+
+        /// <summary>
+        /// Generates a random vector from the distribution.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in vectors.</typeparam>
+        /// <param name="distribution">
+        /// The distribution to generate a random vector.
+        /// </param>
+        /// <returns>
+        /// A random vector generated from the distribution.
+        /// </returns>
+        /// <remarks>
+        /// <see cref="Random.Shared"/> is used as the random generator.
+        /// </remarks>
+        public static Vec<T> Generate<T>(this IMultivariateDistribution<T> distribution) where T : unmanaged, INumberBase<T>
+        {
+            return Generate(distribution, Random.Shared);
+        }
+
+        /// <summary>
         /// Computes the maximum likelihood Gaussian distribution from the source vectors.
         /// </summary>
         /// <param name="xs">
@@ -132,7 +175,7 @@ namespace NumFlat.Distributions
         {
             if (x.Count != distribution.Dimension)
             {
-                throw new ArgumentException($"The PDF requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
+                throw new ArgumentException($"The distribution requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
             }
         }
     }

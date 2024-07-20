@@ -63,7 +63,14 @@ namespace NumFlat
 
             fixed (float* pl = l.Memory.Span)
             {
-                Factorization.Cholesky(l.RowCount, pl, l.Stride);
+                try
+                {
+                    Factorization.Cholesky(l.RowCount, pl, l.Stride);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("Cholesky decomposition failed. The matrix must be positive definite.");
+                }
             }
         }
 
@@ -108,13 +115,12 @@ namespace NumFlat
         /// </returns>
         public float Determinant()
         {
-            var fl = l.GetUnsafeFastIndexer();
-            var value = 1.0F;
-            for (var i = 0; i < l.RowCount; i++)
+            var acc = 1.0F;
+            foreach (var value in l.EnumerateDiagonalElements())
             {
-                value *= fl[i, i];
+                acc *= value;
             }
-            return value * value;
+            return acc * acc;
         }
 
         /// <summary>
@@ -125,13 +131,12 @@ namespace NumFlat
         /// </returns>
         public float LogDeterminant()
         {
-            var fl = l.GetUnsafeFastIndexer();
-            var value = 0.0F;
-            for (var i = 0; i < l.RowCount; i++)
+            var acc = 0.0F;
+            foreach (var value in l.EnumerateDiagonalElements())
             {
-                value += MathF.Log(fl[i, i]);
+                acc += MathF.Log(value);
             }
-            return 2 * value;
+            return 2 * acc;
         }
 
         /// <summary>

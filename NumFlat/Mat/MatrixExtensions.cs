@@ -402,5 +402,17 @@ namespace NumFlat
             Mat.Map(source, func, result);
             return result;
         }
+
+
+        /// <summary>
+        /// Enumerates the diagonal elements of the matrix.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="mat"></param>
+        /// <returns></returns>
+        public static Mat<T>.DiagonalElements EnumerateDiagonalElements<T>(in this Mat<T> mat) where T : unmanaged, INumberBase<T>
+        {
+            return new Mat<T>.DiagonalElements(in mat);
+        }
     }
 }

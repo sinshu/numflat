@@ -525,7 +525,8 @@ foreach (var x in xs)
 
 ### Distributions
 The `NumFlat.Distributions` namespace provides functionality related to probability distributions.
-It currently supports the multivariate Gaussian.
+It currently supports the multivariate Gaussian distribution and its diagonal covariance matrix variation.
+Maximum likelihood estimation from data, probability density function calculation, and random number generation are possible.
 #### Code
 ```cs
 using NumFlat.Distributions;
@@ -570,6 +571,7 @@ It currently supports the following methods, with plans to add more methods in t
 * FFT and IFFT
 * STFT and ISTFT
 * Convolution
+* Resampling
 #### Code
 ```cs
 using NumFlat.SignalProcessing;
@@ -593,16 +595,16 @@ samples = spectrum.Ifft();
     - ✅ Builder
     - ✅ Indexer
     - ✅ Subvector
-    - ✅ Copy, Fill, Clear
+    - ✅ Copy, fill, clear
     - ✅ Arithmetic operations
-    - ✅ Dot and Outer products
+    - ✅ Dot and outer products
     - ✅ Norm and normalization
     - ✅ In-place operations
 * ✅ Matrix operations
     - ✅ Builder
     - ✅ Indexer
     - ✅ Submatrix
-    - ✅ Copy, Fill, Clear
+    - ✅ Copy, fill, clear
     - ✅ Arithmetic operations
     - ✅ Transposition
     - ✅ Trace
@@ -627,7 +629,7 @@ samples = spectrum.Ifft();
     - ✅ Weighted sum, mean, variance, covariance for vectors
     - ✅ Weighted sum, mean, variance for matrices
     - ✅ Higher-order statistics
-* ⬜ Multivariate analysis
+* 🚧 Multivariate analysis
     - ⬜ Linear regression
     - ✅ Principal component analysis (PCA)
     - ✅ Linear discriminant analysis (LDA)
@@ -638,18 +640,18 @@ samples = spectrum.Ifft();
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
-* ⬜ Clustering
+* 🚧 Clustering
     - ✅ k-means
     - ✅ Gaussian mixture model (GMM)
     - ⬜ DBSCAN
     - ⬜ OPTICS
 * ⬜ Time series
     - ⬜ HMM
-* ⬜ Audio signal processing
+* 🚧 Audio signal processing
     - ✅ Fast Fourier transform (FFT)
     - ✅ Short-time Fourier transform (STFT)
     - ✅ Convolution
-    - ⬜ Resampling
+    - ✅ Resampling
     - 🚧 Feature extraction
     - ⬜ Filtering
 * ✅ File IO

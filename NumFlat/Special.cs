@@ -129,32 +129,6 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Increases the diagonal elements of the matrix.
-        /// This is useful to regularize a covariance matrix.
-        /// </summary>
-        /// <param name="x">
-        /// The target matrix.
-        /// </param>
-        /// <param name="value">
-        /// The amount of the increment.
-        /// </param>
-        public static void IncreaseDiagonalElementsInplace(in Mat<double> x, double value)
-        {
-            ThrowHelper.ThrowIfEmpty(x, nameof(x));
-            ThrowHelper.ThrowIfNonSquare(x, nameof(x));
-
-            var span = x.Memory.Span;
-            var offset = 0;
-            var row = 0;
-            while (offset < span.Length)
-            {
-                span[offset + row] += value;
-                row++;
-                offset += x.Stride;
-            }
-        }
-
-        /// <summary>
         /// Calculates the log sum of values in a numerically stable way.
         /// </summary>
         /// <param name="values">
@@ -183,6 +157,28 @@ namespace NumFlat
             }
 
             return max + Math.Log(sum);
+        }
+
+        /// <summary>
+        /// Calculates the normalized sinc function.
+        /// </summary>
+        /// <param name="x">
+        /// The input value.
+        /// </param>
+        /// <returns>
+        /// The output value of the sinc function.
+        /// </returns>
+        public static double Sinc(double x)
+        {
+            var y = Math.PI * x;
+            if (Math.Abs(y) < 1.0E-15)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return Math.Sin(y) / y;
+            }
         }
     }
 }

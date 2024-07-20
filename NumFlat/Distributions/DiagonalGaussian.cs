@@ -11,6 +11,7 @@ namespace NumFlat.Distributions
     {
         private readonly Vec<double> mean;
         private readonly Vec<double> variance;
+        private readonly Vec<double> standardDeviation;
         private readonly Vec<double> inverseVariance;
         private readonly double logNormalizationTerm;
 
@@ -36,6 +37,7 @@ namespace NumFlat.Distributions
 
             this.mean = mean;
             this.variance = variance;
+            this.standardDeviation = variance.Map(Math.Sqrt);
             this.inverseVariance = inverseVariance;
             this.logNormalizationTerm = logNormalizationTerm;
         }
@@ -173,6 +175,22 @@ namespace NumFlat.Distributions
             return Math.Exp(LogPdf(x));
         }
 
+        /// <inheritdoc/>
+        public void Generate(Random random, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfNull(random, nameof(random));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+            MultivariateDistribution.ThrowIfInvalidSize(this, destination, nameof(destination));
+
+            var fm = mean.GetUnsafeFastIndexer();
+            var fs = standardDeviation.GetUnsafeFastIndexer();
+            var fd = destination.GetUnsafeFastIndexer();
+            for (var i = 0; i < mean.Count; i++)
+            {
+                fd[i] = fm[i] + random.NextGaussian() * fs[i];
+            }
+        }
+
         /// <summary>
         /// Computes the squared Mahalanobis distance.
         /// </summary>
@@ -263,6 +281,11 @@ namespace NumFlat.Distributions
         /// Gets the diagonal elements of the covariance matrix.
         /// </summary>
         public ref readonly Vec<double> Variance => ref variance;
+
+        /// <summary>
+        /// Gets the square roots of the diagonal elements of the covariance matrix.
+        /// </summary>
+        public ref readonly Vec<double> StandardDeviation => ref standardDeviation;
 
         /// <inheritdoc/>
         public int Dimension => mean.Count;

@@ -93,7 +93,14 @@ namespace NumFlat
             fixed (Complex* ptmp = tmp.Memory.Span)
             fixed (double* pcd = cd.Memory.Span)
             {
-                Factorization.Gevd(v.RowCount, pv, v.Stride, ptmp, tmp.Stride, pcd);
+                try
+                {
+                    Factorization.Gevd(v.RowCount, pv, v.Stride, ptmp, tmp.Stride, pcd);
+                }
+                catch (MatFlat.MatrixFactorizationException)
+                {
+                    throw new MatrixFactorizationException("GEVD failed. The right-hand side matrix is not positive definite.");
+                }
             }
         }
 
