@@ -8,13 +8,19 @@ namespace NumFlat.MultivariateAnalyses
     {
         public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
-            var wtv = new Mat<double>(sourceW.ColCount, xs.Count);
+            using var uwtw = new TemporalMatrix<double>(sourceW.ColCount, sourceW.ColCount);
+            ref readonly var wtw = ref uwtw.Item;
+
+            using var utmp1 = new TemporalMatrix2<double>(sourceW.ColCount, xs.Count);
+            ref readonly var wtv = ref utmp1.Item1;
+            ref readonly var wtwh = ref utmp1.Item2;
+
             foreach (var (x, col) in xs.Zip(wtv.Cols))
             {
                 Mat.Mul(sourceW, x, col, true);
             }
-
-            var wtwh = sourceW.Transpose() * sourceW * sourceH;
+            Mat.Mul(sourceW, sourceW, wtw, true, false);
+            Mat.Mul(wtw, sourceH, wtwh, false, false);
 
             var frac1 = wtv.PointwiseDiv(wtwh);
             Mat.PointwiseMul(sourceH, frac1, destinationH);
