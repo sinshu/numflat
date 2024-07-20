@@ -4,8 +4,29 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
+    /// <summary>
+    /// Provides non-negative matrix factorization (NMF).
+    /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
+        /// <summary>
+        /// Updates the matrices W and H using the multiplicative update rule.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector side by side in matrix V.
+        /// </param>
+        /// <param name="sourceW">
+        /// The source matrix W, expected to have basis vectors arranged horizontally.
+        /// </param>
+        /// <param name="sourceH">
+        /// The source matrix H, expected to have basis vectors arranged vertically.
+        /// </param>
+        /// <param name="destinationW">
+        /// The destination matrix where the updated W will be stored.
+        /// </param>
+        /// <param name="destinationH">
+        /// The destination matrix where the updated H will be stored.
+        /// </param>
         public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
             //
