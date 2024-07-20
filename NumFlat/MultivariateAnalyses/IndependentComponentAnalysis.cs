@@ -232,14 +232,13 @@ namespace NumFlat.MultivariateAnalyses
         {
             using var utmp = new TemporalMatrix<double>(w1.RowCount, w1.ColCount);
             ref readonly var tmp = ref utmp.Item;
-            var ft = tmp.GetUnsafeFastIndexer();
 
             Mat.Mul(w1, w2, tmp, true, false);
 
             var max = 0.0;
-            for (var i = 0; i < w1.RowCount; i++)
+            foreach (var value in tmp.EnumerateDiagonalElements())
             {
-                max = Math.Max(Math.Abs(Math.Abs(ft[i, i]) - 1), max);
+                max = Math.Max(Math.Abs(Math.Abs(value) - 1), max);
             }
             return max;
         }
