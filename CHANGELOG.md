@@ -1,3 +1,7 @@
+# v0.10.4
+
+* Added NMF.
+
 # v0.10.3
 
 * The length of the result of the `Resample()` extension method now matches MATLAB's implementation.
