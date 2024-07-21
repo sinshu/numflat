@@ -102,7 +102,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
             var stft = piano.Stft(window, frameShift);
             var power = stft.Spectrogram.Select(spectrum => spectrum.Map(NumFlat.ComplexExtensions.MagnitudeSquared)).ToArray();
 
-            var nmf = power.Nmf(3);
+            var nmf = power.Nmf(3, 100, new Random(42));
             var reconstructed = nmf.W * nmf.H;
 
             var scale = power.Select(spectrum => spectrum.Max()).Max();
