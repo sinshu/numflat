@@ -28,18 +28,9 @@ public class Program
         var stft = piano.Stft(window, frameShift);
         var power = stft.Spectrogram.Select(spectrum => spectrum.Map(x => x.MagnitudeSquared())).ToArray();
 
-        var (w, h) = NonnegativeMatrixFactorization.GetInitialGuess(power, 3);
-        for (var i = 0; i < 200; i++)
-        {
-            Console.WriteLine(i);
-            var w2 = new Mat<double>(w.RowCount, w.ColCount);
-            var h2 = new Mat<double>(h.RowCount, h.ColCount);
-            NonnegativeMatrixFactorization.Update(power, w, h, w2, h2);
-            w = w2;
-            h = h2;
-        }
+        var nmf = power.Nmf(3);
 
-        CsvFile.Write("w.csv", w);
-        CsvFile.Write("h.csv", h.Transpose());
+        CsvFile.Write("w.csv", nmf.W);
+        CsvFile.Write("h.csv", nmf.H.Transpose());
     }
 }

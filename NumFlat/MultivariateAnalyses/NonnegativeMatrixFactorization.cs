@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using NumFlat.Clustering;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -11,6 +9,61 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
+        private Mat<double> w;
+        private Mat<double> h;
+
+        /// <summary>
+        /// Performs non-negative matrix factorization (NMF).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of basis vectors to be estimated.
+        /// </param>
+        /// <param name="iterationCount">
+        /// The number of iterations to perform for updating the solution.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public NonnegativeMatrixFactorization(IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (componentCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of basis vectors must be greater than zero.");
+            }
+
+            if (iterationCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of iterations must be greater than zero.");
+            }
+
+            var (w1, h1) = GetInitialGuess(xs, componentCount, random);
+
+            using var uw2 = new TemporalMatrix<double>(w1.RowCount, w1.ColCount);
+            ref readonly var w2 = ref uw2.Item;
+
+            using var uh2 = new TemporalMatrix<double>(h1.RowCount, h1.ColCount);
+            ref readonly var h2 = ref uh2.Item;
+
+            for (var i = 0; i < iterationCount; i++)
+            {
+                Update(xs, w1, h1, w2, h2);
+                w2.CopyTo(w1);
+                h2.CopyTo(h1);
+            }
+
+            this.w = w1;
+            this.h = h1;
+        }
+
         /// <summary>
         /// Generates initial values for the matrices W and H using a random number generator.
         /// </summary>
@@ -161,5 +214,15 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the basis vectors.
+        /// </summary>
+        public ref readonly Mat<double> W => ref w;
+
+        /// <summary>
+        /// Gets the activation vectors.
+        /// </summary>
+        public ref readonly Mat<double> H => ref h;
     }
 }

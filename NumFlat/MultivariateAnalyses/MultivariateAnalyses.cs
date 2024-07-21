@@ -22,8 +22,6 @@ namespace NumFlat.MultivariateAnalyses
         /// </exception>
         public static PrincipalComponentAnalysis Pca(this IEnumerable<Vec<double>> xs)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return new PrincipalComponentAnalysis(xs);
         }
 
@@ -44,9 +42,6 @@ namespace NumFlat.MultivariateAnalyses
         /// </exception>
         public static LinearDiscriminantAnalysis Lda(this IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfNull(ys, nameof(ys));
-
             return new LinearDiscriminantAnalysis(xs, ys);
         }
 
@@ -74,9 +69,34 @@ namespace NumFlat.MultivariateAnalyses
         /// </exception>
         public static IndependentComponentAnalysis Ica(this IReadOnlyList<Vec<double>> xs, int componentCount, IndependentComponentAnalysisOptions? options = null, Random? random = null)
         {
-            ThrowHelper.ThrowIfNull(xs, nameof(xs));
-
             return new IndependentComponentAnalysis(xs, componentCount, options, random);
+        }
+
+        /// <summary>
+        /// Performs non-negative matrix factorization (NMF).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of basis vectors to be estimated.
+        /// </param>
+        /// <param name="iterationCount">
+        /// The number of iterations to perform for updating the solution.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="NonnegativeMatrixFactorization"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public static NonnegativeMatrixFactorization Nmf(this IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
+        {
+            return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
         }
     }
 }
