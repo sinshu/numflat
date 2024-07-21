@@ -7,6 +7,8 @@ using MathNet.Numerics;
 using NUnit.Framework;
 using NumFlat;
 using NumFlat.MultivariateAnalyses;
+using NumFlat.IO;
+using NumFlat.SignalProcessing;
 
 namespace NumFlatTest.MultivariateAnalysesTests
 {
@@ -86,6 +88,31 @@ namespace NumFlatTest.MultivariateAnalysesTests
                 {
                     Assert.That(0 <= value && value < 1);
                 }
+            }
+        }
+
+        [Test]
+        public void Piano()
+        {
+            var frameLength = 1024;
+            var frameShift = frameLength / 2;
+            var window = WindowFunctions.SquareRootHann(frameLength);
+
+            var piano = WaveFile.ReadMono(Path.Combine("dataset", "piano.wav")).Data;
+            var stft = piano.Stft(window, frameShift);
+            var power = stft.Spectrogram.Select(spectrum => spectrum.Map(NumFlat.ComplexExtensions.MagnitudeSquared)).ToArray();
+
+            var nmf = power.Nmf(3);
+            var reconstructed = nmf.W * nmf.H;
+
+            var scale = power.Select(spectrum => spectrum.Max()).Max();
+
+            Assert.That(reconstructed.RowCount == power[0].Count);
+            Assert.That(reconstructed.ColCount == power.Length);
+            foreach (var (expected, actual) in power.Zip(reconstructed.Cols))
+            {
+                var error = (expected - actual).StandardDeviation();
+                Assert.That(error < 0.05 * scale);
             }
         }
     }
