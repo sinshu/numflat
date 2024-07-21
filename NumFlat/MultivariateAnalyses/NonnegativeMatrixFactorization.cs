@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using NumFlat.Clustering;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -9,6 +11,83 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
+        public static (Mat<double> W, Mat<double> H) GetInitialGuess(IReadOnlyList<Vec<double>> xs, int componentCount, GaussianMixtureModelOptions? options = null, Random? random = null)
+        {
+            var pca = xs.Pca();
+
+            using var utransformed = new TemporalMatrix<double>(componentCount, xs.Count);
+            ref readonly var transformed = ref utransformed.Item;
+
+            foreach (var (x, col) in xs.Zip(transformed.Cols))
+            {
+                pca.Transform(x, col);
+            }
+
+            var gmm = transformed.Cols.ToGmm(componentCount + 1, options, random);
+
+            var origin = new Vec<double>(componentCount);
+            pca.Transform(new Vec<double>(pca.SourceDimension), origin);
+
+            var min = double.MaxValue;
+            var discard = -1;
+            for (var i = 0; i < gmm.ClassCount; i++)
+            {
+                var gaussian = gmm.Components[i].Gaussian;
+                var distance = Vec.DistanceSquared(gaussian.Mean, origin);
+                if (distance < min)
+                {
+                    min = distance;
+                    discard = i;
+                }
+            }
+
+            //Console.WriteLine("DISCARDED: " + discard);
+            using (var writer = new StreamWriter("out.csv"))
+            {
+                for (var i = 0; i < gmm.Components.Count; i++)
+                {
+                    if (i != discard)
+                    {
+                        writer.Write(",C" + i);
+                    }
+                    else
+                    {
+                        writer.Write(",Discarded");
+                    }
+                }
+                writer.WriteLine();
+                foreach (var x in transformed.Cols)
+                {
+                    var c = gmm.Predict(x);
+                    writer.Write(x[0]);
+                    for (var k = 0; k <= c; k++)
+                    {
+                        writer.Write(",");
+                    }
+                    writer.WriteLine(x[1]);
+                }
+            }
+
+            var w = new Mat<double>(pca.SourceDimension, componentCount);
+            {
+                var c = 0;
+                for (var i = 0; i < gmm.ClassCount; i++)
+                {
+                    if (i == discard)
+                    {
+                        continue;
+                    }
+                    pca.InverseTransform(gmm.Components[i].Gaussian.Mean, w.Cols[c]);
+                    c++;
+                }
+            }
+
+            var h = new Mat<double>(componentCount, xs.Count);
+
+
+            return (w, h);
+        }
+
         /// <summary>
         /// Updates the matrices W and H using the multiplicative update rule for NMF.
         /// </summary>
