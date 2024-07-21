@@ -20,42 +20,26 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        Vec<double> w1 = [1, 2, 3, 0, 0];
-        Vec<double> w2 = [0, 3, 1, 4, 0];
-        Vec<double> w3 = [0, 0, 1, 3, 7];
-        Mat<double> w = [w1, w2, w3];
-        w = w.Transpose();
-        Console.WriteLine(w);
+        var frameLength = 1024;
+        var frameShift = frameLength / 2;
+        var window = WindowFunctions.SquareRootHann(frameLength);
 
-        var n = 100;
+        var piano = WaveFile.ReadMono("piano.wav").Data;
+        var stft = piano.Stft(window, frameShift);
+        var power = stft.Spectrogram.Select(spectrum => spectrum.Map(x => x.MagnitudeSquared())).ToArray();
 
-        var h = new Mat<double>(w.ColCount, n);
-        var random = new Random(42);
-        foreach (var col in h.Cols)
+        var (w, h) = NonnegativeMatrixFactorization.GetInitialGuess(power, 3);
+        for (var i = 0; i < 200; i++)
         {
-            col.MapInplace(i => 3 * random.NextDouble());
-        }
-        Console.WriteLine(h);
-
-        var v = w * h;
-        Console.WriteLine(v);
-
-        var srcW = MatrixBuilder.FromFunc(w.RowCount, w.ColCount, (row, col) => random.NextDouble());
-        var srcH = MatrixBuilder.FromFunc(h.RowCount, h.ColCount, (row, col) => random.NextDouble());
-        //w.CopyTo(srcW);
-        //h.CopyTo(srcH);
-        var dstW = new Mat<double>(w.RowCount, w.ColCount);
-        var dstH = new Mat<double>(h.RowCount, h.ColCount);
-        for (var i = 0; i < 1000; i++)
-        {
-            NonnegativeMatrixFactorization.Update(v.Cols, srcW, srcH, dstW, dstH);
-            dstW.CopyTo(srcW);
-            dstH.CopyTo(srcH);
-            Console.WriteLine(dstW);
-            //Console.ReadKey();
+            Console.WriteLine(i);
+            var w2 = new Mat<double>(w.RowCount, w.ColCount);
+            var h2 = new Mat<double>(h.RowCount, h.ColCount);
+            NonnegativeMatrixFactorization.Update(power, w, h, w2, h2);
+            w = w2;
+            h = h2;
         }
 
-        CsvFile.Write("ref.csv", h.Transpose());
-        CsvFile.Write("nmf.csv", dstH.Transpose());
+        CsvFile.Write("w.csv", w);
+        CsvFile.Write("h.csv", h.Transpose());
     }
 }

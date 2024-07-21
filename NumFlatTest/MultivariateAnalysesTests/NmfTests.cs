@@ -62,5 +62,31 @@ namespace NumFlatTest.MultivariateAnalysesTests
                 error = newError;
             }
         }
+
+        [Test]
+        public void InitialGuess()
+        {
+            var random = new Random(42);
+            var v = new Mat<double>(5, 30);
+            var (w, h) = NonnegativeMatrixFactorization.GetInitialGuess(v.Cols, 3, random);
+            Assert.That(w.RowCount == v.RowCount);
+            Assert.That(w.ColCount == 3);
+            Assert.That(h.RowCount == 3);
+            Assert.That(h.ColCount == v.ColCount);
+            foreach (var col in w.Cols)
+            {
+                foreach (var value in col)
+                {
+                    Assert.That(0 <= value && value < 1);
+                }
+            }
+            foreach (var col in h.Cols)
+            {
+                foreach (var value in col)
+                {
+                    Assert.That(0 <= value && value < 1);
+                }
+            }
+        }
     }
 }

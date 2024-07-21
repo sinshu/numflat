@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using NumFlat.Clustering;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -9,6 +11,46 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
+        /// <summary>
+        /// Generates initial values for the matrices W and H using a random number generator.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of basis vectors to be estimated.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <returns>
+        /// The randomized matrices W and H.
+        /// </returns>
+        public static (Mat<double> W, Mat<double> H) GetInitialGuess(IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (xs.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one vector.", nameof(xs));
+            }
+
+            if (xs[0].Count == 0)
+            {
+                throw new ArgumentException("Empty vectors are not allowed.", nameof(xs));
+            }
+
+            if (random == null)
+            {
+                random = Random.Shared;
+            }
+
+            var w = MatrixBuilder.FromFunc(xs[0].Count, componentCount, (row, col) => random.NextDouble());
+            var h = MatrixBuilder.FromFunc(componentCount, xs.Count, (row, col) => random.NextDouble());
+            return (w, h);
+        }
+
         /// <summary>
         /// Updates the matrices W and H using the multiplicative update rule for NMF.
         /// </summary>
@@ -29,6 +71,7 @@ namespace NumFlat.MultivariateAnalyses
         /// </param>
         public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(sourceW, nameof(sourceW));
             ThrowHelper.ThrowIfEmpty(sourceH, nameof(sourceH));
             ThrowHelper.ThrowIfEmpty(destinationW, nameof(destinationW));
