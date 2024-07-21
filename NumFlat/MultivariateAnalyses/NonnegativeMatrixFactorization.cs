@@ -11,80 +11,43 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
-        public static (Mat<double> W, Mat<double> H) GetInitialGuess(IReadOnlyList<Vec<double>> xs, int componentCount, GaussianMixtureModelOptions? options = null, Random? random = null)
+        /// <summary>
+        /// Generates initial values for the matrices W and H using a random number generator.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
+        /// </param>
+        /// <param name="componentCount">
+        /// The number of basis vectors to be estimated.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <returns>
+        /// The randomized matrices W and H.
+        /// </returns>
+        public static (Mat<double> W, Mat<double> H) GetInitialGuess(IReadOnlyList<Vec<double>> xs, int componentCount, Random? random = null)
         {
-            var pca = xs.Pca();
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
 
-            using var utransformed = new TemporalMatrix<double>(componentCount, xs.Count);
-            ref readonly var transformed = ref utransformed.Item;
-
-            foreach (var (x, col) in xs.Zip(transformed.Cols))
+            if (xs.Count == 0)
             {
-                pca.Transform(x, col);
+                throw new ArgumentException("The sequence must contain at least one vector.", nameof(xs));
             }
 
-            var gmm = transformed.Cols.ToGmm(componentCount + 1, options, random);
-
-            var origin = new Vec<double>(componentCount);
-            pca.Transform(new Vec<double>(pca.SourceDimension), origin);
-
-            var min = double.MaxValue;
-            var discard = -1;
-            for (var i = 0; i < gmm.ClassCount; i++)
+            if (xs[0].Count == 0)
             {
-                var gaussian = gmm.Components[i].Gaussian;
-                var distance = Vec.DistanceSquared(gaussian.Mean, origin);
-                if (distance < min)
-                {
-                    min = distance;
-                    discard = i;
-                }
+                throw new ArgumentException("Empty vectors are not allowed.", nameof(xs));
             }
 
-            //Console.WriteLine("DISCARDED: " + discard);
-            using (var writer = new StreamWriter("out.csv"))
+            if (random == null)
             {
-                for (var i = 0; i < gmm.Components.Count; i++)
-                {
-                    if (i != discard)
-                    {
-                        writer.Write(",C" + i);
-                    }
-                    else
-                    {
-                        writer.Write(",Discarded");
-                    }
-                }
-                writer.WriteLine();
-                foreach (var x in transformed.Cols)
-                {
-                    var c = gmm.Predict(x);
-                    writer.Write(x[0]);
-                    for (var k = 0; k <= c; k++)
-                    {
-                        writer.Write(",");
-                    }
-                    writer.WriteLine(x[1]);
-                }
+                random = Random.Shared;
             }
 
-            var w = new Mat<double>(pca.SourceDimension, componentCount);
-            {
-                var c = 0;
-                for (var i = 0; i < gmm.ClassCount; i++)
-                {
-                    if (i == discard)
-                    {
-                        continue;
-                    }
-                    pca.InverseTransform(gmm.Components[i].Gaussian.Mean, w.Cols[c]);
-                    c++;
-                }
-            }
-
-            var h = new Mat<double>(componentCount, xs.Count);
-
-
+            var w = MatrixBuilder.FromFunc(xs[0].Count, componentCount, (row, col) => random.NextDouble());
+            var h = MatrixBuilder.FromFunc(componentCount, xs.Count, (row, col) => random.NextDouble());
             return (w, h);
         }
 
@@ -108,6 +71,7 @@ namespace NumFlat.MultivariateAnalyses
         /// </param>
         public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(sourceW, nameof(sourceW));
             ThrowHelper.ThrowIfEmpty(sourceH, nameof(sourceH));
             ThrowHelper.ThrowIfEmpty(destinationW, nameof(destinationW));
