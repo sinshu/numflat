@@ -325,6 +325,11 @@ namespace NumFlat.SignalProcessing
                 throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
             }
 
+            if ((source.Count & (source.Count - 1)) != 0)
+            {
+                throw new ArgumentException($"The source length must be a power of two, but was {source.Count}.", nameof(source));
+            }
+
             var destination = new Vec<Complex>(source.Count / 2 + 1);
             Rfft(source, destination);
             return destination;
@@ -350,6 +355,12 @@ namespace NumFlat.SignalProcessing
             if (source.Count < 2)
             {
                 throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
+            }
+
+            var scm1 = source.Count - 1;
+            if ((scm1 & (scm1 - 1)) != 0)
+            {
+                throw new ArgumentException($"The source length must be a power of two plus one, but was {source.Count}.", nameof(source));
             }
 
             var destination = new Vec<double>(2 * (source.Count - 1));
