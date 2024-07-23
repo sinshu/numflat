@@ -202,5 +202,44 @@ namespace NumFlatTest.SignalProcessingTests
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
+
+        [TestCase(2, 1, 1)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 1, 1)]
+        [TestCase(4, 6, 5)]
+        [TestCase(8, 1, 1)]
+        [TestCase(8, 9, 10)]
+        [TestCase(16, 1, 1)]
+        [TestCase(16, 17, 17)]
+        [TestCase(32, 1, 1)]
+        [TestCase(32, 34, 33)]
+        public void InverseReal_Arg2(int length, int srcStride, int dstStride)
+        {
+            var src = TestVector.RandomComplex(42, length / 2 + 1, srcStride);
+            src[0] = src[0].Real;
+            src[length / 2] = src[length / 2].Real;
+            var actual = TestVector.RandomDouble(0, length, dstStride);
+
+            using (src.EnsureUnchanged())
+            {
+                FourierTransform.Irfft(src, actual);
+            }
+
+            var expected = new Complex[length];
+            src.CopyTo(expected.AsSpan(0, src.Count));
+            for (var w = 1; w < length / 2; w++)
+            {
+                expected[length - w] = expected[w].Conjugate();
+            }
+            Fourier.Inverse(expected, FourierOptions.AsymmetricScaling);
+            foreach (var value in expected.Select(x => x.Imaginary))
+            {
+                Assert.That(value, Is.EqualTo(0.0).Within(1.0E-12));
+            }
+
+            NumAssert.AreSame(expected.Select(x => x.Real).ToVector(), actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -192,10 +193,10 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Computes the forward Fourier transform in-place.
+        /// Computes the inverse Fourier transform in-place.
         /// </summary>
         /// <param name="target">
-        /// The target vector to be transformed.
+        /// The target vector to be inverse transformed.
         /// </param>
         /// <remarks>
         /// The FFT length must be a power of two.
@@ -226,14 +227,14 @@ namespace NumFlat.SignalProcessing
         /// The length of <paramref name="destination"/> must match <c>source.Count / 2 + 1</c>.
         /// Normalization is only done during the inverse transform.
         /// </remarks>
-        public static void Rfft(in Vec<double> source, in Vec<Complex> destination)
+        public static void Rfft(in this Vec<double> source, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
             if (source.Count < 2)
             {
-                throw new ArgumentException("The source length must be greater than or equal to one.", nameof(source));
+                throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
             }
 
             if ((source.Count & (source.Count - 1)) != 0)
@@ -251,6 +252,55 @@ namespace NumFlat.SignalProcessing
 
             source.CopyTo(tmp.Slice(0, source.Count));
             GetRftInstance(source.Count).Forward(tmp);
+        }
+
+        /// <summary>
+        /// Computes the inverse real Fourier transform.
+        /// </summary>
+        /// <param name="source">
+        /// The source vector to be inverse transformed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the inverse transformed vector.
+        /// </param>
+        /// <remarks>
+        /// The length of <paramref name="source"/> must be a power of two plus one.
+        /// The length of <paramref name="destination"/> must match <c>2 * (source.Count - 1)</c>.
+        /// Normalization is only done during the inverse transform.
+        /// </remarks>
+        public static void Irfft(in this Vec<Complex> source, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (source.Count < 2)
+            {
+                throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
+            }
+
+            var scm1 = source.Count - 1;
+            if ((scm1 & (scm1 - 1)) != 0)
+            {
+                throw new ArgumentException($"The source length must be a power of two plus one, but was {source.Count}.", nameof(source));
+            }
+
+            if (destination.Count != 2 * (source.Count - 1))
+            {
+                throw new ArgumentException("'destination.Count' must match '2 * (source.Count - 1)'.");
+            }
+
+            using var utmp = MemoryPool<Complex>.Shared.Rent(source.Count);
+            var tmp = utmp.Memory.Span.Slice(0, source.Count);
+
+            source.CopyTo(tmp);
+            var casted = GetRftInstance(2 * (source.Count - 1)).Inverse(tmp);
+
+            var i = 0;
+            foreach (ref var value in destination)
+            {
+                value = casted[i];
+                i++;
+            }
         }
 
         /// <summary>
