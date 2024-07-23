@@ -241,5 +241,72 @@ namespace NumFlatTest.SignalProcessingTests
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
+
+        [TestCase(2, 1)]
+        [TestCase(2, 3)]
+        [TestCase(4, 1)]
+        [TestCase(4, 6)]
+        [TestCase(8, 1)]
+        [TestCase(8, 9)]
+        [TestCase(16, 1)]
+        [TestCase(16, 17)]
+        [TestCase(32, 1)]
+        [TestCase(32, 34)]
+        public void ForwardReal_Arg1(int length, int srcStride)
+        {
+            var src = TestVector.RandomDouble(42, length, srcStride);
+
+            Vec<Complex> actual;
+            using (src.EnsureUnchanged())
+            {
+                actual = FourierTransform.Rfft(src);
+            }
+
+            var expected = src.Select(x => (Complex)x).ToArray();
+            Fourier.Forward(expected, FourierOptions.AsymmetricScaling);
+
+            NumAssert.AreSame(expected.Take(actual.Count).ToVector(), actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(2, 1)]
+        [TestCase(2, 3)]
+        [TestCase(4, 1)]
+        [TestCase(4, 6)]
+        [TestCase(8, 1)]
+        [TestCase(8, 9)]
+        [TestCase(16, 1)]
+        [TestCase(16, 17)]
+        [TestCase(32, 1)]
+        [TestCase(32, 34)]
+        public void InverseReal_Arg1(int length, int srcStride)
+        {
+            var src = TestVector.RandomComplex(42, length / 2 + 1, srcStride);
+            src[0] = src[0].Real;
+            src[length / 2] = src[length / 2].Real;
+
+            Vec<double> actual;
+            using (src.EnsureUnchanged())
+            {
+                actual = FourierTransform.Irfft(src);
+            }
+
+            var expected = new Complex[length];
+            src.CopyTo(expected.AsSpan(0, src.Count));
+            for (var w = 1; w < length / 2; w++)
+            {
+                expected[length - w] = expected[w].Conjugate();
+            }
+            Fourier.Inverse(expected, FourierOptions.AsymmetricScaling);
+            foreach (var value in expected.Select(x => x.Imaginary))
+            {
+                Assert.That(value, Is.EqualTo(0.0).Within(1.0E-12));
+            }
+
+            NumAssert.AreSame(expected.Select(x => x.Real).ToVector(), actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }

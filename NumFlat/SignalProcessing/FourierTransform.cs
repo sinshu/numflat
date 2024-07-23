@@ -304,6 +304,60 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
+        /// Computes the forward real Fourier transform.
+        /// </summary>
+        /// <param name="source">
+        /// The source vector to be transformed.
+        /// </param>
+        /// <returns>
+        /// The transformed vector excluding the complex conjugate part.
+        /// </returns>
+        /// <remarks>
+        /// The length of <paramref name="source"/> must be a power of two.
+        /// Normalization is only done during the inverse transform.
+        /// </remarks>
+        public static Vec<Complex> Rfft(in this Vec<double> source)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+
+            if (source.Count < 2)
+            {
+                throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
+            }
+
+            var destination = new Vec<Complex>(source.Count / 2 + 1);
+            Rfft(source, destination);
+            return destination;
+        }
+
+        /// <summary>
+        /// Computes the inverse real Fourier transform.
+        /// </summary>
+        /// <param name="source">
+        /// The source vector excluding the complex conjugate part to be inverse transformed.
+        /// </param>
+        /// <returns>
+        /// The inverse transformed vector.
+        /// </returns>
+        /// <remarks>
+        /// The length of <paramref name="source"/> must be a power of two plus one.
+        /// Normalization is only done during the inverse transform.
+        /// </remarks>
+        public static Vec<double> Irfft(in this Vec<Complex> source)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+
+            if (source.Count < 2)
+            {
+                throw new ArgumentException("The source length must be greater than or equal to two.", nameof(source));
+            }
+
+            var destination = new Vec<double>(2 * (source.Count - 1));
+            Irfft(source, destination);
+            return destination;
+        }
+
+        /// <summary>
         /// Computes the spectrogram from a time-domain signal using the short-time Fourier transform (STFT).
         /// </summary>
         /// <param name="source">
