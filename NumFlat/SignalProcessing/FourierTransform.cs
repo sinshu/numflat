@@ -65,7 +65,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the forward Fourier transform.
+        /// Computes the forward Fourier transform.
         /// </summary>
         /// <param name="source">
         /// The source vector to be transformed.
@@ -92,7 +92,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the inverse Fourier transform.
+        /// Computes the inverse Fourier transform.
         /// </summary>
         /// <param name="source">
         /// The source vector to be inverse transformed.
@@ -119,7 +119,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the forward Fourier transform.
+        /// Computes the forward Fourier transform.
         /// </summary>
         /// <param name="source">
         /// The source vector to be transformed.
@@ -145,7 +145,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the inverse Fourier transform.
+        /// Computes the inverse Fourier transform.
         /// </summary>
         /// <param name="source">
         /// The source vector to be inverse transformed.
@@ -171,7 +171,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the forward Fourier transform in-place.
+        /// Computes the forward Fourier transform in-place.
         /// </summary>
         /// <param name="target">
         /// The target vector to be transformed.
@@ -192,7 +192,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Compute the forward Fourier transform in-place.
+        /// Computes the forward Fourier transform in-place.
         /// </summary>
         /// <param name="target">
         /// The target vector to be transformed.
@@ -210,6 +210,47 @@ namespace NumFlat.SignalProcessing
             ref readonly var tmp = ref utmp.Item;
 
             GetFftInstance(tmp.Count).Inverse(tmp.Memory.Span);
+        }
+
+        /// <summary>
+        /// Computes the forward real Fourier transform.
+        /// </summary>
+        /// <param name="source">
+        /// The source vector to be transformed.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the transformed vector.
+        /// </param>
+        /// <remarks>
+        /// The length of <paramref name="source"/> must be a power of two.
+        /// The length of <paramref name="destination"/> must match <c>source.Count / 2 + 1</c>.
+        /// Normalization is only done during the inverse transform.
+        /// </remarks>
+        public static void Rfft(in Vec<double> source, in Vec<Complex> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (source.Count < 2)
+            {
+                throw new ArgumentException("The source length must be greater than or equal to one.", nameof(source));
+            }
+
+            if ((source.Count & (source.Count - 1)) != 0)
+            {
+                throw new ArgumentException($"The source length must be a power of two, but was {source.Count}.", nameof(source));
+            }
+
+            if (destination.Count != source.Count / 2 + 1)
+            {
+                throw new ArgumentException("'destination.Count' must match 'source.Count / 2 + 1'.");
+            }
+
+            using var utmp = destination.EnsureContiguous(false);
+            var tmp = MemoryMarshal.Cast<Complex, double>(utmp.Item.Memory.Span);
+
+            source.CopyTo(tmp.Slice(0, source.Count));
+            GetRftInstance(source.Count).Forward(tmp);
         }
 
         /// <summary>
@@ -301,7 +342,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Reconstruct the time-domain signal from a spectrogram using the inverse short-time Fourier transform (ISTFT).
+        /// Reconstructs the time-domain signal from a spectrogram using the inverse short-time Fourier transform (ISTFT).
         /// </summary>
         /// <param name="spectrogram">
         /// The spectrogram to be inverse transformed.

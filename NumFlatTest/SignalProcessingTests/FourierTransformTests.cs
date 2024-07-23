@@ -174,5 +174,33 @@ namespace NumFlatTest.SignalProcessingTests
 
             NumAssert.AreSame(expected.ToVector(), actual, 1.0E-12);
         }
+
+        [TestCase(2, 1, 1)]
+        [TestCase(2, 3, 3)]
+        [TestCase(4, 1, 1)]
+        [TestCase(4, 6, 5)]
+        [TestCase(8, 1, 1)]
+        [TestCase(8, 9, 10)]
+        [TestCase(16, 1, 1)]
+        [TestCase(16, 17, 17)]
+        [TestCase(32, 1, 1)]
+        [TestCase(32, 34, 33)]
+        public void ForwardReal_Arg2(int length, int srcStride, int dstStride)
+        {
+            var src = TestVector.RandomDouble(42, length, srcStride);
+            var actual = TestVector.RandomComplex(0, length / 2 + 1, dstStride);
+
+            using (src.EnsureUnchanged())
+            {
+                FourierTransform.Rfft(src, actual);
+            }
+
+            var expected = src.Select(x => (Complex)x).ToArray();
+            Fourier.Forward(expected, FourierOptions.AsymmetricScaling);
+
+            NumAssert.AreSame(expected.Take(actual.Count).ToVector(), actual, 1.0E-12);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }
