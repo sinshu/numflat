@@ -650,6 +650,7 @@ samples = spectrum.Ifft();
     - ⬜ HMM
 * 🚧 Audio signal processing
     - ✅ Fast Fourier transform (FFT)
+    - ✅ Real FFT
     - ✅ Short-time Fourier transform (STFT)
     - ✅ Convolution
     - ✅ Resampling

@@ -1,3 +1,7 @@
+# v0.10.5
+
+* Added real FFT.
+
 # v0.10.4
 
 * Added NMF.
