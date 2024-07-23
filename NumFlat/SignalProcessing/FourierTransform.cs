@@ -227,7 +227,7 @@ namespace NumFlat.SignalProcessing
         /// The length of <paramref name="destination"/> must match <c>source.Count / 2 + 1</c>.
         /// Normalization is only done during the inverse transform.
         /// </remarks>
-        public static void Rfft(in this Vec<double> source, in Vec<Complex> destination)
+        public static void Rfft(in Vec<double> source, in Vec<Complex> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
@@ -268,7 +268,7 @@ namespace NumFlat.SignalProcessing
         /// The length of <paramref name="destination"/> must match <c>2 * (source.Count - 1)</c>.
         /// Normalization is only done during the inverse transform.
         /// </remarks>
-        public static void Irfft(in this Vec<Complex> source, in Vec<double> destination)
+        public static void Irfft(in Vec<Complex> source, in Vec<double> destination)
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
