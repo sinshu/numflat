@@ -21,12 +21,12 @@ namespace NumFlat.SignalProcessing
         {
             if (length < 1)
             {
-                throw new ArgumentException("The FFT Length must be greater than or equal to one.");
+                throw new ArgumentException("The FFT length must be greater than or equal to one.");
             }
 
             if ((length & (length - 1)) != 0)
             {
-                throw new ArgumentException($"The FFT length must be a power of two, but was '{length}'.");
+                throw new ArgumentException($"The FFT length must be a power of two, but was {length}.");
             }
         }
 
