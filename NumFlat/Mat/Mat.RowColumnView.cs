@@ -55,6 +55,28 @@ namespace NumFlat
             }
 
             /// <summary>
+            /// Gets a submatrix from the matrix.
+            /// </summary>
+            /// <param name="range">
+            /// The range of the rows.
+            /// </param>
+            /// <returns>
+            /// The specified submatrix in the matrix.
+            /// </returns>
+            /// <remarks>
+            /// This method does not allocate heap memory.
+            /// The returned submatrix will be a view of the original matrix.
+            /// </remarks>
+            public Mat<T> this[Range range]
+            {
+                get
+                {
+                    var (offset, length) = range.GetOffsetAndLength(mat.rowCount);
+                    return mat.Submatrix(offset, 0, length, mat.colCount);
+                }
+            }
+
+            /// <summary>
             /// Gets the number of row vectors.
             /// </summary>
             public int Count => mat.rowCount;
@@ -157,6 +179,28 @@ namespace NumFlat
                     }
 
                     return new Vec<T>(mat.rowCount, 1, mat.memory.Slice(mat.stride * index, mat.rowCount));
+                }
+            }
+
+            /// <summary>
+            /// Gets a submatrix from the matrix.
+            /// </summary>
+            /// <param name="range">
+            /// The range of the columns.
+            /// </param>
+            /// <returns>
+            /// The specified submatrix in the matrix.
+            /// </returns>
+            /// <remarks>
+            /// This method does not allocate heap memory.
+            /// The returned submatrix will be a view of the original matrix.
+            /// </remarks>
+            public Mat<T> this[Range range]
+            {
+                get
+                {
+                    var (offset, length) = range.GetOffsetAndLength(mat.colCount);
+                    return mat.Submatrix(0, offset, mat.rowCount, length);
                 }
             }
 

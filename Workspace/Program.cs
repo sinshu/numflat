@@ -22,5 +22,16 @@ public class Program
 
         Vec<double> x = [1, 2, 3, 4, 5];
         Console.WriteLine(x[1..^1]);
+
+        Mat<double> mat =
+        [
+            [1, 2, 3],
+            [2, 2, 3],
+            [3, 2, 3],
+            [4, 2, 3],
+        ];
+
+        Console.WriteLine(mat.Rows[1..^1]);
+        Console.WriteLine(mat.Cols[..^1]);
     }
 }

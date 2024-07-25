@@ -316,6 +316,92 @@ namespace NumFlatTest.MatTests
             Assert.That(actual, Is.EqualTo(expected));
         }
 
+        [TestCase(1, 1, 1, 0, 1)]
+        [TestCase(1, 1, 3, 0, 1)]
+        [TestCase(2, 2, 2, 0, 2)]
+        [TestCase(2, 2, 3, 0, 2)]
+        [TestCase(2, 2, 3, 1, 1)]
+        [TestCase(3, 1, 3, 1, 2)]
+        [TestCase(3, 1, 7, 1, 2)]
+        [TestCase(1, 3, 1, 0, 1)]
+        [TestCase(1, 3, 6, 0, 1)]
+        [TestCase(3, 4, 5, 1, 1)]
+        [TestCase(3, 4, 7, 0, 1)]
+        [TestCase(3, 4, 7, 1, 1)]
+        [TestCase(8, 7, 9, 3, 4)]
+        [TestCase(7, 8, 9, 1, 5)]
+        public void RowRange(int srcRowCount, int srcColCount, int srcStride, int dstStartRow, int dstRowCount)
+        {
+            var matrix = TestMatrix.RandomDouble(42, srcRowCount, srcColCount, srcStride);
+
+            var expected = new double[dstRowCount, srcColCount];
+            for (var row = 0; row < dstRowCount; row++)
+            {
+                for (var col = 0; col < srcColCount; col++)
+                {
+                    expected[row, col] = matrix[dstStartRow + row, col];
+                }
+            }
+
+            var start = dstStartRow;
+            var end = start + dstRowCount;
+            var submatrix = matrix.Rows[start..end];
+
+            var actual = new double[submatrix.RowCount, submatrix.ColCount];
+            for (var row = 0; row < dstRowCount; row++)
+            {
+                for (var col = 0; col < srcColCount; col++)
+                {
+                    actual[row, col] = submatrix[row, col];
+                }
+            }
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [TestCase(1, 1, 1, 0, 1)]
+        [TestCase(1, 1, 3, 0, 1)]
+        [TestCase(2, 2, 2, 0, 2)]
+        [TestCase(2, 2, 3, 0, 2)]
+        [TestCase(2, 2, 3, 1, 1)]
+        [TestCase(3, 1, 3, 0, 1)]
+        [TestCase(3, 1, 7, 0, 1)]
+        [TestCase(1, 3, 1, 2, 1)]
+        [TestCase(1, 3, 6, 1, 2)]
+        [TestCase(3, 4, 5, 2, 2)]
+        [TestCase(3, 4, 7, 2, 2)]
+        [TestCase(3, 4, 7, 0, 2)]
+        [TestCase(8, 7, 9, 1, 5)]
+        [TestCase(7, 8, 9, 3, 4)]
+        public void ColRange(int srcRowCount, int srcColCount, int srcStride, int dstStartCol, int dstColCount)
+        {
+            var matrix = TestMatrix.RandomDouble(42, srcRowCount, srcColCount, srcStride);
+
+            var expected = new double[srcRowCount, dstColCount];
+            for (var row = 0; row < srcRowCount; row++)
+            {
+                for (var col = 0; col < dstColCount; col++)
+                {
+                    expected[row, col] = matrix[row, dstStartCol + col];
+                }
+            }
+
+            var start = dstStartCol;
+            var end = start + dstColCount;
+            var submatrix = matrix.Cols[start..end];
+
+            var actual = new double[submatrix.RowCount, submatrix.ColCount];
+            for (var row = 0; row < srcRowCount; row++)
+            {
+                for (var col = 0; col < dstColCount; col++)
+                {
+                    actual[row, col] = submatrix[row, col];
+                }
+            }
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]
         [TestCase(2, 2, 2, 2)]
