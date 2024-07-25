@@ -70,6 +70,7 @@ public static class MatrixExamples
             [0, 1, 2],
             [0, 0, 1],
         ];
+
         Mat<double> y = [
             [1, 0, 0],
             [2, 1, 0],
@@ -138,10 +139,10 @@ public static class MatrixExamples
         x.Fill(3);
 
         // Create a submatrix of the matrix.
-        var sub = x.Submatrix(2, 2, 3, 3);
+        var sub = x[1..3, 2..4];
 
         // Modify the subvector.
-        sub[0, 0] = 100;
+        sub.Fill(100);
 
         // Show the original matrix.
         Console.WriteLine(x);

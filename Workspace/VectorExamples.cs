@@ -125,10 +125,10 @@ public static class VectorExamples
         Vec<double> x = [3, 3, 3, 3, 3];
 
         // Create a subvector of the vector.
-        var sub = x.Subvector(2, 3);
+        var sub = x[1..4];
 
         // Modify the subvector.
-        sub[0] = 100;
+        sub.Fill(100);
 
         // Show the original vector.
         Console.WriteLine(x);

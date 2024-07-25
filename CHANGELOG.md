@@ -1,3 +1,7 @@
+# v0.10.6
+
+* Added support for `Range`.
+
 # v0.10.5
 
 * Added real FFT.

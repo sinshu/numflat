@@ -176,10 +176,10 @@ The subvector acts as a view of the original vector, and changes to the subvecto
 Vec<double> x = [3, 3, 3, 3, 3];
 
 // Create a subvector of the vector.
-var sub = x.Subvector(2, 3);
+var sub = x[1..4];
 
 // Modify the subvector.
-sub[0] = 100;
+sub.Fill(100);
 
 // Show the original vector.
 Console.WriteLine(x);
@@ -188,9 +188,9 @@ Console.WriteLine(x);
 ```console
 Vector 5-Double
   3
-  3
 100
-  3
+100
+100
   3
 ```
 
@@ -255,6 +255,7 @@ Mat<double> x =
     [0, 1, 2],
     [0, 0, 1],
 ];
+
 Mat<double> y =
 [
     [1, 0, 0],
@@ -320,10 +321,10 @@ var x = new Mat<double>(5, 5);
 x.Fill(3);
 
 // Create a submatrix of the matrix.
-var sub = x.Submatrix(2, 2, 3, 3);
+var sub = x[1..3, 2..4];
 
 // Modify the subvector.
-sub[0, 0] = 100;
+sub.Fill(100);
 
 // Show the original matrix.
 Console.WriteLine(x);
@@ -331,11 +332,11 @@ Console.WriteLine(x);
 #### Output
 ```console
 Matrix 5x5-Double
-3  3    3  3  3
-3  3    3  3  3
-3  3  100  3  3
-3  3    3  3  3
-3  3    3  3  3
+3  3    3    3  3
+3  3  100  100  3
+3  3  100  100  3
+3  3    3    3  3
+3  3    3    3  3
 ```
 
 ### Matrix as a set of vectors
@@ -472,6 +473,7 @@ Mat<double> x =
     [1, 2],
     [3, 4],
 ];
+
 Mat<double> y =
 [
     [5, 6],
