@@ -13,9 +13,9 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="Vec{T}.Enumerator"/>.
         /// </returns>
-        public Enumerator GetEnumerator() => new Enumerator(stride, memory.Span);
+        public readonly Enumerator GetEnumerator() => new Enumerator(stride, memory.Span);
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             if (MemoryMarshal.TryGetArray<T>(memory, out var segment))
             {
@@ -32,7 +32,7 @@ namespace NumFlat
             return new MemoryEnumerator(stride, memory);
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => new MemoryEnumerator(stride, memory);
+        readonly IEnumerator IEnumerable.GetEnumerator() => new MemoryEnumerator(stride, memory);
 
 
 

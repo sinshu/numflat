@@ -14,9 +14,9 @@ namespace NumFlat
         /// </returns>
         public RowList.Enumerator GetEnumerator() => Rows.GetEnumerator();
 
-        IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => Rows.GetEnumerator();
+        readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => Rows.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
+        readonly IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
 
 
 
@@ -89,9 +89,9 @@ namespace NumFlat
             /// </returns>
             public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
-            IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
+            readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
 
-            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+            readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
 
@@ -217,9 +217,9 @@ namespace NumFlat
             /// </returns>
             public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
-            IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
+            readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
 
-            IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+            readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
 
