@@ -173,6 +173,32 @@ namespace NumFlatTest.VecTests
             Assert.That(actual, Is.EqualTo(expected));
         }
 
+        [TestCase(1, 1, 0, 1)]
+        [TestCase(1, 3, 0, 1)]
+        [TestCase(3, 1, 0, 2)]
+        [TestCase(3, 1, 1, 2)]
+        [TestCase(3, 1, 0, 3)]
+        [TestCase(3, 3, 0, 2)]
+        [TestCase(3, 3, 1, 2)]
+        [TestCase(3, 3, 0, 3)]
+        [TestCase(11, 7, 3, 5)]
+        public void Range(int srcCount, int srcStride, int dstIndex, int dstCount)
+        {
+            var vector = TestVector.RandomDouble(42, srcCount, srcStride);
+
+            var start = dstIndex;
+            var end = dstIndex + dstCount;
+            var actual = vector[start..end];
+
+            var expected = new double[dstCount];
+            for (var i = 0; i < dstCount; i++)
+            {
+                expected[i] = vector[dstIndex + i];
+            }
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(1, 2, 3)]
         [TestCase(2, 2, 2)]

@@ -20,17 +20,7 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        var frameLength = 1024;
-        var frameShift = frameLength / 2;
-        var window = WindowFunctions.SquareRootHann(frameLength);
-
-        var piano = WaveFile.ReadMono("piano.wav").Data;
-        var stft = piano.Stft(window, frameShift);
-        var power = stft.Spectrogram.Select(spectrum => spectrum.Map(x => x.MagnitudeSquared())).ToArray();
-
-        var nmf = power.Nmf(3);
-
-        CsvFile.Write("w.csv", nmf.W);
-        CsvFile.Write("h.csv", nmf.H.Transpose());
+        Vec<double> x = [1, 2, 3, 4, 5];
+        Console.WriteLine(x[1..^1]);
     }
 }

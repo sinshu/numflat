@@ -281,6 +281,28 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Gets a subvector from the vector.
+        /// </summary>
+        /// <param name="range">
+        /// The range of the elements.
+        /// </param>
+        /// <returns>
+        /// The specified subvector in the vector.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate heap memory.
+        /// The returned subvector will be a view of the original vector.
+        /// </remarks>
+        public readonly Vec<T> this[Range range]
+        {
+            get
+            {
+                var (offset, length) = range.GetOffsetAndLength(count);
+                return Subvector(offset, length);
+            }
+        }
+
+        /// <summary>
         /// Returns a value that indicates whether the vector is empty.
         /// </summary>
         public readonly bool IsEmpty => count == 0;
