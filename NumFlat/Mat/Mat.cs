@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace NumFlat
 {
@@ -323,6 +324,32 @@ namespace NumFlat
                 }
 
                 this.memory.Span[stride * col + row] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a submatrix from the matrix.
+        /// </summary>
+        /// <param name="rowRange">
+        /// The range of the rows;
+        /// </param>
+        /// <param name="colRange">
+        /// The range of the columns.
+        /// </param>
+        /// <returns>
+        /// The specified submatrix in the matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method does not allocate heap memory.
+        /// The returned submatrix will be a view of the original matrix.
+        /// </remarks>
+        public readonly Mat<T> this[Range rowRange, Range colRange]
+        {
+            get
+            {
+                var (rowOffset, rowLength) = rowRange.GetOffsetAndLength(rowCount);
+                var (colOffset, colLength) = colRange.GetOffsetAndLength(colCount);
+                return Submatrix(rowOffset, colOffset, rowLength, colLength);
             }
         }
 

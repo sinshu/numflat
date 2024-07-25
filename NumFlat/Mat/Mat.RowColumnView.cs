@@ -23,7 +23,7 @@ namespace NumFlat
         /// <summary>
         /// Provides a view of the matrix as a list of row vectors.
         /// </summary>
-        public struct RowList : IReadOnlyList<Vec<T>>
+        public readonly struct RowList : IReadOnlyList<Vec<T>>
         {
             private readonly Mat<T> mat;
 
@@ -41,7 +41,7 @@ namespace NumFlat
             /// <returns>
             /// The row vector.
             /// </returns>
-            public Vec<T> this[int index]
+            public readonly Vec<T> this[int index]
             {
                 get
                 {
@@ -67,7 +67,7 @@ namespace NumFlat
             /// This method does not allocate heap memory.
             /// The returned submatrix will be a view of the original matrix.
             /// </remarks>
-            public Mat<T> this[Range range]
+            public readonly Mat<T> this[Range range]
             {
                 get
                 {
@@ -79,7 +79,7 @@ namespace NumFlat
             /// <summary>
             /// Gets the number of row vectors.
             /// </summary>
-            public int Count => mat.rowCount;
+            public readonly int Count => mat.rowCount;
 
             /// <summary>
             /// Gets an enumerator.
@@ -87,7 +87,7 @@ namespace NumFlat
             /// <returns>
             /// An instance of <see cref="Enumerator"/>.
             /// </returns>
-            public Enumerator GetEnumerator() => new Enumerator(this);
+            public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
             IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
 
@@ -151,7 +151,7 @@ namespace NumFlat
         /// <summary>
         /// Provides a view of the matrix as a list of column vectors.
         /// </summary>
-        public struct ColList : IReadOnlyList<Vec<T>>
+        public readonly struct ColList : IReadOnlyList<Vec<T>>
         {
             private readonly Mat<T> mat;
 
@@ -169,7 +169,7 @@ namespace NumFlat
             /// <returns>
             /// The column vector.
             /// </returns>
-            public Vec<T> this[int index]
+            public readonly Vec<T> this[int index]
             {
                 get
                 {
@@ -195,7 +195,7 @@ namespace NumFlat
             /// This method does not allocate heap memory.
             /// The returned submatrix will be a view of the original matrix.
             /// </remarks>
-            public Mat<T> this[Range range]
+            public readonly Mat<T> this[Range range]
             {
                 get
                 {
@@ -207,7 +207,7 @@ namespace NumFlat
             /// <summary>
             /// Gets the number of column vectors.
             /// </summary>
-            public int Count => mat.colCount;
+            public readonly int Count => mat.colCount;
 
             /// <summary>
             /// Gets an enumerator.
@@ -215,7 +215,7 @@ namespace NumFlat
             /// <returns>
             /// An instance of <see cref="Enumerator"/>.
             /// </returns>
-            public Enumerator GetEnumerator() => new Enumerator(this);
+            public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
             IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
 

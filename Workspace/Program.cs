@@ -33,5 +33,6 @@ public class Program
 
         Console.WriteLine(mat.Rows[1..^1]);
         Console.WriteLine(mat.Cols[..^1]);
+        Console.WriteLine(mat[1..^1, 1..^1]);
     }
 }

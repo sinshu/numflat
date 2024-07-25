@@ -316,6 +316,51 @@ namespace NumFlatTest.MatTests
             Assert.That(actual, Is.EqualTo(expected));
         }
 
+        [TestCase(1, 1, 1, 0, 0, 1, 1)]
+        [TestCase(1, 1, 3, 0, 0, 1, 1)]
+        [TestCase(2, 2, 2, 0, 0, 2, 2)]
+        [TestCase(2, 2, 3, 0, 0, 2, 2)]
+        [TestCase(2, 2, 3, 1, 1, 1, 1)]
+        [TestCase(3, 1, 3, 1, 0, 2, 1)]
+        [TestCase(3, 1, 7, 1, 0, 2, 1)]
+        [TestCase(1, 3, 1, 0, 2, 1, 1)]
+        [TestCase(1, 3, 6, 0, 1, 1, 2)]
+        [TestCase(3, 4, 5, 1, 2, 1, 2)]
+        [TestCase(3, 4, 7, 0, 2, 1, 2)]
+        [TestCase(3, 4, 7, 1, 0, 1, 2)]
+        [TestCase(8, 7, 9, 3, 1, 4, 5)]
+        [TestCase(7, 8, 9, 1, 3, 5, 4)]
+        public void Range(int srcRowCount, int srcColCount, int srcStride, int dstStartRow, int dstStartCol, int dstRowCount, int dstColCount)
+        {
+            var matrix = TestMatrix.RandomDouble(42, srcRowCount, srcColCount, srcStride);
+
+            var expected = new double[dstRowCount, dstColCount];
+            for (var row = 0; row < dstRowCount; row++)
+            {
+                for (var col = 0; col < dstColCount; col++)
+                {
+                    expected[row, col] = matrix[dstStartRow + row, dstStartCol + col];
+                }
+            }
+
+            var rowStart = dstStartRow;
+            var rowEnd = rowStart + dstRowCount;
+            var colStart = dstStartCol;
+            var colEnd = colStart + dstColCount;
+            var submatrix = matrix[rowStart..rowEnd, colStart..colEnd];
+
+            var actual = new double[submatrix.RowCount, submatrix.ColCount];
+            for (var row = 0; row < dstRowCount; row++)
+            {
+                for (var col = 0; col < dstColCount; col++)
+                {
+                    actual[row, col] = submatrix[row, col];
+                }
+            }
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
         [TestCase(1, 1, 1, 0, 1)]
         [TestCase(1, 1, 3, 0, 1)]
         [TestCase(2, 2, 2, 0, 2)]
