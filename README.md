@@ -493,10 +493,10 @@ Mat.Add(x, y, destination);
 ### Multivariate analyses
 The `NumFlat.MultivariateAnalyses` namespace provides functionality related to multivariate analysis.
 It currently supports the following methods, with plans to add more methods in the future.
-* Principal component analysis (PCA)
-* Linear discriminant analysis (LDA)
-* Independent component analysis (ICA)
-* Non-negative matrix factorization (NMF)
+* PCA (principal component analysis)
+* LDA (linear discriminant analysis)
+* ICA (independent component analysis)
+* NMF (non-negative matrix factorization)
 #### Code
 ```cs
 using NumFlat.MultivariateAnalyses;
@@ -621,9 +621,9 @@ samples = spectrum.Ifft();
     - ✅ LU decomposition
     - ✅ QR decomposition
     - ✅ Cholesky decomposition
-    - ✅ Singular value decomposition (SVD)
-    - ✅ Eigenvalue decomposition (EVD)
-    - ✅ Generalized eigenvalue decomposition (GEVD)
+    - ✅ SVD (singular value decomposition)
+    - ✅ EVD (eigenvalue decomposition)
+    - ✅ GEVD (generalized eigenvalue decomposition)
 * ✅ LINQ-like operations
     - ✅ Sum, mean, variance, covariance for scalars
     - ✅ Sum, mean, variance, covariancee for vectors
@@ -634,10 +634,10 @@ samples = spectrum.Ifft();
     - ✅ Higher-order statistics
 * 🚧 Multivariate analysis
     - ⬜ Linear regression
-    - ✅ Principal component analysis (PCA)
-    - ✅ Linear discriminant analysis (LDA)
-    - ✅ Independent component analysis (ICA)
-    - ✅ Non-negative matrix factorization (NMF)
+    - ✅ PCA (principal component analysis)
+    - ✅ LDA (linear discriminant analysis)
+    - ✅ ICA (independent component analysis)
+    - ✅ NMF (non-negative matrix factorization)
     - ⬜ Logistic regression
 * ⬜ Distributions
     - ✅ Gaussian
@@ -645,15 +645,15 @@ samples = spectrum.Ifft();
     - ⬜ Other distributions
 * 🚧 Clustering
     - ✅ k-means
-    - ✅ Gaussian mixture model (GMM)
+    - ✅ GMM (gaussian mixture model)
     - ⬜ DBSCAN
     - ⬜ OPTICS
 * ⬜ Time series
     - ⬜ HMM
 * 🚧 Audio signal processing
-    - ✅ Fast Fourier transform (FFT)
+    - ✅ FFT (fast Fourier transform)
     - ✅ Real FFT
-    - ✅ Short-time Fourier transform (STFT)
+    - ✅ STFT (short-time Fourier transform)
     - ✅ Convolution
     - ✅ Resampling
     - 🚧 Feature extraction
