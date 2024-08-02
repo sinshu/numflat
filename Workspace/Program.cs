@@ -20,19 +20,13 @@ public class Program
         MatrixExamples.Run();
         OtherExamples.Run();
 
-        Vec<double> x = [1, 2, 3, 4, 5];
-        Console.WriteLine(x[1..^1]);
+        var sampleRate = 16000;
+        var frameLength = 1024;
+        var frameShift = 512;
+        var window = WindowFunctions.SquareRootHann(frameLength);
 
-        Mat<double> mat =
-        [
-            [1, 2, 3],
-            [2, 2, 3],
-            [3, 2, 3],
-            [4, 2, 3],
-        ];
-
-        Console.WriteLine(mat.Rows[1..^1]);
-        Console.WriteLine(mat.Cols[..^1]);
-        Console.WriteLine(mat[1..^1, 1..^1]);
+        var source = WaveFile.ReadMono("piano.wav").Data;
+        var spectrogram = source.Stft(window, frameShift).Spectrogram;
+        //spectrogram.RowsToMatrix
     }
 }

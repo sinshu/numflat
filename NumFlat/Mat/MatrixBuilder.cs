@@ -440,5 +440,103 @@ namespace NumFlat
 
             return destination;
         }
+
+        /// <summary>
+        /// Creates a new matrix from the specified row vectors.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="rows">
+        /// The row vectors for the new matrix.
+        /// </param>
+        /// <returns>
+        /// A new matrix that contains the specified row vectors.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original row vectors.
+        /// </remarks>
+        public static Mat<T> RowsToMatrix<T>(this IReadOnlyList<Vec<T>> rows) where T : unmanaged, INumberBase<T>
+        {
+            if (rows.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one row.");
+            }
+
+            var rowCount = rows.Count;
+            var colCount = rows[0].Count;
+
+            foreach (var row in rows)
+            {
+                if (row.IsEmpty)
+                {
+                    new ArgumentException("Empty vectors are not allowed.");
+                }
+
+                if (row.Count != colCount)
+                {
+                    throw new ArgumentException("All the vectors must have the same length.");
+                }
+            }
+
+            var mat = new Mat<T>(rowCount, colCount);
+            var i = 0;
+            foreach (var dst in mat.Rows)
+            {
+                rows[i].CopyTo(dst);
+                i++;
+            }
+
+            return mat;
+        }
+
+        /// <summary>
+        /// Creates a new matrix from the specified column vectors.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="cols">
+        /// The column vectors for the new matrix.
+        /// </param>
+        /// <returns>
+        /// A new matrix that contains the specified column vectors.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original column vectors.
+        /// </remarks>
+        public static Mat<T> ColsToMatrix<T>(this IReadOnlyList<Vec<T>> cols) where T : unmanaged, INumberBase<T>
+        {
+            if (cols.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one row.");
+            }
+
+            var rowCount = cols[0].Count;
+            var colCount = cols.Count;
+
+            foreach (var col in cols)
+            {
+                if (col.IsEmpty)
+                {
+                    new ArgumentException("Empty vectors are not allowed.");
+                }
+
+                if (col.Count != rowCount)
+                {
+                    throw new ArgumentException("All the vectors must have the same length.");
+                }
+            }
+
+            var mat = new Mat<T>(rowCount, colCount);
+            var i = 0;
+            foreach (var dst in mat.Cols)
+            {
+                cols[i].CopyTo(dst);
+                i++;
+            }
+
+            return mat;
+        }
     }
 }

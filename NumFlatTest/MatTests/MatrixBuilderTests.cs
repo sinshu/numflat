@@ -133,7 +133,7 @@ namespace NumFlatTest.MatTests
         [TestCase(2, 2)]
         [TestCase(2, 4)]
         [TestCase(5, 3)]
-        public void RowsToMatrix(int rowCount, int colCount)
+        public void RowsToMatrix1(int rowCount, int colCount)
         {
             var random = new Random(42);
 
@@ -162,7 +162,7 @@ namespace NumFlatTest.MatTests
         [TestCase(2, 2)]
         [TestCase(2, 4)]
         [TestCase(5, 3)]
-        public void ColsToMatrix(int rowCount, int colCount)
+        public void ColsToMatrix1(int rowCount, int colCount)
         {
             var random = new Random(42);
 
@@ -170,6 +170,64 @@ namespace NumFlatTest.MatTests
             for (var col = 0; col < colCount; col++)
             {
                 var data = Enumerable.Range(0, rowCount).Select(i => random.NextDouble()).ToArray();
+                expected.Add(data);
+            }
+
+            var actual = expected.ColsToMatrix();
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(actual[row, col], Is.EqualTo(expected[col][row]));
+                }
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(5, 3)]
+        public void RowsToMatrix2(int rowCount, int colCount)
+        {
+            var random = new Random(42);
+
+            var expected = new List<Vec<double>>();
+            for (var row = 0; row < rowCount; row++)
+            {
+                var data = Enumerable.Range(0, colCount).Select(i => random.NextDouble()).ToVector();
+                expected.Add(data);
+            }
+
+            var actual = expected.RowsToMatrix();
+
+            Assert.That(actual.RowCount, Is.EqualTo(rowCount));
+            Assert.That(actual.ColCount, Is.EqualTo(colCount));
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                for (var col = 0; col < colCount; col++)
+                {
+                    Assert.That(actual[row, col], Is.EqualTo(expected[row][col]));
+                }
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 4)]
+        [TestCase(5, 3)]
+        public void ColsToMatrix2(int rowCount, int colCount)
+        {
+            var random = new Random(42);
+
+            var expected = new List<Vec<double>>();
+            for (var col = 0; col < colCount; col++)
+            {
+                var data = Enumerable.Range(0, rowCount).Select(i => random.NextDouble()).ToVector();
                 expected.Add(data);
             }
 

@@ -516,8 +516,8 @@ namespace NumFlatTest.MatTests
             Assert.That(mat.Cols[1].ToArray(), Is.EqualTo(new int[] { 2, 5, 8 }));
             Assert.That(mat.Cols[2].ToArray(), Is.EqualTo(new int[] { 3, 6, 9 }));
 
-            var rowsToMat = MatrixBuilder.RowsToMatrix(mat.Rows.Select(row => row.ToArray()).ToArray());
-            var colsToMat = MatrixBuilder.ColsToMatrix(mat.Cols.Select(row => row.ToArray()).ToArray());
+            var rowsToMat = MatrixBuilder.RowsToMatrix(mat.Rows);
+            var colsToMat = MatrixBuilder.ColsToMatrix(mat.Cols);
             for (var row = 0; row < 3; row++)
             {
                 for (var col = 0; col < 3; col++)
