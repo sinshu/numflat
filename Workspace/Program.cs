@@ -36,12 +36,18 @@ public class Program
         var ys2 = new List<int>();
         for (var i = 0; i < 50; i++)
         {
-            xs1.Add([random.NextGaussian() + 1, random.NextGaussian() - 1]);
+            xs1.Add([random.NextGaussian() + 5, random.NextGaussian() - 3]);
             ys2.Add(1);
         }
 
         var xs = xs1.Concat(xs2).ToArray();
         var ys = ys1.Concat(ys2).ToArray();
+
+        var pairs = xs.Zip(ys).ToArray();
+        random.Shuffle(pairs);
+        xs = pairs.Select(pair => pair.First).ToArray();
+        ys = pairs.Select(pair => pair.Second).ToArray();
+
         new LogisticRegression(xs, ys);
     }
 }
