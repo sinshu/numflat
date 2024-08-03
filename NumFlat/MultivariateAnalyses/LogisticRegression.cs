@@ -114,7 +114,7 @@ namespace NumFlat.MultivariateAnalyses
                 {
                     svd = hessian.Svd();
                 }
-                catch (Exception e)
+                catch (MatrixFactorizationException e)
                 {
                     throw new FittingFailureException("Failed to compute the SVD of the Hessian matrix.", e);
                 }
