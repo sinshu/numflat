@@ -4,11 +4,30 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
+    /// <summary>
+    /// Performs logistic regression.
+    /// </summary>
     public sealed class LogisticRegression : IVectorToScalarTransform<double>, IProbabilisticClassifier<double>
     {
         private readonly Vec<double> coefficients;
         private readonly double intercept;
 
+        /// <summary>
+        /// Performs logistic regression.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        /// <remarks>
+        /// This logistic regression implementation assumes two classes.
+        /// Therefore, only 0 or 1 are valid as class indices.
+        /// </remarks>
         public LogisticRegression(IReadOnlyList<Vec<double>> xs, IEnumerable<int> ys)
         {
             var n = xs.Count;
@@ -88,7 +107,15 @@ namespace NumFlat.MultivariateAnalyses
             destination[1] = value;
         }
 
+        /// <summary>
+        /// Gets the coefficients.
+        /// </summary>
         public ref readonly Vec<double> Coefficients => ref coefficients;
+
+        /// <summary>
+        /// Gets the bias term.
+        /// </summary>
+        public double Intercept => intercept;
 
         /// <inheritdoc/>
         public int SourceDimension => coefficients.Count;
