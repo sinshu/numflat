@@ -21,6 +21,9 @@ namespace NumFlat
 
         public void Dispose()
         {
+#if !RELEASE
+            TemporalMatrix.Randomize(owner);
+#endif
             owner.Dispose();
         }
     }
