@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
-    public sealed class LogisticRegression : IVectorToScalarTransform<double>, IClassifier<double>
+    public sealed class LogisticRegression : IVectorToScalarTransform<double>, IProbabilisticClassifier<double>
     {
         private readonly Vec<double> coefficients;
         private readonly double intercept;
@@ -79,6 +79,16 @@ namespace NumFlat.MultivariateAnalyses
                 return 1;
             }
         }
+
+        /// <inheritdoc/>
+        public void PredictProbability(in Vec<double> x, in Vec<double> destination)
+        {
+            var value = Transform(x);
+            destination[0] = 1 - value;
+            destination[1] = value;
+        }
+
+        public ref readonly Vec<double> Coefficients => ref coefficients;
 
         /// <inheritdoc/>
         public int SourceDimension => coefficients.Count;
