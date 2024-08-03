@@ -8,7 +8,7 @@ namespace NumFlat.MultivariateAnalyses
     {
         public LogisticRegression(IEnumerable<Vec<double>> xs, IEnumerable<int> ys)
         {
-
+            //Math.sig
         }
     }
 }

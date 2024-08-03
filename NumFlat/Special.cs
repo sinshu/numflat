@@ -180,5 +180,19 @@ namespace NumFlat
                 return Math.Sin(y) / y;
             }
         }
+
+        /// <summary>
+        /// Calculates the sigmoid function.
+        /// </summary>
+        /// <param name="x">
+        /// The input value.
+        /// </param>
+        /// <returns>
+        /// The output value of the sigmoid function.
+        /// </returns>
+        public static double Sigmoid(double x)
+        {
+            return 1.0 / (1.0 + Math.Exp(-x));
+        }
     }
 }

@@ -122,5 +122,15 @@ namespace NumFlatTest
             var expected = Trig.Sinc(x);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
+
+        [TestCase(-2.0, 0.11920292202211755)]
+        [TestCase(-1.0, 0.2689414213699951)]
+        [TestCase(0.0, 0.5)]
+        [TestCase(1.0, 0.7310585786300049)]
+        [TestCase(2.0, 0.8807970779778825)]
+        public void Sigmoid(double x, double y)
+        {
+            Assert.That(Special.Sigmoid(x), Is.EqualTo(y).Within(1.0E-12));
+        }
     }
 }
