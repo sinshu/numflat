@@ -53,7 +53,14 @@ namespace NumFlat.MultivariateAnalyses
 
             if (ys.Min() != 0 || ys.Max() != 1)
             {
-                throw new ArgumentException("The class indices must include both 0 and 1, and it must not contain any other values.", nameof(ys));
+                if (ys.All(y => y == 0) || ys.All(y => y == 1))
+                {
+                    throw new ArgumentException("All class indices have the same value. The class indices must include both 0 and 1.", nameof(ys));
+                }
+                else
+                {
+                    throw new ArgumentException("The class indices must be either 0 or 1.", nameof(ys));
+                }
             }
 
             if (options == null)
@@ -62,34 +69,32 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             var d = xs[0].Count;
+            var n = xs.Count;
 
             using var ua = new TemporalVector3<double>(d + 1);
             ref readonly var a = ref ua.Item1;
             ref readonly var gradient = ref ua.Item2;
             ref readonly var delta = ref ua.Item3;
 
-            using var utmpv = new TemporalVector4<double>(xs.Count);
+            using var utmpv = new TemporalVector4<double>(n);
             ref readonly var reference = ref utmpv.Item1;
             ref readonly var prediction = ref utmpv.Item2;
             ref readonly var error = ref utmpv.Item3;
-            ref readonly var rs = ref utmpv.Item4;
+            ref readonly var weights = ref utmpv.Item4;
 
-            using var ux1 = new TemporalMatrix2<double>(xs.Count, d + 1);
+            using var ux1 = new TemporalMatrix2<double>(n, d + 1);
             ref readonly var x1s = ref ux1.Item1;
-            ref readonly var x1rs = ref ux1.Item2;
+            ref readonly var x1ws = ref ux1.Item2;
 
             using var uhessian = new TemporalMatrix<double>(d + 1, d + 1);
             ref readonly var hessian = ref uhessian.Item;
 
-            var prev = 100.0;
-
-            foreach (var (x, row) in xs.Zip(x1s.Cols[0..d].Rows))
+            x1s.Cols[0].Fill(1);
+            foreach (var (x, row) in xs.Zip(x1s.Cols[1..].Rows))
             {
                 x.CopyTo(row);
             }
-            x1s.Cols.Last().Fill(1);
 
-            //var trainY = ys.Select(value => (double)value).ToVector();
             using (var enumerator = ys.GetEnumerator())
             {
                 foreach (ref var value in reference)
@@ -101,41 +106,31 @@ namespace NumFlat.MultivariateAnalyses
 
             a.Clear();
 
+            var prevLoss = double.MaxValue;
+
             for (var iter = 0; iter < options.MaxIterations; iter++)
             {
-                // y = self.sigmoid(np.matmul(self.train_X,betas))
                 Mat.Mul(x1s, a, prediction, false);
                 prediction.MapInplace(Special.Sigmoid);
 
-                // R = np.diag(np.ravel(y*(1-y)))
-                Vec.Map(prediction, val => val * (1 - val), rs);
-                //var r = diag.ToDiagonalMatrix();
+                Vec.Map(prediction, val => val * (1 - val), weights);
 
-                // grad = np.matmul(self.train_X.T,(y-self.train_y))
                 Vec.Sub(prediction, reference, error);
                 Mat.Mul(x1s, error, gradient, true);
 
-                foreach (var (x1, r, x1r) in x1s.Rows.Zip(rs, x1rs.Rows))
+                foreach (var (x1, w, x1r) in x1s.Rows.Zip(weights, x1ws.Rows))
                 {
-                    Vec.Mul(x1, r, x1r);
+                    Vec.Mul(x1, w, x1r);
                 }
 
-                // hessian = np.matmul(np.matmul(self.train_X.T,R),self.train_X)+0.001*np.eye(self.D)
-                //var tmp = x1s.Transpose() * r;
-                //var tmp = x1rs.Transpose();
-                //var hessian = tmp * x1s + 0.001 * MatrixBuilder.Identity<double>(d);
-                Mat.Mul(x1rs, x1s, hessian, true, false);
+                Mat.Mul(x1ws, x1s, hessian, true, false);
                 var i = 0;
                 foreach (ref var value in hessian.EnumerateDiagonalElements())
                 {
-                    if (i < d)
+                    // Skip the bias term.
+                    if (i > 0)
                     {
                         value += options.Regularization;
-                    }
-                    else
-                    {
-                        // Skip the bias term.
-                        break;
                     }
                     i++;
                 }
@@ -151,15 +146,30 @@ namespace NumFlat.MultivariateAnalyses
                 }
                 svd.Solve(gradient, delta);
                 a.SubInplace(delta);
-                var curr = delta.Select(Math.Abs).Max();
-                Console.WriteLine(curr);
-                prev = curr;
+
+                var currLoss = CrossEntropyLoss(reference, prediction, 1.0E-10);
+                if (Math.Abs(currLoss - prevLoss) <= options.Tolerance)
+                {
+                    break;
+                }
+                prevLoss = currLoss;
             }
 
-            this.coefficients = new Vec<double>(xs[0].Count);
-            a[0..xs[0].Count].CopyTo(this.coefficients);
+            this.coefficients = new Vec<double>(d);
+            a[1..].CopyTo(this.coefficients);
 
-            this.intercept = a.Last();
+            this.intercept = a[0];
+        }
+
+        private static double CrossEntropyLoss(in Vec<double> reference, in Vec<double> prediction, double eps)
+        {
+            var sum = 0.0;
+            foreach (var (y1, y2) in reference.Zip(prediction))
+            {
+                var clipped = Math.Clamp(y2, eps, 1 - eps);
+                sum += y1 * Math.Log(clipped) + (1 - y1) * Math.Log(1 - clipped);
+            }
+            return -sum;
         }
 
         /// <inheritdoc/>
