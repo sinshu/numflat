@@ -31,6 +31,19 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             NumAssert.AreSame(ldaVector, lrVector, 0.12);
             NumAssert.AreSame(ldaVector.Map(x => (double)Math.Sign(x)), lrVector.Map(x => (double)Math.Sign(x)), 0.0);
+
+            var total = 0;
+            var correct = 0;
+            foreach (var (x, y) in xs.Zip(ys))
+            {
+                if (lr.Predict(x) == y)
+                {
+                    correct++;
+                }
+                total++;
+            }
+            var score = (double)correct / total;
+            Assert.That(score > 0.95);
         }
 
         [Test]
