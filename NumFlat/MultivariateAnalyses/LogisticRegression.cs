@@ -21,6 +21,9 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="ys">
         /// The class indices for each source vector.
         /// </param>
+        /// <param name="options">
+        /// Specifies options for logistic regression.
+        /// </param>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
@@ -28,8 +31,36 @@ namespace NumFlat.MultivariateAnalyses
         /// This logistic regression implementation assumes two classes.
         /// Therefore, only 0 or 1 are valid as class indices.
         /// </remarks>
-        public LogisticRegression(IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys)
+        public LogisticRegression(IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys, LogisticRegressionOptions? options = null)
         {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(ys, nameof(ys));
+
+            if (xs.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one vector.", nameof(xs));
+            }
+
+            if (xs[0].Count == 0)
+            {
+                throw new ArgumentException("Empty vectors are not allowed.", nameof(xs));
+            }
+
+            if (xs.Count != ys.Count)
+            {
+                throw new ArgumentException("The number of source vectors and class indices must match.");
+            }
+
+            if (ys.Min() != 0 || ys.Max() != 1)
+            {
+                throw new ArgumentException("The class indices must include both 0 and 1, and it must not contain any other values.", nameof(ys));
+            }
+
+            if (options == null)
+            {
+                options = new LogisticRegressionOptions();
+            }
+
             var d = xs[0].Count;
 
             using var ua = new TemporalVector3<double>(d + 1);
@@ -70,7 +101,7 @@ namespace NumFlat.MultivariateAnalyses
 
             a.Clear();
 
-            for (var iter = 0; iter < 10; iter++)
+            for (var iter = 0; iter < options.MaxIterations; iter++)
             {
                 // y = self.sigmoid(np.matmul(self.train_X,betas))
                 Mat.Mul(x1s, a, prediction, false);
@@ -84,9 +115,9 @@ namespace NumFlat.MultivariateAnalyses
                 Vec.Sub(prediction, reference, error);
                 Mat.Mul(x1s, error, gradient, true);
 
-                foreach (var (x1, rr, x1r) in x1s.Rows.Zip(rs, x1rs.Rows))
+                foreach (var (x1, r, x1r) in x1s.Rows.Zip(rs, x1rs.Rows))
                 {
-                    Vec.Mul(x1, rr, x1r);
+                    Vec.Mul(x1, r, x1r);
                 }
 
                 // hessian = np.matmul(np.matmul(self.train_X.T,R),self.train_X)+0.001*np.eye(self.D)
@@ -99,7 +130,7 @@ namespace NumFlat.MultivariateAnalyses
                 {
                     if (i < d)
                     {
-                        value += 1.0E-6;
+                        value += options.Regularization;
                     }
                     else
                     {
@@ -121,7 +152,7 @@ namespace NumFlat.MultivariateAnalyses
                 svd.Solve(gradient, delta);
                 a.SubInplace(delta);
                 var curr = delta.Select(Math.Abs).Max();
-                Console.WriteLine(curr + ": " + (curr - prev));
+                Console.WriteLine(curr);
                 prev = curr;
             }
 
