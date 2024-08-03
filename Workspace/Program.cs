@@ -48,6 +48,11 @@ public class Program
         xs = pairs.Select(pair => pair.First).ToArray();
         ys = pairs.Select(pair => pair.Second).ToArray();
 
-        new LogisticRegression(xs, ys);
+        var model =  new LogisticRegression(xs, ys);
+
+        foreach (var (x, y) in xs.Zip(ys))
+        {
+            Console.WriteLine(y + ": " + model.Transform(x));
+        }
     }
 }

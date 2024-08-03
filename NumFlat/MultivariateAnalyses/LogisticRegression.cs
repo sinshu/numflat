@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
-    public sealed class LogisticRegression
+    public sealed class LogisticRegression : IVectorToScalarTransform<double>
     {
+        private readonly Vec<double> coefficients;
+        private readonly double intercept;
+
         public LogisticRegression(IReadOnlyList<Vec<double>> xs, IEnumerable<int> ys)
         {
             var n = xs.Count;
@@ -44,15 +47,25 @@ namespace NumFlat.MultivariateAnalyses
                 // betas -= np.matmul(inv(hessian),grad)
                 betas -= hessian.Inverse() * grad;
 
-                Console.WriteLine(betas);
-                Console.WriteLine(y);
+                //Console.WriteLine(betas);
+                //Console.WriteLine(y);
             }
 
             foreach (var (x, label) in xs.Zip(ys))
             {
-                var value = Special.Sigmoid(x.Append(1).ToVector() * betas);
-                Console.WriteLine(label + ", " + value);
+                //var value = Special.Sigmoid(x.Append(1).ToVector() * betas);
+                //Console.WriteLine(label + ", " + value);
             }
+
+            coefficients = betas[0..(d - 1)];
+            intercept = betas.Last();
         }
+
+        public double Transform(in Vec<double> source)
+        {
+            return Special.Sigmoid(coefficients * source + intercept);
+        }
+
+        public int SourceDimension => throw new NotImplementedException();
     }
 }
