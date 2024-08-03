@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
-    public sealed class LogisticRegression : IVectorToScalarTransform<double>
+    public sealed class LogisticRegression : IVectorToScalarTransform<double>, IClassifier<double>
     {
         private readonly Vec<double> coefficients;
         private readonly double intercept;
@@ -61,11 +61,32 @@ namespace NumFlat.MultivariateAnalyses
             intercept = betas.Last();
         }
 
+        /// <inheritdoc/>
         public double Transform(in Vec<double> source)
         {
             return Special.Sigmoid(coefficients * source + intercept);
         }
 
-        public int SourceDimension => throw new NotImplementedException();
+        /// <inheritdoc/>
+        public int Predict(in Vec<double> x)
+        {
+            if (Transform(x) < 0.5)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        /// <inheritdoc/>
+        public int SourceDimension => coefficients.Count;
+
+        /// <inheritdoc/>
+        public int Dimension => coefficients.Count;
+
+        /// <inheritdoc/>
+        public int ClassCount => 2;
     }
 }
