@@ -35,7 +35,7 @@ namespace NumFlat
     /// </summary>
     public static class VectorToScalarTransform
     {
-        internal static void ThrowIfInvalidSize<T>(IVectorToVectorTransform<T> method, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
+        internal static void ThrowIfInvalidSize<T>(IVectorToScalarTransform<T> method, in Vec<T> source, string name) where T : unmanaged, INumberBase<T>
         {
             if (source.Count != method.SourceDimension)
             {

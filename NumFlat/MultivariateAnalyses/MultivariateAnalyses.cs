@@ -99,7 +99,7 @@ namespace NumFlat.MultivariateAnalyses
             return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
         }
 
-        public static LogisticRegression LogisticRegression(this IReadOnlyList<Vec<double>> xs, IEnumerable<int> ys)
+        public static LogisticRegression LogisticRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys)
         {
             return new LogisticRegression(xs, ys);
         }
