@@ -16,17 +16,32 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        /*
         VectorExamples.Run();
         MatrixExamples.Run();
         OtherExamples.Run();
+        */
 
-        var sampleRate = 16000;
-        var frameLength = 1024;
-        var frameShift = 512;
-        var window = WindowFunctions.SquareRootHann(frameLength);
+        var random = new Random(42);
 
-        var source = WaveFile.ReadMono("piano.wav").Data;
-        var spectrogram = source.Stft(window, frameShift).Spectrogram;
-        //spectrogram.RowsToMatrix
+        var xs1 = new List<Vec<double>>();
+        var ys1 = new List<int>();
+        for (var i = 0; i < 50; i++)
+        {
+            xs1.Add([random.NextGaussian(), random.NextGaussian()]);
+            ys1.Add(0);
+        }
+
+        var xs2 = new List<Vec<double>>();
+        var ys2 = new List<int>();
+        for (var i = 0; i < 50; i++)
+        {
+            xs1.Add([random.NextGaussian() + 1, random.NextGaussian() - 1]);
+            ys2.Add(1);
+        }
+
+        var xs = xs1.Concat(xs2).ToArray();
+        var ys = ys1.Concat(ys2).ToArray();
+        new LogisticRegression(xs, ys);
     }
 }
