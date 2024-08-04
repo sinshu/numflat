@@ -83,14 +83,15 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var weights = ref utmpv.Item4;
 
             using var ux1 = new TemporalMatrix2<double>(n, d + 1);
-            ref readonly var x1s = ref ux1.Item1;
-            ref readonly var x1ws = ref ux1.Item2;
+            ref readonly var bxs = ref ux1.Item1;
+            ref readonly var bxws = ref ux1.Item2;
 
             using var uhessian = new TemporalMatrix<double>(d + 1, d + 1);
             ref readonly var hessian = ref uhessian.Item;
 
-            x1s.Cols[0].Fill(1);
-            foreach (var (x, row) in xs.Zip(x1s.Cols[1..].Rows))
+            // Add bias term.
+            bxs.Cols[0].Fill(1);
+            foreach (var (x, row) in xs.Zip(bxs.Cols[1..].Rows))
             {
                 x.CopyTo(row);
             }
@@ -110,20 +111,20 @@ namespace NumFlat.MultivariateAnalyses
 
             for (var iter = 0; iter < options.MaxIterations; iter++)
             {
-                Mat.Mul(x1s, a, prediction, false);
+                Mat.Mul(bxs, a, prediction, false);
                 prediction.MapInplace(Special.Sigmoid);
 
                 Vec.Map(prediction, val => val * (1 - val), weights);
 
                 Vec.Sub(prediction, reference, error);
-                Mat.Mul(x1s, error, gradient, true);
+                Mat.Mul(bxs, error, gradient, true);
 
-                foreach (var (x1, w, x1r) in x1s.Rows.Zip(weights, x1ws.Rows))
+                foreach (var (bx, w, bxw) in bxs.Rows.Zip(weights, bxws.Rows))
                 {
-                    Vec.Mul(x1, w, x1r);
+                    Vec.Mul(bx, w, bxw);
                 }
 
-                Mat.Mul(x1ws, x1s, hessian, true, false);
+                Mat.Mul(bxws, bxs, hessian, true, false);
                 var i = 0;
                 foreach (ref var value in hessian.EnumerateDiagonalElements())
                 {
