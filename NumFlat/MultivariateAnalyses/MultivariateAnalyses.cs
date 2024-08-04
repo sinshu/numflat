@@ -98,5 +98,32 @@ namespace NumFlat.MultivariateAnalyses
         {
             return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
         }
+
+        /// <summary>
+        /// Performs logistic regression.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
+        /// <param name="options">
+        /// Specifies options for logistic regression.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="LogisticRegression"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        /// <remarks>
+        /// This logistic regression implementation assumes two classes.
+        /// Therefore, only 0 or 1 are valid as class indices.
+        /// </remarks>
+        public static LogisticRegression LogisticRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys, LogisticRegressionOptions? options = null)
+        {
+            return new LogisticRegression(xs, ys, options);
+        }
     }
 }

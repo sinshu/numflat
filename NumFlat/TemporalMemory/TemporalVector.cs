@@ -20,6 +20,9 @@ namespace NumFlat
 
         public void Dispose()
         {
+#if !RELEASE
+            TemporalVector.Randomize(owner);
+#endif
             owner.Dispose();
         }
     }
