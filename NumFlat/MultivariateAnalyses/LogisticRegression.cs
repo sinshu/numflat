@@ -96,7 +96,7 @@ namespace NumFlat.MultivariateAnalyses
 
             // Add bias term.
             bxs.Cols[0].Fill(1);
-            foreach (var (x, row) in xs.Zip(bxs.Cols[1..].Rows))
+            foreach (var (x, row) in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)).Zip(bxs.Cols[1..].Rows))
             {
                 x.CopyTo(row);
             }
