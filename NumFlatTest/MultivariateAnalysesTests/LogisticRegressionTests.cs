@@ -84,6 +84,48 @@ namespace NumFlatTest.MultivariateAnalysesTests
             }
         }
 
+        [Test]
+        public void Iris4()
+        {
+            var dataset = ReadIris4("iris.csv").ToArray();
+            var xs = dataset.Select(tpl => tpl.Item1).ToArray();
+
+            var ys1 = dataset.Select(tpl => tpl.Item2).ToArray();
+            var ys2 = ys1.Select(i => i ^ 1).ToArray();
+
+            {
+                var lr = xs.LogisticRegression(ys1);
+                var total = 0;
+                var correct = 0;
+                foreach (var (x, y) in xs.Zip(ys1))
+                {
+                    if (lr.Predict(x) == y)
+                    {
+                        correct++;
+                    }
+                    total++;
+                }
+                var score = (double)correct / total;
+                Assert.That(score > 0.98);
+            }
+
+            {
+                var lr = xs.LogisticRegression(ys2);
+                var total = 0;
+                var correct = 0;
+                foreach (var (x, y) in xs.Zip(ys2))
+                {
+                    if (lr.Predict(x) == y)
+                    {
+                        correct++;
+                    }
+                    total++;
+                }
+                var score = (double)correct / total;
+                Assert.That(score > 0.98);
+            }
+        }
+
         private static IEnumerable<(Vec<double>, int)> ReadIris1(string filename)
         {
             var path = Path.Combine("dataset", filename);
@@ -138,6 +180,26 @@ namespace NumFlatTest.MultivariateAnalysesTests
                     "setosa" => 0,
                     "virginica" => 1,
                     _ => -1
+                };
+
+                if (label != -1)
+                {
+                    yield return (values.ToVector(), label);
+                }
+            }
+        }
+
+        private static IEnumerable<(Vec<double>, int)> ReadIris4(string filename)
+        {
+            var path = Path.Combine("dataset", filename);
+            foreach (var line in File.ReadLines(path).Skip(1))
+            {
+                var split = line.Split(',');
+                var values = split.Take(4).Select(double.Parse);
+                var label = split[4] switch
+                {
+                    "virginica" => 1,
+                    _ => 0
                 };
 
                 if (label != -1)
