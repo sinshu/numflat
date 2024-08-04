@@ -1,3 +1,7 @@
+# v0.10.7
+
+* Added logistic regression.
+
 # v0.10.6
 
 * Added support for `Range`.

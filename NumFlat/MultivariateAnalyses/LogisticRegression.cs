@@ -33,6 +33,11 @@ namespace NumFlat.MultivariateAnalyses
         /// </remarks>
         public LogisticRegression(IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys, LogisticRegressionOptions? options = null)
         {
+            //
+            // This is based on the following implementation.
+            // https://github.com/jaeho3690/LogisiticRegression/tree/main
+            //
+
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
 

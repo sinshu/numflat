@@ -497,6 +497,7 @@ It currently supports the following methods, with plans to add more methods in t
 * LDA (linear discriminant analysis)
 * ICA (independent component analysis)
 * NMF (non-negative matrix factorization)
+* Logistic regression
 #### Code
 ```cs
 using NumFlat.MultivariateAnalyses;
@@ -638,7 +639,7 @@ samples = spectrum.Ifft();
     - ✅ LDA (linear discriminant analysis)
     - ✅ ICA (independent component analysis)
     - ✅ NMF (non-negative matrix factorization)
-    - ⬜ Logistic regression
+    - ✅ Logistic regression
 * ⬜ Distributions
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
