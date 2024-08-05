@@ -81,20 +81,20 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var gradient = ref ua.Item2;
             ref readonly var delta = ref ua.Item3;
 
-            using var utmpv = new TemporalVector4<double>(n);
-            ref readonly var reference = ref utmpv.Item1;
-            ref readonly var prediction = ref utmpv.Item2;
-            ref readonly var error = ref utmpv.Item3;
-            ref readonly var weights = ref utmpv.Item4;
+            using var uy = new TemporalVector4<double>(n);
+            ref readonly var reference = ref uy.Item1;
+            ref readonly var prediction = ref uy.Item2;
+            ref readonly var error = ref uy.Item3;
+            ref readonly var weights = ref uy.Item4;
 
-            using var ux1 = new TemporalMatrix2<double>(n, d + 1);
-            ref readonly var bxs = ref ux1.Item1;
-            ref readonly var bxws = ref ux1.Item2;
+            using var ubxs = new TemporalMatrix2<double>(n, d + 1);
+            ref readonly var bxs = ref ubxs.Item1;
+            ref readonly var bxws = ref ubxs.Item2;
 
             using var uhessian = new TemporalMatrix<double>(d + 1, d + 1);
             ref readonly var hessian = ref uhessian.Item;
 
-            // Add bias term.
+            // Add the bias term.
             bxs.Cols[0].Fill(1);
             foreach (var (x, row) in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)).Zip(bxs.Cols[1..].Rows))
             {
