@@ -101,35 +101,32 @@ namespace NumFlat.MultivariateAnalyses
                 x.CopyTo(row);
             }
 
-            using (var enumerator = ys.GetEnumerator())
-            {
-                foreach (ref var value in reference)
-                {
-                    enumerator.MoveNext();
-                    value = enumerator.Current;
-                }
-            }
-
-            a.Clear();
+            reference.SetInplace(ys.Select(y => (double)y));
 
             var prevLoss = double.MaxValue;
+            a.Clear();
 
             for (var iter = 0; iter < options.MaxIterations; iter++)
             {
+                // Compute the current prediction.
                 Mat.Mul(bxs, a, prediction, false);
                 prediction.MapInplace(Special.Sigmoid);
 
-                Vec.Map(prediction, val => val * (1 - val), weights);
+                // Compute the weights.
+                Vec.Map(prediction, value => value * (1 - value), weights);
 
+                // Compute the gradient.
                 Vec.Sub(prediction, reference, error);
                 Mat.Mul(bxs, error, gradient, true);
 
+                // Compute the hessian.
                 foreach (var (bx, w, bxw) in bxs.Rows.Zip(weights, bxws.Rows))
                 {
                     Vec.Mul(bx, w, bxw);
                 }
-
                 Mat.Mul(bxws, bxs, hessian, true, false);
+
+                // Do regularization.
                 var i = 0;
                 foreach (ref var value in hessian.EnumerateDiagonalElements())
                 {
@@ -141,6 +138,7 @@ namespace NumFlat.MultivariateAnalyses
                     i++;
                 }
 
+                // Compute the delta.
                 SingularValueDecompositionDouble svd;
                 try
                 {
@@ -153,6 +151,7 @@ namespace NumFlat.MultivariateAnalyses
                 svd.Solve(gradient, delta);
                 a.SubInplace(delta);
 
+                // Check for convergence.
                 var currLoss = CrossEntropyLoss(reference, prediction, 1.0E-10);
                 if (Math.Abs(currLoss - prevLoss) <= options.Tolerance)
                 {

@@ -149,6 +149,17 @@ namespace NumFlatTest.VecTests
         }
 
         [Test]
+        public void SetInplace()
+        {
+            double[] source = [1, 2, 3];
+
+            var x = new Vec<double>(3);
+            x.SetInplace(source);
+
+            NumAssert.AreSame(source.ToVector(), x, 0);
+        }
+
+        [Test]
         public void Conjugate()
         {
             Vec<Complex> x = [new Complex(1, 2), new Complex(3, 4), new Complex(5, 6)];

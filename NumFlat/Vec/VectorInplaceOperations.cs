@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace NumFlat
@@ -228,6 +229,40 @@ namespace NumFlat
             ThrowHelper.ThrowIfEmpty(target, nameof(target));
 
             Vec.Conjugate(target, target);
+        }
+
+        /// <summary>
+        /// Gets values from an <see cref="IEnumerable{T}"/> and sets the values to the vector.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="target">
+        /// The target vector to be set.
+        /// </param>
+        /// <param name="source">
+        /// The source enumerable to be read.
+        /// </param>
+        public static void SetInplace<T>(in this Vec<T> target, IEnumerable<T> source) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(target, nameof(target));
+            ThrowHelper.ThrowIfNull(source, nameof(source));
+
+            var e = source.GetEnumerator();
+            foreach (ref var value in target)
+            {
+                if (!e.MoveNext())
+                {
+                    throw new ArgumentException("The lengths of the target vector and the source list must match.");
+                }
+
+                value = e.Current;
+            }
+
+            if (e.MoveNext())
+            {
+                throw new ArgumentException("The lengths of the target vector and the source list must match.");
+            }
         }
 
         /// <summary>
