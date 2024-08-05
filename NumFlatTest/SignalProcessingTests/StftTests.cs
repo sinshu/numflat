@@ -97,6 +97,20 @@ namespace NumFlatTest.SignalProcessingTests
         }
 
         [Test]
+        public void GetFrameTime()
+        {
+            var sampleRate = 16000;
+            var frameLength = 1024;
+            var frameShift = frameLength / 2;
+            var source = TestVector.RandomDouble(42, 5000, 1);
+            var window = WindowFunctions.SquareRootHann(frameLength);
+            var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
+            Assert.That(info.GetFrameTime(sampleRate, 0), Is.EqualTo((double)-frameShift / sampleRate).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 1), Is.EqualTo(0.0).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 2), Is.EqualTo((double)frameShift / sampleRate).Within(1.0E-12));
+        }
+
+        [Test]
         public void GetFrequency()
         {
             var source = TestVector.RandomDouble(42, 5000, 1);

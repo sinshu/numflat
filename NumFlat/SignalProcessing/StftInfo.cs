@@ -77,6 +77,23 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
+        /// Gets the time of a frame by its index.
+        /// </summary>
+        /// <param name="sampleRate">
+        /// The sample rate of the source signal.
+        /// </param>
+        /// <param name="frameIndex">
+        /// The index of the frame.
+        /// </param>
+        /// <returns>
+        /// The time of the frame.
+        /// </returns>
+        public double GetFrameTime(int sampleRate, int frameIndex)
+        {
+            return (double)GetFramePosition(frameIndex) / sampleRate;
+        }
+
+        /// <summary>
         /// Gets the frequency by its index;
         /// </summary>
         /// <param name="sampleRate">
