@@ -85,7 +85,7 @@ namespace NumFlat.MultivariateAnalyses
             using var utmp = new TemporalVector<double>(pca.SourceDimension);
             ref readonly var tmp = ref utmp.Item;
 
-            var scale = pca.EigenValues.Subvector(0, componentCount).Map(Math.Sqrt);
+            var scale = pca.EigenValues[0..componentCount].Map(Math.Sqrt);
 
             // Do the whitening preprocess.
             foreach (var (x, a) in xs.Zip(whiten.Cols))

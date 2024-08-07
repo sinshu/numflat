@@ -208,7 +208,7 @@ namespace NumFlat
             var i = 0;
             foreach (var col in destination.Cols)
             {
-                col.Subvector(i, col.Count - i).DivInplace(count - ddof);
+                col[i..col.Count].DivInplace(count - ddof);
 
             }
 

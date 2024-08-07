@@ -194,8 +194,8 @@ namespace NumFlat.Distributions
             var i = 0;
             foreach (ref var value in destination)
             {
-                var x = cholesky.L.Rows[i].Subvector(0, i + 1);
-                var y = tmp.Subvector(0, i + 1);
+                var x = cholesky.L.Rows[i][0..(i + 1)];
+                var y = tmp[0..(i + 1)];
                 value = x * y;
                 i++;
             }
