@@ -9,6 +9,33 @@ namespace NumFlatTest.MatTests
 {
     public class MatrixExtensionsTests
     {
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void Copy(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+
+            Mat<double> copy;
+            using (x.EnsureUnchanged())
+            {
+                copy = x.Copy();
+            }
+
+            NumAssert.AreSame(x, copy, 0);
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(1, 1, 3, 4)]
         [TestCase(2, 2, 2, 2)]

@@ -9,6 +9,30 @@ namespace NumFlat
     public static class VectorExtensions
     {
         /// <summary>
+        /// Copies the vector.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source vector being copied.
+        /// </param>
+        /// <returns>
+        /// The copied vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec{T}.CopyTo(in Vec{T})"/> instead.
+        /// </remarks>
+        public static Vec<T> Copy<T>(in this Vec<T> source) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            var destination = new Vec<T>(source.Count);
+            source.CopyTo(destination);
+            return destination;
+        }
+
+        /// <summary>
         /// Computes a pointwise multiplication of vectors, <c>x .* y</c>.
         /// </summary>
         /// <typeparam name="T">

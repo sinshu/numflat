@@ -10,6 +10,30 @@ namespace NumFlat
     public static class MatrixExtensions
     {
         /// <summary>
+        /// Copies the matrix.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="source">
+        /// The source matrix being copied.
+        /// </param>
+        /// <returns>
+        /// The copied matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat{T}.CopyTo(in Mat{T})"/> instead.
+        /// </remarks>
+        public static Mat<T> Copy<T>(in this Mat<T> source) where T : unmanaged, INumberBase<T>
+        {
+            ThrowHelper.ThrowIfEmpty(source, nameof(source));
+            var destination = new Mat<T>(source.RowCount, source.ColCount);
+            source.CopyTo(destination);
+            return destination;
+        }
+
+        /// <summary>
         /// Computes a pointwise multiplication of matrices, <c>X .* Y</c>.
         /// </summary>
         /// <typeparam name="T">

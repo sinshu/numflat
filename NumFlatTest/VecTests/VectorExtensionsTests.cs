@@ -9,6 +9,25 @@ namespace NumFlatTest.VecTests
 {
     public class VectorExtensionsTests
     {
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(3, 1)]
+        [TestCase(3, 3)]
+        [TestCase(5, 1)]
+        [TestCase(11, 7)]
+        public void Copy(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            Vec<double> copy;
+            using (x.EnsureUnchanged())
+            {
+                copy = x.Copy();
+            }
+
+            NumAssert.AreSame(x, copy, 0);
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]
         [TestCase(3, 1, 1)]

@@ -160,9 +160,7 @@ namespace NumFlat.MultivariateAnalyses
                 prevLoss = currLoss;
             }
 
-            this.coefficients = new Vec<double>(d);
-            a[1..].CopyTo(this.coefficients);
-
+            this.coefficients = a[1..].Copy();
             this.intercept = a[0];
         }
 
