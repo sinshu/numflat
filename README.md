@@ -552,7 +552,8 @@ foreach (var x in xs)
 The `NumFlat.Clustering` namespace provides functionality related to clustering.
 It currently supports the following methods, with plans to add more methods in the future.
 * k-means
-* Gaussian mixture model (GMM)
+* GMM (Gaussian mixture model)
+* DBSCAN (density-based spatial clustering of applications with noise)
 #### Code
 ```cs
 using NumFlat.Clustering;
@@ -647,7 +648,7 @@ samples = spectrum.Ifft();
 * 🚧 Clustering
     - ✅ k-means
     - ✅ GMM (gaussian mixture model)
-    - ⬜ DBSCAN
+    - ✅ DBSCAN (density-based spatial clustering of applications with noise)
     - ⬜ OPTICS
 * ⬜ Time series
     - ⬜ HMM

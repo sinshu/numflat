@@ -1,3 +1,10 @@
+# v0.10.8
+
+* Added DBSCAN.
+* Added `GetFrameTime` method to `StftInfo`.
+* Added `Copy` extension method to `Vec<T>` and `Mat<T>`.
+* Updated MatFlat to 0.8.2.
+
 # v0.10.7
 
 * Added logistic regression.
