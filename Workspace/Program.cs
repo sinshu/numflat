@@ -22,6 +22,43 @@ public class Program
         OtherExamples.Run();
         */
 
-        ScottPlotExamples.Spectrogram();
+        Vec<double>[] xs =
+        [
+            // Noise
+            [-100, -100],
+
+            // cluster 1
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [1, 1],
+
+            // Noise
+            [100, 100],
+
+            // cluster 2
+            [10, 0],
+            [10, 1],
+            [11, 0],
+            [11, 1],
+
+            // Noise
+            [200, 200],
+
+            // cluster 3
+            [0, 10],
+            [0, 11],
+            [1, 10],
+            [1, 11],
+
+            // Noise
+            [1000, 1000],
+        ];
+
+        var result = xs.DbScan(2, 3);
+        foreach (var value in result)
+        {
+            Console.WriteLine(value);
+        }
     }
 }
