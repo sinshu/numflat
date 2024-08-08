@@ -36,6 +36,12 @@ namespace NumFlat.Clustering
         /// </param>
         public static void Fit<T>(IReadOnlyList<T> points, IDistance<T, T> distance, double eps, int minPoints, Span<int> destination)
         {
+            //
+            // This is based on the following implementations.
+            // https://github.com/yusufuzun/dbscan
+            // https://github.com/acse-hy23/DBSCAN-with-KDTree
+            //
+
             ThrowHelper.ThrowIfNull(points, nameof(points));
             ThrowHelper.ThrowIfNull(distance, nameof(distance));
 
