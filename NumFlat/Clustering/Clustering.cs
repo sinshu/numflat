@@ -200,5 +200,42 @@ namespace NumFlat.Clustering
                 throw new FittingFailureException("Failed to fit the model.", e);
             }
         }
+
+        /// <summary>
+        /// Applies the DBSCAN (density-based spatial clustering of applications with noise) algorithm 
+        /// to the given set of points.
+        /// </summary>
+        /// <param name="xs">
+        /// The collection of points to be clustered.
+        /// </param>
+        /// <param name="eps">
+        /// The maximum distance between two points for them to be considered as in the same neighborhood.
+        /// </param>
+        /// <param name="minPoints">
+        /// The minimum number of points required to form a cluster.
+        /// </param>
+        public static int[] DbScan(this IReadOnlyList<Vec<double>> xs, double eps, int minPoints)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+
+            if (xs.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one point.", nameof(xs));
+            }
+
+            if (eps <= 0)
+            {
+                throw new ArgumentException("The eps must be a non-negative value.", nameof(eps));
+            }
+
+            if (minPoints <= 0)
+            {
+                throw new ArgumentException("The minimum number of points must be a non-negative value.", nameof(minPoints));
+            }
+
+            var result = new int[xs.Count];
+            NumFlat.Clustering.DbScan.Fit(xs, VectorDistances.Euclidean, eps, minPoints, result);
+            return result;
+        }
     }
 }

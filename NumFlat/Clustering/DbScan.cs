@@ -36,6 +36,29 @@ namespace NumFlat.Clustering
         /// </param>
         public static void Fit<T>(IReadOnlyList<T> points, IDistance<T, T> distance, double eps, int minPoints, Span<int> destination)
         {
+            ThrowHelper.ThrowIfNull(points, nameof(points));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+
+            if (points.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one point.", nameof(points));
+            }
+
+            if (eps <= 0)
+            {
+                throw new ArgumentException("The eps must be a non-negative value.", nameof(eps));
+            }
+
+            if (minPoints <= 0)
+            {
+                throw new ArgumentException("The minimum number of points must be a non-negative value.", nameof(minPoints));
+            }
+
+            if (destination.Length != points.Count)
+            {
+                throw new ArgumentException("The length of destination must match the number of points.", nameof(destination));
+            }
+
             var allPoints = new DbScanPoint<T>[points.Count];
             for (var i = 0; i < allPoints.Length; i++)
             {

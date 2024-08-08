@@ -24,6 +24,9 @@ public class Program
 
         Vec<double>[] xs =
         [
+            // Noise
+            [-100, -100],
+
             // cluster 1
             [0, 0],
             [0, 1],
@@ -47,10 +50,12 @@ public class Program
             [0, 11],
             [1, 10],
             [1, 11],
+
+            // Noise
+            [1000, 1000],
         ];
 
-        var result = new int[xs.Length];
-        DbScan.Fit(xs, VectorDistances.Euclidean, 2, 3, result);
+        var result = xs.DbScan(2, 3);
         foreach (var value in result)
         {
             Console.WriteLine(value);
