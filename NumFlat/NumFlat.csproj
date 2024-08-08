@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="FftFlat" Version="1.0.1" />
-    <PackageReference Include="MatFlat" Version="0.8.1" />
+    <PackageReference Include="MatFlat" Version="0.8.2" />
   </ItemGroup>
 
 </Project>
