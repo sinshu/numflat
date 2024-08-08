@@ -4,14 +4,14 @@ using NumFlat;
 namespace NumFlat
 {
     /// <summary>
-    /// Provides vector distances.
+    /// Provides vector distance metrics.
     /// </summary>
     public static class VectorDistances
     {
         private static EuclideanDistance? euclidean = null;
 
         /// <summary>
-        /// Gets the Euclidean distance measure.
+        /// Gets the Euclidean distance metric.
         /// </summary>
         public static IDistance<Vec<double>, Vec<double>> Euclidean
         {
