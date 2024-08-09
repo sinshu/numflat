@@ -7,7 +7,7 @@ namespace NumFlat.MultivariateAnalyses
     /// <summary>
     /// Provides independent component analysis (ICA).
     /// </summary>
-    public sealed class IndependentComponentAnalysis : IVectorToVectorTransform<double>, IVectorToVectorInverseTransform<double>
+    public sealed class IndependentComponentAnalysis : IVectorToVectorInverseTransform<double>
     {
         private int sourceDimension;
         private int componentCount;
