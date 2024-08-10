@@ -12,10 +12,10 @@ namespace NumFlat
         /// <returns>
         /// An instance of <see cref="RowList.Enumerator"/>.
         /// </returns>
-        public RowList.Enumerator GetEnumerator() => Rows.GetEnumerator();
+        public readonly RowList.Enumerator GetEnumerator() => Rows.GetEnumerator();
 
+        // Methods for IEnumerable.
         readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => Rows.GetEnumerator();
-
         readonly IEnumerator IEnumerable.GetEnumerator() => Rows.GetEnumerator();
 
 
@@ -89,8 +89,8 @@ namespace NumFlat
             /// </returns>
             public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
+            // Methods for IEnumerable.
             readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
-
             readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 
@@ -217,8 +217,8 @@ namespace NumFlat
             /// </returns>
             public readonly Enumerator GetEnumerator() => new Enumerator(this);
 
+            // Methods for IEnumerable.
             readonly IEnumerator<Vec<T>> IEnumerable<Vec<T>>.GetEnumerator() => new Enumerator(this);
-
             readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
 

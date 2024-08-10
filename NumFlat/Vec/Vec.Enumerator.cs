@@ -17,10 +17,14 @@ namespace NumFlat
 
         readonly IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
+            // Index access in Memory<T> is slow.
+            // If possible, obtain an array from Memory<T> and use it to enumerate faster.
             if (MemoryMarshal.TryGetArray<T>(memory, out var segment))
             {
                 if (stride == 1)
                 {
+                    // If the stride of the elements within the vector is 1,
+                    // we can directly enumerate the array.
                     return segment.GetEnumerator();
                 }
                 else
