@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace NumFlat.Clustering
@@ -69,7 +69,7 @@ namespace NumFlat.Clustering
             var allPoints = new DbScanPoint<T>[points.Count];
             for (var i = 0; i < allPoints.Length; i++)
             {
-                allPoints[i] = new DbScanPoint<T>(points[i]);
+                allPoints[i] = new DbScanPoint<T>(i, points[i]);
             }
 
             // C = 0
@@ -92,7 +92,7 @@ namespace NumFlat.Clustering
                 var neighborPoints = RegionQuery(allPoints, p.Point, distance, eps);
 
                 // if sizeof(NeighborPts) < MinPts
-                if (neighborPoints.Length < minPoints)
+                if (neighborPoints.Count < minPoints)
                 {
                     // mark P as NOISE
                     p.ClusterIndex = -1;
@@ -114,7 +114,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, DbScanPoint<T>[] neighborPoints, int c, IDistance<T, T> distance, double eps, int minPoints)
+        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, NeighborPoints<T> neighborPoints, int c, IDistance<T, T> distance, double eps, int minPoints)
         {
             // add P to cluster C
             center.ClusterIndex = c;
@@ -135,11 +135,10 @@ namespace NumFlat.Clustering
                     var neighborPoints2 = RegionQuery(allPoints, p.Point, distance, eps);
 
                     // if sizeof(NeighborPts') >= MinPts
-                    if (neighborPoints2.Length >= minPoints)
+                    if (neighborPoints2.Count >= minPoints)
                     {
                         // NeighborPts = NeighborPts joined with NeighborPts'
-                        var newPoints = neighborPoints2.Except(neighborPoints);
-                        foreach (var p2 in newPoints)
+                        foreach (var p2 in neighborPoints2.Except(neighborPoints))
                         {
                             queue.Enqueue(p2);
                         }
@@ -155,25 +154,61 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static DbScanPoint<T>[] RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, IDistance<T, T> distance, double eps)
+        private static NeighborPoints<T> RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, IDistance<T, T> distance, double eps)
         {
-            return allPoints.Where(point => distance.GetDistance(point.Point, center) <= eps).ToArray();
+            return new NeighborPoints<T>(allPoints.Where(point => distance.GetDistance(point.Point, center) <= eps).ToArray());
         }
 
 
 
         private class DbScanPoint<T>
         {
+            public readonly int Id;
             public readonly T Point;
             public bool IsVisited;
             public int ClusterIndex;
 
-            public DbScanPoint(T point)
+            public DbScanPoint(int id, T point)
             {
+                Id = id;
                 Point = point;
                 IsVisited = false;
                 ClusterIndex = 0;
             }
+        }
+
+        private class NeighborPoints<T> : IReadOnlyCollection<DbScanPoint<T>>
+        {
+            private readonly DbScanPoint<T>[] points;
+            private HashSet<int> hashSet;
+
+            public NeighborPoints(DbScanPoint<T>[] points)
+            {
+                this.points = points;
+
+                hashSet = new HashSet<int>();
+                foreach (var p in points)
+                {
+                    hashSet.Add(p.Id);
+                }
+            }
+
+            public IEnumerable<DbScanPoint<T>> Except(NeighborPoints<T> other)
+            {
+                foreach (var p in points)
+                {
+                    if (!other.hashSet.Contains(p.Id))
+                    {
+                        yield return p;
+                    }
+                }
+            }
+
+            public IEnumerator<DbScanPoint<T>> GetEnumerator() => ((IEnumerable<DbScanPoint<T>>)points).GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
+
+            public int Count => points.Length;
         }
     }
 }
