@@ -38,6 +38,7 @@ namespace NumFlat.Clustering
         {
             //
             // This is based on the following implementations.
+            // https://ja.wikipedia.org/wiki/DBSCAN
             // https://github.com/yusufuzun/dbscan
             // https://github.com/acse-hy23/DBSCAN-with-KDTree
             //
@@ -71,26 +72,38 @@ namespace NumFlat.Clustering
                 allPoints[i] = new DbScanPoint<T>(points[i]);
             }
 
-            int clusterIndex = 0;
-            for (var i = 0; i < allPoints.Length; i++)
+            // C = 0
+            int c = 0;
+
+            // for each point P in dataset D {
+            foreach (var p in allPoints)
             {
-                var p = allPoints[i];
+                // if P is visited
                 if (p.IsVisited)
                 {
+                    // continue next point
                     continue;
                 }
 
+                // mark P as visited
                 p.IsVisited = true;
 
+                // NeighborPts = regionQuery(P, eps)
                 var neighborPoints = RegionQuery(allPoints, p.Point, distance, eps);
+
+                // if sizeof(NeighborPts) < MinPts
                 if (neighborPoints.Length < minPoints)
                 {
+                    // mark P as NOISE
                     p.ClusterIndex = -1;
                 }
                 else
                 {
-                    clusterIndex++;
-                    ExpandCluster(allPoints, p, neighborPoints, clusterIndex, distance, eps, minPoints);
+                    // C = next cluster
+                    c++;
+
+                    // expandCluster(P, NeighborPts, C, eps, MinPts)
+                    ExpandCluster(allPoints, p, neighborPoints, c, distance, eps, minPoints);
                 }
             }
 
@@ -101,33 +114,43 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, DbScanPoint<T>[] neighborPoints, int clusterIndex, IDistance<T, T> distance, double eps, int minPoints)
+        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, DbScanPoint<T>[] neighborPoints, int c, IDistance<T, T> distance, double eps, int minPoints)
         {
-            center.ClusterIndex = clusterIndex;
+            // add P to cluster C
+            center.ClusterIndex = c;
 
+            // for each point P' in NeighborPts { 
             var queue = new Queue<DbScanPoint<T>>(neighborPoints);
             while (queue.Count > 0)
             {
                 var p = queue.Dequeue();
+
+                // if P' is not visited {
+                if (!p.IsVisited)
+                {
+                    // mark P' as visited
+                    p.IsVisited = true;
+
+                    // NeighborPts' = regionQuery(P', eps)
+                    var neighborPoints2 = RegionQuery(allPoints, p.Point, distance, eps);
+
+                    // if sizeof(NeighborPts') >= MinPts
+                    if (neighborPoints2.Length >= minPoints)
+                    {
+                        // NeighborPts = NeighborPts joined with NeighborPts'
+                        var newPoints = neighborPoints2.Except(neighborPoints);
+                        foreach (var p2 in newPoints)
+                        {
+                            queue.Enqueue(p2);
+                        }
+                    }
+                }
+
+                // if P' is not yet member of any cluster
                 if (p.ClusterIndex == 0)
                 {
-                    p.ClusterIndex = clusterIndex;
-                }
-
-                if (p.IsVisited)
-                {
-                    continue;
-                }
-
-                p.IsVisited = true;
-
-                var neighborPoints2 = RegionQuery(allPoints, p.Point, distance, eps);
-                if (neighborPoints2.Length >= minPoints)
-                {
-                    foreach (var p2 in neighborPoints2.Where(neighbor => !neighbor.IsVisited))
-                    {
-                        queue.Enqueue(p2);
-                    }
+                    // add P' to cluster C
+                    p.ClusterIndex = c;
                 }
             }
         }
