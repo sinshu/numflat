@@ -180,7 +180,7 @@ namespace NumFlat.Clustering
         private class NeighborPoints<T> : IReadOnlyCollection<DbScanPoint<T>>
         {
             private readonly DbScanPoint<T>[] points;
-            private HashSet<int> hashSet;
+            private readonly HashSet<int> hashSet;
 
             public NeighborPoints(DbScanPoint<T>[] points)
             {
