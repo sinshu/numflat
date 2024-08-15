@@ -234,7 +234,7 @@ namespace NumFlat.Clustering
             }
 
             var result = new int[xs.Count];
-            NumFlat.Clustering.DbScan.Fit(xs, VectorDistances.Euclidean, eps, minPoints, result);
+            NumFlat.Clustering.DbScan.Fit(xs, Distance.Euclidean, eps, minPoints, result);
             return result;
         }
     }

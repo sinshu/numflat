@@ -5,9 +5,9 @@ using System.Numerics;
 using NUnit.Framework;
 using NumFlat;
 
-namespace NumFlatTest.VecTests
+namespace NumFlatTest
 {
-    public class VectorDistancesTests
+    public class DistanceTests
     {
         [Test]
         public void Euclidean()
@@ -16,7 +16,7 @@ namespace NumFlatTest.VecTests
             Vec<double> y = [1, 3, 7];
 
             var expected = (x - y).Norm();
-            var actual = VectorDistances.Euclidean.GetDistance(x, y);
+            var actual = Distance.Euclidean.GetDistance(x, y);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
 
@@ -27,7 +27,7 @@ namespace NumFlatTest.VecTests
             Vec<double> y = [1, 3, 7];
 
             var expected = (x - y).L1Norm();
-            var actual = VectorDistances.Manhattan.GetDistance(x, y);
+            var actual = Distance.Manhattan.GetDistance(x, y);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
     }
