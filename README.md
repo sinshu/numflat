@@ -593,7 +593,7 @@ samples = spectrum.Ifft();
 ```
 
 ### Leveraging OpenBLAS
-NumFlat's vector and matrix memory formats are compatible with BLAS and LAPACK, allowing you to leverage faster linear algebra libraries like [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS). The following code example demonstrates how to perform SVD using the C# binding of OpenBLAS, [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp). While NumFlat provides its own SVD implementation, the SVD implementation in OpenBLAS can be expected to offer performance improvements, especially for large matrices.
+NumFlat's vector and matrix memory formats are compatible with BLAS and LAPACK, allowing you to leverage faster linear algebra libraries like [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS). The following code example demonstrates how to perform SVD using a C# binding of OpenBLAS, [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp). While NumFlat provides its own SVD implementation, the SVD implementation in OpenBLAS can be expected to offer performance improvements, especially for large matrices.
 #### Code
 ```cs
 Mat<double> a =
