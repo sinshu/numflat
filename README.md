@@ -592,6 +592,49 @@ var spectrum = samples.Fft();
 samples = spectrum.Ifft();
 ```
 
+### Leveraging OpenBLAS
+NumFlat's vector and matrix memory formats are compatible with BLAS and LAPACK, allowing you to leverage faster linear algebra libraries like [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS). The following code example demonstrates how to perform SVD using the C# binding of OpenBLAS, [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp). While NumFlat provides its own SVD implementation, the SVD implementation in OpenBLAS can be expected to offer performance improvements, especially for large matrices.
+#### Code
+```cs
+Mat<double> a =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
+
+var s = new Vec<double>(Math.Min(a.RowCount, a.ColCount));
+var u = new Mat<double>(a.RowCount, a.RowCount);
+var vt = new Mat<double>(a.ColCount, a.ColCount);
+var work = new Vec<double>(s.Count - 1);
+
+fixed (double* pa = a.Memory.Span)
+fixed (double* ps = s.Memory.Span)
+fixed (double* pu = u.Memory.Span)
+fixed (double* pvt = vt.Memory.Span)
+fixed (double* pwork = work.Memory.Span)
+{
+    Lapack.Dgesvd(
+        MatrixLayout.ColMajor,
+        'A', 'A',
+        a.RowCount, a.ColCount,
+        pa, a.Stride, // The content of 'a' will be destroyed.
+        ps,
+        pu, u.Stride,
+        pvt, vt.Stride,
+        pwork);
+}
+
+Console.WriteLine(u * s.ToDiagonalMatrix() * vt);
+```
+#### Output
+```console
+Matrix 3x3-Double
+1  2  3
+4  5  6
+7  8  9
+```
+
 
 
 ## Todo
