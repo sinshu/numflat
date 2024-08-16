@@ -493,11 +493,12 @@ Mat.Add(x, y, destination);
 ### Multivariate analyses
 The `NumFlat.MultivariateAnalyses` namespace provides functionality related to multivariate analysis.
 It currently supports the following methods, with plans to add more methods in the future.
+* Linear regression
+* Logistic regression
 * PCA (principal component analysis)
 * LDA (linear discriminant analysis)
 * ICA (independent component analysis)
 * NMF (non-negative matrix factorization)
-* Logistic regression
 #### Code
 ```cs
 using NumFlat.MultivariateAnalyses;
@@ -677,13 +678,18 @@ Matrix 3x3-Double
     - ✅ Weighted sum, mean, variance, covariance for vectors
     - ✅ Weighted sum, mean, variance for matrices
     - ✅ Higher-order statistics
-* 🚧 Multivariate analysis
-    - ⬜ Linear regression
+* ⬜ Multivariate analysis
+    - ✅ Linear regression
+    - ✅ Logistic regression
     - ✅ PCA (principal component analysis)
     - ✅ LDA (linear discriminant analysis)
     - ✅ ICA (independent component analysis)
     - ✅ NMF (non-negative matrix factorization)
-    - ✅ Logistic regression
+    - ⬜ Multinomial logistic regression
+    - ⬜ Kernel PCA
+    - ⬜ Kernel discriminant analysis
+    - ⬜ t-SNE
+    - ⬜ UMAP
 * ⬜ Distributions
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
@@ -693,9 +699,13 @@ Matrix 3x3-Double
     - ✅ GMM (gaussian mixture model)
     - ✅ DBSCAN (density-based spatial clustering of applications with noise)
     - ⬜ OPTICS
+* ⬜ Classification
+    - ⬜ Bayes classifier
+    - ⬜ SVM (support vector machine)
 * ⬜ Time series
-    - ⬜ HMM
-* 🚧 Audio signal processing
+    - ⬜ DTW (dynamic time warping)
+    - ⬜ HMM (hidden Markov model)
+* 🚧 Signal processing
     - ✅ FFT (fast Fourier transform)
     - ✅ Real FFT
     - ✅ STFT (short-time Fourier transform)

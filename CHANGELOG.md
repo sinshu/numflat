@@ -1,3 +1,8 @@
+# v1.0.0
+
+* Improved DBSCAN implementation.
+* Added linear algebra.
+
 # v0.10.8
 
 * Added DBSCAN.
