@@ -22,43 +22,27 @@ public class Program
         OtherExamples.Run();
         */
 
-        Vec<double>[] xs =
-        [
-            // Noise
-            [-100, -100],
+        Vec<double> coefficients = [1, 2, 3];
+        var intercept = 4.0;
 
-            // cluster 1
-            [0, 0],
-            [0, 1],
-            [1, 0],
-            [1, 1],
-
-            // Noise
-            [100, 100],
-
-            // cluster 2
-            [10, 0],
-            [10, 1],
-            [11, 0],
-            [11, 1],
-
-            // Noise
-            [200, 200],
-
-            // cluster 3
-            [0, 10],
-            [0, 11],
-            [1, 10],
-            [1, 11],
-
-            // Noise
-            [1000, 1000],
-        ];
-
-        var result = xs.DbScan(2, 3);
-        foreach (var value in result)
+        var random = new Random(42);
+        var xs = new List<Vec<double>>();
+        var ys = new List<double>();
+        for (var i = 0; i < 50; i++)
         {
-            Console.WriteLine(value);
+            var x = Enumerable.Range(0, 3).Select(k => random.NextGaussian()).ToVector();
+            var y = coefficients * x + intercept;
+            xs.Add(x);
+            ys.Add(y);
         }
+
+        var regression = new LinearRegression(xs, ys, 0);
+        foreach (var (x, y) in xs.Zip(ys))
+        {
+            Console.WriteLine(y + " => " + regression.Transform(x));
+        }
+        Console.WriteLine(regression.Intercept);
+
+        Console.WriteLine(ys.Average());
     }
 }

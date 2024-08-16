@@ -9,6 +9,57 @@ namespace NumFlat.MultivariateAnalyses
     public static class MultivariateAnalyses
     {
         /// <summary>
+        /// Performs logistic regression.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The target values to be estimated.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// The regularization method is L2 regularization excluding the bias term.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="NumFlat.MultivariateAnalyses.LinearRegression"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public static LinearRegression LinearRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<double> ys, double regularization = 0.0)
+        {
+            return new LinearRegression(xs, ys, regularization);
+        }
+
+        /// <summary>
+        /// Performs logistic regression.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
+        /// <param name="options">
+        /// Specifies options for logistic regression.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="NumFlat.MultivariateAnalyses.LogisticRegression"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        /// <remarks>
+        /// This logistic regression implementation assumes two classes.
+        /// Therefore, only 0 or 1 are valid as class indices.
+        /// </remarks>
+        public static LogisticRegression LogisticRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys, LogisticRegressionOptions? options = null)
+        {
+            return new LogisticRegression(xs, ys, options);
+        }
+
+        /// <summary>
         /// Performs principal component analysis (PCA).
         /// </summary>
         /// <param name="xs">
@@ -97,33 +148,6 @@ namespace NumFlat.MultivariateAnalyses
         public static NonnegativeMatrixFactorization Nmf(this IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
         {
             return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
-        }
-
-        /// <summary>
-        /// Performs logistic regression.
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <param name="ys">
-        /// The class indices for each source vector.
-        /// </param>
-        /// <param name="options">
-        /// Specifies options for logistic regression.
-        /// </param>
-        /// <returns>
-        /// A new instance of <see cref="LogisticRegression"/>.
-        /// </returns>
-        /// <exception cref="FittingFailureException">
-        /// Failed to fit the model.
-        /// </exception>
-        /// <remarks>
-        /// This logistic regression implementation assumes two classes.
-        /// Therefore, only 0 or 1 are valid as class indices.
-        /// </remarks>
-        public static LogisticRegression LogisticRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys, LogisticRegressionOptions? options = null)
-        {
-            return new LogisticRegression(xs, ys, options);
         }
     }
 }
