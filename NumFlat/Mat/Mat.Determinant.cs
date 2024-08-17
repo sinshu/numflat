@@ -34,11 +34,10 @@ namespace NumFlat
                 sign = Factorization.Lu(tmp.RowCount, tmp.RowCount, ptmp, tmp.Stride, ppiv);
             }
 
-            var ftmp = tmp.GetUnsafeFastIndexer();
             var determinant = (float)sign;
-            for (var i = 0; i < tmp.RowCount; i++)
+            foreach (var value in tmp.EnumerateDiagonalElements())
             {
-                determinant *= ftmp[i, i];
+                determinant *= value;
             }
             return determinant;
         }
@@ -70,11 +69,10 @@ namespace NumFlat
                 sign = Factorization.Lu(tmp.RowCount, tmp.RowCount, ptmp, tmp.Stride, ppiv);
             }
 
-            var ftmp = tmp.GetUnsafeFastIndexer();
             var determinant = (double)sign;
-            for (var i = 0; i < tmp.RowCount; i++)
+            foreach (var value in tmp.EnumerateDiagonalElements())
             {
-                determinant *= ftmp[i, i];
+                determinant *= value;
             }
             return determinant;
         }
@@ -106,11 +104,10 @@ namespace NumFlat
                 sign = Factorization.Lu(tmp.RowCount, tmp.RowCount, ptmp, tmp.Stride, ppiv);
             }
 
-            var ftmp = tmp.GetUnsafeFastIndexer();
             var determinant = (Complex)sign;
-            for (var i = 0; i < tmp.RowCount; i++)
+            foreach (var value in tmp.EnumerateDiagonalElements())
             {
-                determinant *= ftmp[i, i];
+                determinant *= value;
             }
             return determinant;
         }
