@@ -504,7 +504,7 @@ It currently supports the following methods, with plans to add more methods in t
 using NumFlat.MultivariateAnalyses;
 
 // Read some data.
-IEnumerable<Vec<double>> xs = ReadSomeData();
+IReadOnlyList<Vec<double>> xs = ReadSomeData();
 
 // Do PCA.
 var pca = xs.Pca();
@@ -516,7 +516,7 @@ foreach (var x in xs)
 }
 
 // Read some label.
-IEnumerable<int> ys = ReadSomeLabel();
+IReadOnlyList<int> ys = ReadSomeLabel();
 
 // Do LDA.
 var lda = xs.Lda(ys);
