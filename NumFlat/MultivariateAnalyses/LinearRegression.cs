@@ -48,6 +48,11 @@ namespace NumFlat.MultivariateAnalyses
                 throw new ArgumentException("The number of source vectors and target values must match.");
             }
 
+            if (regularization < 0)
+            {
+                throw new ArgumentOutOfRangeException("The amount of regularization must be a non-negative value.");
+            }
+
             var d = xs[0].Count;
             var n = xs.Count;
 
