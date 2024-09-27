@@ -116,6 +116,9 @@ public static class MatrixExamples
         // Pseudo-inverse.
         var pseudoInverse = x.PseudoInverse();
 
+        // Frobenius norm.
+        var frobeniusNorm = x.FrobeniusNorm();
+
         // L1 norm.
         var l1Norm = x.L1Norm();
 
