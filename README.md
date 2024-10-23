@@ -198,7 +198,7 @@ Vector 5-Double
 Matrices can be generated from 2D arrays.
 #### Code
 ```cs
-// Creat a new matrix.
+// Create a new matrix.
 Mat<double> matrix =
 [
     [1, 2, 3],
