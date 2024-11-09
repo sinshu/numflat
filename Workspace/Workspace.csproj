@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ScottPlot" Version="5.0.37" />
+    <PackageReference Include="ScottPlot" Version="5.0.43" />
   </ItemGroup>
 
   <ItemGroup>

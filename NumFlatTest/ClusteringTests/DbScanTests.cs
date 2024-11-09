@@ -52,7 +52,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(2, 3);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(0.5, 1);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(0.5, 2);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(10000, 10);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(2, 3);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Test]
@@ -259,7 +259,7 @@ namespace NumFlatTest.ClusteringTests
 
             var actual = xs.DbScan(2, 3);
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(expected, Is.EqualTo(actual));
         }
     }
 }

@@ -52,7 +52,7 @@ namespace NumFlatTest.ClusteringTests
             {
                 var (newModel, newLikelihood) = model.Update(xs);
 
-                Assert.IsTrue(newLikelihood > likelihood);
+                Assert.That(newLikelihood > likelihood);
                 Assert.That(newModel.Components.Select(c => c.Weight).Sum(), Is.EqualTo(1.0).Within(1.0E-12));
 
                 model = newModel;
@@ -110,8 +110,8 @@ namespace NumFlatTest.ClusteringTests
             }
             foreach (var row in result.Rows)
             {
-                Assert.IsTrue(row.Max() > 0);
-                Assert.IsTrue(row.Count(x => x == 0) == 2);
+                Assert.That(row.Max() > 0);
+                Assert.That(row.Count(x => x == 0) == 2);
             }
 
             var permutation = new int[3];

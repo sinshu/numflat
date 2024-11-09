@@ -73,7 +73,8 @@ namespace NumFlatTest.MathLinqTests
             var expectedMean = values.Average();
             var expectedVariance = MathNetVariance(values, ddof);
 
-            Assert.That(actual.Mean, Is.EqualTo(expectedMean).Within(1.0E-12));
+            Assert.That(actual.Mean.Real, Is.EqualTo(expectedMean.Real).Within(1.0E-12));
+            Assert.That(actual.Mean.Imaginary, Is.EqualTo(expectedMean.Imaginary).Within(1.0E-12));
             Assert.That(actual.Variance, Is.EqualTo(expectedVariance).Within(1.0E-12));
         }
 

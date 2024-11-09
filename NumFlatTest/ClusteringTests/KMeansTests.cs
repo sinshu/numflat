@@ -138,12 +138,12 @@ namespace NumFlatTest.ClusteringTests
             };
             var kmeans = xs.ToKMeans(3, options, new Random(42));
             var cls = xs.Select(x => kmeans.Predict(x)).ToArray();
-            Assert.IsTrue(cls[0] == cls[1]);
-            Assert.IsTrue(cls[2] == cls[3]);
-            Assert.IsTrue(cls[2] == cls[4]);
-            Assert.IsTrue(cls[5] == cls[6]);
-            Assert.IsTrue(cls[5] == cls[7]);
-            Assert.IsTrue(cls[5] == cls[8]);
+            Assert.That(cls[0] == cls[1]);
+            Assert.That(cls[2] == cls[3]);
+            Assert.That(cls[2] == cls[4]);
+            Assert.That(cls[5] == cls[6]);
+            Assert.That(cls[5] == cls[7]);
+            Assert.That(cls[5] == cls[8]);
         }
 
         [Test]
@@ -162,8 +162,8 @@ namespace NumFlatTest.ClusteringTests
 
             foreach (var row in result.Rows)
             {
-                Assert.IsTrue(row.Max() > 0);
-                Assert.IsTrue(row.Count(x => x <= 1) == 2);
+                Assert.That(row.Max() > 0);
+                Assert.That(row.Count(x => x <= 1) == 2);
             }
         }
 

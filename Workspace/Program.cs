@@ -16,8 +16,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        VectorExamples.Run();
-        MatrixExamples.Run();
-        OtherExamples.Run();
+        ScottPlotExamples.Spectrogram();
     }
 }

@@ -17,15 +17,7 @@ public static class ScottPlotExamples
 
         var (spectrogram, info) = source.Stft(window, frameShift);
 
-        var data = new double[spectrogram[0].Count, spectrogram.Length];
-        for (var col = 0; col < spectrogram.Length; col++)
-        {
-            var spectrum = spectrogram[col];
-            for (var row = 0; row < spectrum.Count; row++)
-            {
-                data[row, col] = 10 * Math.Log10(spectrum[row].MagnitudeSquared() + 1.0E-6);
-            }
-        }
+        var data = spectrogram.ColsToMatrix().Map(x => Math.Log(x.MagnitudeSquared() + 1.0E-6)).ToArray();
 
         using (var plot = new Plot())
         {
