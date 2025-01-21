@@ -22,6 +22,7 @@ public static class ScottPlotExamples
         using (var plot = new Plot())
         {
             var signal = plot.Add.Signal(source);
+            signal.AlwaysUseLowDensityMode = true;
             signal.Color = Colors.Blue;
             signal.Data.Period = 1.0 / sampleRate;
             plot.XLabel("Time [s]");
