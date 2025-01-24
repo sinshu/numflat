@@ -135,19 +135,7 @@ namespace NumFlat.AudioFeatures
         {
             ThrowHelper.ThrowIfEmpty(spectrum, nameof(spectrum));
             PowerSpectrumFeatureExtraction.ThrowIfInvalidSize(fftLength, spectrum, nameof(spectrum));
-
-            var ss = spectrum.Subvector(frequencyBinStartIndex, coefficients.Count).Memory.Span;
-            var sc = coefficients.Memory.Span;
-            var ps = 0;
-            var pc = 0;
-            var sum = 0.0;
-            while (ps < ss.Length)
-            {
-                sum += ss[ps] * sc[pc];
-                ps += spectrum.Stride;
-                pc += coefficients.Stride;
-            }
-            return sum;
+            return coefficients.Dot(spectrum.Subvector(frequencyBinStartIndex, coefficients.Count));
         }
 
         /// <summary>
