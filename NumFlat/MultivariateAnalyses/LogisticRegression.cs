@@ -82,8 +82,8 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var delta = ref ua.Item3;
 
             using var uy = new TemporalVector4<double>(n);
-            ref readonly var reference = ref uy.Item1;
-            ref readonly var prediction = ref uy.Item2;
+            ref readonly var expected = ref uy.Item1;
+            ref readonly var actual = ref uy.Item2;
             ref readonly var error = ref uy.Item3;
             ref readonly var weights = ref uy.Item4;
 
@@ -101,7 +101,7 @@ namespace NumFlat.MultivariateAnalyses
                 x.CopyTo(row);
             }
 
-            reference.SetInplace(ys.Select(y => (double)y));
+            expected.SetInplace(ys.Select(y => (double)y));
 
             var prevLoss = double.MaxValue;
             a.Clear();
@@ -109,14 +109,14 @@ namespace NumFlat.MultivariateAnalyses
             for (var iter = 0; iter < options.MaxIterations; iter++)
             {
                 // Compute the current prediction.
-                Mat.Mul(bxs, a, prediction, false);
-                prediction.MapInplace(Special.Sigmoid);
+                Mat.Mul(bxs, a, actual, false);
+                actual.MapInplace(Special.Sigmoid);
 
                 // Compute the weights.
-                Vec.Map(prediction, value => value * (1 - value), weights);
+                Vec.Map(actual, value => value * (1 - value), weights);
 
                 // Compute the gradient.
-                Vec.Sub(prediction, reference, error);
+                Vec.Sub(actual, expected, error);
                 Mat.Mul(bxs, error, gradient, true);
 
                 // Compute the hessian.
@@ -152,7 +152,7 @@ namespace NumFlat.MultivariateAnalyses
                 a.SubInplace(delta);
 
                 // Check for convergence.
-                var currLoss = CrossEntropyLoss(reference, prediction, 1.0E-10);
+                var currLoss = CrossEntropyLoss(expected, actual, 1.0E-10);
                 if (Math.Abs(currLoss - prevLoss) <= options.Tolerance)
                 {
                     break;
@@ -164,10 +164,10 @@ namespace NumFlat.MultivariateAnalyses
             this.intercept = a[0];
         }
 
-        private static double CrossEntropyLoss(in Vec<double> reference, in Vec<double> prediction, double eps)
+        private static double CrossEntropyLoss(in Vec<double> expected, in Vec<double> actual, double eps)
         {
             var sum = 0.0;
-            foreach (var (y1, y2) in reference.Zip(prediction))
+            foreach (var (y1, y2) in expected.Zip(actual))
             {
                 var clipped = Math.Clamp(y2, eps, 1 - eps);
                 sum += y1 * Math.Log(clipped) + (1 - y1) * Math.Log(1 - clipped);

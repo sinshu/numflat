@@ -56,8 +56,8 @@ namespace NumFlat.MultivariateAnalyses
             var d = xs[0].Count;
             var n = xs.Count;
 
-            using var ureference = new TemporalVector<double>(n);
-            ref readonly var reference = ref ureference.Item;
+            using var uexpected = new TemporalVector<double>(n);
+            ref readonly var expected = ref uexpected.Item;
 
             using var utmp = new TemporalVector2<double>(d + 1);
             ref readonly var xty = ref utmp.Item1;
@@ -77,7 +77,7 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             // Copy the y values.
-            reference.SetInplace(ys);
+            expected.SetInplace(ys);
 
             // Compute X^T * X.
             Mat.Mul(bxs, bxs, xtx, true, false);
@@ -95,7 +95,7 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             // Compute X^T * y.
-            Mat.Mul(bxs, reference, xty, true);
+            Mat.Mul(bxs, expected, xty, true);
 
             // Compute the coefficients.
             SingularValueDecompositionDouble svd;
