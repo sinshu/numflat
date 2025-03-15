@@ -24,9 +24,9 @@ namespace NumFlat
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public GeneralizedEigenValueDecompositionSingle(in Mat<float> a, in Mat<float> b)
         {
@@ -62,9 +62,9 @@ namespace NumFlat
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static unsafe void Decompose(in Mat<float> a, in Mat<float> b, in Vec<float> d, in Mat<float> v)
         {
