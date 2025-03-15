@@ -13,7 +13,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
     public class LinearRegressionTests
     {
         [Test]
-        public void Test()
+        public void WithoutNoise()
         {
             Vec<double> coefficients = [1, 2, 3];
             var intercept = 4.0;
@@ -42,6 +42,30 @@ namespace NumFlatTest.MultivariateAnalysesTests
             var mean = ys.Average();
             var estimated = xs.LinearRegression(ys, 1000000).Intercept;
             Assert.That(mean, Is.EqualTo(estimated).Within(1.0E-3));
+        }
+
+        [Test]
+        public void WithNoise()
+        {
+            Vec<double> coefficients = [1, 2, 3];
+            var intercept = 4.0;
+
+            var random = new Random(42);
+            var xs = new List<Vec<double>>();
+            var ys = new List<double>();
+            for (var i = 0; i < 100; i++)
+            {
+                var x = Enumerable.Range(0, 3).Select(k => random.NextGaussian()).ToVector();
+                var noise = random.NextGaussian() / 3;
+                var y = coefficients * x + intercept + noise;
+                xs.Add(x);
+                ys.Add(y);
+            }
+
+            var regression = xs.LinearRegression(ys);
+
+            NumAssert.AreSame(coefficients, regression.Coefficients, 0.1);
+            Assert.That(intercept, Is.EqualTo(regression.Intercept).Within(0.1));
         }
     }
 }
