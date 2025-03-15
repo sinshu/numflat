@@ -1,7 +1,12 @@
+# v1.0.1
+
+* Some code optimizations.
+* Added complex linear regression.
+
 # v1.0.0
 
 * Improved DBSCAN implementation.
-* Added linear algebra.
+* Added linear regression.
 
 # v0.10.8
 
