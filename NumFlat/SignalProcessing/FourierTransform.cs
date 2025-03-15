@@ -289,8 +289,8 @@ namespace NumFlat.SignalProcessing
                 throw new ArgumentException("'destination.Count' must match '2 * (source.Count - 1)'.");
             }
 
-            using var utmp = MemoryPool<Complex>.Shared.Rent(source.Count);
-            var tmp = utmp.Memory.Span.Slice(0, source.Count);
+            using var utmp = new TemporalArray<Complex>(source.Count);
+            var tmp = utmp.Item;
 
             source.CopyTo(tmp);
             var casted = GetRftInstance(2 * (source.Count - 1)).Inverse(tmp);

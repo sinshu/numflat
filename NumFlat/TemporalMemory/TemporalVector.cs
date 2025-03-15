@@ -6,24 +6,24 @@ namespace NumFlat
 {
     internal readonly ref struct TemporalVector<T> where T : unmanaged, INumberBase<T>
     {
-        private readonly IMemoryOwner<T> owner;
+        private readonly T[] buffer;
         public readonly Vec<T> Item;
 
         public TemporalVector(int count)
         {
-            owner = MemoryPool<T>.Shared.Rent(count);
-            Item = new Vec<T>(owner.Memory.Slice(0, count));
+            buffer = ArrayPool<T>.Shared.Rent(count);
+            Item = new Vec<T>(buffer.AsMemory(0, count));
 #if !RELEASE
-            TemporalVector.Randomize(owner);
+            TemporalVector.Randomize<T>(buffer);
 #endif
         }
 
         public void Dispose()
         {
 #if !RELEASE
-            TemporalVector.Randomize(owner);
+            TemporalVector.Randomize<T>(buffer);
 #endif
-            owner.Dispose();
+            ArrayPool<T>.Shared.Return(buffer);
         }
     }
 
@@ -37,10 +37,10 @@ namespace NumFlat
         }
 
 #if !RELEASE
-        public static void Randomize<T>(IMemoryOwner<T> owner) where T : unmanaged, INumberBase<T>
+        public static void Randomize<T>(Span<T> buffer) where T : unmanaged, INumberBase<T>
         {
             var random = new Random(42);
-            var span = System.Runtime.InteropServices.MemoryMarshal.Cast<T, byte>(owner.Memory.Span);
+            var span = System.Runtime.InteropServices.MemoryMarshal.Cast<T, byte>(buffer);
             random.NextBytes(span);
         }
 #endif

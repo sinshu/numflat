@@ -143,8 +143,8 @@ namespace NumFlat.IO
 
         private static (SampleFormat SampleFormat, int ChannelCount, int SampleRate) ReadFormat(BinaryReader reader, int size)
         {
-            using var ubuffer = MemoryPool<byte>.Shared.Rent(size);
-            var buffer = ubuffer.Memory.Span.Slice(0, size);
+            using var ubuffer = new TemporalArray<byte>(size);
+            var buffer = ubuffer.Item;
             reader.Read(buffer);
 
             var formatTag = BitConverter.ToInt16(buffer.Slice(0, 2));
@@ -191,8 +191,8 @@ namespace NumFlat.IO
                 throw new InvalidDataException($"The format chunk was not found.");
             }
 
-            using var ubuffer = MemoryPool<byte>.Shared.Rent(size);
-            var buffer = ubuffer.Memory.Span.Slice(0, size);
+            using var ubuffer = new TemporalArray<byte>(size);
+            var buffer = ubuffer.Item;
             reader.Read(buffer);
 
             var sampleCount = size / (GetSampleSize(sampleFormat) * channelCount);
@@ -242,8 +242,8 @@ namespace NumFlat.IO
                 throw new InvalidDataException($"The format chunk was not found.");
             }
 
-            using var ubuffer = MemoryPool<byte>.Shared.Rent(size);
-            var buffer = ubuffer.Memory.Span.Slice(0, size);
+            using var ubuffer = new TemporalArray<byte>(size);
+            var buffer = ubuffer.Item;
             reader.Read(buffer);
 
             var sampleCount = size / (GetSampleSize(sampleFormat) * channelCount);
@@ -330,8 +330,8 @@ namespace NumFlat.IO
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new BinaryWriter(fs))
             {
-                using var ubuffer = MemoryPool<byte>.Shared.Rent(dataSize);
-                var buffer = ubuffer.Memory.Span.Slice(0, dataSize);
+                using var ubuffer = new TemporalArray<byte>(dataSize);
+                var buffer = ubuffer.Item;
 
                 var dst = MemoryMarshal.Cast<byte, short>(buffer);
                 for (var ch = 0; ch < data.Count; ch++)
@@ -389,8 +389,8 @@ namespace NumFlat.IO
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new BinaryWriter(fs))
             {
-                using var ubuffer = MemoryPool<byte>.Shared.Rent(dataSize);
-                var buffer = ubuffer.Memory.Span.Slice(0, dataSize);
+                using var ubuffer = new TemporalArray<byte>(dataSize);
+                var buffer = ubuffer.Item;
 
                 var dst = MemoryMarshal.Cast<byte, short>(buffer);
                 var position = 0;

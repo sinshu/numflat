@@ -185,8 +185,8 @@ namespace NumFlat.Clustering
                 return xs[random.Next(0, xs.Count)];
             }
 
-            using var uprb = MemoryPool<double>.Shared.Rent(xs.Count);
-            var prb = uprb.Memory.Span.Slice(0, xs.Count);
+            using var uprb = new TemporalArray<double>(xs.Count);
+            var prb = uprb.Item;
 
             var sum = 0.0;
             var i = 0;
@@ -234,8 +234,8 @@ namespace NumFlat.Clustering
                 nextCentroids[c] = new Vec<double>(centroids[0].Count);
             }
 
-            using var ucounts = MemoryPool<int>.Shared.Rent(centroids.Length);
-            var counts = ucounts.Memory.Span.Slice(0, centroids.Length);
+            using var ucounts = new TemporalArray<int>(centroids.Length);
+            var counts = ucounts.Item;
             counts.Clear();
 
             var error = 0.0;

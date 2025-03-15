@@ -6,25 +6,25 @@ namespace NumFlat
 {
     internal readonly ref struct TemporalMatrix<T> where T : unmanaged, INumberBase<T>
     {
-        private readonly IMemoryOwner<T> owner;
+        private readonly T[] buffer;
         public readonly Mat<T> Item;
 
         public TemporalMatrix(int rowCount, int colCount)
         {
             var length = rowCount * colCount;
-            owner = MemoryPool<T>.Shared.Rent(length);
+            buffer = ArrayPool<T>.Shared.Rent(length);
 #if !RELEASE
-            TemporalMatrix.Randomize(owner);
+            TemporalMatrix.Randomize<T>(buffer);
 #endif
-            Item = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(0, length));
+            Item = new Mat<T>(rowCount, colCount, rowCount, buffer.AsMemory(0, length));
         }
 
         public void Dispose()
         {
 #if !RELEASE
-            TemporalMatrix.Randomize(owner);
+            TemporalMatrix.Randomize<T>(buffer);
 #endif
-            owner.Dispose();
+            ArrayPool<T>.Shared.Return(buffer);
         }
     }
 
@@ -40,10 +40,10 @@ namespace NumFlat
         }
 
 #if !RELEASE
-        public static void Randomize<T>(IMemoryOwner<T> owner) where T : unmanaged, INumberBase<T>
+        public static void Randomize<T>(Span<T> buffer) where T : unmanaged, INumberBase<T>
         {
             var random = new Random(42);
-            var span = System.Runtime.InteropServices.MemoryMarshal.Cast<T, byte>(owner.Memory.Span);
+            var span = System.Runtime.InteropServices.MemoryMarshal.Cast<T, byte>(buffer);
             random.NextBytes(span);
         }
 #endif

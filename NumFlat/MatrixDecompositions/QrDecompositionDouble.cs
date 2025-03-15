@@ -81,8 +81,8 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
-            using var urdiag = MemoryPool<double>.Shared.Rent(a.ColCount);
-            var rdiag = urdiag.Memory.Span;
+            using var urdiag = new TemporalArray<double>(a.ColCount);
+            var rdiag = urdiag.Item;
 
             fixed (double* ptmp = tmp.Memory.Span)
             fixed (double* prdiag = rdiag)

@@ -24,8 +24,8 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(x);
             ref readonly var tmp = ref utmp.Item;
 
-            using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(tmp.RowCount);
+            var piv = upiv.Item;
 
             int sign;
             fixed (float* ptmp = tmp.Memory.Span)
@@ -59,8 +59,8 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(x);
             ref readonly var tmp = ref utmp.Item;
 
-            using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(tmp.RowCount);
+            var piv = upiv.Item;
 
             int sign;
             fixed (double* ptmp = tmp.Memory.Span)
@@ -94,8 +94,8 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(x);
             ref readonly var tmp = ref utmp.Item;
 
-            using var upiv = MemoryPool<int>.Shared.Rent(tmp.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(tmp.RowCount);
+            var piv = upiv.Item;
 
             int sign;
             fixed (Complex* ptmp = tmp.Memory.Span)

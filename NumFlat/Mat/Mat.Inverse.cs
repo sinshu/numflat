@@ -28,8 +28,8 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var upiv = MemoryPool<int>.Shared.Rent(destination.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(destination.RowCount);
+            var piv = upiv.Item;
 
             fixed (float* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)
@@ -68,8 +68,8 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var upiv = MemoryPool<int>.Shared.Rent(destination.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(destination.RowCount);
+            var piv = upiv.Item;
 
             fixed (double* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)
@@ -108,8 +108,8 @@ namespace NumFlat
 
             x.CopyTo(destination);
 
-            using var upiv = MemoryPool<int>.Shared.Rent(destination.RowCount);
-            var piv = upiv.Memory.Span;
+            using var upiv = new TemporalArray<int>(destination.RowCount);
+            var piv = upiv.Item;
 
             fixed (Complex* pd = destination.Memory.Span)
             fixed (int* ppiv = piv)

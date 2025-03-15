@@ -6,7 +6,7 @@ namespace NumFlat
 {
     internal readonly ref struct TemporalMatrix3<T> where T : unmanaged, INumberBase<T>
     {
-        private readonly IMemoryOwner<T> owner;
+        private readonly T[] buffer;
         public readonly Mat<T> Item1;
         public readonly Mat<T> Item2;
         public readonly Mat<T> Item3;
@@ -14,21 +14,21 @@ namespace NumFlat
         public TemporalMatrix3(int rowCount, int colCount)
         {
             var length = rowCount * colCount;
-            owner = MemoryPool<T>.Shared.Rent(3 * length);
+            buffer = ArrayPool<T>.Shared.Rent(3 * length);
 #if !RELEASE
-            TemporalMatrix.Randomize(owner);
+            TemporalMatrix.Randomize<T>(buffer);
 #endif
-            Item1 = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(0 * length, length));
-            Item2 = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(1 * length, length));
-            Item3 = new Mat<T>(rowCount, colCount, rowCount, owner.Memory.Slice(2 * length, length));
+            Item1 = new Mat<T>(rowCount, colCount, rowCount, buffer.AsMemory(0 * length, length));
+            Item2 = new Mat<T>(rowCount, colCount, rowCount, buffer.AsMemory(1 * length, length));
+            Item3 = new Mat<T>(rowCount, colCount, rowCount, buffer.AsMemory(2 * length, length));
         }
 
         public void Dispose()
         {
 #if !RELEASE
-            TemporalMatrix.Randomize(owner);
+            TemporalMatrix.Randomize<T>(buffer);
 #endif
-            owner.Dispose();
+            ArrayPool<T>.Shared.Return(buffer);
         }
     }
 }

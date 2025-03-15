@@ -6,26 +6,26 @@ namespace NumFlat
 {
     internal readonly ref struct TemporalVector2<T> where T : unmanaged, INumberBase<T>
     {
-        private readonly IMemoryOwner<T> owner;
+        private readonly T[] buffer;
         public readonly Vec<T> Item1;
         public readonly Vec<T> Item2;
 
         public TemporalVector2(int count)
         {
-            owner = MemoryPool<T>.Shared.Rent(2 * count);
+            buffer = ArrayPool<T>.Shared.Rent(2 * count);
 #if !RELEASE
-            TemporalVector.Randomize(owner);
+            TemporalVector.Randomize<T>(buffer);
 #endif
-            Item1 = new Vec<T>(owner.Memory.Slice(0, count));
-            Item2 = new Vec<T>(owner.Memory.Slice(count, count));
+            Item1 = new Vec<T>(buffer.AsMemory(0, count));
+            Item2 = new Vec<T>(buffer.AsMemory(count, count));
         }
 
         public void Dispose()
         {
 #if !RELEASE
-            TemporalVector.Randomize(owner);
+            TemporalVector.Randomize<T>(buffer);
 #endif
-            owner.Dispose();
+            ArrayPool<T>.Shared.Return(buffer);
         }
     }
 }

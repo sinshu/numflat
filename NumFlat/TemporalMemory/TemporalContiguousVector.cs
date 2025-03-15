@@ -7,7 +7,7 @@ namespace NumFlat
     internal ref struct TemporalContiguousVector<T> where T : unmanaged, INumberBase<T>
     {
         private readonly ref readonly Vec<T> original;
-        private readonly IMemoryOwner<T>? owner;
+        private readonly T[]? buffer;
         public readonly Vec<T> Item;
 
         public TemporalContiguousVector(in Vec<T> original, bool useOriginalContent)
@@ -19,8 +19,8 @@ namespace NumFlat
             else
             {
                 this.original = ref original;
-                owner = MemoryPool<T>.Shared.Rent(original.Count);
-                Item = new Vec<T>(owner.Memory.Slice(0, original.Count));
+                buffer = ArrayPool<T>.Shared.Rent(original.Count);
+                Item = new Vec<T>(buffer.AsMemory(0, original.Count));
                 if (useOriginalContent)
                 {
                     original.CopyTo(Item);
@@ -30,10 +30,10 @@ namespace NumFlat
 
         public void Dispose()
         {
-            if (owner != null)
+            if (buffer != null)
             {
                 Item.CopyTo(original);
-                owner.Dispose();
+                ArrayPool<T>.Shared.Return(buffer);
             }
         }
     }

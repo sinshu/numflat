@@ -82,8 +82,8 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
-            using var urdiag = MemoryPool<double>.Shared.Rent(a.ColCount);
-            var rdiag = urdiag.Memory.Span;
+            using var urdiag = new TemporalArray<double>(a.ColCount);
+            var rdiag = urdiag.Item;
 
             fixed (Complex* ptmp = tmp.Memory.Span)
             fixed (double* prdiag = rdiag)
@@ -126,7 +126,7 @@ namespace NumFlat
             }
 
             var determinant = 1.0;
-            foreach(var value in r.EnumerateDiagonalElements())
+            foreach (var value in r.EnumerateDiagonalElements())
             {
                 determinant *= value.Magnitude;
             }
