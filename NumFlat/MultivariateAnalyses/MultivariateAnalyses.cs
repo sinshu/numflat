@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -9,7 +10,7 @@ namespace NumFlat.MultivariateAnalyses
     public static class MultivariateAnalyses
     {
         /// <summary>
-        /// Performs logistic regression.
+        /// Performs linear regression.
         /// </summary>
         /// <param name="xs">
         /// The source vectors.
@@ -30,6 +31,30 @@ namespace NumFlat.MultivariateAnalyses
         public static LinearRegression LinearRegression(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<double> ys, double regularization = 0.0)
         {
             return new LinearRegression(xs, ys, regularization);
+        }
+
+        /// <summary>
+        /// Performs complex linear regression.
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The target values to be estimated.
+        /// </param>
+        /// <param name="regularization">
+        /// The amount of regularization.
+        /// The regularization method is L2 regularization excluding the bias term.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="NumFlat.MultivariateAnalyses.ComplexLinearRegression"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public static ComplexLinearRegression LinearRegression(this IReadOnlyList<Vec<Complex>> xs, IReadOnlyList<Complex> ys, double regularization = 0.0)
+        {
+            return new ComplexLinearRegression(xs, ys, regularization);
         }
 
         /// <summary>
