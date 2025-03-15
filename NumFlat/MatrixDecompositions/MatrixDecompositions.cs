@@ -10,7 +10,7 @@ namespace NumFlat
     public static class MatrixDecompositions
     {
         /// <summary>
-        /// Computes the engen value decomposition (EVD).
+        /// Computes the eigenvalue decomposition (EVD).
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed.
@@ -22,9 +22,9 @@ namespace NumFlat
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionSingle Evd(in this Mat<float> a)
         {
@@ -34,7 +34,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the engen value decomposition (EVD).
+        /// Computes the eigenvalue decomposition (EVD).
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed.
@@ -46,9 +46,9 @@ namespace NumFlat
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionDouble Evd(in this Mat<double> a)
         {
@@ -58,7 +58,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the engen value decomposition (EVD).
+        /// Computes the eigenvalue decomposition (EVD).
         /// </summary>
         /// <param name="a">
         /// The matrix to be decomposed.
@@ -70,9 +70,9 @@ namespace NumFlat
         /// Failed to compute the EVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static EigenValueDecompositionComplex Evd(in this Mat<Complex> a)
         {
@@ -190,9 +190,9 @@ namespace NumFlat
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionSingle Cholesky(in this Mat<float> a)
         {
@@ -214,9 +214,9 @@ namespace NumFlat
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionDouble Cholesky(in this Mat<double> a)
         {
@@ -238,9 +238,9 @@ namespace NumFlat
         /// The matrix is ill-conditioned.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static CholeskyDecompositionComplex Cholesky(in this Mat<Complex> a)
         {
@@ -370,7 +370,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the generalized engen value decomposition (GEVD).
+        /// Computes the generalized eigenvalue decomposition (GEVD).
         /// </summary>
         /// <param name="a">
         /// The source matrix A.
@@ -385,9 +385,9 @@ namespace NumFlat
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionSingle Gevd(in this Mat<float> a, in Mat<float> b)
         {
@@ -398,7 +398,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the generalized engen value decomposition (GEVD).
+        /// Computes the generalized eigenvalue decomposition (GEVD).
         /// </summary>
         /// <param name="a">
         /// The source matrix A.
@@ -413,9 +413,9 @@ namespace NumFlat
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionDouble Gevd(in this Mat<double> a, in Mat<double> b)
         {
@@ -426,7 +426,7 @@ namespace NumFlat
         }
 
         /// <summary>
-        /// Computes the generalized engen value decomposition (GEVD).
+        /// Computes the generalized eigenvalue decomposition (GEVD).
         /// </summary>
         /// <param name="a">
         /// The source matrix A.
@@ -441,9 +441,9 @@ namespace NumFlat
         /// Failed to compute the GEVD.
         /// </exception>
         /// <remarks>
-        /// The matrix to be decomposed must be Hermitian symmetric.
-        /// Note that this implementation does not check if the input matrix is Hermitian symmetric.
-        /// Specifically, only the upper triangular part of the input matrix is referenced, and the rest is ignored.
+        /// The matrix to be decomposed must be symmetric positive definite.
+        /// Note that this implementation does not verify whether the input matrix is symmetric.
+        /// Specifically, only the upper triangular part of the input matrix is used, and the rest is ignored.
         /// </remarks>
         public static GeneralizedEigenValueDecompositionComplex Gevd(in this Mat<Complex> a, in Mat<Complex> b)
         {
