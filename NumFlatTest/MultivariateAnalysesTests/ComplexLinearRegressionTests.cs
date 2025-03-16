@@ -78,5 +78,28 @@ namespace NumFlatTest.MultivariateAnalysesTests
             Assert.That(intercept.Real, Is.EqualTo(regression.Intercept.Real).Within(0.1));
             Assert.That(intercept.Imaginary, Is.EqualTo(regression.Intercept.Imaginary).Within(0.1));
         }
+
+        [Test]
+        public void Gpt45()
+        {
+            var path = Path.Combine("dataset", "lr_gpt45.csv");
+            var xs = new List<Vec<Complex>>();
+            var ys = new List<Complex>();
+            foreach (var line in File.ReadLines(path).Skip(1))
+            {
+                var values = line.Split(',').Select(value => new Complex(double.Parse(value), 0));
+                xs.Add(values.Take(4).ToVector());
+                ys.Add(values.Last());
+            }
+
+            var regression = xs.LinearRegression(ys);
+
+            Vec<Complex> expectedCoefficients = [3.5108, -1.9850, 4.1760, 1.6952];
+            NumAssert.AreSame(expectedCoefficients, regression.Coefficients, 1.0E-3);
+
+            var expectedIntercept = new Complex(4.9926, 0);
+            Assert.That(expectedIntercept.Real, Is.EqualTo(regression.Intercept.Real).Within(1.0E-3));
+            Assert.That(expectedIntercept.Imaginary, Is.EqualTo(regression.Intercept.Imaginary).Within(1.0E-3));
+        }
     }
 }

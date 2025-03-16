@@ -67,5 +67,27 @@ namespace NumFlatTest.MultivariateAnalysesTests
             NumAssert.AreSame(coefficients, regression.Coefficients, 0.1);
             Assert.That(intercept, Is.EqualTo(regression.Intercept).Within(0.1));
         }
+
+        [Test]
+        public void Gpt45()
+        {
+            var path = Path.Combine("dataset", "lr_gpt45.csv");
+            var xs = new List<Vec<double>>();
+            var ys = new List<double>();
+            foreach (var line in File.ReadLines(path).Skip(1))
+            {
+                var values = line.Split(',').Select(double.Parse);
+                xs.Add(values.Take(4).ToVector());
+                ys.Add(values.Last());
+            }
+
+            var regression = xs.LinearRegression(ys);
+
+            Vec<double> expectedCoefficients = [3.5108, -1.9850, 4.1760, 1.6952];
+            NumAssert.AreSame(expectedCoefficients, regression.Coefficients, 1.0E-3);
+
+            var expectedIntercept = 4.9926;
+            Assert.That(expectedIntercept, Is.EqualTo(regression.Intercept).Within(1.0E-3));
+        }
     }
 }
