@@ -50,7 +50,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException("The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException("The amount of regularization must be a non-negative value.", nameof(regularization));
             }
 
             var d = xs[0].Count;
