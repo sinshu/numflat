@@ -29,12 +29,6 @@ namespace NumFlat.MultivariateAnalyses
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        /// <remarks>
-        /// Note that this implementation assumes a regression problem of the form <c>y = w^H x + b</c>,
-        /// where <c>x</c> is the input vector, <c>w</c> is the coefficient vector, and <c>b</c> is the bias term.
-        /// In other words, to transform the input vector using the estimated coefficient vector,
-        /// it is necessary to take the Hermitian transpose of the coefficient vector.
-        /// </remarks>
         public ComplexLinearRegression(IReadOnlyList<Vec<Complex>> xs, IReadOnlyList<Complex> ys, double regularization = 0.0)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
@@ -116,7 +110,7 @@ namespace NumFlat.MultivariateAnalyses
             }
             svd.Solve(xhy, a);
 
-            this.coefficients = a[1..].Conjugate();
+            this.coefficients = a[1..].Copy();
             this.intercept = a[0];
         }
 
@@ -126,7 +120,7 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             VectorToScalarTransform.ThrowIfInvalidSize(this, source, nameof(source));
 
-            return Vec.Dot(coefficients, source, true) + intercept;
+            return coefficients * source + intercept;
         }
 
         /// <summary>

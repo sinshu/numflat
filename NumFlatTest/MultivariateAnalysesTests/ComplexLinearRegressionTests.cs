@@ -27,7 +27,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
             for (var i = 0; i < 100; i++)
             {
                 var x = Enumerable.Range(0, 3).Select(k => new Complex(random.NextGaussian(), random.NextGaussian())).ToVector();
-                var y = Vec.Dot(coefficients, x, true) + intercept;
+                var y = coefficients * x + intercept;
                 xs.Add(x);
                 ys.Add(y);
             }
@@ -67,7 +67,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
             {
                 var x = Enumerable.Range(0, 3).Select(k => new Complex(random.NextGaussian(), random.NextGaussian())).ToVector();
                 var noise = new Complex(random.NextGaussian(), random.NextGaussian()) / 3;
-                var y = Vec.Dot(coefficients, x, true) + intercept + noise;
+                var y = coefficients * x + intercept + noise;
                 xs.Add(x);
                 ys.Add(y);
             }
