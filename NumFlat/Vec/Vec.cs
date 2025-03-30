@@ -247,7 +247,34 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public readonly T this[int index]
+        public ref T this[int index]
+        {
+            get
+            {
+                if (this.count == 0)
+                {
+                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                }
+
+                if ((uint)index >= this.count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
+                }
+
+                return ref this.memory.Span[stride * index];
+            }
+        }
+
+        /// <summary>
+        /// Gets or the element at the specified position in the vector.
+        /// </summary>
+        /// <param name="index">
+        /// The index of the element.
+        /// </param>
+        /// <returns>
+        /// The specified element.
+        /// </returns>
+        readonly T IReadOnlyList<T>.this[int index]
         {
             get
             {
@@ -262,21 +289,6 @@ namespace NumFlat
                 }
 
                 return this.memory.Span[stride * index];
-            }
-
-            set
-            {
-                if (this.count == 0)
-                {
-                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
-                }
-
-                if ((uint)index >= this.count)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
-                }
-
-                this.memory.Span[stride * index] = value;
             }
         }
 

@@ -23,6 +23,7 @@ namespace NumFlatTest.VecTests
             for (var i = 0; i < count; i++)
             {
                 Assert.That(vector[i], Is.EqualTo(0));
+                Assert.That(((IReadOnlyList<int>)vector)[i], Is.EqualTo(0));
             }
         }
 
@@ -44,6 +45,7 @@ namespace NumFlatTest.VecTests
             for (var i = 0; i < count; i++)
             {
                 Assert.That(vector[i], Is.EqualTo(expected));
+                Assert.That(((IReadOnlyList<int>)vector)[i], Is.EqualTo(expected));
                 expected++;
             }
         }

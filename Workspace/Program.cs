@@ -16,6 +16,9 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        ScottPlotExamples.Spectrogram();
+        var list1 = new List<Vec<double>>();
+        var list2 = new List<Mat<double>>();
+        list1[0][0] = 3;
+        list2[0][0, 0] = 3;
     }
 }

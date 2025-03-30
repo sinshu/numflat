@@ -284,7 +284,7 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public readonly T this[int row, int col]
+        public ref T this[int row, int col]
         {
             get
             {
@@ -303,27 +303,7 @@ namespace NumFlat
                     throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
                 }
 
-                return this.memory.Span[stride * col + row];
-            }
-
-            set
-            {
-                if (this.rowCount == 0 || this.colCount == 0)
-                {
-                    throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
-                }
-
-                if ((uint)row >= this.rowCount)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
-                }
-
-                if ((uint)col >= this.colCount)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
-                }
-
-                this.memory.Span[stride * col + row] = value;
+                return ref this.memory.Span[stride * col + row];
             }
         }
 
