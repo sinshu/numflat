@@ -1,3 +1,7 @@
+# v1.0.3
+
+* Indexers for `Vec<T>` and `Mat<T>` now return `ref T`, improving usability.
+
 # v1.0.2
 
 * Revised the complex linear regression formula from `y = w^H * x + b` to `y = w^T * x + b`.
