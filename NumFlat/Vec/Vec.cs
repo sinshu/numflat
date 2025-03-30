@@ -247,7 +247,7 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public ref T this[int index]
+        public readonly ref T this[int index]
         {
             get
             {

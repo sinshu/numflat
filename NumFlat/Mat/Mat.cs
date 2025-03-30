@@ -284,7 +284,7 @@ namespace NumFlat
         /// <returns>
         /// The specified element.
         /// </returns>
-        public ref T this[int row, int col]
+        public readonly ref T this[int row, int col]
         {
             get
             {
