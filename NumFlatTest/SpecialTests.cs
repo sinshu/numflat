@@ -132,5 +132,33 @@ namespace NumFlatTest
         {
             Assert.That(Special.Sigmoid(x), Is.EqualTo(y).Within(1.0E-12));
         }
+
+        [Test]
+        public unsafe void GetMemoryFromUnmanagedPointer()
+        {
+            var random = new Random(42);
+            var expected = Enumerable.Range(0, 10).Select(i => random.Next()).ToArray();
+
+            fixed (int* p = expected)
+            {
+                var memory = Special.GetMemoryFromUnmanagedPointer(p, expected.Length);
+                var vec = new Vec<int>(memory);
+                for (var i = 0; i < expected.Length; i++)
+                {
+                    Assert.That(vec[i], Is.EqualTo(expected[i]));
+                }
+            }
+
+            fixed (int* p = expected)
+            {
+                var ptr = (IntPtr)p;
+                var memory = Special.GetMemoryFromUnmanagedPointer<int>(ptr, expected.Length);
+                var vec = new Vec<int>(memory);
+                for (var i = 0; i < expected.Length; i++)
+                {
+                    Assert.That(vec[i], Is.EqualTo(expected[i]));
+                }
+            }
+        }
     }
 }

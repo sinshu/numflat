@@ -194,5 +194,45 @@ namespace NumFlat
         {
             return 1.0 / (1.0 + Math.Exp(-x));
         }
+
+        /// <summary>
+        /// Gets <see cref="Memory{T}"/> from the unmanaged pointer.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the values.
+        /// </typeparam>
+        /// <param name="pointer">
+        /// The pointer to the beginning of the unmanaged memory region.
+        /// </param>
+        /// <param name="length">
+        /// The number of elements in the memory region.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="Memory{T}"/> that wraps the specified unmanaged memory.
+        /// </returns>
+        public unsafe static Memory<T> GetMemoryFromUnmanagedPointer<T>(T* pointer, int length) where T : unmanaged
+        {
+            return new UnmanagedMemoryManager<T>(pointer, length).Memory;
+        }
+
+        /// <summary>
+        /// Gets <see cref="Memory{T}"/> from the unmanaged pointer.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the values.
+        /// </typeparam>
+        /// <param name="pointer">
+        /// The pointer to the beginning of the unmanaged memory region.
+        /// </param>
+        /// <param name="length">
+        /// The number of elements in the memory region.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="Memory{T}"/> that wraps the specified unmanaged memory.
+        /// </returns>
+        public unsafe static Memory<T> GetMemoryFromUnmanagedPointer<T>(IntPtr pointer, int length) where T : unmanaged
+        {
+            return new UnmanagedMemoryManager<T>((T*)pointer, length).Memory;
+        }
     }
 }
