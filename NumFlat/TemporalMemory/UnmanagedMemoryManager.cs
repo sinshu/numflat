@@ -10,11 +10,6 @@ namespace NumFlat
 
         public UnmanagedMemoryManager(T* pointer, int length)
         {
-            if (length < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(length));
-            }
-
             this.pointer = pointer;
             this.length = length;
         }
@@ -26,12 +21,7 @@ namespace NumFlat
 
         public override MemoryHandle Pin(int elementIndex = 0)
         {
-            if (elementIndex < 0 || elementIndex >= length)
-            {
-                throw new IndexOutOfRangeException(nameof(elementIndex));
-            }
-
-            return new MemoryHandle(pointer + elementIndex);
+            throw new NotSupportedException();
         }
 
         public override void Unpin()

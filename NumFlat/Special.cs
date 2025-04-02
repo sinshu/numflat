@@ -212,6 +212,16 @@ namespace NumFlat
         /// </returns>
         public unsafe static Memory<T> GetMemoryFromUnmanagedPointer<T>(T* pointer, int length) where T : unmanaged
         {
+            if (pointer == null)
+            {
+                throw new ArgumentNullException(nameof(pointer));
+            }
+
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "The number of elements must be greater than zero.");
+            }
+
             return new UnmanagedMemoryManager<T>(pointer, length).Memory;
         }
 
@@ -232,6 +242,16 @@ namespace NumFlat
         /// </returns>
         public unsafe static Memory<T> GetMemoryFromUnmanagedPointer<T>(IntPtr pointer, int length) where T : unmanaged
         {
+            if (pointer == 0)
+            {
+                throw new ArgumentNullException(nameof(pointer));
+            }
+
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "The number of elements must be greater than zero.");
+            }
+
             return new UnmanagedMemoryManager<T>((T*)pointer, length).Memory;
         }
     }
