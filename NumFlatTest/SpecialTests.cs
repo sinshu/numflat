@@ -142,6 +142,8 @@ namespace NumFlatTest
             fixed (int* p = expected)
             {
                 var memory = Special.GetMemoryFromUnmanagedPointer(p, expected.Length);
+                Assert.That(memory.Length, Is.EqualTo(expected.Length));
+
                 var vec = new Vec<int>(memory);
                 for (var i = 0; i < expected.Length; i++)
                 {
@@ -153,6 +155,8 @@ namespace NumFlatTest
             {
                 var ptr = (IntPtr)p;
                 var memory = Special.GetMemoryFromUnmanagedPointer<int>(ptr, expected.Length);
+                Assert.That(memory.Length, Is.EqualTo(expected.Length));
+
                 var vec = new Vec<int>(memory);
                 for (var i = 0; i < expected.Length; i++)
                 {
