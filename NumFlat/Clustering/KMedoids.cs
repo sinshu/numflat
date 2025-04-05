@@ -6,7 +6,10 @@ namespace NumFlat.Clustering
 {
     public sealed class KMedoids<T>
     {
-        public static (double TotalDeviation, int[] Medoids) GetInitialGuessBuild(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
+        // This implementation is based on the following thesis:
+        // https://www.sciencedirect.com/science/article/pii/S0306437921000557
+
+        public static (int[] Medoids, double Error) GetInitialGuessBuild(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
         {
             // (TD, m1) <- (oo, null);
             var td = double.PositiveInfinity;
@@ -91,12 +94,14 @@ namespace NumFlat.Clustering
                 var mLast = ms.Last();
                 foreach (var xo in EnumerateItemsExcept(items, ms))
                 {
+                    // dnearest(o) <- min { dnearest(o), d(xo, mi+1) };
                     var tmp = dNearest[xo.Index];
                     dNearest[xo.Index] = Math.Min(tmp, distance.GetDistance(xo.Item, items[mLast]));
                 }
             }
 
-            return (td, ms.ToArray());
+            // return TD, { m1, ..., mk };
+            return (ms.ToArray(), td);
         }
 
         private static IEnumerable<(int Index, T Item)> EnumerateItems(IEnumerable<T> items)
