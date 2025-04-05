@@ -6,11 +6,11 @@ namespace NumFlat.Clustering
 {
     public sealed class KMedoids<T>
     {
-        public static int[] GetInitialGuessBuild(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
+        public static (double TotalDeviation, int[] Medoids) GetInitialGuessBuild(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
         {
             // (TD, m1) <- (oo, null);
             var td = double.PositiveInfinity;
-            List<int> m = [-1];
+            var m0 = -1;
 
             // choose the first medoid
             // foreach xc do
@@ -31,14 +31,13 @@ namespace NumFlat.Clustering
                 {
                     // (TD, m1) <- (TDj, xc)
                     td = tdj;
-                    m[0] = xc.Index;
+                    m0 = xc.Index;
                 }
             }
 
             // initialize distance to nearest medoid
             // foreach xo != m1 do dnearest(o) <- d(m1, xo);
             var dNearest = new double[items.Count];
-            var m0 = m[0];
             foreach (var xo in EnumerateItemsExcept(items, m0))
             {
                 dNearest[xo.Index] = distance.GetDistance(items[m0], xo.Item);
@@ -46,14 +45,58 @@ namespace NumFlat.Clustering
 
             // choose remaining medoids
             // for i = 1...k-1 do
-            for (var i = 1; i < clusterCount; i++)
+            List<int> ms = [m0];
+            for (var i = 0; i < clusterCount - 1; i++)
             {
                 // (dTD*, x*) <- (oo, null);
                 var dTdBest = double.PositiveInfinity;
                 var xBest = -1;
 
-                // foreach xc != {m1, ..., mi}
+                // foreach xc != { m1, ..., mi } do
+                foreach (var xc in EnumerateItemsExcept(items, ms))
+                {
+                    // dTD <- 0;
+                    var dTd = 0.0;
+
+                    // foreach xo != { m1, ..., mi, xc } do
+                    foreach (var xo in EnumerateItemsExcept(items, ms, xc.Index))
+                    {
+                        // reduction in TD
+                        // delta <- d(xo, xc) - dnearest(o);
+                        var delta = distance.GetDistance(xo.Item, xc.Item) - dNearest[xo.Index];
+
+                        // if delta < 0 then dTD <- dTD + delta;
+                        if (delta < 0.0)
+                        {
+                            dTd += delta;
+                        }
+                    }
+
+                    // best reduction
+                    // if dTD < dTD* then
+                    if (dTd < dTdBest)
+                    {
+                        // (dTD*, x*) <- (dTD, xc)
+                        dTdBest = dTd;
+                        xBest = xc.Index;
+                    }
+                }
+
+                // (TD, mi+1) <- (TD + dTD*, x*);
+                td += dTdBest;
+                ms.Add(xBest);
+
+                // update distances to nearest medoid
+                // foreach xo != { m1, ..., mi+1, } do
+                var mLast = ms.Last();
+                foreach (var xo in EnumerateItemsExcept(items, ms))
+                {
+                    var tmp = dNearest[xo.Index];
+                    dNearest[xo.Index] = Math.Min(tmp, distance.GetDistance(xo.Item, items[mLast]));
+                }
             }
+
+            return (td, ms.ToArray());
         }
 
         private static IEnumerable<(int Index, T Item)> EnumerateItems(IEnumerable<T> items)
@@ -82,6 +125,17 @@ namespace NumFlat.Clustering
             foreach (var tuple in EnumerateItems(items))
             {
                 if (excludeIndices.All(index => index != tuple.Index))
+                {
+                    yield return tuple;
+                }
+            }
+        }
+
+        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept(IEnumerable<T> items, IReadOnlyList<int> excludeIndices, int anotherExcludeIndex)
+        {
+            foreach (var tuple in EnumerateItemsExcept(items, excludeIndices))
+            {
+                if (tuple.Index != anotherExcludeIndex)
                 {
                     yield return tuple;
                 }
