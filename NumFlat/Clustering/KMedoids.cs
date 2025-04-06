@@ -6,13 +6,66 @@ namespace NumFlat.Clustering
 {
     public sealed class KMedoids<T>
     {
+        private readonly IDistance<T, T> distance;
         private readonly Medoid[] medoids;
 
-        internal KMedoids(Medoid[] medoids)
+        internal KMedoids(IDistance<T, T> distance, Medoid[] medoids)
         {
+            this.distance = distance;
             this.medoids = medoids;
         }
 
+        public (KMedoids<T> Model, double Error) UpdateSwap(IReadOnlyList<T> items)
+        {
+            // foreach xo do compute nearest(o), dnearest(o), dsecond(o);
+            var nearest = Enumerable.Repeat(-1, items.Count).ToArray();
+            var dNearest = Enumerable.Repeat(double.PositiveInfinity, items.Count).ToArray();
+            var dSecond = Enumerable.Repeat(double.PositiveInfinity, items.Count).ToArray();
+            foreach (var xo in KMedoids.EnumerateItems(items))
+            {
+                foreach (var medoid in medoids)
+                {
+                    var tmp = distance.GetDistance(xo.Item, medoid.Item);
+                    if (tmp < dNearest[xo.Index])
+                    {
+                        dSecond[xo.Index] = dNearest[xo.Index];
+                        dNearest[xo.Index] = tmp;
+                        nearest[xo.Index] = medoid.Index;
+                    }
+                    else if (tmp < dSecond[xo.Index])
+                    {
+                        dSecond[xo.Index] = tmp;
+                    }
+                }
+            }
+
+            // repeat
+            while (true)
+            {
+                // (dTD*, m*, x*) <- (0, null, null);
+                var dTdBest = 0.0;
+                var mBest = -1;
+                var xBest = -1;
+
+                // each medoid and
+                // foreach mi = { m1, ..., mk } do
+                foreach (var m in medoids)
+                {
+                    // each non-medoid
+                    // foreach xc != { m1, ..., mk } do
+                    foreach (var xc in KMedoids.EnumerateItemsExcept(items, this))
+                    {
+                        // dTD <- 0;
+                        var dTd = 0.0;
+
+                        // foreach xo != { m1, ..., mk } \ mi do
+                        foreach(var xo
+                    }
+                }
+            }
+        }
+
+        public IDistance<T, T> Distance => distance;
         public IReadOnlyList<Medoid> Medoids => medoids;
 
 
@@ -135,10 +188,10 @@ namespace NumFlat.Clustering
             {
                 medoids[i] = new KMedoids<T>.Medoid(ms[i], items[ms[i]]);
             }
-            return (new KMedoids<T>(medoids), td);
+            return (new KMedoids<T>(distance, medoids), td);
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItems<T>(IEnumerable<T> items)
+        internal static IEnumerable<(int Index, T Item)> EnumerateItems<T>(IEnumerable<T> items)
         {
             var count = 0;
             foreach (var item in items)
@@ -148,7 +201,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, int excludeIndex)
+        internal static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, int excludeIndex)
         {
             foreach (var tuple in EnumerateItems(items))
             {
@@ -159,7 +212,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices)
+        internal static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices)
         {
             foreach (var tuple in EnumerateItems(items))
             {
@@ -170,11 +223,22 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices, int anotherExcludeIndex)
+        internal static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices, int anotherExcludeIndex)
         {
             foreach (var tuple in EnumerateItemsExcept(items, excludeIndices))
             {
                 if (tuple.Index != anotherExcludeIndex)
+                {
+                    yield return tuple;
+                }
+            }
+        }
+
+        internal static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, KMedoids<T> medoids)
+        {
+            foreach (var tuple in EnumerateItems(items))
+            {
+                if (medoids.Medoids.All(medoid => medoid.Index != tuple.Index))
                 {
                     yield return tuple;
                 }
