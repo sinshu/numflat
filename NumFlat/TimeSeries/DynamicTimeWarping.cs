@@ -9,13 +9,13 @@ namespace NumFlat.TimeSeries
     public static class DynamicTimeWarping
     {
         /// <summary>
-        /// 
+        /// Applies the DTW (dynamic time warping) matching algorithm to the given two sequences.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the elements in the first sequence.
+        /// The type of elements in the first sequence.
         /// </typeparam>
         /// <typeparam name="U">
-        /// The type of the elements in the second sequence.
+        /// The type of elements in the second sequence.
         /// </typeparam>
         /// <param name="xs">
         /// The first input sequence.
@@ -31,7 +31,7 @@ namespace NumFlat.TimeSeries
         /// By default, there is no constraint.
         /// </param>
         /// <returns>
-        /// The distance between the input sequences.
+        /// The DTW distance between the input sequences.
         /// </returns>
         public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w = int.MaxValue)
         {
@@ -49,6 +49,56 @@ namespace NumFlat.TimeSeries
                 throw new ArgumentException("The sequence must not be empty.", nameof(ys));
             }
 
+            return Compute(xs, ys, distance, w, false).Distance;
+        }
+
+        /// <summary>
+        /// Applies the DTW (dynamic time warping) matching algorithm to the given two sequences.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the first sequence.
+        /// </typeparam>
+        /// <typeparam name="U">
+        /// The type of elements in the second sequence.
+        /// </typeparam>
+        /// <param name="xs">
+        /// The first input sequence.
+        /// </param>
+        /// <param name="ys">
+        /// The second input sequence.
+        /// </param>
+        /// <param name="distance">
+        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// </param>
+        /// <param name="w">
+        /// The window size constraint that limits how far the algorithm can look ahead or behind.
+        /// By default, there is no constraint.
+        /// </param>
+        /// <returns>
+        /// A tuple containing the DTW distance and the alignment path between the input sequences.
+        /// </returns>
+        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w = int.MaxValue)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(ys, nameof(ys));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+
+            if (xs.Count == 0)
+            {
+                throw new ArgumentException("The sequence must not be empty.", nameof(xs));
+            }
+
+            if (ys.Count == 0)
+            {
+                throw new ArgumentException("The sequence must not be empty.", nameof(ys));
+            }
+
+            var result = Compute(xs, ys, distance, w, true);
+            return (result.Distance, result.Alignment!);
+        }
+
+        private static (double Distance, IndexPair[]? Alignment) Compute<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w, bool computeAlignment)
+        {
             var n = xs.Count;
             var m = ys.Count;
 
@@ -80,7 +130,48 @@ namespace NumFlat.TimeSeries
                 }
             }
 
-            return dtw[n, m];
+            if (computeAlignment)
+            {
+                var alignment = new List<IndexPair>();
+                var x = n;
+                var y = m;
+
+                while (x > 0 || y > 0)
+                {
+                    alignment.Add(new IndexPair(x - 1, y - 1));
+
+                    if (x == 0)
+                    {
+                        y--;
+                    }
+                    else if (y == 0)
+                    {
+                        x--;
+                    }
+                    else
+                    {
+                        var min = Min(dtw[x - 1, y], dtw[x, y - 1], dtw[x - 1, y - 1]);
+                        if (min == dtw[x - 1, y - 1])
+                        {
+                            x--; y--;
+                        }
+                        else if (min == dtw[x - 1, y])
+                        {
+                            x--;
+                        }
+                        else
+                        {
+                            y--;
+                        }
+                    }
+                }
+
+                alignment.Reverse();
+
+                return (dtw[n, m], alignment.ToArray());
+            }
+
+            return (dtw[n, m], null);
         }
 
         private static double Min(double a, double b, double c)
@@ -103,6 +194,14 @@ namespace NumFlat.TimeSeries
             {
                 this.first = first;
                 this.second = second;
+            }
+
+            /// <summary>
+            /// <inheritdoc/>
+            /// </summary>
+            public override string ToString()
+            {
+                return "(" + first + ", " + second + ")";
             }
 
             /// <summary>
