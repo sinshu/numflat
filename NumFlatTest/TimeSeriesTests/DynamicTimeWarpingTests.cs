@@ -174,6 +174,53 @@ namespace NumFlatTest.TimeSeriesTests
                 Assert.That(distance, Is.EqualTo(expected));
             }
         }
+
+        [Test]
+        public void Gpt4()
+        {
+            var seq1 = new double[] {
+                0.0469, 0.2466, 0.2881, 0.5178, 0.6026, 0.7694, 0.8331, 0.9941, 0.9711, 1.0111,
+                0.9767, 0.9765, 0.8479, 0.8409, 0.6595, 0.5734, 0.4431, 0.3204, 0.1355, 0.0077,
+               -0.1393, -0.3245, -0.4185, -0.5802, -0.6456, -0.7918, -0.8471, -0.9405, -0.9814,
+               -1.0104, -0.9790, -0.9384, -0.8851, -0.7575, -0.6613, -0.5381, -0.4089, -0.2612,
+               -0.0996, 0.0230, 0.1492, 0.3385, 0.4534, 0.6036, 0.7056, 0.8251, 0.9076, 0.9750,
+                1.0115, 1.0134, 0.9763, 0.9020, 0.7820, 0.6404, 0.5093, 0.3153, 0.2062
+            };
+
+            var seq2 = new double[] {
+               -0.0362, 0.1607, 0.2561, 0.3786, 0.5097, 0.6113, 0.7645, 0.8382, 0.9637, 1.0132,
+                0.9874, 1.0168, 0.9653, 0.9173, 0.8608, 0.7453, 0.6611, 0.5670, 0.4308, 0.2829,
+                0.1766, 0.0420, -0.1050, -0.2193, -0.3637, -0.4775, -0.5941, -0.6791, -0.8192,
+               -0.8703, -0.9311, -0.9745, -0.9950, -0.9605, -0.9110, -0.8535, -0.7576, -0.6575,
+               -0.5464, -0.4072, -0.2892, -0.1242, -0.0001, 0.1513, 0.2593, 0.4063, 0.5400, 0.6690,
+                0.7736, 0.8764, 0.9568, 1.0011, 0.9937, 0.9823, 0.9339, 0.8443, 0.7160, 0.5985,
+                0.4562, 0.3205, 0.1777, 0.0629, -0.0556, -0.1251
+            };
+
+            {
+                var distance = DynamicTimeWarping.GetDistance(seq1, seq2, new DoubleAbs());
+                Assert.That(distance, Is.EqualTo(2.573).Within(1.0E-12));
+            }
+
+            {
+                var distance = DynamicTimeWarping.GetDistance(seq2, seq1, new DoubleAbs());
+                Assert.That(distance, Is.EqualTo(2.573).Within(1.0E-12));
+            }
+
+            {
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq1, seq2, new DoubleAbs());
+                Assert.That(result.Distance, Is.EqualTo(2.573).Within(1.0E-12));
+                var sum = result.Alignment.Select(pair => Math.Abs(seq1[pair.First] - seq2[pair.Second])).Sum();
+                Assert.That(sum, Is.EqualTo(2.573).Within(1.0E-12));
+            }
+
+            {
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq2, seq1, new DoubleAbs());
+                Assert.That(result.Distance, Is.EqualTo(2.573).Within(1.0E-12));
+                var sum = result.Alignment.Select(pair => Math.Abs(seq2[pair.First] - seq1[pair.Second])).Sum();
+                Assert.That(sum, Is.EqualTo(2.573).Within(1.0E-12));
+            }
+        }
     }
 
     class Levenshtein : IDistance<char, char>
@@ -187,6 +234,14 @@ namespace NumFlatTest.TimeSeriesTests
     class IntAbs : IDistance<int, int>
     {
         public double GetDistance(int x, int y)
+        {
+            return Math.Abs(x - y);
+        }
+    }
+
+    class DoubleAbs : IDistance<double, double>
+    {
+        public double GetDistance(double x, double y)
         {
             return Math.Abs(x - y);
         }
