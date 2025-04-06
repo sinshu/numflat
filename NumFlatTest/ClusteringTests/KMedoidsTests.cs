@@ -48,11 +48,16 @@ namespace NumFlatTest.ClusteringTests
 
             var items = source.Select(tpl => tpl.Feature).ToArray();
 
-            var result = KMedoids<Vec<double>>.GetInitialGuessBuild(items, Distance.Euclidean, 5);
+            var result = KMedoids.GetInitialGuessBuild(items, Distance.Euclidean, 5).Model;
 
             int[] expected = [0, 1, 2, 3, 4];
-            var actual = result.Medoids.Select(m => source[m].ClassIndex).Order().ToArray();
+            var actual = result.Medoids.Select(m => source[m.Index].ClassIndex).Order().ToArray();
             Assert.That(actual, Is.EqualTo(expected));
+
+            foreach (var medoid in result.Medoids)
+            {
+                NumAssert.AreSame(medoid.Item, source[medoid.Index].Feature, 1.0E-16);
+            }
         }
 
         private static void Shuffle<T>(T[] array)

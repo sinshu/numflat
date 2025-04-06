@@ -6,10 +6,39 @@ namespace NumFlat.Clustering
 {
     public sealed class KMedoids<T>
     {
+        private readonly Medoid[] medoids;
+
+        internal KMedoids(Medoid[] medoids)
+        {
+            this.medoids = medoids;
+        }
+
+        public IReadOnlyList<Medoid> Medoids => medoids;
+
+
+
+        public class Medoid
+        {
+            private int index;
+            private T item;
+
+            internal Medoid(int index, T item)
+            {
+                this.index = index;
+                this.item = item;
+            }
+
+            public int Index => index;
+            public T Item => item;
+        }
+    }
+
+    public sealed class KMedoids
+    {
         // This implementation is based on the following thesis:
         // https://www.sciencedirect.com/science/article/pii/S0306437921000557
 
-        public static (int[] Medoids, double Error) GetInitialGuessBuild(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
+        public static (KMedoids<T> Model, double Error) GetInitialGuessBuild<T>(IReadOnlyList<T> items, IDistance<T, T> distance, int clusterCount)
         {
             // (TD, m1) <- (oo, null);
             var td = double.PositiveInfinity;
@@ -101,10 +130,15 @@ namespace NumFlat.Clustering
             }
 
             // return TD, { m1, ..., mk };
-            return (ms.ToArray(), td);
+            var medoids = new KMedoids<T>.Medoid[clusterCount];
+            for (var i = 0; i < medoids.Length; i++)
+            {
+                medoids[i] = new KMedoids<T>.Medoid(ms[i], items[ms[i]]);
+            }
+            return (new KMedoids<T>(medoids), td);
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItems(IEnumerable<T> items)
+        private static IEnumerable<(int Index, T Item)> EnumerateItems<T>(IEnumerable<T> items)
         {
             var count = 0;
             foreach (var item in items)
@@ -114,7 +148,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept(IEnumerable<T> items, int excludeIndex)
+        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, int excludeIndex)
         {
             foreach (var tuple in EnumerateItems(items))
             {
@@ -125,7 +159,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept(IEnumerable<T> items, IReadOnlyList<int> excludeIndices)
+        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices)
         {
             foreach (var tuple in EnumerateItems(items))
             {
@@ -136,7 +170,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept(IEnumerable<T> items, IReadOnlyList<int> excludeIndices, int anotherExcludeIndex)
+        private static IEnumerable<(int Index, T Item)> EnumerateItemsExcept<T>(IEnumerable<T> items, IReadOnlyList<int> excludeIndices, int anotherExcludeIndex)
         {
             foreach (var tuple in EnumerateItemsExcept(items, excludeIndices))
             {
