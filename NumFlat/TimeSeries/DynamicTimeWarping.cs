@@ -153,7 +153,8 @@ namespace NumFlat.TimeSeries
                         var min = Min(dtw[x - 1, y], dtw[x, y - 1], dtw[x - 1, y - 1]);
                         if (min == dtw[x - 1, y - 1])
                         {
-                            x--; y--;
+                            x--;
+                            y--;
                         }
                         else if (min == dtw[x - 1, y])
                         {
