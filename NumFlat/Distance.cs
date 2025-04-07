@@ -32,7 +32,7 @@ namespace NumFlat
         /// <summary>
         /// Gets the Euclidean distance metric.
         /// </summary>
-        public static readonly Distance<Vec<double>, Vec<double>> Euclidean = (Vec<double> x, Vec<double> y) =>
+        public static Distance<Vec<double>, Vec<double>> Euclidean => (Vec<double> x, Vec<double> y) =>
         {
             return x.Distance(y);
         };
@@ -40,7 +40,7 @@ namespace NumFlat
         /// <summary>
         /// Gets the Manhattan distance metric.
         /// </summary>
-        public static readonly Distance<Vec<double>, Vec<double>> Manhattan = (Vec<double> x, Vec<double> y) =>
+        public static Distance<Vec<double>, Vec<double>> Manhattan => (Vec<double> x, Vec<double> y) =>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));
