@@ -10,6 +10,10 @@ namespace NumFlatTest.TimeSeriesTests
 {
     public class DynamicTimeWarpingTests
     {
+        private static Distance<int, int> intAbs = (x, y) => Math.Abs(x - y);
+        private static Distance<double, double> doubleAbs = (x, y) => Math.Abs(x - y);
+        private static Distance<char, char> levenshtein = (x, y) => x == y ? 0 : 1;
+
         [Test]
         public void Zero()
         {
@@ -17,12 +21,12 @@ namespace NumFlatTest.TimeSeriesTests
             int[] ys = [1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3];
 
             {
-                var distance = DynamicTimeWarping.GetDistance(xs, ys, new IntAbs());
+                var distance = DynamicTimeWarping.GetDistance(xs, ys, intAbs);
                 Assert.That(distance, Is.EqualTo(0));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistance(ys, xs, new IntAbs());
+                var distance = DynamicTimeWarping.GetDistance(ys, xs, intAbs);
                 Assert.That(distance, Is.EqualTo(0));
             }
         }
@@ -34,12 +38,12 @@ namespace NumFlatTest.TimeSeriesTests
             int[] ys = [1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3];
 
             {
-                var distance = DynamicTimeWarping.GetDistance(xs, ys, new IntAbs());
+                var distance = DynamicTimeWarping.GetDistance(xs, ys, intAbs);
                 Assert.That(distance, Is.EqualTo(1));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistance(ys, xs, new IntAbs());
+                var distance = DynamicTimeWarping.GetDistance(ys, xs, intAbs);
                 Assert.That(distance, Is.EqualTo(1));
             }
         }
@@ -51,7 +55,7 @@ namespace NumFlatTest.TimeSeriesTests
             int[] ys = [1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3];
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(xs, ys, new IntAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(xs, ys, intAbs);
                 Assert.That(result.Distance, Is.EqualTo(0));
 
                 {
@@ -69,7 +73,7 @@ namespace NumFlatTest.TimeSeriesTests
             }
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(ys, xs, new IntAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(ys, xs, intAbs);
                 Assert.That(result.Distance, Is.EqualTo(0));
 
                 {
@@ -94,7 +98,7 @@ namespace NumFlatTest.TimeSeriesTests
             int[] ys = [1, 1, 1, 1, 2, 2, 3, 3, 4, 3, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3];
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(xs, ys, new IntAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(xs, ys, intAbs);
                 Assert.That(result.Distance, Is.EqualTo(1));
 
                 {
@@ -119,7 +123,7 @@ namespace NumFlatTest.TimeSeriesTests
             }
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(ys, xs, new IntAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(ys, xs, intAbs);
                 Assert.That(result.Distance, Is.EqualTo(1));
 
                 {
@@ -155,22 +159,22 @@ namespace NumFlatTest.TimeSeriesTests
         public void Levenshtein(string x, string y, double expected)
         {
             {
-                var distance = DynamicTimeWarping.GetDistance(x.ToArray(), y.ToArray(), new Levenshtein());
+                var distance = DynamicTimeWarping.GetDistance(x.ToArray(), y.ToArray(), levenshtein);
                 Assert.That(distance, Is.EqualTo(expected));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistance(y.ToArray(), x.ToArray(), new Levenshtein());
+                var distance = DynamicTimeWarping.GetDistance(y.ToArray(), x.ToArray(), levenshtein);
                 Assert.That(distance, Is.EqualTo(expected));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistanceAndAlignment(x.ToArray(), y.ToArray(), new Levenshtein()).Distance;
+                var distance = DynamicTimeWarping.GetDistanceAndAlignment(x.ToArray(), y.ToArray(), levenshtein).Distance;
                 Assert.That(distance, Is.EqualTo(expected));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistanceAndAlignment(y.ToArray(), x.ToArray(), new Levenshtein()).Distance;
+                var distance = DynamicTimeWarping.GetDistanceAndAlignment(y.ToArray(), x.ToArray(), levenshtein).Distance;
                 Assert.That(distance, Is.EqualTo(expected));
             }
         }
@@ -198,52 +202,28 @@ namespace NumFlatTest.TimeSeriesTests
             };
 
             {
-                var distance = DynamicTimeWarping.GetDistance(seq1, seq2, new DoubleAbs());
+                var distance = DynamicTimeWarping.GetDistance(seq1, seq2, doubleAbs);
                 Assert.That(distance, Is.EqualTo(2.573).Within(1.0E-12));
             }
 
             {
-                var distance = DynamicTimeWarping.GetDistance(seq2, seq1, new DoubleAbs());
+                var distance = DynamicTimeWarping.GetDistance(seq2, seq1, doubleAbs);
                 Assert.That(distance, Is.EqualTo(2.573).Within(1.0E-12));
             }
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq1, seq2, new DoubleAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq1, seq2, doubleAbs);
                 Assert.That(result.Distance, Is.EqualTo(2.573).Within(1.0E-12));
                 var sum = result.Alignment.Select(pair => Math.Abs(seq1[pair.First] - seq2[pair.Second])).Sum();
                 Assert.That(sum, Is.EqualTo(2.573).Within(1.0E-12));
             }
 
             {
-                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq2, seq1, new DoubleAbs());
+                var result = DynamicTimeWarping.GetDistanceAndAlignment(seq2, seq1, doubleAbs);
                 Assert.That(result.Distance, Is.EqualTo(2.573).Within(1.0E-12));
                 var sum = result.Alignment.Select(pair => Math.Abs(seq2[pair.First] - seq1[pair.Second])).Sum();
                 Assert.That(sum, Is.EqualTo(2.573).Within(1.0E-12));
             }
-        }
-    }
-
-    class Levenshtein : IDistance<char, char>
-    {
-        public double GetDistance(char x, char y)
-        {
-            return x == y ? 0 : 1;
-        }
-    }
-
-    class IntAbs : IDistance<int, int>
-    {
-        public double GetDistance(int x, int y)
-        {
-            return Math.Abs(x - y);
-        }
-    }
-
-    class DoubleAbs : IDistance<double, double>
-    {
-        public double GetDistance(double x, double y)
-        {
-            return Math.Abs(x - y);
         }
     }
 }

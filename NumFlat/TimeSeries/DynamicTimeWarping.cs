@@ -24,7 +24,7 @@ namespace NumFlat.TimeSeries
         /// The second input sequence.
         /// </param>
         /// <param name="distance">
-        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// An instance of <see cref="Distance{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <param name="w">
         /// The window size constraint that limits how far the algorithm can look ahead or behind.
@@ -33,7 +33,7 @@ namespace NumFlat.TimeSeries
         /// <returns>
         /// The DTW distance between the input sequences.
         /// </returns>
-        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w)
+        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, Distance<T, U> distance, int w)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
@@ -68,12 +68,12 @@ namespace NumFlat.TimeSeries
         /// The second input sequence.
         /// </param>
         /// <param name="distance">
-        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// An instance of <see cref="Distance{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <returns>
         /// The DTW distance between the input sequences.
         /// </returns>
-        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance)
+        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, Distance<T, U> distance)
         {
             return GetDistance(xs, ys, distance, int.MaxValue);
         }
@@ -94,7 +94,7 @@ namespace NumFlat.TimeSeries
         /// The second input sequence.
         /// </param>
         /// <param name="distance">
-        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// An instance of <see cref="Distance{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <param name="w">
         /// The window size constraint that limits how far the algorithm can look ahead or behind.
@@ -103,7 +103,7 @@ namespace NumFlat.TimeSeries
         /// <returns>
         /// A tuple containing the DTW distance and the alignment path between the input sequences.
         /// </returns>
-        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w)
+        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, Distance<T, U> distance, int w)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
@@ -139,17 +139,17 @@ namespace NumFlat.TimeSeries
         /// The second input sequence.
         /// </param>
         /// <param name="distance">
-        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// An instance of <see cref="Distance{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <returns>
         /// A tuple containing the DTW distance and the alignment path between the input sequences.
         /// </returns>
-        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance)
+        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, Distance<T, U> distance)
         {
             return GetDistanceAndAlignment(xs, ys, distance, int.MaxValue);
         }
 
-        private static (double Distance, IndexPair[]? Alignment) Compute<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w, bool computeAlignment)
+        private static (double Distance, IndexPair[]? Alignment) Compute<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, Distance<T, U> distance, int w, bool computeAlignment)
         {
             var n = xs.Count;
             var m = ys.Count;
@@ -174,7 +174,7 @@ namespace NumFlat.TimeSeries
                 var end = Math.Min(m, i + w);
                 for (var j = start; j <= end; j++)
                 {
-                    var cost = distance.GetDistance(xs[i - 1], ys[j - 1]);
+                    var cost = distance(xs[i - 1], ys[j - 1]);
                     dtw[i, j] = cost + Min(
                         dtw[i - 1, j],      // insertion
                         dtw[i, j - 1],      // deletion

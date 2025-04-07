@@ -34,7 +34,7 @@ namespace NumFlat.Clustering
         /// The destination where the cluster labels for each point will be stored. 
         /// A label of -1 indicates noise, and any non-negative integer value indicates the cluster to which the point belongs.
         /// </param>
-        public static void Fit<T>(IReadOnlyList<T> points, IDistance<T, T> distance, double eps, int minPoints, Span<int> destination)
+        public static void Fit<T>(IReadOnlyList<T> points, Distance<T, T> distance, double eps, int minPoints, Span<int> destination)
         {
             //
             // This is based on the following implementations.
@@ -114,7 +114,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, NeighborPoints<T> neighborPoints, int c, IDistance<T, T> distance, double eps, int minPoints)
+        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, NeighborPoints<T> neighborPoints, int c, Distance<T, T> distance, double eps, int minPoints)
         {
             // add P to cluster C
             center.ClusterIndex = c;
@@ -154,9 +154,9 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static NeighborPoints<T> RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, IDistance<T, T> distance, double eps)
+        private static NeighborPoints<T> RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, Distance<T, T> distance, double eps)
         {
-            return new NeighborPoints<T>(allPoints.Where(point => distance.GetDistance(point.Point, center) <= eps).ToArray());
+            return new NeighborPoints<T>(allPoints.Where(point => distance(point.Point, center) <= eps).ToArray());
         }
 
 

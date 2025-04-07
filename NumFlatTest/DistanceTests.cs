@@ -16,7 +16,7 @@ namespace NumFlatTest
             Vec<double> y = [1, 3, 7];
 
             var expected = (x - y).Norm();
-            var actual = Distance.Euclidean.GetDistance(x, y);
+            var actual = Distance.Euclidean(x, y);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
 
@@ -27,7 +27,7 @@ namespace NumFlatTest
             Vec<double> y = [1, 3, 7];
 
             var expected = (x - y).L1Norm();
-            var actual = Distance.Manhattan.GetDistance(x, y);
+            var actual = Distance.Manhattan(x, y);
             Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
         }
     }
