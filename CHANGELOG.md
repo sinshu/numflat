@@ -1,3 +1,8 @@
+# v1.0.4
+
+* Added `Special.GetMemoryFromUnmanagedPointer` to support matrices backed by unmanaged memory.
+* Added `DynamicTimeWarping`.
+
 # v1.0.3
 
 * Indexers for `Vec<T>` and `Mat<T>` now return `ref T`, improving usability.

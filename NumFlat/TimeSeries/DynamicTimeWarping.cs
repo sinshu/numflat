@@ -33,7 +33,7 @@ namespace NumFlat.TimeSeries
         /// <returns>
         /// The DTW distance between the input sequences.
         /// </returns>
-        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w = int.MaxValue)
+        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
@@ -70,6 +70,32 @@ namespace NumFlat.TimeSeries
         /// <param name="distance">
         /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
         /// </param>
+        /// <returns>
+        /// The DTW distance between the input sequences.
+        /// </returns>
+        public static double GetDistance<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance)
+        {
+            return GetDistance(xs, ys, distance, int.MaxValue);
+        }
+
+        /// <summary>
+        /// Applies the DTW (dynamic time warping) matching algorithm to the given two sequences.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the first sequence.
+        /// </typeparam>
+        /// <typeparam name="U">
+        /// The type of elements in the second sequence.
+        /// </typeparam>
+        /// <param name="xs">
+        /// The first input sequence.
+        /// </param>
+        /// <param name="ys">
+        /// The second input sequence.
+        /// </param>
+        /// <param name="distance">
+        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// </param>
         /// <param name="w">
         /// The window size constraint that limits how far the algorithm can look ahead or behind.
         /// By default, there is no constraint.
@@ -77,7 +103,7 @@ namespace NumFlat.TimeSeries
         /// <returns>
         /// A tuple containing the DTW distance and the alignment path between the input sequences.
         /// </returns>
-        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w = int.MaxValue)
+        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
@@ -95,6 +121,32 @@ namespace NumFlat.TimeSeries
 
             var result = Compute(xs, ys, distance, w, true);
             return (result.Distance, result.Alignment!);
+        }
+
+        /// <summary>
+        /// Applies the DTW (dynamic time warping) matching algorithm to the given two sequences.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the first sequence.
+        /// </typeparam>
+        /// <typeparam name="U">
+        /// The type of elements in the second sequence.
+        /// </typeparam>
+        /// <param name="xs">
+        /// The first input sequence.
+        /// </param>
+        /// <param name="ys">
+        /// The second input sequence.
+        /// </param>
+        /// <param name="distance">
+        /// An instance of <see cref="IDistance{T, U}"/> to compute the distance between two elements.
+        /// </param>
+        /// <returns>
+        /// A tuple containing the DTW distance and the alignment path between the input sequences.
+        /// </returns>
+        public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance)
+        {
+            return GetDistanceAndAlignment(xs, ys, distance, int.MaxValue);
         }
 
         private static (double Distance, IndexPair[]? Alignment) Compute<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, IDistance<T, U> distance, int w, bool computeAlignment)
