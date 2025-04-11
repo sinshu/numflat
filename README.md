@@ -697,6 +697,7 @@ Matrix 3x3-Double
     - ✅ Gaussian
     - ✅ Diagonal Gaussian
     - ⬜ Other distributions
+    - ✅ Earth mover's distance
 * 🚧 Clustering
     - ✅ k-means
     - ✅ GMM (gaussian mixture model)

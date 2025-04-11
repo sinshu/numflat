@@ -1,3 +1,8 @@
+# v1.0.5
+
+* Removed the `IDistance` interface and added the `Distance` delegate (breaking).
+* Added `EarthMoversDistance`.
+
 # v1.0.4
 
 * Added `Special.GetMemoryFromUnmanagedPointer` to support matrices backed by unmanaged memory.
