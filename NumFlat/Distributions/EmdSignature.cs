@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NumFlat.Distributions
 {
@@ -25,6 +26,24 @@ namespace NumFlat.Distributions
         /// </param>
         public EmdSignature(IReadOnlyList<T> features, IReadOnlyList<double> weights)
         {
+            ThrowHelper.ThrowIfNull(features, nameof(features));
+            ThrowHelper.ThrowIfNull(weights, nameof(weights));
+
+            if (features.Count != weights.Count)
+            {
+                throw new ArgumentException("The number of features and weights must match.");
+            }
+
+            if (features.Count == 0)
+            {
+                throw new ArgumentException("At least one feature is required.");
+            }
+
+            if (weights.Any(w => w < 0))
+            {
+                throw new ArgumentException("Negative weight values are not allowed.");
+            }
+
             this.features = features;
             this.weights = weights;
         }

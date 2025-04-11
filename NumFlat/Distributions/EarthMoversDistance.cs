@@ -28,10 +28,22 @@ namespace NumFlat.Distributions
         /// </returns>
         public static double GetDistance<T>(EmdSignature<T> signature1, EmdSignature<T> signature2, Distance<T, T> distance)
         {
+            ThrowHelper.ThrowIfNull(signature1, nameof(signature1));
+            ThrowHelper.ThrowIfNull(signature2, nameof(signature2));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+
             var s1 = new signature_t<T>(signature1.Features.Count, signature1.Features, signature1.Weights);
             var s2 = new signature_t<T>(signature2.Features.Count, signature2.Features, signature2.Weights);
             var emd = new Emd(s1.n, s2.n);
-            return emd.emd(s1, s2, (x, y) => distance(x, y), null, null);
+
+            try
+            {
+                return emd.emd(s1, s2, (x, y) => distance(x, y), null, null);
+            }
+            catch (EmdException e)
+            {
+                throw new NumFlatException("Failed to compute the EMD.", e);
+            }
         }
 
         /// <summary>
@@ -64,7 +76,14 @@ namespace NumFlat.Distributions
             double value;
             fixed (flow_t* p = umFlow)
             {
-                value = emd.emd(s1, s2, (x, y) => distance(x, y), p, &flowSize);
+                try
+                {
+                    value = emd.emd(s1, s2, (x, y) => distance(x, y), p, &flowSize);
+                }
+                catch (EmdException e)
+                {
+                    throw new NumFlatException("Failed to compute the EMD.", e);
+                }
             }
 
             var flow = new EmdFlow[flowSize];
