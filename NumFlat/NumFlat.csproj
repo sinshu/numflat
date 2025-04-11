@@ -32,4 +32,8 @@
     <PackageReference Include="MatFlat" Version="0.8.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Distributions\EmdFlat\" />
+  </ItemGroup>
+
 </Project>
