@@ -1,13 +1,25 @@
-﻿#pragma warning disable CS1591
-
-using System;
+﻿using System;
 
 namespace EmdFlat
 {
+    /// <summary>
+    /// Represents a unit of optimal flow between two features in the Earth Mover's Distance computation.
+    /// </summary>
     public struct flow_t
     {
-        public int from;       /* Feature number in signature 1 */
-        public int to;         /* Feature number in signature 2 */
-        public double amount;  /* Amount of flow from "from" to "to" */
+        /// <summary>
+        /// Feature number in signature 1.
+        /// </summary>
+        public int from;
+
+        /// <summary>
+        /// Feature number in signature 2.
+        /// </summary>
+        public int to;
+
+        /// <summary>
+        /// Amount of flow from "from" to "to".
+        /// </summary>
+        public double amount;
     }
 }

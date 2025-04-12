@@ -1,17 +1,21 @@
-﻿#pragma warning disable CS1591
-
-// This implementation is based on the C implementation available at:
+﻿// This implementation is based on the C implementation available at:
 // https://ai.stanford.edu/~rubner/emd/default.htm
 
 using System;
 
 namespace EmdFlat
 {
+    /// <summary>
+    /// Provides methods for computing the Earth Mover's Distance.
+    /// </summary>
     public sealed unsafe class Emd
     {
         private static readonly int MAX_ITERATIONS = 500;
         private static readonly double INFINITY = 1e40;
         private static readonly double EPSILON = 1e-12;
+
+        private int maxSigSize1;
+        private int maxSigSize2;
 
         /* GLOBAL VARIABLE DECLARATION */
 
@@ -49,10 +53,22 @@ namespace EmdFlat
 
         private double[][] Delta;
 
-        public Emd(int n1, int n2)
+        /// <summary>
+        /// Initializes a new instance of <see cref="Emd"/>.
+        /// </summary>
+        /// <param name="maxSigSize1">
+        /// The maximum size of the first signature.
+        /// </param>
+        /// <param name="maxSigSize2">
+        /// The maximum size of the second signature.
+        /// </param>
+        public Emd(int maxSigSize1, int maxSigSize2)
         {
-            var p1 = n1 + 1;
-            var p2 = n2 + 1;
+            this.maxSigSize1 = maxSigSize1;
+            this.maxSigSize2 = maxSigSize2;
+
+            var p1 = maxSigSize1 + 1;
+            var p2 = maxSigSize2 + 1;
             var max = Math.Max(p1, p2);
 
             _C = CreateJaggedArray<double>(p1, p2);
@@ -71,6 +87,39 @@ namespace EmdFlat
             Delta = CreateJaggedArray<double>(p1, p2);
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="Emd"/>.
+        /// </summary>
+        public Emd() : this(100, 100)
+        {
+        }
+
+        /// <summary>
+        /// Computes the Earth Mover's Distance between two signatures using the given distance function.
+        /// </summary>
+        /// <typeparam name="feature_t">
+        /// The type of the features in the signatures.
+        /// </typeparam>
+        /// <param name="Signature1">
+        /// Pointers to the two signatures that their distance we want to compute.
+        /// </param>
+        /// <param name="Signature2">
+        /// Pointers to the two signatures that their distance we want to compute.
+        /// </param>
+        /// <param name="Dist">
+        /// Pointer to the ground distance function.
+        /// i.e. the function that computes the distance between two features.
+        /// </param>
+        /// <param name="Flow">
+        /// Pointer to a vector of flow_t (defined in emd.h) where the resulting flow will be stored.
+        /// Flow must have n1+n2-1 elements, where n1 and n2 are the sizes of the two signatures respectively.
+        /// If NULL, the flow is not returned.
+        /// </param>
+        /// <param name="FlowSize">
+        /// In case Flow is not NULL, FlowSize should point to a integer where the number of flow elements (always less or equal to n1+n2-1) will be written.
+        /// </param>
+        /// <returns></returns>
+        /// <exception cref="EmdException"></exception>
         public double emd<feature_t>(
             signature_t<feature_t> Signature1, signature_t<feature_t> Signature2,
             Func<feature_t, feature_t, double> Dist,
@@ -151,6 +200,11 @@ namespace EmdFlat
 
                 _n1 = Signature1.n;
                 _n2 = Signature2.n;
+
+                if (_n1 > maxSigSize1 || _n2 > maxSigSize2)
+                {
+                    throw new EmdException("Signature size is too large.");
+                }
 
                 /* COMPUTE THE DISTANCE MATRIX */
                 _maxC = 0;
