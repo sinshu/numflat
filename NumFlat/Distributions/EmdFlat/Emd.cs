@@ -10,12 +10,12 @@ namespace EmdFlat
     /// </summary>
     public sealed unsafe class Emd
     {
-        private static readonly int MAX_ITERATIONS = 500;
         private static readonly double INFINITY = 1e40;
         private static readonly double EPSILON = 1e-12;
 
         private int maxSigSize1;
         private int maxSigSize2;
+        private int maxIterations;
 
         /* GLOBAL VARIABLE DECLARATION */
 
@@ -62,10 +62,15 @@ namespace EmdFlat
         /// <param name="maxSigSize2">
         /// The maximum size of the second signature.
         /// </param>
-        public Emd(int maxSigSize1, int maxSigSize2)
+        /// <param name="maxIterations">
+        /// The maximum number of iterations.
+        /// If this limit is exceeded, an <see cref="EmdException"/> is thrown.
+        /// </param>
+        public Emd(int maxSigSize1 = 100, int maxSigSize2 = 100, int maxIterations = 500)
         {
             this.maxSigSize1 = maxSigSize1;
             this.maxSigSize2 = maxSigSize2;
+            this.maxIterations = maxIterations;
 
             var p1 = maxSigSize1 + 1;
             var p2 = maxSigSize2 + 1;
@@ -85,13 +90,6 @@ namespace EmdFlat
             managed_Ur = new node1_t[max];
             managed_Vr = new node1_t[max];
             Delta = CreateJaggedArray<double>(p1, p2);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Emd"/>.
-        /// </summary>
-        public Emd() : this(100, 100)
-        {
         }
 
         /// <summary>
@@ -139,7 +137,7 @@ namespace EmdFlat
 
                 if (_n1 > 1 && _n2 > 1)  /* IF _n1 = 1 OR _n2 = 1 THEN WE ARE DONE */
                 {
-                    for (itr = 1; itr < MAX_ITERATIONS; itr++)
+                    for (itr = 1; itr < maxIterations; itr++)
                     {
                         /* FIND BASIC VARIABLES */
                         findBasicVariables(U, V);
@@ -152,8 +150,8 @@ namespace EmdFlat
                         newSol();
                     }
 
-                    if (itr == MAX_ITERATIONS)
-                        throw new EmdException($"Maximum number of iterations has been reached ({MAX_ITERATIONS}).");
+                    if (itr == maxIterations)
+                        throw new EmdException($"Maximum number of iterations has been reached ({maxIterations}).");
                 }
 
                 /* COMPUTE THE TOTAL FLOW */
