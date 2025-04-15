@@ -1,3 +1,7 @@
+# v1.0.6
+
+* Added an option to `EarthMoversDistance` to allow setting the maximum number of iterations.
+
 # v1.0.5
 
 * Removed the `IDistance` interface and added the `Distance` delegate (breaking).
