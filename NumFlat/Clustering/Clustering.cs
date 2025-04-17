@@ -144,7 +144,7 @@ namespace NumFlat.Clustering
 
             try
             {
-                var groups = ArgumentHelper.GroupByClassIndex(xs, xs.Select(x => kMeans.Predict(x)));
+                var groups = EnumerableHelper.GroupByClassIndex(xs, xs.Select(x => kMeans.Predict(x)));
                 var weights = groups.Select(group => (double)group.Count).ToVector();
                 weights.DivInplace(weights.Sum());
                 var gaussians = groups.Select(group => group.ToGaussian());
@@ -184,7 +184,7 @@ namespace NumFlat.Clustering
 
             try
             {
-                var groups = ArgumentHelper.GroupByClassIndex(xs, xs.Select(x => kMeans.Predict(x)));
+                var groups = EnumerableHelper.GroupByClassIndex(xs, xs.Select(x => kMeans.Predict(x)));
                 var weights = groups.Select(group => (double)group.Count).ToVector();
                 weights.DivInplace(weights.Sum());
                 var gaussians = groups.Select(group => group.ToDiagonalGaussian());

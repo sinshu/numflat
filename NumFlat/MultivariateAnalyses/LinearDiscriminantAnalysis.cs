@@ -29,7 +29,7 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfNull(ys, nameof(ys));
 
-            var groups = ArgumentHelper.GroupByClassIndex(xs, ys);
+            var groups = EnumerableHelper.GroupByClassIndex(xs, ys);
 
             Mat<double> sb;
             Mat<double> sw;

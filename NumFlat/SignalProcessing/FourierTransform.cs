@@ -480,13 +480,8 @@ namespace NumFlat.SignalProcessing
             var rft = FourierTransform.GetRftInstance(info.Window.Count);
             var position = info.FirstFramePosition;
             var destination = new Vec<double>(info.SignalLength);
-            foreach (var spectrum in spectrogram)
+            foreach (var spectrum in spectrogram.ThrowIfEmptyOrDifferentSize(info.Window.Count / 2 + 1, nameof(spectrogram)))
             {
-                if (spectrum.Count != info.Window.Count / 2 + 1)
-                {
-                    throw new ArgumentException("The size of a spectrum is invalid.");
-                }
-
                 var csf = MemoryMarshal.Cast<double, Complex>(sf);
                 spectrum.CopyTo(csf);
                 rft.Inverse(csf);
