@@ -90,7 +90,7 @@ namespace NumFlat.Clustering
             }
 
             Func<int, int, double> func = (i, j) => distance(xs[i], xs[j]);
-            medoidIndices = FasterPamLike(medoidIndices, xs.Count, clusterCount, func, random);
+            medoidIndices = FastPamLike(medoidIndices, xs.Count, clusterCount, func, random);
 
             medoids = new T[clusterCount];
             for (var m = 0; m < medoids.Length; m++)
@@ -188,7 +188,7 @@ namespace NumFlat.Clustering
             return i - 1;
         }
 
-        private static int[] FasterPamLike(int[] medoids, int n, int k, Func<int, int, double> distance, Random random)
+        private static int[] FastPamLike(int[] medoids, int n, int k, Func<int, int, double> distance, Random random)
         {
             var nearest = new int[n];
             var dNearest = new double[n];
