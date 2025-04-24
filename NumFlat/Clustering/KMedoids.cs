@@ -46,7 +46,37 @@ namespace NumFlat.Clustering
                 throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
             }
 
+            if (xs.Count < clusterCount)
+            {
+                throw new ArgumentException("The number of source features must be larger than the number of clusters.", nameof(xs));
+            }
+
             this.distance = distance;
+
+            if (clusterCount == 1)
+            {
+                var minDistance = double.MaxValue;
+                var index = -1;
+                for (var i = 0; i < xs.Count; i++)
+                {
+                    var target = xs[i];
+                    var sum = 0.0;
+                    for (var j = 0; j < xs.Count; j++)
+                    {
+                        var x = xs[j];
+                        sum += distance(target, x);
+                    }
+                    if (sum < minDistance)
+                    {
+                        minDistance = sum;
+                        index = i;
+                    }
+                }
+
+                medoidIndices = [index];
+                medoids = [xs[index]];
+                return;
+            }
 
             if (random == null)
             {
@@ -165,6 +195,7 @@ namespace NumFlat.Clustering
             var dSecond = new double[n];
 
             var removalLoss = new double[k];
+            var dTd = new double[k];
 
             // repeat
             while (true)
@@ -174,8 +205,8 @@ namespace NumFlat.Clustering
                 // foreach xo do compute nearest(o), dnearest(o), dsecond(o);
                 for (var o = 0; o < n; o++)
                 {
-                    var best = double.PositiveInfinity;
-                    var second = double.PositiveInfinity;
+                    var best = double.MaxValue;
+                    var second = double.MaxValue;
                     var bestIndex = -1;
 
                     for (var i = 0; i < k; i++)
@@ -209,7 +240,7 @@ namespace NumFlat.Clustering
                 {
                     // use removal loss
                     // dTD <- (dTD-m1, ..., dTD-mk);
-                    var dTd = removalLoss.ToArray();
+                    Array.Copy(removalLoss, dTd, k);
 
                     // shared accumulator
                     // dTD+xc <- 0;
@@ -273,7 +304,7 @@ namespace NumFlat.Clustering
 
         private static int ArgMin(double[] a)
         {
-            var value = double.PositiveInfinity;
+            var value = double.MaxValue;
             var index = 0;
             for (int i = 0; i < a.Length; i++)
             {

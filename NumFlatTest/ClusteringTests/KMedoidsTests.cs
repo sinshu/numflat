@@ -38,6 +38,7 @@ namespace NumFlatTest.ClusteringTests
             Assert.That(cls[5] == cls[8]);
         }
 
+        [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
