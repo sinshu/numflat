@@ -45,6 +45,28 @@ namespace NumFlat.Clustering
             return new KMeans(xs, clusterCount, options, random);
         }
 
+        /// <summary>
+        /// Clusters the features using the k-medoids algorithm.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the source features.
+        /// </typeparam>
+        /// <param name="xs">
+        /// The source features.
+        /// </param>
+        /// <param name="distance">
+        /// The distance measure to compute distances between features.
+        /// </param>
+        /// <param name="clusterCount">
+        /// The number of desired clusters.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the k-medoids++ initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <returns>
+        /// A k-medoids model computed from the source features.
+        /// </returns>
         public static KMedoids<T> ToKMedoids<T>(this IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
