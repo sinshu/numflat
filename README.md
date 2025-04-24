@@ -557,6 +557,7 @@ The `NumFlat.Clustering` namespace provides functionality related to clustering.
 It currently supports the following methods, with plans to add more methods in the future.
 * k-means
 * GMM (Gaussian mixture model)
+* k-medoids
 * DBSCAN (density-based spatial clustering of applications with noise)
 #### Code
 ```cs
@@ -701,6 +702,7 @@ Matrix 3x3-Double
 * 🚧 Clustering
     - ✅ k-means
     - ✅ GMM (gaussian mixture model)
+    - ✅ k-medoids
     - ✅ DBSCAN (density-based spatial clustering of applications with noise)
     - ⬜ OPTICS
 * ⬜ Classification

@@ -1,3 +1,7 @@
+# v1.0.7
+
+* Added `KMedoids`.
+
 # v1.0.6
 
 * Added an option to `EarthMoversDistance` to allow setting the maximum number of iterations.
