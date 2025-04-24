@@ -46,6 +46,41 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
+        /// Clusters the features using the k-medoids algorithm.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the source features.
+        /// </typeparam>
+        /// <param name="xs">
+        /// The source features.
+        /// </param>
+        /// <param name="distance">
+        /// The distance measure to compute distances between features.
+        /// </param>
+        /// <param name="clusterCount">
+        /// The number of desired clusters.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the k-medoids++ initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        /// <returns>
+        /// A k-medoids model computed from the source features.
+        /// </returns>
+        public static KMedoids<T> ToKMedoids<T>(this IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+
+            if (clusterCount <= 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+            }
+
+            return new KMedoids<T>(xs, distance, clusterCount, random);
+        }
+
+        /// <summary>
         /// Clusters the feature vectors as a Gaussian mixture model (GMM) using the expectation-maximization (EM) algorithm.
         /// </summary>
         /// <param name="xs">
