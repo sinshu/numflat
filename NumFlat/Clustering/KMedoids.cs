@@ -1,21 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
 namespace NumFlat.Clustering
 {
-    public static class KMedoids
+    public sealed class KMedoids<T>
     {
+        private int[] medoidIndices;
+
+        public KMedoids(IReadOnlyList<T> xs, int clusterCount, Distance<T, T> distance, Random? random = null)
+        {
+            medoidIndices = Run(xs.Count, clusterCount, (i, j) => distance(xs[i], xs[j]), random);
+        }
+
+        public IReadOnlyList<int> MedoidIndices => medoidIndices;
+
         /// <summary>
         /// k-medoids を FasterPAM (Algorithm 4) で求める
         /// </summary>
         /// <param name="dist">距離行列 d(i,j) を返すデリゲート</param>
-        public static int[] Run(int n, int k, Func<int, int, double> dist,
+        public static int[] Run(int n, int k, Func<int, int, double> dist, Random rand,
                                 int maxIter = int.MaxValue)
         {
             // ---------- BUILD フェーズ（元の Algorithm 1、割愛してランダム初期化） ----------
-            var medoids = Enumerable.Range(0, n).OrderBy(_ => Guid.NewGuid())
-                                    .Take(k).ToArray();
+            var medoids = Enumerable
+                .Range(0, n)
+                .OrderBy(_ => rand.NextDouble())
+                .Take(k).ToArray();
 
             // 近接情報をキャッシュ
             var nearest = new int[n];          // nearest(o)      – 行 2
@@ -27,7 +39,7 @@ namespace NumFlat.Clustering
             int xLast = -1;                    // xlast ← invalid
 
             // ---- 外側 repeat ループ（行 4 〜） ----
-            for (int iter = 0; iter < maxIter; iter++)
+            for (int iter = 0; iter < 2; iter++)
             {
                 // 行 3: ΔTD−m₁ … ΔTD−m_k を計算
                 double[] deltaRemove = ComputeRemovalLoss();

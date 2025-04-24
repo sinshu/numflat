@@ -12,23 +12,35 @@ namespace NumFlatTest.ClusteringTests
     public class KMedoidsTests
     {
         [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
         public void Iris(int classCount)
         {
             var dataset = ReadIris("iris.csv").ToArray();
+            var xs = dataset.Select(tpl => tpl.Feature).ToArray();
 
-            Func<int, int, double> func = (i, j) => dataset[i].Item1.Distance(dataset[j].Item1);
+            var func = Distance.Euclidean;
+            var medoids = new KMedoids<Vec<double>>(xs, classCount, func, new Random(42));
 
-            var medoids = KMedoids.Run(dataset.Length, classCount, func);
-
-            foreach (var medoid in medoids)
+            var originalError = 0.0;
+            for (var i = 0; i < xs.Length; i++)
             {
-                Console.WriteLine(dataset[medoid].Item1);
+                originalError += medoids.MedoidIndices.Select(m => func(xs[m], xs[i])).Min();
             }
 
-            Console.WriteLine();
+            foreach (var cand in EnumerateNeighborhoodSolutions(medoids.MedoidIndices, xs.Length))
+            {
+                var newError = 0.0;
+                for (var i = 0; i < xs.Length; i++)
+                {
+                    newError += cand.Select(m => func(xs[m], xs[i])).Min();
+                }
+                Assert.That(newError >= originalError);
+            }
         }
 
-        private static IEnumerable<(Vec<double>, int)> ReadIris(string filename)
+        private static IEnumerable<(int Label, Vec<double> Feature)> ReadIris(string filename)
         {
             var path = Path.Combine("dataset", filename);
             foreach (var line in File.ReadLines(path).Skip(1))
@@ -42,7 +54,29 @@ namespace NumFlatTest.ClusteringTests
                     "virginica" => 2,
                     _ => throw new Exception()
                 };
-                yield return (values.ToVector(), label);
+                yield return (label, values.ToVector());
+            }
+        }
+
+        private static IEnumerable<int[]> EnumerateNeighborhoodSolutions(IReadOnlyList<int> original, int count)
+        {
+            var cand = new List<int>();
+            for (var i = 0; i < count; i++)
+            {
+                if (!original.Contains(i))
+                {
+                    cand.Add(i);
+                }
+            }
+
+            for (var k = 0; k < original.Count; k++)
+            {
+                var copy = original.ToArray();
+                for (var c = 0; c < cand.Count; c++)
+                {
+                    copy[k] = cand[c];
+                    yield return copy;
+                }
             }
         }
     }
