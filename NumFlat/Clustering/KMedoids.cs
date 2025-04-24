@@ -1,154 +1,304 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace NumFlat.Clustering
 {
+    /// <summary>
+    /// Provides the k-medoids clustering algorithm.
+    /// </summary>
     public sealed class KMedoids<T>
     {
+        private Distance<T, T> distance;
+
         private int[] medoidIndices;
-
-        public KMedoids(IReadOnlyList<T> xs, int clusterCount, Distance<T, T> distance, Random? random = null)
-        {
-            medoidIndices = Run(xs.Count, clusterCount, (i, j) => distance(xs[i], xs[j]), random);
-        }
-
-        public IReadOnlyList<int> MedoidIndices => medoidIndices;
+        private T[] medoids;
 
         /// <summary>
-        /// k-medoids を FasterPAM (Algorithm 4) で求める
+        /// Clusters the features using the k-medoids algorithm.
         /// </summary>
-        /// <param name="dist">距離行列 d(i,j) を返すデリゲート</param>
-        public static int[] Run(int n, int k, Func<int, int, double> dist, Random rand,
-                                int maxIter = int.MaxValue)
+        /// <param name="xs">
+        /// The source features.
+        /// </param>
+        /// <param name="distance">
+        /// The distance measure to compute distances between features.
+        /// </param>
+        /// <param name="clusterCount">
+        /// The number of desired clusters.
+        /// </param>
+        /// <param name="random">
+        /// A random number generator for the k-medoids++ initialization.
+        /// If null, <see cref="Random.Shared"/> is used.
+        /// </param>
+        public KMedoids(IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
         {
-            // ---------- BUILD フェーズ（元の Algorithm 1、割愛してランダム初期化） ----------
-            var medoids = Enumerable
-                .Range(0, n)
-                .OrderBy(_ => rand.NextDouble())
-                .Take(k).ToArray();
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
 
-            // 近接情報をキャッシュ
-            var nearest = new int[n];          // nearest(o)      – 行 2
-            var dNear = new double[n];       // d_nearest(o)
-            var dSecond = new double[n];       // d_second(o)
-            UpdateCaches();
-
-            // ---- Algorithm 4 1行目相当 ----
-            int xLast = -1;                    // xlast ← invalid
-
-            // ---- 外側 repeat ループ（行 4 〜） ----
-            for (int iter = 0; iter < 2; iter++)
+            if (xs.Count == 0)
             {
-                // 行 3: ΔTD−m₁ … ΔTD−m_k を計算
-                double[] deltaRemove = ComputeRemovalLoss();
-
-                bool anyImproved = false;
-
-                // 行 5: すべての non-medoid x_c を走査
-                foreach (int xc in Enumerable.Range(0, n).Except(medoids))
-                {
-                    // 行 6: 改善が無ければ break
-                    if (xc == xLast) { anyImproved = false; break; }
-
-                    // --------- 行 7 & 8 ----------
-                    var deltaTd = (double[])deltaRemove.Clone(); // ΔTD ← ...
-                    double shared = 0.0;                         // ΔTD+_xc
-
-                    // --------- 行 9〜15 ----------
-                    for (int o = 0; o < n; o++)
-                    {
-                        double dOj = dist(o, xc); // 行 10
-
-                        if (dOj < dNear[o])       // 行 11  case(i)
-                        {
-                            shared += dOj - dNear[o];
-                            int iMed = nearest[o];
-                            deltaTd[iMed] += dNear[o] - dSecond[o]; // 行 13
-                        }
-                        else if (dOj < dSecond[o]) // 行 14  case(ii/iii)
-                        {
-                            int iMed = nearest[o];
-                            deltaTd[iMed] += dOj - dSecond[o];
-                        }
-                    }
-
-                    // --------- 行 16–18 ----------
-                    int bestIdx = ArgMin(deltaTd);       // argmin ΔTDᵢ
-                    double bestGain = deltaTd[bestIdx] + shared;
-
-                    if (bestGain < 0) // 行 18: eager swap
-                    {
-                        // 行 19: swap
-                        int mStar = medoids[bestIdx];
-                        medoids[bestIdx] = xc;
-
-                        // キャッシュ更新（行 21）
-                        UpdateCaches();
-
-                        // ΔTD−mⱼ の再計算（行 21）
-                        deltaRemove = ComputeRemovalLoss();
-
-                        // 行 22: 記録
-                        xLast = xc;
-                        anyImproved = true;
-                    }
-                }
-
-                if (!anyImproved) break; // 1パス改善なし → 収束
+                throw new ArgumentException("The source features must not be empty.", nameof(xs));
             }
 
-            return medoids;
-
-            // ======  内部ヘルパ ======
-            void UpdateCaches()
+            if (clusterCount <= 0)
             {
-                for (int o = 0; o < n; o++)
-                {
-                    double best = double.PositiveInfinity, second = double.PositiveInfinity;
-                    int bestIdx = -1;
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+            }
 
-                    for (int idx = 0; idx < k; idx++)
+            this.distance = distance;
+
+            if (random == null)
+            {
+                random = Random.Shared;
+            }
+
+            medoidIndices = new int[clusterCount];
+            for (var m = 0; m < clusterCount; m++)
+            {
+                medoidIndices[m] = GetNextInitialMedoid(xs, distance, medoidIndices.AsSpan(0, m), random);
+            }
+
+            Func<int, int, double> func = (i, j) => distance(xs[i], xs[j]);
+            medoidIndices = FasterPamLike(medoidIndices, xs.Count, clusterCount, func, random);
+
+            medoids = new T[clusterCount];
+            for (var m = 0; m < medoids.Length; m++)
+            {
+                medoids[m] = xs[medoidIndices[m]];
+            }
+        }
+
+        /// <summary>
+        /// Predicts the class of a feature and its distance to the corresponding medoid.
+        /// </summary>
+        /// <param name="x">
+        /// The feature to be classified.
+        /// </param>
+        /// <returns>
+        /// The index of the predicted class and the distance from the feature to the corresponding medoid.
+        /// </returns>
+        public (int ClassIndex, double Distance) PredictWithDistance(T x)
+        {
+            var nearestDistance = double.MaxValue;
+            var predicted = -1;
+            for (var m = 0; m < medoids.Length; m++)
+            {
+                var d = distance(x, medoids[m]);
+                if (d < nearestDistance)
+                {
+                    nearestDistance = d;
+                    predicted = m;
+                }
+            }
+            return (predicted, nearestDistance);
+        }
+
+        /// <summary>
+        /// Predicts the class of a feature.
+        /// </summary>
+        /// <param name="x">
+        /// The feature to be classified.
+        /// </param>
+        /// <returns>
+        /// The index of the predicted class.
+        /// </returns>
+        public int Predict(T x)
+        {
+            return PredictWithDistance(x).ClassIndex;
+        }
+
+        private static double GetNearestDistance(IReadOnlyList<T> xs, Distance<T, T> distance, ReadOnlySpan<int> medoids, T x)
+        {
+            var nearestDistance = double.MaxValue;
+            for (var m = 0; m < medoids.Length; m++)
+            {
+                var d = distance(x, xs[medoids[m]]);
+                if (d < nearestDistance)
+                {
+                    nearestDistance = d;
+                }
+            }
+            return nearestDistance;
+        }
+
+        private static int GetNextInitialMedoid(IReadOnlyList<T> xs, Distance<T, T> distance, ReadOnlySpan<int> medoids, Random random)
+        {
+            if (medoids.Length == 0)
+            {
+                return random.Next(0, xs.Count);
+            }
+
+            using var uprb = new TemporalArray<double>(xs.Count);
+            var prb = uprb.Item;
+
+            var sum = 0.0;
+            var i = 0;
+            foreach (var x in xs)
+            {
+                var d = GetNearestDistance(xs, distance, medoids, x);
+                sum += d;
+                prb[i] = d;
+                i++;
+            }
+
+            var target = sum * random.NextDouble();
+            var position = 0.0;
+            i = 0;
+            foreach (var value in prb)
+            {
+                position += value;
+                if (position > target)
+                {
+                    return i;
+                }
+                i++;
+            }
+
+            return i - 1;
+        }
+
+        private static int[] FasterPamLike(int[] medoids, int n, int k, Func<int, int, double> distance, Random random)
+        {
+            var nearest = new int[n];
+            var dNearest = new double[n];
+            var dSecond = new double[n];
+
+            var removalLoss = new double[k];
+
+            // repeat
+            while (true)
+            {
+                var improved = false;
+
+                // foreach xo do compute nearest(o), dnearest(o), dsecond(o);
+                for (var o = 0; o < n; o++)
+                {
+                    var best = double.PositiveInfinity;
+                    var second = double.PositiveInfinity;
+                    var bestIndex = -1;
+
+                    for (var i = 0; i < k; i++)
                     {
-                        int m = medoids[idx];
-                        double d = (o == m) ? 0 : dist(o, m);
+                        var m = medoids[i];
+                        var d = (o == m) ? 0 : distance(o, m);
                         if (d < best)
                         {
-                            second = best; best = d; bestIdx = idx;
+                            second = best; best = d; bestIndex = i;
                         }
                         else if (d < second)
                         {
                             second = d;
                         }
                     }
-                    nearest[o] = bestIdx;
-                    dNear[o] = best;
+                    nearest[o] = bestIndex;
+                    dNearest[o] = best;
                     dSecond[o] = second;
                 }
+
+                // dTD-m1, ..., dTD-mk <- compute initial removal loss;
+                Array.Clear(removalLoss);
+                for (var o = 0; o < n; o++)
+                {
+                    removalLoss[nearest[o]] += dSecond[o] - dNearest[o];
+                }
+
+                // iterate over all non-medoids
+                // foreach xc != { m1, ..., mk } do
+                foreach (var xc in Enumerable.Range(0, n).Except(medoids))
+                {
+                    // use removal loss
+                    // dTD <- (dTD-m1, ..., dTD-mk);
+                    var dTd = removalLoss.ToArray();
+
+                    // shared accumulator
+                    // dTD+xc <- 0;
+                    var shared = 0.0;
+
+                    // foreach xo do
+                    for (var o = 0; o < n; o++)
+                    {
+                        // distance to new medoid
+                        // doj <- d(xo, xc);
+                        var dOj = distance(o, xc);
+
+                        // case (i)
+                        // if doj < dnearest(o) then
+                        if (dOj < dNearest[o])
+                        {
+                            // dTD+xc <- dTD+xc + doj - dnearest(o);
+                            shared += dOj - dNearest[o];
+
+                            // dTD+nearest(o) <- dTD+nearest(o) + dnearest(o) − dsecond(o);
+                            dTd[nearest[o]] += dNearest[o] - dSecond[o];
+                        }
+                        // case (ii) and (iii)
+                        // else if doj < dsecond(o) then
+                        else if (dOj < dSecond[o])
+                        {
+                            // dTD+nearest(o) <- dTD+nearest(o) + doj - dsecond(o);
+                            dTd[nearest[o]] += dOj - dSecond[o];
+                        }
+                    }
+
+                    // choose best medoid
+                    // i <- argmin dTDi;
+                    var best = ArgMin(dTd);
+
+                    // add accumulator
+                    // dTDi <- dTDi + dTD+xc;
+                    var gain = dTd[best] + shared;
+
+                    // eager swapping
+                    // if dTDi < 0 then
+                    if (gain < 0)
+                    {
+                        // swap roles of medoid m* and non-medoid xo;
+                        medoids[best] = xc;
+
+                        // Since medoid has been updated, this foreach should be redone.
+                        improved = true;
+                        break;
+                    }
+                }
+
+                if (!improved)
+                {
+                    break;
+                }
             }
 
-            double[] ComputeRemovalLoss() // ΔTD−mⱼ  … 式 (9)
-            {
-                var loss = new double[k];
-                for (int o = 0; o < n; o++)
-                {
-                    int iMed = nearest[o];
-                    loss[iMed] += dSecond[o] - dNear[o];
-                }
-                return loss;
-            }
-
-            static int ArgMin(double[] a)
-            {
-                double best = double.PositiveInfinity;
-                int idx = 0;
-                for (int i = 0; i < a.Length; i++)
-                {
-                    if (a[i] < best) { best = a[i]; idx = i; }
-                }
-                return idx;
-            }
+            return medoids;
         }
+
+        private static int ArgMin(double[] a)
+        {
+            var value = double.PositiveInfinity;
+            var index = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] < value)
+                {
+                    value = a[i];
+                    index = i;
+                }
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Gets the distance measure to compute distances between features.
+        /// </summary>
+        public Distance<T, T> Distance => distance;
+
+        /// <summary>
+        /// Gets the indices of the medoids in the source features.
+        /// </summary>
+        public IReadOnlyList<int> MedoidIndices => medoidIndices;
+
+        /// <summary>
+        /// Gets the medoids.
+        /// </summary>
+        public IReadOnlyList<T> Medoids => medoids;
     }
 }

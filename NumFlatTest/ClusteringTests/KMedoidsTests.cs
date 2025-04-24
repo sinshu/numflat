@@ -11,17 +11,44 @@ namespace NumFlatTest.ClusteringTests
 {
     public class KMedoidsTests
     {
+        [Test]
+        public void SimpleData()
+        {
+            var xs = new double[,]
+            {
+                {  1,  0,  1 },
+                {  1,  1,  1 },
+                {  5, -5, -5 },
+                {  6, -4, -6 },
+                {  6, -5, -4 },
+                { -8,  2,  7 },
+                { -9,  1,  8 },
+                { -8,  3,  8 },
+                { -8,  1,  9 },
+            }
+            .ToMatrix().Rows;
+
+            var kmedoids = xs.ToKMedoids(Distance.Euclidean, 3, new Random(42));
+            var cls = xs.Select(x => kmedoids.Predict(x)).ToArray();
+            Assert.That(cls[0] == cls[1]);
+            Assert.That(cls[2] == cls[3]);
+            Assert.That(cls[2] == cls[4]);
+            Assert.That(cls[5] == cls[6]);
+            Assert.That(cls[5] == cls[7]);
+            Assert.That(cls[5] == cls[8]);
+        }
+
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
         [TestCase(5)]
-        public void Iris(int classCount)
+        public void EnsureLocalOptimal(int classCount)
         {
             var dataset = ReadIris("iris.csv").ToArray();
             var xs = dataset.Select(tpl => tpl.Feature).ToArray();
 
             var func = Distance.Euclidean;
-            var medoids = new KMedoids<Vec<double>>(xs, classCount, func, new Random(42));
+            var medoids = new KMedoids<Vec<double>>(xs, func, classCount, new Random(42));
 
             var originalError = 0.0;
             for (var i = 0; i < xs.Length; i++)

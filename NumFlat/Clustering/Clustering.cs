@@ -45,6 +45,19 @@ namespace NumFlat.Clustering
             return new KMeans(xs, clusterCount, options, random);
         }
 
+        public static KMedoids<T> ToKMedoids<T>(this IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
+        {
+            ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+
+            if (clusterCount <= 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+            }
+
+            return new KMedoids<T>(xs, distance, clusterCount, random);
+        }
+
         /// <summary>
         /// Clusters the feature vectors as a Gaussian mixture model (GMM) using the expectation-maximization (EM) algorithm.
         /// </summary>
