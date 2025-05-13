@@ -115,11 +115,11 @@ namespace NumFlat.TimeSeries
             {
                 var observation = observations[t];
 
-                for (int j = 0; j < stateCount; j++)
+                for (var j = 0; j < stateCount; j++)
                 {
                     maxState = 0;
                     maxWeight = fwd[0, t - 1] + logTransMat[0, j];
-                    for (int i = 1; i < stateCount; i++)
+                    for (var i = 1; i < stateCount; i++)
                     {
                         weight = fwd[i, t - 1] + logTransMat[i, j];
                         if (weight > maxWeight)
