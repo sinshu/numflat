@@ -88,6 +88,19 @@ namespace NumFlat.TimeSeries
             this.logTransitionMatrix = transitionMatrix.Map(Math.Log);
         }
 
+        /// <summary>
+        /// Estimates the sequence of hidden states from the observed sequence using the Viterbi algorithm.
+        /// </summary>
+        /// <param name="observations">
+        /// The observed sequence.
+        /// </param>
+        /// <param name="path">
+        /// A buffer into which the estimated state sequence will be written.
+        /// The length of the buffer must match that of <paramref name="observations"/>.
+        /// </param>
+        /// <returns>
+        /// The log-likelihood.
+        /// </returns>
         public double Decode(IReadOnlyList<Vec<double>> observations, Span<int> path)
         {
             if (observations.Count == 0)
@@ -172,6 +185,15 @@ namespace NumFlat.TimeSeries
             return maxWeight;
         }
 
+        /// <summary>
+        /// Estimates the sequence of hidden states from the observed sequence using the Viterbi algorithm.
+        /// </summary>
+        /// <param name="observations">
+        /// The observed sequence.
+        /// </param>
+        /// <returns>
+        /// The estimated state sequence and log-likelihood.
+        /// </returns>
         public (int[] Path, double LogLikelihood) Decode(IReadOnlyList<Vec<double>> observations)
         {
             if (observations.Count == 0)
