@@ -42,17 +42,27 @@ namespace NumFlat.TimeSeries
 
             if (distributions.Any(d => d == null))
             {
-                throw new ArgumentException("All the distributions must be non-null.");
+                throw new ArgumentException("All the distributions must be non-null.", nameof(distributions));
+            }
+
+            if (initialProbabilities.Any(x => x < 0))
+            {
+                throw new ArgumentException("All the values must be non-negative.", nameof(initialProbabilities));
             }
 
             if (Math.Abs(initialProbabilities.Sum() - 1) > 1.0E-14)
             {
-                throw new ArgumentException("The sum of the initial probabilities must be one.");
+                throw new ArgumentException("The sum of the initial probabilities must be one.", nameof(initialProbabilities));
+            }
+
+            if (transitionMatrix.SelectMany(row => row).Any(x => x < 0))
+            {
+                throw new ArgumentException("All the values must be non-negative.", nameof(transitionMatrix));
             }
 
             if (transitionMatrix.Rows.Any(row => Math.Abs(row.Sum() - 1) > 1.0E-14))
             {
-                throw new ArgumentException("The sum of each row of the transition matrix must be one.");
+                throw new ArgumentException("The sum of each row of the transition matrix must be one.", nameof(transitionMatrix));
             }
 
             this.initialProbabilities = initialProbabilities;
@@ -63,9 +73,100 @@ namespace NumFlat.TimeSeries
             this.logTransitionMatrix = transitionMatrix.Map(Math.Log);
         }
 
-        public int[] Decode(IReadOnlyList<Vec<double>> observations)
+        public double Decode(IReadOnlyList<Vec<double>> observations, Span<int> path)
         {
+            if (observations.Count == 0)
+            {
+                throw new ArgumentException("The observations must not be empty.", nameof(observations));
+            }
 
+            if (path.Length != observations.Count)
+            {
+                throw new ArgumentException("The length of path must match the number of observations.");
+            }
+
+            // Viterbi-forward algorithm.
+            // https://github.com/accord-net/framework/blob/development/Sources/Accord.Statistics/Models/Markov/HiddenMarkovModel%601.cs
+
+            var stateCount = initialProbabilities.Count;
+            var length = observations.Count;
+
+            using var us = new TemporalMatrix<int>(stateCount, length);
+            var s = us.Item.GetUnsafeFastIndexer();
+
+            using var ufwd = new TemporalMatrix<double>(stateCount, length);
+            var fwd = ufwd.Item.GetUnsafeFastIndexer();
+
+            var logInitProb = logInitialProbabilities.GetUnsafeFastIndexer();
+            var logTransMat = logTransitionMatrix.GetUnsafeFastIndexer();
+
+            int maxState;
+            double maxWeight;
+            double weight;
+
+            // Base.
+            for (var i = 0; i < stateCount; i++)
+            {
+                fwd[i, 0] = logInitProb[i] + distributions[i].LogPdf(observations[0]);
+            }
+
+            // Induction.
+            for (var t = 1; t < length; t++)
+            {
+                var observation = observations[t];
+
+                for (int j = 0; j < stateCount; j++)
+                {
+                    maxState = 0;
+                    maxWeight = fwd[0, t - 1] + logTransMat[0, j];
+                    for (int i = 1; i < stateCount; i++)
+                    {
+                        weight = fwd[i, t - 1] + logTransMat[i, j];
+                        if (weight > maxWeight)
+                        {
+                            maxState = i;
+                            maxWeight = weight;
+                        }
+                    }
+
+                    fwd[j, t] = maxWeight + distributions[j].LogPdf(observation);
+                    s[j, t] = maxState;
+                }
+            }
+
+            // Find maximum value for time T - 1.
+            maxState = 0;
+            maxWeight = fwd[0, length - 1];
+            for (var i = 1; i < stateCount; i++)
+            {
+                if (fwd[i, length - 1] > maxWeight)
+                {
+                    maxState = i;
+                    maxWeight = fwd[i, length - 1];
+                }
+            }
+
+            // Trackback.
+            path[length - 1] = maxState;
+            for (var t = length - 2; t >= 0; t--)
+            {
+                path[t] = s[path[t + 1], t + 1];
+            }
+
+            // Returns the sequence probability as an out parameter.
+            return maxWeight;
+        }
+
+        public (int[] Path, double LogLikelihood) Decode(IReadOnlyList<Vec<double>> observations)
+        {
+            if (observations.Count == 0)
+            {
+                throw new ArgumentException("The observations must not be empty.", nameof(observations));
+            }
+
+            var path = new int[observations.Count];
+            var logLikelihood = Decode(observations, path);
+            return (path, logLikelihood);
         }
 
         public ref readonly Vec<double> InitialProbabilities => ref initialProbabilities;
