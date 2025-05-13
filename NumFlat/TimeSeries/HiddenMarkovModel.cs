@@ -23,6 +23,38 @@ namespace NumFlat.TimeSeries
             ThrowHelper.ThrowIfEmpty(transitionMatrix, nameof(transitionMatrix));
             ThrowHelper.ThrowIfNull(distributions, nameof(distributions));
 
+            var stateCount = initialProbabilities.Count;
+
+            if (transitionMatrix.RowCount != stateCount)
+            {
+                throw new ArgumentException("The number of rows of the transition matrix must match the number of initial probabilities.");
+            }
+
+            if (transitionMatrix.ColCount != stateCount)
+            {
+                throw new ArgumentException("The number of columns of the transition matrix must match the number of initial probabilities.");
+            }
+
+            if (distributions.Count != stateCount)
+            {
+                throw new ArgumentException("The number of distributions must match the number of initial probabilities.");
+            }
+
+            if (distributions.Any(d => d == null))
+            {
+                throw new ArgumentException("All the distributions must be non-null.");
+            }
+
+            if (Math.Abs(initialProbabilities.Sum() - 1) > 1.0E-14)
+            {
+                throw new ArgumentException("The sum of the initial probabilities must be one.");
+            }
+
+            if (transitionMatrix.Rows.Any(row => Math.Abs(row.Sum() - 1) > 1.0E-14))
+            {
+                throw new ArgumentException("The sum of each row of the transition matrix must be one.");
+            }
+
             this.initialProbabilities = initialProbabilities;
             this.transitionMatrix = transitionMatrix;
             this.distributions = distributions.ToArray();
