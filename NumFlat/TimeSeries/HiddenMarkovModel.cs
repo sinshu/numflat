@@ -5,6 +5,9 @@ using NumFlat.Distributions;
 
 namespace NumFlat.TimeSeries
 {
+    /// <summary>
+    /// Provides the hidden Markov model.
+    /// </summary>
     public sealed class HiddenMarkovModel
     {
         private Vec<double> initialProbabilities;
@@ -14,6 +17,18 @@ namespace NumFlat.TimeSeries
         private Vec<double> logInitialProbabilities;
         private Mat<double> logTransitionMatrix;
 
+        /// <summary>
+        /// Initializes a new hidden Markov model with precomputed parameters.
+        /// </summary>
+        /// <param name="initialProbabilities">
+        /// The initial state probabilities.
+        /// </param>
+        /// <param name="transitionMatrix">
+        /// The transition probability matrix.
+        /// </param>
+        /// <param name="distributions">
+        /// The emission distributions for each state.
+        /// </param>
         public HiddenMarkovModel(
             in Vec<double> initialProbabilities,
             in Mat<double> transitionMatrix,
@@ -27,12 +42,12 @@ namespace NumFlat.TimeSeries
 
             if (transitionMatrix.RowCount != stateCount)
             {
-                throw new ArgumentException("The number of rows of the transition matrix must match the number of initial probabilities.");
+                throw new ArgumentException("The number of rows in the transition matrix must match the number of initial probabilities.");
             }
 
             if (transitionMatrix.ColCount != stateCount)
             {
-                throw new ArgumentException("The number of columns of the transition matrix must match the number of initial probabilities.");
+                throw new ArgumentException("The number of columns in the transition matrix must match the number of initial probabilities.");
             }
 
             if (distributions.Count != stateCount)
@@ -52,7 +67,7 @@ namespace NumFlat.TimeSeries
 
             if (Math.Abs(initialProbabilities.Sum() - 1) > 1.0E-14)
             {
-                throw new ArgumentException("The sum of the initial probabilities must be one.", nameof(initialProbabilities));
+                throw new ArgumentException("The initial probabilities must sum to one.", nameof(initialProbabilities));
             }
 
             if (transitionMatrix.SelectMany(row => row).Any(x => x < 0))
@@ -62,7 +77,7 @@ namespace NumFlat.TimeSeries
 
             if (transitionMatrix.Rows.Any(row => Math.Abs(row.Sum() - 1) > 1.0E-14))
             {
-                throw new ArgumentException("The sum of each row of the transition matrix must be one.", nameof(transitionMatrix));
+                throw new ArgumentException("The transition probabilities in each row must sum to one.", nameof(transitionMatrix));
             }
 
             this.initialProbabilities = initialProbabilities;
@@ -82,7 +97,7 @@ namespace NumFlat.TimeSeries
 
             if (path.Length != observations.Count)
             {
-                throw new ArgumentException("The length of path must match the number of observations.");
+                throw new ArgumentException("The length of the path must match the number of observations.");
             }
 
             // Viterbi-forward algorithm.
@@ -169,12 +184,24 @@ namespace NumFlat.TimeSeries
             return (path, logLikelihood);
         }
 
+        /// <summary>
+        /// Gets the initial state probabilities.
+        /// </summary>
         public ref readonly Vec<double> InitialProbabilities => ref initialProbabilities;
 
+        /// <summary>
+        /// Gets the transition probability matrix.
+        /// </summary>
         public ref readonly Mat<double> TransitionMatrix => ref transitionMatrix;
 
+        /// <summary>
+        /// Gets the log initial state probabilities.
+        /// </summary>
         public ref readonly Vec<double> LogInitialProbabilities => ref logInitialProbabilities;
 
+        /// <summary>
+        /// Gets the log transition probability matrix.
+        /// </summary>
         public ref readonly Mat<double> LogTransitionMatrix => ref logTransitionMatrix;
     }
 }
