@@ -708,9 +708,9 @@ Matrix 3x3-Double
 * ⬜ Classification
     - ⬜ Bayes classifier
     - ⬜ SVM (support vector machine)
-* ⬜ Time series
+* 🚧 Time series
     - ✅ DTW (dynamic time warping)
-    - ⬜ HMM (hidden Markov model)
+    - 🚧 HMM (hidden Markov model)
 * 🚧 Signal processing
     - ✅ FFT (fast Fourier transform)
     - ✅ Real FFT
