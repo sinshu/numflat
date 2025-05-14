@@ -207,6 +207,11 @@ namespace NumFlat.TimeSeries
         }
 
         /// <summary>
+        /// Gets the number of states.
+        /// </summary>
+        public int StateCount => initialProbabilities.Count;
+
+        /// <summary>
         /// Gets the initial state probabilities.
         /// </summary>
         public ref readonly Vec<double> InitialProbabilities => ref initialProbabilities;
