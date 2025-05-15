@@ -692,6 +692,7 @@ Matrix 3x3-Double
     - ⬜ Multinomial logistic regression
     - ⬜ Kernel PCA
     - ⬜ Kernel discriminant analysis
+    - ✅ Classical MDS (classical multidimensional scaling)
     - ⬜ t-SNE
     - ⬜ UMAP
 * ⬜ Distributions
