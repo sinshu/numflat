@@ -13,7 +13,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
     public class ClassicalMultiDimensionalScalingTests
     {
         [Test]
-        public void Test()
+        public void Test1()
         {
             var positions = new List<Vec<double>>();
             var random = new Random(42);
@@ -35,6 +35,42 @@ namespace NumFlatTest.MultivariateAnalysesTests
             }
 
             var x = ClassicalMultiDimensionalScaling.Fit(distanceMatrix);
+
+            var reconstructed = new Mat<double>(n, n);
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    reconstructed[i, j] = x.Rows[i].Distance(x.Rows[j]);
+                }
+            }
+
+            NumAssert.AreSame(distanceMatrix, reconstructed, 1.0E-6);
+        }
+
+        [Test]
+        public void Test2()
+        {
+            var positions = new List<Vec<double>>();
+            var random = new Random(57);
+            var n = 30;
+
+            for (var i = 0; i < n; i++)
+            {
+                Vec<double> pos = [3 * random.NextGaussian(), 5 * random.NextGaussian()];
+                positions.Add(pos);
+            }
+
+            var distanceMatrix = new Mat<double>(n, n);
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    distanceMatrix[i, j] = positions[i].Distance(positions[j]);
+                }
+            }
+
+            var x = ClassicalMultiDimensionalScaling.Fit(distanceMatrix, 2);
 
             var reconstructed = new Mat<double>(n, n);
             for (var i = 0; i < n; i++)
