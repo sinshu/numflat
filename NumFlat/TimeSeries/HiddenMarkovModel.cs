@@ -12,7 +12,7 @@ namespace NumFlat.TimeSeries
     {
         private Vec<double> initialProbabilities;
         private Mat<double> transitionMatrix;
-        private IMultivariateDistribution<double>[] distributions;
+        private IMultivariateDistribution<double>[] emissions;
 
         private Vec<double> logInitialProbabilities;
         private Mat<double> logTransitionMatrix;
@@ -26,17 +26,17 @@ namespace NumFlat.TimeSeries
         /// <param name="transitionMatrix">
         /// The transition probability matrix.
         /// </param>
-        /// <param name="distributions">
+        /// <param name="emissions">
         /// The emission distributions for each state.
         /// </param>
         public HiddenMarkovModel(
             in Vec<double> initialProbabilities,
             in Mat<double> transitionMatrix,
-            IReadOnlyList<IMultivariateDistribution<double>> distributions)
+            IReadOnlyList<IMultivariateDistribution<double>> emissions)
         {
             ThrowHelper.ThrowIfEmpty(initialProbabilities, nameof(initialProbabilities));
             ThrowHelper.ThrowIfEmpty(transitionMatrix, nameof(transitionMatrix));
-            ThrowHelper.ThrowIfNull(distributions, nameof(distributions));
+            ThrowHelper.ThrowIfNull(emissions, nameof(emissions));
 
             var stateCount = initialProbabilities.Count;
 
@@ -50,14 +50,14 @@ namespace NumFlat.TimeSeries
                 throw new ArgumentException("The number of columns in the transition matrix must match the number of initial probabilities.");
             }
 
-            if (distributions.Count != stateCount)
+            if (emissions.Count != stateCount)
             {
                 throw new ArgumentException("The number of distributions must match the number of initial probabilities.");
             }
 
-            if (distributions.Any(d => d == null))
+            if (emissions.Any(d => d == null))
             {
-                throw new ArgumentException("All the distributions must be non-null.", nameof(distributions));
+                throw new ArgumentException("All the distributions must be non-null.", nameof(emissions));
             }
 
             if (initialProbabilities.Any(x => x < 0))
@@ -82,7 +82,7 @@ namespace NumFlat.TimeSeries
 
             this.initialProbabilities = initialProbabilities;
             this.transitionMatrix = transitionMatrix;
-            this.distributions = distributions.ToArray();
+            this.emissions = emissions.ToArray();
 
             this.logInitialProbabilities = initialProbabilities.Map(Math.Log);
             this.logTransitionMatrix = transitionMatrix.Map(Math.Log);
@@ -135,7 +135,7 @@ namespace NumFlat.TimeSeries
             // Base.
             for (var i = 0; i < stateCount; i++)
             {
-                fwd[i, 0] = logInitProb[i] + distributions[i].LogPdf(observations[0]);
+                fwd[i, 0] = logInitProb[i] + emissions[i].LogPdf(observations[0]);
             }
 
             // Induction.
@@ -157,7 +157,7 @@ namespace NumFlat.TimeSeries
                         }
                     }
 
-                    fwd[j, t] = maxWeight + distributions[j].LogPdf(observation);
+                    fwd[j, t] = maxWeight + emissions[j].LogPdf(observation);
                     s[j, t] = maxState;
                 }
             }
@@ -230,5 +230,10 @@ namespace NumFlat.TimeSeries
         /// Gets the log transition probability matrix.
         /// </summary>
         public ref readonly Mat<double> LogTransitionMatrix => ref logTransitionMatrix;
+
+        /// <summary>
+        /// Gets the emission distributions.
+        /// </summary>
+        public IReadOnlyList<IMultivariateDistribution<double>> Emissions => emissions;
     }
 }
