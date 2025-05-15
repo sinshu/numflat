@@ -23,7 +23,20 @@ namespace NumFlat.MultivariateAnalyses
         /// </returns>
         public static Mat<double> Fit(in Mat<double> distanceMatrix, int dimension)
         {
+            ThrowHelper.ThrowIfEmpty(distanceMatrix, nameof(distanceMatrix));
+            ThrowHelper.ThrowIfNonSquare(distanceMatrix, nameof(distanceMatrix));
+
+            if (dimension <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(dimension), "The number of dimensions must be greater than zero.");
+            }
+
             var n = distanceMatrix.RowCount;
+
+            if (dimension > n)
+            {
+                throw new ArgumentException("The number of dimensions must be less than or equal to the size of the distance matrix.");
+            }
 
             using var utmp = new TemporalMatrix4<double>(n, n);
             ref readonly var d2 = ref utmp.Item1;
