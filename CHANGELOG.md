@@ -1,6 +1,6 @@
 # v1.0.9
 
-Added `ClassicalMultiDimensionalScaling`.
+* Added `ClassicalMultiDimensionalScaling`.
 
 # v1.0.8
 
