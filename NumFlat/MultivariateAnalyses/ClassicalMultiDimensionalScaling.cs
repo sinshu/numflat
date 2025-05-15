@@ -65,7 +65,8 @@ namespace NumFlat.MultivariateAnalyses
             var x = new Mat<double>(n, dimension);
             for (var i = 0; i < dimension; i++)
             {
-                Vec.Mul(tmp.Cols[i], Math.Sqrt(fvec[i]), x.Cols[i]);
+                var scale = Math.Sqrt(Math.Max(fvec[i], 0));
+                Vec.Mul(tmp.Cols[i], scale, x.Cols[i]);
             }
 
             return x;
