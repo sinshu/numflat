@@ -34,7 +34,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
                 }
             }
 
-            var x = ClassicalMultiDimensionalScaling.Fit(distanceMatrix);
+            var x = distanceMatrix.ClassicalMds();
 
             var reconstructed = new Mat<double>(n, n);
             for (var i = 0; i < n; i++)
@@ -70,7 +70,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
                 }
             }
 
-            var x = ClassicalMultiDimensionalScaling.Fit(distanceMatrix, 2);
+            var x = distanceMatrix.ClassicalMds(2);
 
             var reconstructed = new Mat<double>(n, n);
             for (var i = 0; i < n; i++)
@@ -118,7 +118,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
                 .Select(line => line.Split(',').Skip(1).Select(value => double.Parse(value)).ToArray())
                 .RowsToMatrix();
 
-            var actual = ClassicalMultiDimensionalScaling.Fit(d, 2);
+            var actual = d.ClassicalMds(2);
 
             if (Math.Sign(actual[0, 0]) != Math.Sign(expected[0, 0]))
             {

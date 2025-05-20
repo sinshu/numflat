@@ -174,5 +174,40 @@ namespace NumFlat.MultivariateAnalyses
         {
             return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
         }
+
+        /// <summary>
+        /// Applies classical MDS to the given distance matrix.
+        /// </summary>
+        /// <param name="distanceMatrix">
+        /// The distance matrix.
+        /// </param>
+        /// <returns>
+        /// The embedded coordinate matrix.
+        /// If the distance matrix has dimensions <c>n * n</c>, this matrix has dimensions <c>n * n</c>,
+        /// where the i-th row represents the coordinates of the i-th data point.
+        /// </returns>
+        public static Mat<double> ClassicalMds(this in Mat<double> distanceMatrix)
+        {
+            return ClassicalMultiDimensionalScaling.Fit(distanceMatrix);
+        }
+
+        /// <summary>
+        /// Applies classical MDS to the given distance matrix.
+        /// </summary>
+        /// <param name="distanceMatrix">
+        /// The distance matrix.
+        /// </param>
+        /// <param name="dimension">
+        /// The number of dimensions in the embedding space.
+        /// </param>
+        /// <returns>
+        /// The embedded coordinate matrix.
+        /// If the distance matrix has dimensions <c>n * n</c>, this matrix has dimensions <c>n * <paramref name="dimension"/></c>,
+        /// where the i-th row represents the coordinates of the i-th data point.
+        /// </returns>
+        public static Mat<double> ClassicalMds(this in Mat<double> distanceMatrix, int dimension)
+        {
+            return ClassicalMultiDimensionalScaling.Fit(distanceMatrix, dimension);
+        }
     }
 }
