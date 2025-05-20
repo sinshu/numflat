@@ -502,6 +502,7 @@ It currently supports the following methods, with plans to add more methods in t
 * LDA (linear discriminant analysis)
 * ICA (independent component analysis)
 * NMF (non-negative matrix factorization)
+* Classical MDS (classical multidimensional scaling)
 #### Code
 ```cs
 using NumFlat.MultivariateAnalyses;

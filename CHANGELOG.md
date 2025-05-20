@@ -1,3 +1,8 @@
+# v1.1.0
+
+* The `GetFramePosition` and `GetFrameTime` methods of `StftInfo` now return a tuple.
+This tuple represents the start and end positions of a frame (breaking).
+
 # v1.0.9
 
 * Added `ClassicalMultiDimensionalScaling`.
@@ -5,9 +10,9 @@
 # v1.0.8
 
 * Added `HiddenMarkovModel`. Current HMM implementations have the following limitations:
-    * Only a version is provided in which each state corresponds to a multivariate probability distribution.
-    * HMM parameters must be precomputed and provided.
-    * Only basic Viterbi decoding is supported.
+    - Only a version is provided in which each state corresponds to a multivariate probability distribution.
+    - HMM parameters must be precomputed and provided.
+    - Only basic Viterbi decoding is supported.
 
 # v1.0.7
 
