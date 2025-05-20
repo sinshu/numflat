@@ -25,7 +25,10 @@ namespace NumFlatTest.SignalProcessingTests
             for (var i = 0; i < spectrogram.Length; i++)
             {
                 var position = info.GetFramePosition(i);
-                var frame = source.GetWindowedFrameAsComplex(position, window);
+                Assert.That(position.Start + window.Count, Is.EqualTo(position.End));
+                Assert.That(position.Start + window.Count / 2, Is.EqualTo(position.Center));
+
+                var frame = source.GetWindowedFrameAsComplex(position.Start, window);
                 var expected = frame.Fft().Subvector(0, frameLength / 2 + 1);
                 NumAssert.AreSame(expected, spectrogram[i], 1.0E-12);
             }
@@ -44,7 +47,10 @@ namespace NumFlatTest.SignalProcessingTests
             for (var i = 0; i < spectrogram.Length; i++)
             {
                 var position = info.GetFramePosition(i);
-                var frame = source.GetWindowedFrameAsComplex(position, window);
+                Assert.That(position.Start + window.Count, Is.EqualTo(position.End));
+                Assert.That(position.Start + window.Count / 2, Is.EqualTo(position.Center));
+
+                var frame = source.GetWindowedFrameAsComplex(position.Start, window);
                 var expected = frame.Fft().Subvector(0, frameLength / 2 + 1);
                 NumAssert.AreSame(expected, spectrogram[i], 1.0E-12);
             }
@@ -105,9 +111,18 @@ namespace NumFlatTest.SignalProcessingTests
             var source = TestVector.RandomDouble(42, 5000, 1);
             var window = WindowFunctions.SquareRootHann(frameLength);
             var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Synthesis);
-            Assert.That(info.GetFrameTime(sampleRate, 0), Is.EqualTo((double)-frameShift / sampleRate).Within(1.0E-12));
-            Assert.That(info.GetFrameTime(sampleRate, 1), Is.EqualTo(0.0).Within(1.0E-12));
-            Assert.That(info.GetFrameTime(sampleRate, 2), Is.EqualTo((double)frameShift / sampleRate).Within(1.0E-12));
+
+            Assert.That(info.GetFrameTime(sampleRate, 0).Start, Is.EqualTo((double)-frameShift / sampleRate).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 1).Start, Is.EqualTo(0.0).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 2).Start, Is.EqualTo((double)frameShift / sampleRate).Within(1.0E-12));
+
+            Assert.That(info.GetFrameTime(sampleRate, 0).End, Is.EqualTo((double)frameShift / sampleRate).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 1).End, Is.EqualTo((double)(2 * frameShift) / sampleRate).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 2).End, Is.EqualTo((double)(3 * frameShift) / sampleRate).Within(1.0E-12));
+
+            Assert.That(info.GetFrameTime(sampleRate, 0).Center, Is.EqualTo(0.0).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 1).Center, Is.EqualTo((double)frameShift / sampleRate).Within(1.0E-12));
+            Assert.That(info.GetFrameTime(sampleRate, 2).Center, Is.EqualTo((double)(2 * frameShift) / sampleRate).Within(1.0E-12));
         }
 
         [Test]

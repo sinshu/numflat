@@ -63,21 +63,23 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Gets the position of a frame by its index.
+        /// Gets the sample index range of the specified frame in the source signal.
         /// </summary>
         /// <param name="frameIndex">
         /// The index of the frame.
         /// </param>
         /// <returns>
-        /// The position of the frame.
+        /// A <see cref="FramePosition"/> representing the start and end sample indices of the frame.
         /// </returns>
-        public int GetFramePosition(int frameIndex)
+        public FramePosition GetFramePosition(int frameIndex)
         {
-            return firstFramePosition + frameIndex * FrameShift;
+            var start = firstFramePosition + frameIndex * FrameShift;
+            var end = start + window.Count;
+            return new FramePosition(start, end);
         }
 
         /// <summary>
-        /// Gets the time of a frame by its index.
+        /// Gets the time range (in seconds) of the specified frame in the source signal.
         /// </summary>
         /// <param name="sampleRate">
         /// The sample rate of the source signal.
@@ -86,11 +88,14 @@ namespace NumFlat.SignalProcessing
         /// The index of the frame.
         /// </param>
         /// <returns>
-        /// The time of the frame.
+        /// A <see cref="FrameTime"/> representing the start and end times of the frame.
         /// </returns>
-        public double GetFrameTime(int sampleRate, int frameIndex)
+        public FrameTime GetFrameTime(int sampleRate, int frameIndex)
         {
-            return (double)GetFramePosition(frameIndex) / sampleRate;
+            var position = GetFramePosition(frameIndex);
+            var start = (double)position.Start / sampleRate;
+            var end = (double)position.End / sampleRate;
+            return new FrameTime(start, end);
         }
 
         /// <summary>
