@@ -53,7 +53,7 @@ namespace NumFlat
                 {
                     if (x.RowCount == 0 || x.ColCount == 0)
                     {
-                        new ArgumentException("Empty matrices are not allowed.");
+                        throw new ArgumentException("Empty matrices are not allowed.");
                     }
 
                     destination = new Mat<double>(x.RowCount, x.ColCount);
@@ -168,7 +168,7 @@ namespace NumFlat
                         {
                             if (x.RowCount == 0 || x.ColCount == 0)
                             {
-                                new ArgumentException("Empty matrices are not allowed.");
+                                throw new ArgumentException("Empty matrices are not allowed.");
                             }
 
                             destination = new Mat<double>(x.RowCount, x.ColCount);
