@@ -115,7 +115,7 @@ namespace NumFlat
                         {
                             if (x.Count == 0)
                             {
-                                new ArgumentException("Empty vectors are not allowed.");
+                                throw new ArgumentException("Empty vectors are not allowed.");
                             }
 
                             destination = new Vec<Complex>(x.Count);

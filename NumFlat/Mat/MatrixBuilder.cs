@@ -39,7 +39,7 @@ namespace NumFlat
             {
                 if (row.IsEmpty)
                 {
-                    new ArgumentException("Empty rows are not allowed.");
+                    throw new ArgumentException("Empty rows are not allowed.");
                 }
 
                 if (row.Count != colCount)
@@ -346,7 +346,7 @@ namespace NumFlat
                 {
                     if (row.Length == 0)
                     {
-                        new ArgumentException("Empty rows are not allowed.");
+                        throw new ArgumentException("Empty rows are not allowed.");
                     }
 
                     colCount = row.Length;
@@ -406,7 +406,7 @@ namespace NumFlat
                 {
                     if (col.Length == 0)
                     {
-                        new ArgumentException("Empty columns are not allowed.");
+                        throw new ArgumentException("Empty columns are not allowed.");
                     }
 
                     rowCount = col.Length;
@@ -470,7 +470,7 @@ namespace NumFlat
             {
                 if (row.IsEmpty)
                 {
-                    new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("Empty vectors are not allowed.");
                 }
 
                 if (row.Count != colCount)
@@ -519,7 +519,7 @@ namespace NumFlat
             {
                 if (col.IsEmpty)
                 {
-                    new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("Empty vectors are not allowed.");
                 }
 
                 if (col.Count != rowCount)
