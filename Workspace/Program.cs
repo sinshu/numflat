@@ -21,5 +21,11 @@ public class Program
         double[] ys = [0, 0, 1, 2, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 1, 2, 3, 0];
         var sdtw = new SubsequenceDynamicTimeWarping<double, double>(xs, ys, (x, y) => Math.Abs(x - y));
         Console.WriteLine(sdtw.CostMatrix);
+
+        var path = sdtw.GetAlignment(0);
+        foreach (var pair in path)
+        {
+            Console.WriteLine(pair);
+        }
     }
 }

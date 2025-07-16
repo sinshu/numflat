@@ -17,25 +17,58 @@ namespace NumFlat.TimeSeries
     /// </typeparam>
     public class SubsequenceDynamicTimeWarping<T, U>
     {
+        private int n;
+        private int m;
         private Mat<double> costMatrix;
 
         public SubsequenceDynamicTimeWarping(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
+            n = query.Count;
+            m = longSequence.Count;
             costMatrix = GetCostMatrix(query, longSequence, dm);
+        }
+
+        public IndexPair[] GetAlignment(int lastIndex)
+        {
+            var fdtw = costMatrix.GetUnsafeFastIndexer();
+
+            var alignment = new List<IndexPair>();
+            var x = n - 1;
+            var y = lastIndex;
+
+            while (x > 0 && y > 0)
+            {
+                alignment.Add(new IndexPair(x, y));
+                var min = Min(fdtw[x - 1, y], fdtw[x, y - 1], fdtw[x - 1, y - 1]);
+                if (min == fdtw[x - 1, y - 1])
+                {
+                    x--;
+                    y--;
+                }
+                else if (min == fdtw[x - 1, y])
+                {
+                    x--;
+                }
+                else
+                {
+                    y--;
+                }
+            }
+            alignment.Add(new IndexPair(x, y));
+            alignment.Reverse();
+
+            return alignment.ToArray();
         }
 
         private static Mat<double> GetCostMatrix(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
-            var n = query.Count;
-            var m = longSequence.Count;
-
-            var dtw = new Mat<double>(n + 1, m + 1);
+            var dtw = new Mat<double>(query.Count + 1, longSequence.Count + 1);
             dtw[1.., ..].Fill(double.PositiveInfinity);
 
             var fdtw = dtw.GetUnsafeFastIndexer();
-            for (var i = 1; i <= n; i++)
+            for (var i = 1; i <= query.Count; i++)
             {
-                for (var j = 1; j <= m; j++)
+                for (var j = 1; j <= longSequence.Count; j++)
                 {
                     var cost = dm(query[i - 1], longSequence[j - 1]);
                     fdtw[i, j] = cost + Min(
