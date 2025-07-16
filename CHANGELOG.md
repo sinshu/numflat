@@ -1,7 +1,7 @@
 # v1.2.0
 
 * Fixed issue where some methods did not throw exceptions correctly.
-* Renamed the `Distance` delegate to `DistanceMetric` (breaking change).
+* Renamed the `Distance` delegate to `DistanceMetric` (breaking).
 * Added `SubsequenceDynamicTimeWarping`.
 
 # v1.1.0
