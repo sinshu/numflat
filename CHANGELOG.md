@@ -1,3 +1,9 @@
+# v1.2.0
+
+* Fixed issue where some methods did not throw exceptions correctly.
+* Renamed the `Distance` delegate to `DistanceMetric` (breaking change).
+* Added `SubsequenceDynamicTimeWarping`.
+
 # v1.1.0
 
 * The `GetFramePosition` and `GetFrameTime` methods of `StftInfo` now return a tuple.

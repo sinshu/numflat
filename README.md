@@ -712,6 +712,7 @@ Matrix 3x3-Double
     - ⬜ SVM (support vector machine)
 * 🚧 Time series
     - ✅ DTW (dynamic time warping)
+    - ✅ sDTW (subsequence dynamic time warping)
     - 🚧 HMM (hidden Markov model)
 * 🚧 Signal processing
     - ✅ FFT (fast Fourier transform)
