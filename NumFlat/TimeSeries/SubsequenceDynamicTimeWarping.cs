@@ -1,5 +1,7 @@
-﻿using System;
+﻿using EmdFlat;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NumFlat.TimeSeries
 {
@@ -7,33 +9,22 @@ namespace NumFlat.TimeSeries
     /// Provides sDTW (subsequence dynamic time warping),
     /// a sequence alignment algorithm that finds the best matching subsequence within a longer sequence.
     /// </summary>
-    public static class SubsequenceDynamicTimeWarping
+    /// <typeparam name="T">
+    /// The type of elements in the query sequence.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// The type of elements in the long sequence.
+    /// </typeparam>
+    public class SubsequenceDynamicTimeWarping<T, U>
     {
-        /// <summary>
-        /// Computes the cost matrix for sDTW (subsequence dynamic time warping),
-        /// representing the pairwise distances between elements of a query sequence
-        /// and a longer target sequence.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of elements in the query sequence.
-        /// </typeparam>
-        /// <typeparam name="U">
-        /// The type of elements in the long target sequence.
-        /// </typeparam>
-        /// <param name="query">
-        /// The query sequence to be matched.
-        /// </param>
-        /// <param name="longSequence">
-        /// The longer sequence in which to search for a best-matching subsequence.
-        /// </param>
-        /// <param name="dm">
-        /// The distance metric function to compute the local distance between two elements.
-        /// </param>
-        /// <returns>
-        /// A matrix of costs, where each entry <c>[i, j]</c> represents the distance between
-        /// <c>query[i]</c> and <c>longSequence[j]</c>.
-        /// </returns>
-        public static Mat<double> GetCostMatrix<T, U>(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
+        private Mat<double> costMatrix;
+
+        public SubsequenceDynamicTimeWarping(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
+        {
+            costMatrix = GetCostMatrix(query, longSequence, dm);
+        }
+
+        private static Mat<double> GetCostMatrix(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
             var n = query.Count;
             var m = longSequence.Count;
@@ -62,5 +53,7 @@ namespace NumFlat.TimeSeries
             var min = (a < b) ? a : b;
             return (min < c) ? min : c;
         }
+
+        public ref readonly Mat<double> CostMatrix => ref costMatrix;
     }
 }

@@ -18,8 +18,8 @@ public class Program
     public static void Main(string[] args)
     {
         double[] xs = [1, 2, 3];
-        double[] ys = [0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0];
-        var cost = SubsequenceDynamicTimeWarping.GetCostMatrix(xs, ys, (x, y) => Math.Abs(x - y));
-        Console.WriteLine(cost);
+        double[] ys = [0, 0, 1, 2, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 1, 2, 3, 0];
+        var sdtw = new SubsequenceDynamicTimeWarping<double, double>(xs, ys, (x, y) => Math.Abs(x - y));
+        Console.WriteLine(sdtw.CostMatrix);
     }
 }
