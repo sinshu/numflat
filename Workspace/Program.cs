@@ -19,7 +19,7 @@ public class Program
     {
         double[] xs = [1, 2, 3];
         double[] ys = [0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0];
-        var cost = SubsequenceDynamicTimeWarping.ComputeCostMatrix(xs, ys, (x, y) => Math.Abs(x - y));
+        var cost = SubsequenceDynamicTimeWarping.GetCostMatrix(xs, ys, (x, y) => Math.Abs(x - y));
         Console.WriteLine(cost);
     }
 }

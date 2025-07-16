@@ -4,14 +4,39 @@ using System.Collections.Generic;
 namespace NumFlat.TimeSeries
 {
     /// <summary>
-    /// Provides DTW (dynamic time warping), a sequence-to-sequence matching algorithm.
+    /// Provides sDTW (subsequence dynamic time warping),
+    /// a sequence alignment algorithm that finds the best matching subsequence within a longer sequence.
     /// </summary>
     public static class SubsequenceDynamicTimeWarping
     {
-        public static Mat<double> ComputeCostMatrix<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, DistanceMetric<T, U> dm)
+        /// <summary>
+        /// Computes the cost matrix for sDTW (subsequence dynamic time warping),
+        /// representing the pairwise distances between elements of a query sequence
+        /// and a longer target sequence.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the query sequence.
+        /// </typeparam>
+        /// <typeparam name="U">
+        /// The type of elements in the long target sequence.
+        /// </typeparam>
+        /// <param name="query">
+        /// The query sequence to be matched.
+        /// </param>
+        /// <param name="longSequence">
+        /// The longer sequence in which to search for a best-matching subsequence.
+        /// </param>
+        /// <param name="dm">
+        /// The distance metric function to compute the local distance between two elements.
+        /// </param>
+        /// <returns>
+        /// A matrix of costs, where each entry <c>[i, j]</c> represents the distance between
+        /// <c>query[i]</c> and <c>longSequence[j]</c>.
+        /// </returns>
+        public static Mat<double> GetCostMatrix<T, U>(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
-            var n = xs.Count;
-            var m = ys.Count;
+            var n = query.Count;
+            var m = longSequence.Count;
 
             var dtw = new Mat<double>(n + 1, m + 1);
             dtw[1.., ..].Fill(double.PositiveInfinity);
@@ -21,7 +46,7 @@ namespace NumFlat.TimeSeries
             {
                 for (var j = 1; j <= m; j++)
                 {
-                    var cost = dm(xs[i - 1], ys[j - 1]);
+                    var cost = dm(query[i - 1], longSequence[j - 1]);
                     fdtw[i, j] = cost + Min(
                         fdtw[i - 1, j],      // insertion
                         fdtw[i, j - 1],      // deletion
