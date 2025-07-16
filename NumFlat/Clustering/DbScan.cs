@@ -21,7 +21,7 @@ namespace NumFlat.Clustering
         /// <param name="points">
         /// The collection of points to be clustered.
         /// </param>
-        /// <param name="distance">
+        /// <param name="dm">
         /// The distance metric to calculate the distance between points.
         /// </param>
         /// <param name="eps">
@@ -34,7 +34,7 @@ namespace NumFlat.Clustering
         /// The destination where the cluster labels for each point will be stored. 
         /// A label of -1 indicates noise, and any non-negative integer value indicates the cluster to which the point belongs.
         /// </param>
-        public static void Fit<T>(IReadOnlyList<T> points, Distance<T, T> distance, double eps, int minPoints, Span<int> destination)
+        public static void Fit<T>(IReadOnlyList<T> points, DistanceMetric<T, T> dm, double eps, int minPoints, Span<int> destination)
         {
             //
             // This is based on the following implementations.
@@ -44,7 +44,7 @@ namespace NumFlat.Clustering
             //
 
             ThrowHelper.ThrowIfNull(points, nameof(points));
-            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+            ThrowHelper.ThrowIfNull(dm, nameof(dm));
 
             if (points.Count == 0)
             {
@@ -89,7 +89,7 @@ namespace NumFlat.Clustering
                 p.IsVisited = true;
 
                 // NeighborPts = regionQuery(P, eps)
-                var neighborPoints = RegionQuery(allPoints, p.Point, distance, eps);
+                var neighborPoints = RegionQuery(allPoints, p.Point, dm, eps);
 
                 // if sizeof(NeighborPts) < MinPts
                 if (neighborPoints.Count < minPoints)
@@ -103,7 +103,7 @@ namespace NumFlat.Clustering
                     c++;
 
                     // expandCluster(P, NeighborPts, C, eps, MinPts)
-                    ExpandCluster(allPoints, p, neighborPoints, c, distance, eps, minPoints);
+                    ExpandCluster(allPoints, p, neighborPoints, c, dm, eps, minPoints);
                 }
             }
 
@@ -114,7 +114,7 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, NeighborPoints<T> neighborPoints, int c, Distance<T, T> distance, double eps, int minPoints)
+        private static void ExpandCluster<T>(DbScanPoint<T>[] allPoints, DbScanPoint<T> center, NeighborPoints<T> neighborPoints, int c, DistanceMetric<T, T> dm, double eps, int minPoints)
         {
             // add P to cluster C
             center.ClusterIndex = c;
@@ -132,7 +132,7 @@ namespace NumFlat.Clustering
                     p.IsVisited = true;
 
                     // NeighborPts' = regionQuery(P', eps)
-                    var neighborPoints2 = RegionQuery(allPoints, p.Point, distance, eps);
+                    var neighborPoints2 = RegionQuery(allPoints, p.Point, dm, eps);
 
                     // if sizeof(NeighborPts') >= MinPts
                     if (neighborPoints2.Count >= minPoints)
@@ -154,9 +154,9 @@ namespace NumFlat.Clustering
             }
         }
 
-        private static NeighborPoints<T> RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, Distance<T, T> distance, double eps)
+        private static NeighborPoints<T> RegionQuery<T>(DbScanPoint<T>[] allPoints, T center, DistanceMetric<T, T> dm, double eps)
         {
-            return new NeighborPoints<T>(allPoints.Where(point => distance(point.Point, center) <= eps).ToArray());
+            return new NeighborPoints<T>(allPoints.Where(point => dm(point.Point, center) <= eps).ToArray());
         }
 
 

@@ -9,7 +9,7 @@ namespace NumFlat.Clustering
     /// </summary>
     public sealed class KMedoids<T>
     {
-        private Distance<T, T> distance;
+        private DistanceMetric<T, T> dm;
 
         private int[] medoidIndices;
         private T[] medoids;
@@ -20,7 +20,7 @@ namespace NumFlat.Clustering
         /// <param name="xs">
         /// The source features.
         /// </param>
-        /// <param name="distance">
+        /// <param name="dm">
         /// The distance measure to compute distances between features.
         /// </param>
         /// <param name="clusterCount">
@@ -30,10 +30,10 @@ namespace NumFlat.Clustering
         /// A random number generator for the k-medoids++ initialization.
         /// If null, <see cref="Random.Shared"/> is used.
         /// </param>
-        public KMedoids(IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
+        public KMedoids(IReadOnlyList<T> xs, DistanceMetric<T, T> dm, int clusterCount, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+            ThrowHelper.ThrowIfNull(dm, nameof(dm));
 
             if (xs.Count == 0)
             {
@@ -50,7 +50,7 @@ namespace NumFlat.Clustering
                 throw new ArgumentException("The number of source features must be larger than the number of clusters.", nameof(xs));
             }
 
-            this.distance = distance;
+            this.dm = dm;
 
             if (clusterCount == 1)
             {
@@ -63,7 +63,7 @@ namespace NumFlat.Clustering
                     for (var j = 0; j < xs.Count; j++)
                     {
                         var x = xs[j];
-                        sum += distance(target, x);
+                        sum += dm(target, x);
                     }
                     if (sum < minDistance)
                     {
@@ -85,10 +85,10 @@ namespace NumFlat.Clustering
             medoidIndices = new int[clusterCount];
             for (var m = 0; m < clusterCount; m++)
             {
-                medoidIndices[m] = GetNextInitialMedoid(xs, distance, medoidIndices.AsSpan(0, m), random);
+                medoidIndices[m] = GetNextInitialMedoid(xs, dm, medoidIndices.AsSpan(0, m), random);
             }
 
-            Func<int, int, double> func = (i, j) => distance(xs[i], xs[j]);
+            Func<int, int, double> func = (i, j) => dm(xs[i], xs[j]);
             medoidIndices = FastPamLike(medoidIndices, xs.Count, clusterCount, func, random);
 
             medoids = new T[clusterCount];
@@ -113,7 +113,7 @@ namespace NumFlat.Clustering
             var predicted = -1;
             for (var m = 0; m < medoids.Length; m++)
             {
-                var d = distance(x, medoids[m]);
+                var d = dm(x, medoids[m]);
                 if (d < nearestDistance)
                 {
                     nearestDistance = d;
@@ -137,12 +137,12 @@ namespace NumFlat.Clustering
             return PredictWithDistance(x).ClassIndex;
         }
 
-        private static double GetNearestDistance(IReadOnlyList<T> xs, Distance<T, T> distance, ReadOnlySpan<int> medoids, T x)
+        private static double GetNearestDistance(IReadOnlyList<T> xs, DistanceMetric<T, T> dm, ReadOnlySpan<int> medoids, T x)
         {
             var nearestDistance = double.MaxValue;
             for (var m = 0; m < medoids.Length; m++)
             {
-                var d = distance(x, xs[medoids[m]]);
+                var d = dm(x, xs[medoids[m]]);
                 if (d < nearestDistance)
                 {
                     nearestDistance = d;
@@ -151,7 +151,7 @@ namespace NumFlat.Clustering
             return nearestDistance;
         }
 
-        private static int GetNextInitialMedoid(IReadOnlyList<T> xs, Distance<T, T> distance, ReadOnlySpan<int> medoids, Random random)
+        private static int GetNextInitialMedoid(IReadOnlyList<T> xs, DistanceMetric<T, T> dm, ReadOnlySpan<int> medoids, Random random)
         {
             if (medoids.Length == 0)
             {
@@ -165,7 +165,7 @@ namespace NumFlat.Clustering
             var i = 0;
             foreach (var x in xs)
             {
-                var d = GetNearestDistance(xs, distance, medoids, x);
+                var d = GetNearestDistance(xs, dm, medoids, x);
                 sum += d;
                 prb[i] = d;
                 i++;
@@ -187,7 +187,7 @@ namespace NumFlat.Clustering
             return i - 1;
         }
 
-        private static int[] FastPamLike(int[] medoids, int n, int k, Func<int, int, double> distance, Random random)
+        private static int[] FastPamLike(int[] medoids, int n, int k, Func<int, int, double> dm, Random random)
         {
             var nearest = new int[n];
             var dNearest = new double[n];
@@ -211,7 +211,7 @@ namespace NumFlat.Clustering
                     for (var i = 0; i < k; i++)
                     {
                         var m = medoids[i];
-                        var d = (o == m) ? 0 : distance(o, m);
+                        var d = (o == m) ? 0 : dm(o, m);
                         if (d < best)
                         {
                             second = best; best = d; bestIndex = i;
@@ -250,7 +250,7 @@ namespace NumFlat.Clustering
                     {
                         // distance to new medoid
                         // doj <- d(xo, xc);
-                        var dOj = distance(o, xc);
+                        var dOj = dm(o, xc);
 
                         // case (i)
                         // if doj < dnearest(o) then
@@ -319,7 +319,7 @@ namespace NumFlat.Clustering
         /// <summary>
         /// Gets the distance measure to compute distances between features.
         /// </summary>
-        public Distance<T, T> Distance => distance;
+        public DistanceMetric<T, T> DistanceMetric => dm;
 
         /// <summary>
         /// Gets the indices of the medoids in the source features.

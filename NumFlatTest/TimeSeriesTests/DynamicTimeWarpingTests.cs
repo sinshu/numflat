@@ -10,9 +10,9 @@ namespace NumFlatTest.TimeSeriesTests
 {
     public class DynamicTimeWarpingTests
     {
-        private static Distance<int, int> intAbs = (x, y) => Math.Abs(x - y);
-        private static Distance<double, double> doubleAbs = (x, y) => Math.Abs(x - y);
-        private static Distance<char, char> levenshtein = (x, y) => x == y ? 0 : 1;
+        private static DistanceMetric<int, int> intAbs = (x, y) => Math.Abs(x - y);
+        private static DistanceMetric<double, double> doubleAbs = (x, y) => Math.Abs(x - y);
+        private static DistanceMetric<char, char> levenshtein = (x, y) => x == y ? 0 : 1;
 
         [Test]
         public void Zero()

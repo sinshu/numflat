@@ -6,33 +6,33 @@ namespace NumFlat
     /// Represents a distance measure between two objects.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of the first object.
+    /// The type of the first argument.
     /// </typeparam>
     /// <typeparam name="U">
-    /// The type of the second object.
+    /// The type of the second argument.
     /// </typeparam>
     /// <param name="x">
-    /// The first object.
+    /// The first object to compare.
     /// </param>
     /// <param name="y">
-    /// The second object.
+    /// The second object to compare.
     /// </param>
     /// <returns>
-    /// The calculated distance.
+    /// The computed distance.
     /// </returns>
-    public delegate double Distance<T, U>(T x, U y);
+    public delegate double DistanceMetric<T, U>(T x, U y);
 
 
 
     /// <summary>
     /// Provides distance metrics.
     /// </summary>
-    public static class Distance
+    public static class DistanceMetric
     {
         /// <summary>
         /// Gets the Euclidean distance metric.
         /// </summary>
-        public static Distance<Vec<double>, Vec<double>> Euclidean => (Vec<double> x, Vec<double> y) =>
+        public static DistanceMetric<Vec<double>, Vec<double>> Euclidean => (Vec<double> x, Vec<double> y) =>
         {
             return x.Distance(y);
         };
@@ -40,7 +40,7 @@ namespace NumFlat
         /// <summary>
         /// Gets the Manhattan distance metric.
         /// </summary>
-        public static Distance<Vec<double>, Vec<double>> Manhattan => (Vec<double> x, Vec<double> y) =>
+        public static DistanceMetric<Vec<double>, Vec<double>> Manhattan => (Vec<double> x, Vec<double> y) =>
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             ThrowHelper.ThrowIfEmpty(y, nameof(y));

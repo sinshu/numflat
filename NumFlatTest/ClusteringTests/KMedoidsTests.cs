@@ -28,7 +28,7 @@ namespace NumFlatTest.ClusteringTests
             }
             .ToMatrix().Rows;
 
-            var kmedoids = xs.ToKMedoids(Distance.Euclidean, 3, new Random(42));
+            var kmedoids = xs.ToKMedoids(DistanceMetric.Euclidean, 3, new Random(42));
             var cls = xs.Select(x => kmedoids.Predict(x)).ToArray();
             Assert.That(cls[0] == cls[1]);
             Assert.That(cls[2] == cls[3]);
@@ -48,7 +48,7 @@ namespace NumFlatTest.ClusteringTests
             var dataset = ReadIris("iris.csv").ToArray();
             var xs = dataset.Select(tpl => tpl.Feature).ToArray();
 
-            var func = Distance.Euclidean;
+            var func = DistanceMetric.Euclidean;
             var medoids = new KMedoids<Vec<double>>(xs, func, classCount, new Random(42));
 
             var originalError = 0.0;

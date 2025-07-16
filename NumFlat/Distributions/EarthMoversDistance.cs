@@ -20,7 +20,7 @@ namespace NumFlat.Distributions
         /// <param name="signature2">
         /// The second signature containing features and weights.
         /// </param>
-        /// <param name="distance">
+        /// <param name="dm">
         /// A delegate that computes the distance between two features.
         /// </param>
         /// <param name="maxIterations">
@@ -30,11 +30,11 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The Earth Mover's Distance between the two signatures.
         /// </returns>
-        public static double GetDistance<T>(EmdSignature<T> signature1, EmdSignature<T> signature2, Distance<T, T> distance, int maxIterations = 500)
+        public static double GetDistance<T>(EmdSignature<T> signature1, EmdSignature<T> signature2, DistanceMetric<T, T> dm, int maxIterations = 500)
         {
             ThrowHelper.ThrowIfNull(signature1, nameof(signature1));
             ThrowHelper.ThrowIfNull(signature2, nameof(signature2));
-            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+            ThrowHelper.ThrowIfNull(dm, nameof(dm));
 
             var s1 = new signature_t<T>(signature1.Features.Count, signature1.Features, signature1.Weights);
             var s2 = new signature_t<T>(signature2.Features.Count, signature2.Features, signature2.Weights);
@@ -42,7 +42,7 @@ namespace NumFlat.Distributions
 
             try
             {
-                return emd.emd(s1, s2, (x, y) => distance(x, y), null, null);
+                return emd.emd(s1, s2, (x, y) => dm(x, y), null, null);
             }
             catch (EmdException e)
             {
@@ -62,7 +62,7 @@ namespace NumFlat.Distributions
         /// <param name="signature2">
         /// The second signature containing features and weights.
         /// </param>
-        /// <param name="distance">
+        /// <param name="dm">
         /// A delegate that computes the distance between two features.
         /// </param>
         /// <param name="maxIterations">
@@ -72,7 +72,7 @@ namespace NumFlat.Distributions
         /// <returns>
         /// The Earth Mover's Distance between the two signatures and the resulting flow.
         /// </returns>
-        public static (double Distance, EmdFlow[] Flow) GetDistanceAndFlow<T>(EmdSignature<T> signature1, EmdSignature<T> signature2, Distance<T, T> distance, int maxIterations = 500)
+        public static (double Distance, EmdFlow[] Flow) GetDistanceAndFlow<T>(EmdSignature<T> signature1, EmdSignature<T> signature2, DistanceMetric<T, T> dm, int maxIterations = 500)
         {
             var s1 = new signature_t<T>(signature1.Features.Count, signature1.Features, signature1.Weights);
             var s2 = new signature_t<T>(signature2.Features.Count, signature2.Features, signature2.Weights);
@@ -86,7 +86,7 @@ namespace NumFlat.Distributions
             {
                 try
                 {
-                    value = emd.emd(s1, s2, (x, y) => distance(x, y), p, &flowSize);
+                    value = emd.emd(s1, s2, (x, y) => dm(x, y), p, &flowSize);
                 }
                 catch (EmdException e)
                 {

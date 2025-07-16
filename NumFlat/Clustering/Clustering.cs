@@ -54,7 +54,7 @@ namespace NumFlat.Clustering
         /// <param name="xs">
         /// The source features.
         /// </param>
-        /// <param name="distance">
+        /// <param name="dm">
         /// The distance measure to compute distances between features.
         /// </param>
         /// <param name="clusterCount">
@@ -67,17 +67,17 @@ namespace NumFlat.Clustering
         /// <returns>
         /// A k-medoids model computed from the source features.
         /// </returns>
-        public static KMedoids<T> ToKMedoids<T>(this IReadOnlyList<T> xs, Distance<T, T> distance, int clusterCount, Random? random = null)
+        public static KMedoids<T> ToKMedoids<T>(this IReadOnlyList<T> xs, DistanceMetric<T, T> dm, int clusterCount, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfNull(distance, nameof(distance));
+            ThrowHelper.ThrowIfNull(dm, nameof(dm));
 
             if (clusterCount <= 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
             }
 
-            return new KMedoids<T>(xs, distance, clusterCount, random);
+            return new KMedoids<T>(xs, dm, clusterCount, random);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace NumFlat.Clustering
             }
 
             var result = new int[xs.Count];
-            NumFlat.Clustering.DbScan.Fit(xs, Distance.Euclidean, eps, minPoints, result);
+            NumFlat.Clustering.DbScan.Fit(xs, DistanceMetric.Euclidean, eps, minPoints, result);
             return result;
         }
     }
