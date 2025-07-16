@@ -65,7 +65,7 @@ namespace NumFlatTest.TimeSeriesTests
 
             var sdtw = SubsequenceDynamicTimeWarping.Compute(query, longSequence, intAbs);
             var cost = sdtw.CostMatrix.Rows.Last();
-            Console.WriteLine(cost);
+
             for (var i = 0; i < longSequence.Length; i++)
             {
                 if (longSequence[i] == 3)
