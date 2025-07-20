@@ -30,7 +30,7 @@ namespace NumFlat.TimeSeries
         /// The long sequence.
         /// </param>
         /// <param name="dm">
-        /// The DTW distance between the input sequences.
+        /// An instance of <see cref="DistanceMetric{T, U}"/> to compute the distance between two elements.
         /// </param>
         public SubsequenceDynamicTimeWarping(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
@@ -55,7 +55,7 @@ namespace NumFlat.TimeSeries
 
         /// <summary>
         /// Gets the alignment path,
-        /// assuming that the last element of the query aligns to <c>lastIndex</c> in the long sequence.
+        /// assuming that the last element of the query aligns to <paramref name="lastIndex"/> in the long sequence.
         /// </summary>
         /// <param name="lastIndex">
         /// The position of the last element of the query in the long sequence.
@@ -64,7 +64,7 @@ namespace NumFlat.TimeSeries
         /// The alignment path between the query and long sequence.
         /// </returns>
         /// <remarks>
-        /// Note that <c>lastIndex</c> refers to the actual position of the last element, not one past it.
+        /// Note that <paramref name="lastIndex"/> refers to the actual position of the last element, not one past it.
         /// </remarks>
         public IndexPair[] GetAlignment(int lastIndex)
         {
@@ -154,7 +154,7 @@ namespace NumFlat.TimeSeries
         /// The long sequence.
         /// </param>
         /// <param name="dm">
-        /// The DTW distance between the input sequences.
+        /// An instance of <see cref="DistanceMetric{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <returns>
         /// A <see cref="SubsequenceDynamicTimeWarping{T, U}"/> instance that holds the cost matrix and alignment methods.
@@ -180,7 +180,7 @@ namespace NumFlat.TimeSeries
         /// The long sequence in which to search for the best matching subsequence.
         /// </param>
         /// <param name="dm">
-        /// The distance metric used to compute the cost between elements.
+        /// An instance of <see cref="DistanceMetric{T, U}"/> to compute the distance between two elements.
         /// </param>
         /// <returns>
         /// An array of <see cref="IndexPair"/> representing the alignment path of the best matching subsequence.
