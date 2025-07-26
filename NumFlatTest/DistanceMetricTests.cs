@@ -7,7 +7,7 @@ using NumFlat;
 
 namespace NumFlatTest
 {
-    public class DistanceTests
+    public class DistanceMetricTests
     {
         [Test]
         public void Euclidean()
