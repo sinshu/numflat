@@ -326,7 +326,7 @@ x.Fill(3);
 // Create a submatrix of the matrix.
 var sub = x[1..3, 2..4];
 
-// Modify the subvector.
+// Modify the submatrix.
 sub.Fill(100);
 
 // Show the original matrix.
