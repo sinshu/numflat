@@ -53,7 +53,7 @@ namespace NumFlat
         /// <returns>
         /// The polynomial kernel.
         /// </returns>
-        public static Kernel<Vec<double>, Vec<double>> Polynomial(int degree, double constant = 0.0)
+        public static Kernel<Vec<double>, Vec<double>> Polynomial(int degree, double constant)
         {
             if (degree <= 0)
             {

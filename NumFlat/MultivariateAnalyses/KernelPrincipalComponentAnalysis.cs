@@ -27,17 +27,15 @@ namespace NumFlat.MultivariateAnalyses
         /// The source vectors.
         /// </param>
         /// <param name="kernel">
-        /// The kernel function applied to the vectors. If null, the linear kernel is used.
+        /// The kernel function applied to the vectors..
         /// </param>
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public KernelPrincipalComponentAnalysis(IReadOnlyList<Vec<double>> xs, Kernel<Vec<double>, Vec<double>>? kernel = null)
+        public KernelPrincipalComponentAnalysis(IReadOnlyList<Vec<double>> xs, Kernel<Vec<double>, Vec<double>> kernel)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
-
-            var kernelFunction = kernel ?? Kernel.Linear;
 
             var sampleCount = xs.Count;
             var vectors = new Vec<double>[sampleCount];
@@ -65,7 +63,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 for (var j = 0; j <= i; j++)
                 {
-                    var value = kernelFunction(vectors[i], vectors[j]);
+                    var value = kernel(vectors[i], vectors[j]);
                     kernelMatrix[i, j] = value;
                     kernelMatrix[j, i] = value;
                 }
@@ -128,7 +126,7 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             this.xs = vectors;
-            this.kernel = kernelFunction;
+            this.kernel = kernel;
             this.rowMeans = rowMeans;
             this.totalMean = totalMean;
             this.eigenValues = eigenValues;

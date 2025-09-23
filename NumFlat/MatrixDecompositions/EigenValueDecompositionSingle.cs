@@ -135,6 +135,41 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="tolerance">
+        /// Eigenvalues below this threshold will be treated as zero.
+        /// </param>
+        public int Rank(float tolerance)
+        {
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
+            if (float.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(d[0]) * d.Count;
+            }
+
+            var rank = 0;
+            foreach (var value in d)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
+
+        /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        public int Rank()
+        {
+            // Set NaN to tolerance to set the tolerance automatically.
+            return Rank(float.NaN);
+        }
+
+        /// <summary>
         /// The diagonal elements of the matrix D.
         /// </summary>
         public ref readonly Vec<float> D => ref d;

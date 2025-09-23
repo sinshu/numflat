@@ -195,5 +195,37 @@ namespace NumFlatTest.MatrixDecompositionTests
             var expected = MatrixBuilder.Identity<Complex>(actual.RowCount);
             NumAssert.AreSame(expected, actual, 1.0E-12);
         }
+
+        [Test]
+        public void Rank()
+        {
+            Mat<Complex> rank0 =
+            [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<Complex> rank1 =
+            [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<Complex> rank3 =
+            [
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 2],
+            ];
+
+            Assert.That(rank0.Svd().Rank(), Is.EqualTo(0));
+            Assert.That(rank1.Svd().Rank(), Is.EqualTo(1));
+            Assert.That(rank3.Svd().Rank(), Is.EqualTo(3));
+            Assert.That(rank3.Svd().Rank(0.999), Is.EqualTo(3));
+            Assert.That(rank3.Svd().Rank(1.001), Is.EqualTo(1));
+            Assert.That(rank3.Svd().Rank(2.001), Is.EqualTo(0));
+        }
     }
 }

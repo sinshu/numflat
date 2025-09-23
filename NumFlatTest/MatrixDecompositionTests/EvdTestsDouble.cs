@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+using NumFlat;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using NUnit.Framework;
-using NumFlat;
 
 namespace NumFlatTest.MatrixDecompositionTests
 {
@@ -124,6 +126,38 @@ namespace NumFlatTest.MatrixDecompositionTests
                 }
             }
             return mat;
+        }
+
+        [Test]
+        public void Rank()
+        {
+            Mat<double> rank0 =
+            [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<double> rank1 =
+            [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<double> rank3 =
+            [
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 2],
+            ];
+
+            Assert.That(rank0.Evd().Rank(), Is.EqualTo(0));
+            Assert.That(rank1.Evd().Rank(), Is.EqualTo(1));
+            Assert.That(rank3.Evd().Rank(), Is.EqualTo(3));
+            Assert.That(rank3.Evd().Rank(0.999), Is.EqualTo(3));
+            Assert.That(rank3.Evd().Rank(1.001), Is.EqualTo(1));
+            Assert.That(rank3.Evd().Rank(2.001), Is.EqualTo(0));
         }
     }
 }
