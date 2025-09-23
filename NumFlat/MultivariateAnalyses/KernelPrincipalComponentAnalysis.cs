@@ -9,13 +9,11 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class KernelPrincipalComponentAnalysis : IVectorToVectorTransform<double>
     {
-        private readonly Vec<double>[] xs;
+        private readonly Vec<double>[] vectors;
         private readonly Kernel<Vec<double>, Vec<double>> kernel;
         private readonly Vec<double> colMeans;
         private readonly double totalMean;
-        private readonly Mat<double> projectionMatrix;
-        private readonly int sourceDimension;
-        private readonly int sampleCount;
+        private readonly Mat<double> projection;
 
         /// <summary>
         /// Performs kernel principal component analysis (kernel PCA).
@@ -96,13 +94,11 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
 
-            this.xs = vectors;
+            this.vectors = vectors;
             this.kernel = kernel;
             this.colMeans = colMeans;
             this.totalMean = totalMean;
-            this.projectionMatrix = projection;
-            this.sourceDimension = vectors[0].Count;
-            this.sampleCount = sampleCount;
+            this.projection = projection;
         }
 
         /// <inheritdoc/>
@@ -111,41 +107,43 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            if (source.Count != sourceDimension)
+            if (source.Count != vectors[0].Count)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {sourceDimension}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The transform requires the length of the source vector to be {vectors[0].Count}, but was {source.Count}.", nameof(source));
             }
 
-            if (destination.Count > sampleCount)
+            if (destination.Count > vectors.Length)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be within {sampleCount}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The transform requires the length of the destination vector to be within {vectors.Length}, but was {destination.Count}.", nameof(destination));
             }
 
-            using var utmp = new TemporalVector<double>(sampleCount);
-            var kernelValues = utmp.Item;
+            using var utmp = new TemporalVector<double>(vectors.Length);
+            ref readonly var tmp = ref utmp.Item;
+            var ft = tmp.GetUnsafeFastIndexer();
 
             var sum = 0.0;
-            for (var i = 0; i < sampleCount; i++)
+            for (var i = 0; i < vectors.Length; i++)
             {
-                var value = kernel(xs[i], source);
-                kernelValues[i] = value;
+                var value = kernel(vectors[i], source);
+                ft[i] = value;
                 sum += value;
             }
 
-            var mean = sum / sampleCount;
-            for (var i = 0; i < sampleCount; i++)
+            var mean = sum / vectors.Length;
+            var fcm = colMeans.GetUnsafeFastIndexer();
+            for (var i = 0; i < vectors.Length; i++)
             {
-                kernelValues[i] = kernelValues[i] - colMeans[i] - mean + totalMean;
+                ft[i] = ft[i] - fcm[i] - mean + totalMean;
             }
 
-            var components = projectionMatrix.Submatrix(0, 0, sampleCount, destination.Count);
-            Mat.Mul(components, kernelValues, destination, true);
+            var components = projection[..vectors.Length, ..destination.Count];
+            Mat.Mul(components, tmp, destination, true);
         }
 
         /// <inheritdoc/>
-        public int SourceDimension => sourceDimension;
+        public int SourceDimension => vectors[0].Count;
 
         /// <inheritdoc/>
-        public int DestinationDimension => sampleCount;
+        public int DestinationDimension => vectors.Length;
     }
 }

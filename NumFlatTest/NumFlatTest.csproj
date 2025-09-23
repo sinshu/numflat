@@ -39,6 +39,9 @@
     <None Update="dataset\iris_kmeans_gpt4.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="dataset\iris_kpca_poly_d2c1.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="dataset\iris_kpca_rbf_gamma0p1.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

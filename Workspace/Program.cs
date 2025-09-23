@@ -18,7 +18,7 @@ public class Program
     public static void Main(string[] args)
     {
         var data = ReadIris("iris.csv").ToArray();
-        var kernel = Kernel.Gaussian(0.1);
+        var kernel = Kernel.Polynomial(2, 1);
 
         var kpca = new KernelPrincipalComponentAnalysis(data, kernel);
 
