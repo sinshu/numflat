@@ -17,23 +17,28 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        double[] xs = [1, 2, 3];
-        double[] ys = [0, 0, 2, 2, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 1, 2, 3, 0];
-        var sdtw = new SubsequenceDynamicTimeWarping<double, double>(xs, ys, (x, y) => Math.Abs(x - y));
-        Console.WriteLine(sdtw.CostMatrix);
+        var data = ReadIris("iris.csv").ToArray();
+        var kernel = Kernel.Polynomial(2, 1);
 
-        var path = sdtw.GetAlignment(0);
-        foreach (var pair in path)
+        var kpca = new KernelPrincipalComponentAnalysis(data, kernel);
+
+        using (var writer = new StreamWriter("out.csv"))
         {
-            Console.WriteLine(pair);
+            writer.WriteLine("x,y");
+            foreach (var x in data)
+            {
+                var transformed = kpca.Transform(x);
+                writer.WriteLine($"{transformed[0]},{transformed[1]}");
+            }
         }
+    }
 
-        Console.WriteLine("==");
-
-        var best = SubsequenceDynamicTimeWarping.GetBestAlignment(xs, ys, (x, y) => Math.Abs(x - y));
-        foreach (var pair in best)
+    private static IEnumerable<Vec<double>> ReadIris(string filename)
+    {
+        foreach (var line in File.ReadLines(filename).Skip(1))
         {
-            Console.WriteLine(pair);
+            var values = line.Split(',').Take(4).Select(value => double.Parse(value));
+            yield return values.ToVector();
         }
     }
 }

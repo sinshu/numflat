@@ -13,7 +13,7 @@ namespace NumFlat
         /// The target matrix.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be replaced with zero.
+        /// Singular values below this threshold will be treated as zero.
         /// </param>
         /// <returns>
         /// The rank of the matrix.
@@ -73,7 +73,7 @@ namespace NumFlat
         /// The target matrix.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be replaced with zero.
+        /// Singular values below this threshold will be treated as zero.
         /// </param>
         /// <returns>
         /// The rank of the matrix.
@@ -133,7 +133,7 @@ namespace NumFlat
         /// The target matrix.
         /// </param>
         /// <param name="tolerance">
-        /// Singular values below this threshold will be replaced with zero.
+        /// Singular values below this threshold will be treated as zero.
         /// </param>
         /// <returns>
         /// The rank of the matrix.

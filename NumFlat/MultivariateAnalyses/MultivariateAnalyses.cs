@@ -209,5 +209,25 @@ namespace NumFlat.MultivariateAnalyses
         {
             return ClassicalMultiDimensionalScaling.Fit(distanceMatrix, dimension);
         }
+
+        /// <summary>
+        /// Performs kernel principal component analysis (kernel PCA).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="kernel">
+        /// The kernel function applied to the vectors.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="KernelPrincipalComponentAnalysis"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        public static KernelPrincipalComponentAnalysis KernelPca(this IReadOnlyList<Vec<double>> xs, Kernel<Vec<double>, Vec<double>> kernel)
+        {
+            return new KernelPrincipalComponentAnalysis(xs, kernel);
+        }
     }
 }

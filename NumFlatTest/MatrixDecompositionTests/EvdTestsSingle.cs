@@ -125,5 +125,37 @@ namespace NumFlatTest.MatrixDecompositionTests
             }
             return mat;
         }
+
+        [Test]
+        public void Rank()
+        {
+            Mat<float> rank0 =
+            [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<float> rank1 =
+            [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ];
+
+            Mat<float> rank3 =
+            [
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 2],
+            ];
+
+            Assert.That(rank0.Evd().Rank(), Is.EqualTo(0));
+            Assert.That(rank1.Evd().Rank(), Is.EqualTo(1));
+            Assert.That(rank3.Evd().Rank(), Is.EqualTo(3));
+            Assert.That(rank3.Evd().Rank(0.999F), Is.EqualTo(3));
+            Assert.That(rank3.Evd().Rank(1.001F), Is.EqualTo(1));
+            Assert.That(rank3.Evd().Rank(2.001F), Is.EqualTo(0));
+        }
     }
 }

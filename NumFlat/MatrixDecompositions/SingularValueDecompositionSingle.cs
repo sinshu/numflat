@@ -230,6 +230,41 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        /// <param name="tolerance">
+        /// Singular values below this threshold will be treated as zero.
+        /// </param>
+        public int Rank(float tolerance)
+        {
+            // If tolerance is NaN, set the tolerance by the Math.NET's method.
+            if (double.IsNaN(tolerance))
+            {
+                tolerance = Special.Eps(s[0]) * Math.Max(u.RowCount, vt.ColCount);
+            }
+
+            var rank = 0;
+            foreach (var value in s)
+            {
+                if (value > tolerance)
+                {
+                    rank++;
+                }
+            }
+
+            return rank;
+        }
+
+        /// <summary>
+        /// Gets the rank of the matrix.
+        /// </summary>
+        public int Rank()
+        {
+            // Set NaN to tolerance to set the tolerance automatically.
+            return Rank(float.NaN);
+        }
+
+        /// <summary>
         /// The diagonal elements of the matrix S.
         /// </summary>
         public ref readonly Vec<float> S => ref s;
