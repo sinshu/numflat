@@ -1,3 +1,8 @@
+# v1.2.1
+
+* Added `KernelPrincipalComponentAnalysis`.
+* Added the `Rank` method to EVD and SVD.
+
 # v1.2.0
 
 * Fixed issue where some methods did not throw exceptions correctly.

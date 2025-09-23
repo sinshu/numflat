@@ -691,7 +691,7 @@ Matrix 3x3-Double
     - ✅ ICA (independent component analysis)
     - ✅ NMF (non-negative matrix factorization)
     - ⬜ Multinomial logistic regression
-    - ⬜ Kernel PCA
+    - ✅ Kernel PCA
     - ⬜ Kernel discriminant analysis
     - ✅ Classical MDS (classical multidimensional scaling)
     - ⬜ t-SNE
