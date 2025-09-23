@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NumFlat.MultivariateAnalyses
 {
@@ -8,15 +9,11 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class KernelPrincipalComponentAnalysis : IVectorToVectorTransform<double>
     {
-        private const double EigenvalueTolerance = 1.0E-12;
-
         private readonly Vec<double>[] xs;
         private readonly Kernel<Vec<double>, Vec<double>> kernel;
-        private readonly Vec<double> rowMeans;
+        private readonly Vec<double> colMeans;
         private readonly double totalMean;
         private readonly Mat<double> projectionMatrix;
-        private readonly Vec<double> eigenValues;
-        private readonly Mat<double> eigenVectors;
         private readonly int sourceDimension;
         private readonly int sampleCount;
 
@@ -35,65 +32,39 @@ namespace NumFlat.MultivariateAnalyses
         public KernelPrincipalComponentAnalysis(IReadOnlyList<Vec<double>> xs, Kernel<Vec<double>, Vec<double>> kernel)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
-            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
+            ThrowHelper.ThrowIfNull(kernel, nameof(kernel));
 
             var sampleCount = xs.Count;
             var vectors = new Vec<double>[sampleCount];
-            var dimension = -1;
-
-            for (var i = 0; i < sampleCount; i++)
             {
-                var x = xs[i];
-                ThrowHelper.ThrowIfEmpty(x, nameof(xs));
-
-                if (i == 0)
+                var i = 0;
+                foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
                 {
-                    dimension = x.Count;
+                    vectors[i] = x.Copy();
+                    i++;
                 }
-                else if (x.Count != dimension)
-                {
-                    throw new ArgumentException("All the vectors must have the same length.", nameof(xs));
-                }
-
-                vectors[i] = x;
             }
 
             var kernelMatrix = new Mat<double>(sampleCount, sampleCount);
+            var fkm = kernelMatrix.GetUnsafeFastIndexer();
             for (var i = 0; i < sampleCount; i++)
             {
                 for (var j = 0; j <= i; j++)
                 {
                     var value = kernel(vectors[i], vectors[j]);
-                    kernelMatrix[i, j] = value;
-                    kernelMatrix[j, i] = value;
+                    fkm[i, j] = value;
+                    fkm[j, i] = value;
                 }
             }
 
-            var rowMeans = new Vec<double>(sampleCount);
-            for (var i = 0; i < sampleCount; i++)
-            {
-                var sum = 0.0;
-                for (var j = 0; j < sampleCount; j++)
-                {
-                    sum += kernelMatrix[i, j];
-                }
-
-                rowMeans[i] = sum / sampleCount;
-            }
-
-            var totalMean = 0.0;
-            for (var i = 0; i < sampleCount; i++)
-            {
-                totalMean += rowMeans[i];
-            }
-
-            totalMean /= sampleCount;
-
+            var colMeans = kernelMatrix.Cols.Mean();
+            var fcm = colMeans.GetUnsafeFastIndexer();
+            var totalMean = colMeans.Average();
             for (var i = 0; i < sampleCount; i++)
             {
                 for (var j = 0; j < sampleCount; j++)
                 {
-                    kernelMatrix[i, j] = kernelMatrix[i, j] - rowMeans[i] - rowMeans[j] + totalMean;
+                    fkm[i, j] = fkm[i, j] - fcm[i] - fcm[j] + totalMean;
                 }
             }
 
@@ -107,32 +78,30 @@ namespace NumFlat.MultivariateAnalyses
                 throw new FittingFailureException("Failed to compute the EVD of the kernel matrix.", e);
             }
 
-            var eigenValues = evd.D.Copy();
-            var eigenVectors = evd.V.Copy();
-            var projectionMatrix = eigenVectors.Copy();
-
-            for (var i = 0; i < sampleCount; i++)
+            var rank = evd.Rank();
+            var projection = evd.V;
             {
-                var value = eigenValues[i];
-                if (value > EigenvalueTolerance)
+                var i = 0;
+                foreach (var (eigenValue, col) in evd.D.Zip(projection.Cols))
                 {
-                    projectionMatrix.Cols[i].MulInplace(1.0 / Math.Sqrt(value));
-                }
-                else
-                {
-                    eigenValues[i] = 0.0;
-                    projectionMatrix.Cols[i].Clear();
+                    if (i < rank)
+                    {
+                        col.DivInplace(Math.Sqrt(eigenValue));
+                    }
+                    else
+                    {
+                        col.Clear();
+                    }
+                    i++;
                 }
             }
 
             this.xs = vectors;
             this.kernel = kernel;
-            this.rowMeans = rowMeans;
+            this.colMeans = colMeans;
             this.totalMean = totalMean;
-            this.eigenValues = eigenValues;
-            this.eigenVectors = eigenVectors;
-            this.projectionMatrix = projectionMatrix;
-            this.sourceDimension = dimension;
+            this.projectionMatrix = projection;
+            this.sourceDimension = vectors[0].Count;
             this.sampleCount = sampleCount;
         }
 
@@ -166,22 +135,12 @@ namespace NumFlat.MultivariateAnalyses
             var mean = sum / sampleCount;
             for (var i = 0; i < sampleCount; i++)
             {
-                kernelValues[i] = kernelValues[i] - rowMeans[i] - mean + totalMean;
+                kernelValues[i] = kernelValues[i] - colMeans[i] - mean + totalMean;
             }
 
             var components = projectionMatrix.Submatrix(0, 0, sampleCount, destination.Count);
             Mat.Mul(components, kernelValues, destination, true);
         }
-
-        /// <summary>
-        /// Gets the eigenvalues of the centered kernel matrix.
-        /// </summary>
-        public ref readonly Vec<double> EigenValues => ref eigenValues;
-
-        /// <summary>
-        /// Gets the eigenvectors of the centered kernel matrix.
-        /// </summary>
-        public ref readonly Mat<double> EigenVectors => ref eigenVectors;
 
         /// <inheritdoc/>
         public int SourceDimension => sourceDimension;
