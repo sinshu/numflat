@@ -9,9 +9,9 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class KernelPrincipalComponentAnalysis : IVectorToVectorTransform<double>
     {
-        private readonly Vec<double>[] vectors;
+        private readonly Mat<double> sourceVectors;
         private readonly Kernel<Vec<double>, Vec<double>> kernel;
-        private readonly Vec<double> colMeans;
+        private readonly Vec<double> kernelMeans;
         private readonly double totalMean;
         private readonly Mat<double> projection;
 
@@ -33,36 +33,35 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfNull(kernel, nameof(kernel));
 
             var sampleCount = xs.Count;
-            var vectors = new Vec<double>[sampleCount];
+            var dimension = xs[0].Count;
+            var sourceVectors = new Mat<double>(dimension, sampleCount);
+            foreach (var (x, col) in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)).Zip(sourceVectors.Cols))
             {
-                var i = 0;
-                foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
-                {
-                    vectors[i] = x.Copy();
-                    i++;
-                }
+                x.CopyTo(col);
             }
 
             var kernelMatrix = new Mat<double>(sampleCount, sampleCount);
-            var fkm = kernelMatrix.GetUnsafeFastIndexer();
+            var fkmat = kernelMatrix.GetUnsafeFastIndexer();
             for (var i = 0; i < sampleCount; i++)
             {
+                var vec1 = sourceVectors.Cols[i];
                 for (var j = 0; j <= i; j++)
                 {
-                    var value = kernel(vectors[i], vectors[j]);
-                    fkm[i, j] = value;
-                    fkm[j, i] = value;
+                    var vec2 = sourceVectors.Cols[j];
+                    var value = kernel(vec1, vec2);
+                    fkmat[i, j] = value;
+                    fkmat[j, i] = value;
                 }
             }
 
-            var colMeans = kernelMatrix.Cols.Mean();
-            var fcm = colMeans.GetUnsafeFastIndexer();
-            var totalMean = colMeans.Average();
+            var kernelMeans = kernelMatrix.Cols.Mean();
+            var totalMean = kernelMeans.Average();
+            var fkmean = kernelMeans.GetUnsafeFastIndexer();
             for (var i = 0; i < sampleCount; i++)
             {
                 for (var j = 0; j < sampleCount; j++)
                 {
-                    fkm[i, j] = fkm[i, j] - fcm[i] - fcm[j] + totalMean;
+                    fkmat[i, j] = fkmat[i, j] - fkmean[i] - fkmean[j] + totalMean;
                 }
             }
 
@@ -94,9 +93,9 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
 
-            this.vectors = vectors;
+            this.sourceVectors = sourceVectors;
             this.kernel = kernel;
-            this.colMeans = colMeans;
+            this.kernelMeans = kernelMeans;
             this.totalMean = totalMean;
             this.projection = projection;
         }
@@ -107,43 +106,43 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            if (source.Count != vectors[0].Count)
+            if (source.Count != sourceVectors.RowCount)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {vectors[0].Count}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The transform requires the length of the source vector to be {sourceVectors.RowCount}, but was {source.Count}.", nameof(source));
             }
 
-            if (destination.Count > vectors.Length)
+            if (destination.Count > sourceVectors.ColCount)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be within {vectors.Length}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The transform requires the length of the destination vector to be within {sourceVectors.ColCount}, but was {destination.Count}.", nameof(destination));
             }
 
-            using var utmp = new TemporalVector<double>(vectors.Length);
+            using var utmp = new TemporalVector<double>(sourceVectors.ColCount);
             ref readonly var tmp = ref utmp.Item;
-            var ft = tmp.GetUnsafeFastIndexer();
+            var ftmp = tmp.GetUnsafeFastIndexer();
 
             var sum = 0.0;
-            for (var i = 0; i < vectors.Length; i++)
+            for (var i = 0; i < sourceVectors.ColCount; i++)
             {
-                var value = kernel(vectors[i], source);
-                ft[i] = value;
+                var value = kernel(sourceVectors.Cols[i], source);
+                ftmp[i] = value;
                 sum += value;
             }
 
-            var mean = sum / vectors.Length;
-            var fcm = colMeans.GetUnsafeFastIndexer();
-            for (var i = 0; i < vectors.Length; i++)
+            var mean = sum / sourceVectors.ColCount;
+            var fkmean = kernelMeans.GetUnsafeFastIndexer();
+            for (var i = 0; i < sourceVectors.ColCount; i++)
             {
-                ft[i] = ft[i] - fcm[i] - mean + totalMean;
+                ftmp[i] = ftmp[i] - fkmean[i] - mean + totalMean;
             }
 
-            var components = projection[..vectors.Length, ..destination.Count];
+            var components = projection[.., ..destination.Count];
             Mat.Mul(components, tmp, destination, true);
         }
 
         /// <inheritdoc/>
-        public int SourceDimension => vectors[0].Count;
+        public int SourceDimension => sourceVectors.RowCount;
 
         /// <inheritdoc/>
-        public int DestinationDimension => vectors.Length;
+        public int DestinationDimension => sourceVectors.ColCount;
     }
 }
