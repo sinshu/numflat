@@ -20,7 +20,7 @@ namespace NumFlatTest.MatTests
         {
             var matrix = new Mat<int>(rowCount, colCount);
 
-            Assert.That(matrix.RowCount, Is.EqualTo(rowCount));
+            Assert.That(matrix.RowCount, Is.EqualTo(rowCount + 1));
             Assert.That(matrix.ColCount, Is.EqualTo(colCount));
             Assert.That(matrix.Stride, Is.EqualTo(rowCount));
             Assert.That(matrix.Memory.Length, Is.EqualTo(rowCount * colCount));
