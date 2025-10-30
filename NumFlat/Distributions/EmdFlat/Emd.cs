@@ -64,7 +64,7 @@ namespace EmdFlat
         /// </param>
         /// <param name="maxIterations">
         /// The maximum number of iterations.
-        /// If this limit is exceeded, an <see cref="EmdException"/> is thrown.
+        /// If this limit is exceeded, an <see cref="EmdFlatException"/> is thrown.
         /// </param>
         public Emd(int maxSigSize1 = 100, int maxSigSize2 = 100, int maxIterations = 500)
         {
@@ -117,7 +117,7 @@ namespace EmdFlat
         /// In case Flow is not NULL, FlowSize should point to a integer where the number of flow elements (always less or equal to n1+n2-1) will be written.
         /// </param>
         /// <returns></returns>
-        /// <exception cref="EmdException"></exception>
+        /// <exception cref="EmdFlatException"></exception>
         public double emd<feature_t>(
             signature_t<feature_t> Signature1, signature_t<feature_t> Signature2,
             Func<feature_t, feature_t, double> Dist,
@@ -151,7 +151,7 @@ namespace EmdFlat
                     }
 
                     if (itr == maxIterations)
-                        throw new EmdException($"Maximum number of iterations has been reached ({maxIterations}).");
+                        throw new EmdFlatException($"Maximum number of iterations has been reached ({maxIterations}).");
                 }
 
                 /* COMPUTE THE TOTAL FLOW */
@@ -201,7 +201,7 @@ namespace EmdFlat
 
                 if (_n1 > maxSigSize1 || _n2 > maxSigSize2)
                 {
-                    throw new EmdException("Signature size is too large.");
+                    throw new EmdFlatException("Signature size is too large.");
                 }
 
                 /* COMPUTE THE DISTANCE MATRIX */
@@ -375,7 +375,7 @@ namespace EmdFlat
                 }
                 if (!found)
                 {
-                    throw new EmdException("Unexpected error in findBasicVariables.");
+                    throw new EmdFlatException("Unexpected error in findBasicVariables.");
                 }
             }
         }
@@ -402,7 +402,7 @@ namespace EmdFlat
 
             if (deltaMin == INFINITY)
             {
-                throw new EmdException("Unexpected error in isOptimal.");
+                throw new EmdFlatException("Unexpected error in isOptimal.");
             }
 
             _EnterX->i = minI;
@@ -557,7 +557,7 @@ namespace EmdFlat
 
                 if (CurX == Loop)
                 {
-                    throw new EmdException("Unexpected error in findLoop.");
+                    throw new EmdFlatException("Unexpected error in findLoop.");
                 }
 
                 return steps;
