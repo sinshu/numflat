@@ -6,25 +6,25 @@ namespace EmdFlat
     /// <summary>
     /// Represents errors from EmdFlat.
     /// </summary>
-    public class EmdException : Exception, ISerializable
+    public class EmdFlatException : Exception, ISerializable
     {
         /// <inheritdoc/>
-        public EmdException() : base()
+        public EmdFlatException() : base()
         {
         }
 
         /// <inheritdoc/>
-        public EmdException(string message) : base(message)
+        public EmdFlatException(string message) : base(message)
         {
         }
 
         /// <inheritdoc/>
-        public EmdException(string message, Exception inner) : base(message, inner)
+        public EmdFlatException(string message, Exception inner) : base(message, inner)
         {
         }
 
         /// <inheritdoc/>
-        protected EmdException(SerializationInfo info, StreamingContext context)
+        protected EmdFlatException(SerializationInfo info, StreamingContext context)
         {
         }
     }

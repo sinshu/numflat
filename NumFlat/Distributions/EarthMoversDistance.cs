@@ -44,7 +44,7 @@ namespace NumFlat.Distributions
             {
                 return emd.emd(s1, s2, (x, y) => dm(x, y), null, null);
             }
-            catch (EmdException e)
+            catch (EmdFlatException e)
             {
                 throw new NumFlatException("Failed to compute the EMD.", e);
             }
@@ -88,7 +88,7 @@ namespace NumFlat.Distributions
                 {
                     value = emd.emd(s1, s2, (x, y) => dm(x, y), p, &flowSize);
                 }
-                catch (EmdException e)
+                catch (EmdFlatException e)
                 {
                     throw new NumFlatException("Failed to compute the EMD.", e);
                 }
