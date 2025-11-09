@@ -38,8 +38,8 @@ Console.WriteLine(mat * vec);
 
 [The NuGet package](https://www.nuget.org/packages/NumFlat) is available.
 
-```ps1
-Install-Package NumFlat
+```
+dotnet add package NumFlat
 ```
 
 Most classes are in the `NumFlat` namespace.
