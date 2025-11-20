@@ -105,5 +105,99 @@ namespace NumFlat
                 pd += destination.Stride;
             }
         }
+
+        /// <summary>
+        /// Extracts the real part of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the real parts.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Real(in Mat<Complex> x, in Mat<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.RowCount != x.RowCount)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+            }
+
+            if (destination.ColCount != x.ColCount)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px].Real;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Extracts the imaginary part of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the imaginary parts.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Imaginary(in Mat<Complex> x, in Mat<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.RowCount != x.RowCount)
+            {
+                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+            }
+
+            if (destination.ColCount != x.ColCount)
+            {
+                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var ox = 0;
+            var od = 0;
+            while (od < sd.Length)
+            {
+                var px = ox;
+                var pd = od;
+                var end = od + destination.RowCount;
+                while (pd < end)
+                {
+                    sd[pd] = sx[px].Imaginary;
+                    px++;
+                    pd++;
+                }
+                ox += x.Stride;
+                od += destination.Stride;
+            }
+        }
     }
 }

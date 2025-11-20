@@ -242,6 +242,48 @@ namespace NumFlatTest.VecTests
         [TestCase(1, 3)]
         [TestCase(2, 5)]
         [TestCase(5, 7)]
+        public void Real(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Real();
+            }
+
+            var expected = x.Select(value => value.Real).ToVector();
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
+        public void Imaginary(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Imaginary();
+            }
+
+            var expected = x.Select(value => value.Imaginary).ToVector();
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
         public void ToRowMatrix(int count, int xStride)
         {
             var x = TestVector.RandomDouble(42, count, xStride);

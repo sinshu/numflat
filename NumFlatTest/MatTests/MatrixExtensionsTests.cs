@@ -181,6 +181,56 @@ namespace NumFlatTest.MatTests
             }
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void Real(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Real();
+            }
+
+            var expected = x.Map(value => value.Real);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void Imaginary(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Imaginary();
+            }
+
+            var expected = x.Map(value => value.Imaginary);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(3, 3)]

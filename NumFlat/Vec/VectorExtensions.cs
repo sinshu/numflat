@@ -221,6 +221,50 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Extracts the real part of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <returns>
+        /// The real parts of the complex vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Real(in Vec{Complex}, in Vec{double})"/> instead.
+        /// </remarks>
+        public static Vec<double> Real(in this Vec<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<double>(x.Count);
+            Vec.Real(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Extracts the imaginary part of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <returns>
+        /// The imaginary parts of the complex vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Imaginary(in Vec{Complex}, in Vec{double})"/> instead.
+        /// </remarks>
+        public static Vec<double> Imaginary(in this Vec<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<double>(x.Count);
+            Vec.Imaginary(x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Converts the vector to a single-row matrix.
         /// </summary>
         /// <typeparam name="T">
