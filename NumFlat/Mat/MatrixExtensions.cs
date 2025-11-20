@@ -169,6 +169,50 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Extracts the real part of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <returns>
+        /// The real parts of the complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Real(in Mat{Complex}, in Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> Real(in this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.Real(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Extracts the imaginary part of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <returns>
+        /// The imaginary parts of the complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Imaginary(in Mat{Complex}, in Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> Imaginary(in this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.Imaginary(x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
