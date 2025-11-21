@@ -265,6 +265,72 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the magnitude of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <returns>
+        /// The magnitudes of the complex vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Magnitude(in Vec{Complex}, in Vec{double})"/> instead.
+        /// </remarks>
+        public static Vec<double> Magnitude(in this Vec<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<double>(x.Count);
+            Vec.Magnitude(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes the squared magnitude of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <returns>
+        /// The squared magnitudes of the complex vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.MagnitudeSquared(in Vec{Complex}, in Vec{double})"/> instead.
+        /// </remarks>
+        public static Vec<double> MagnitudeSquared(in this Vec<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<double>(x.Count);
+            Vec.MagnitudeSquared(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes the phase of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <returns>
+        /// The phases of the complex vector.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// To avoid the allocation, use <see cref="Vec.Phase(in Vec{Complex}, in Vec{double})"/> instead.
+        /// </remarks>
+        public static Vec<double> Phase(in this Vec<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Vec<double>(x.Count);
+            Vec.Phase(x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Converts the vector to a single-row matrix.
         /// </summary>
         /// <typeparam name="T">

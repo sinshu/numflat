@@ -231,6 +231,81 @@ namespace NumFlatTest.MatTests
             NumAssert.AreSame(expected, actual, 0);
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void Magnitude(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Magnitude();
+            }
+
+            var expected = x.Map(value => value.Magnitude);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void MagnitudeSquared(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.MagnitudeSquared();
+            }
+
+            var expected = x.Map(value => value.Real * value.Real + value.Imaginary * value.Imaginary);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(3, 1, 3)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 2)]
+        [TestCase(3, 2, 3)]
+        [TestCase(2, 3, 2)]
+        [TestCase(4, 5, 8)]
+        [TestCase(9, 6, 11)]
+        public void Phase(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+
+            Mat<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Phase();
+            }
+
+            var expected = x.Map(value => value.Phase);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(3, 3)]

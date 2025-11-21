@@ -77,5 +77,74 @@ namespace NumFlatTest.VecTests
 
             TestVector.FailIfOutOfRangeWrite(actual);
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(3, 3, 3)]
+        [TestCase(1, 3, 4)]
+        [TestCase(2, 5, 4)]
+        [TestCase(5, 7, 6)]
+        public void Magnitude(int count, int xStride, int dstStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var expected = x.Select(c => c.Magnitude).ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Vec.Magnitude(x, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 0);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(3, 3, 3)]
+        [TestCase(1, 3, 4)]
+        [TestCase(2, 5, 4)]
+        [TestCase(5, 7, 6)]
+        public void MagnitudeSquared(int count, int xStride, int dstStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var expected = x.Select(c => c.Real * c.Real + c.Imaginary * c.Imaginary).ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Vec.MagnitudeSquared(x, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 0);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 2, 2)]
+        [TestCase(3, 3, 3)]
+        [TestCase(1, 3, 4)]
+        [TestCase(2, 5, 4)]
+        [TestCase(5, 7, 6)]
+        public void Phase(int count, int xStride, int dstStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            var expected = x.Select(c => c.Phase).ToVector();
+
+            var actual = TestVector.RandomDouble(0, count, dstStride);
+            using (x.EnsureUnchanged())
+            {
+                Vec.Phase(x, actual);
+            }
+
+            NumAssert.AreSame(expected, actual, 0);
+
+            TestVector.FailIfOutOfRangeWrite(actual);
+        }
     }
 }

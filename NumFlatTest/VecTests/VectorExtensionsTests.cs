@@ -284,6 +284,69 @@ namespace NumFlatTest.VecTests
         [TestCase(1, 3)]
         [TestCase(2, 5)]
         [TestCase(5, 7)]
+        public void Magnitude(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Magnitude();
+            }
+
+            var expected = x.Select(value => value.Magnitude).ToVector();
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
+        public void MagnitudeSquared(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.MagnitudeSquared();
+            }
+
+            var expected = x.Select(value => value.Real * value.Real + value.Imaginary * value.Imaginary).ToVector();
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
+        public void Phase(int count, int xStride)
+        {
+            var x = TestVector.RandomComplex(42, count, xStride);
+
+            Vec<double> actual;
+            using (x.EnsureUnchanged())
+            {
+                actual = x.Phase();
+            }
+
+            var expected = x.Select(value => value.Phase).ToVector();
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 3)]
+        [TestCase(1, 3)]
+        [TestCase(2, 5)]
+        [TestCase(5, 7)]
         public void ToRowMatrix(int count, int xStride)
         {
             var x = TestVector.RandomDouble(42, count, xStride);
