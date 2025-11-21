@@ -102,5 +102,108 @@ namespace NumFlat
                 pd += destination.Stride;
             }
         }
+
+        /// <summary>
+        /// Computes the magnitude of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the magnitudes.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Magnitude(in Vec<Complex> x, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.Count != x.Count)
+            {
+                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px].Magnitude;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Computes the squared magnitude of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the squared magnitudes.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void MagnitudeSquared(in Vec<Complex> x, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.Count != x.Count)
+            {
+                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                var value = sx[px];
+                sd[pd] = value.Real * value.Real + value.Imaginary * value.Imaginary;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
+
+        /// <summary>
+        /// Computes the phase of each element in the complex vector.
+        /// </summary>
+        /// <param name="x">
+        /// The complex vector.
+        /// </param>
+        /// <param name="destination">
+        /// The destination of the phases.
+        /// </param>
+        /// <remarks>
+        /// This method does not allocate managed heap memory.
+        /// </remarks>
+        public static void Phase(in Vec<Complex> x, in Vec<double> destination)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
+
+            if (destination.Count != x.Count)
+            {
+                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+            }
+
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = sx[px].Phase;
+                px += x.Stride;
+                pd += destination.Stride;
+            }
+        }
     }
 }

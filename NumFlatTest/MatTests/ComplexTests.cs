@@ -89,5 +89,86 @@ namespace NumFlatTest.MatTests
 
             TestMatrix.FailIfOutOfRangeWrite(dst);
         }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 3)]
+        [TestCase(3, 2, 4, 5)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 8, 7)]
+        [TestCase(4, 7, 5, 9)]
+        public void Magnitude(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+            var dst = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+
+            using (x.EnsureUnchanged())
+            {
+                Mat.Magnitude(x, dst);
+            }
+
+            var expected = x.Map(value => value.Magnitude);
+
+            NumAssert.AreSame(expected, dst, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(dst);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 3)]
+        [TestCase(3, 2, 4, 5)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 8, 7)]
+        [TestCase(4, 7, 5, 9)]
+        public void MagnitudeSquared(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+            var dst = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+
+            using (x.EnsureUnchanged())
+            {
+                Mat.MagnitudeSquared(x, dst);
+            }
+
+            var expected = x.Map(value => value.Real * value.Real + value.Imaginary * value.Imaginary);
+
+            NumAssert.AreSame(expected, dst, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(dst);
+        }
+
+        [TestCase(1, 1, 1, 1)]
+        [TestCase(1, 1, 3, 5)]
+        [TestCase(2, 2, 2, 2)]
+        [TestCase(2, 2, 4, 3)]
+        [TestCase(3, 2, 3, 3)]
+        [TestCase(3, 2, 4, 5)]
+        [TestCase(2, 3, 2, 3)]
+        [TestCase(2, 3, 4, 4)]
+        [TestCase(6, 3, 8, 7)]
+        [TestCase(4, 7, 5, 9)]
+        public void Phase(int rowCount, int colCount, int xStride, int dstStride)
+        {
+            var x = TestMatrix.RandomComplex(42, rowCount, colCount, xStride);
+            var dst = TestMatrix.RandomDouble(0, rowCount, colCount, dstStride);
+
+            using (x.EnsureUnchanged())
+            {
+                Mat.Phase(x, dst);
+            }
+
+            var expected = x.Map(value => value.Phase);
+
+            NumAssert.AreSame(expected, dst, 0);
+
+            TestMatrix.FailIfOutOfRangeWrite(dst);
+        }
     }
 }

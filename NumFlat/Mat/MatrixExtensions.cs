@@ -213,6 +213,72 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Computes the magnitude of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <returns>
+        /// The magnitudes of the complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Magnitude(in Mat{Complex}, in Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> Magnitude(in this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.Magnitude(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes the squared magnitude of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <returns>
+        /// The squared magnitudes of the complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.MagnitudeSquared(in Mat{Complex}, in Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> MagnitudeSquared(in this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.MagnitudeSquared(x, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computes the phase of each element in the complex matrix.
+        /// </summary>
+        /// <param name="x">
+        /// The complex matrix.
+        /// </param>
+        /// <returns>
+        /// The phases of the complex matrix.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// To avoid the allocation, use <see cref="Mat.Phase(in Mat{Complex}, in Mat{double})"/> instead.
+        /// </remarks>
+        public static Mat<double> Phase(in this Mat<Complex> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var result = new Mat<double>(x.RowCount, x.ColCount);
+            Mat.Phase(x, result);
+            return result;
+        }
+
+        /// <summary>
         /// Computes a matrix inversion, <c>X^-1</c>.
         /// </summary>
         /// <param name="x">
