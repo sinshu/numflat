@@ -14,5 +14,5 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - run: dotnet restore
-      - run: dotnet test NumFlat.sln --configuration Release
+      - run: dotnet restore NumFlat.slnx
+      - run: dotnet test NumFlat.slnx --configuration Release
