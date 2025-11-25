@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="NumFlat/NumFlat.csproj" />
+  <Project Path="NumFlatTest/NumFlatTest.csproj" />
+  <Project Path="Workspace/Workspace.csproj" />
+</Solution>
