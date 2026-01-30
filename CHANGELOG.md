@@ -1,3 +1,15 @@
+# v1.2.2
+
+* Added `CommonSpatialPattern`.
+* Added the following helper methods for vectors and matrices.
+    - `Real`
+    - `Imaginary`
+    - `Magnitude`
+    - `MagnitudeSquared`
+    - `Phase`
+* Refactored Kernel PCA for improved memory efficiency.
+* Minor miscellaneous improvements.
+
 # v1.2.1
 
 * Added `KernelPrincipalComponentAnalysis`.

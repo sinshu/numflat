@@ -693,6 +693,7 @@ Matrix 3x3-Double
     - ⬜ Multinomial logistic regression
     - ✅ Kernel PCA
     - ⬜ Kernel discriminant analysis
+    - ✅ CSP (common spatial pattern)
     - ✅ Classical MDS (classical multidimensional scaling)
     - ⬜ t-SNE
     - ⬜ UMAP
