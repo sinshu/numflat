@@ -122,30 +122,6 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Performs common spatial pattern (CSP).
-        /// </summary>
-        /// <param name="xs">
-        /// The source vectors.
-        /// </param>
-        /// <param name="ys">
-        /// The class indices for each source vector.
-        /// </param>
-        /// <returns>
-        /// A new instance of <see cref="CommonSpatialPattern"/>.
-        /// </returns>
-        /// <exception cref="FittingFailureException">
-        /// Failed to fit the model.
-        /// </exception>
-        /// <remarks>
-        /// This CSP implementation assumes two classes.
-        /// Therefore, only 0 or 1 are valid as class indices.
-        /// </remarks>
-        public static CommonSpatialPattern Csp(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys)
-        {
-            return new CommonSpatialPattern(xs, ys);
-        }
-
-        /// <summary>
         /// Performs independent component analysis (ICA).
         /// </summary>
         /// <param name="xs">
@@ -252,6 +228,30 @@ namespace NumFlat.MultivariateAnalyses
         public static KernelPrincipalComponentAnalysis KernelPca(this IReadOnlyList<Vec<double>> xs, Kernel<Vec<double>, Vec<double>> kernel)
         {
             return new KernelPrincipalComponentAnalysis(xs, kernel);
+        }
+
+        /// <summary>
+        /// Performs common spatial pattern (CSP).
+        /// </summary>
+        /// <param name="xs">
+        /// The source vectors.
+        /// </param>
+        /// <param name="ys">
+        /// The class indices for each source vector.
+        /// </param>
+        /// <returns>
+        /// A new instance of <see cref="CommonSpatialPattern"/>.
+        /// </returns>
+        /// <exception cref="FittingFailureException">
+        /// Failed to fit the model.
+        /// </exception>
+        /// <remarks>
+        /// This CSP implementation assumes two classes.
+        /// Therefore, only 0 or 1 are valid as class indices.
+        /// </remarks>
+        public static CommonSpatialPattern Csp(this IReadOnlyList<Vec<double>> xs, IReadOnlyList<int> ys)
+        {
+            return new CommonSpatialPattern(xs, ys);
         }
     }
 }

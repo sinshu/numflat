@@ -60,24 +60,22 @@ namespace NumFlat.MultivariateAnalyses
                 }
             }
 
-            var dimension = xs[0].Count;
+            var d = xs[0].Count;
+
+            using var uzero = new TemporalVector<double>(d);
+            ref readonly var zero = ref uzero.Item;
+            zero.Clear();
+
+            using var ucov = new TemporalMatrix3<double>(d, d);
+            ref readonly var cov0 = ref ucov.Item1;
+            ref readonly var cov1 = ref ucov.Item2;
+            ref readonly var cpc = ref ucov.Item3;
+
             var class0 = new List<Vec<double>>();
             var class1 = new List<Vec<double>>();
-
-            for (var i = 0; i < xs.Count; i++)
+            foreach (var (x, y) in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)).Zip(ys))
             {
-                var x = xs[i];
-                if (x.Count == 0)
-                {
-                    throw new ArgumentException("Empty vectors are not allowed.", nameof(xs));
-                }
-
-                if (x.Count != dimension)
-                {
-                    throw new ArgumentException("All the vectors must have the same length.", nameof(xs));
-                }
-
-                if (ys[i] == 0)
+                if (y == 0)
                 {
                     class0.Add(x);
                 }
@@ -86,26 +84,14 @@ namespace NumFlat.MultivariateAnalyses
                     class1.Add(x);
                 }
             }
-
-            Mat<double> covariance0;
-            Mat<double> covariance1;
-            try
-            {
-                covariance0 = class0.MeanAndCovariance().Covariance;
-                covariance1 = class1.MeanAndCovariance().Covariance;
-            }
-            catch (Exception e)
-            {
-                throw new FittingFailureException("Failed to compute the covariance matrices.", e);
-            }
-
-            var compositeCovariance = covariance0.Copy();
-            compositeCovariance.AddInplace(covariance1);
+            MathLinq.Covariance(class0, zero, cov0, 0);
+            MathLinq.Covariance(class1, zero, cov1, 0);
+            Mat.Add(cov0, cov1, cpc);
 
             GeneralizedEigenValueDecompositionDouble gevd;
             try
             {
-                gevd = covariance0.Gevd(compositeCovariance);
+                gevd = cov0.Gevd(cpc);
             }
             catch (Exception e)
             {
@@ -113,7 +99,7 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             this.gevd = gevd;
-            this.sourceDimension = dimension;
+            this.sourceDimension = d;
         }
 
         /// <inheritdoc/>

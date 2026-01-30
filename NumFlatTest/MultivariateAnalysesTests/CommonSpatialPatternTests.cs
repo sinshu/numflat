@@ -13,7 +13,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
     public class CommonSpatialPatternTests
     {
         [Test]
-        public void Test1()
+        public void Test()
         {
             var input = ReadData("csp_input.csv").ToArray();
             var xs = input.Select(tpl => tpl.Item1).ToArray();
@@ -27,11 +27,10 @@ namespace NumFlatTest.MultivariateAnalysesTests
 
             var scale = actualList[0].PointwiseDiv(rawExpectedList[0]);
 
-            foreach(var (actual, rawExpected) in actualList.Zip(rawExpectedList).Take(4))
+            foreach (var (actual, rawExpected) in actualList.Zip(rawExpectedList))
             {
-                Console.WriteLine(actual);
-                Console.WriteLine(rawExpected.PointwiseMul(scale));
-                Console.WriteLine();
+                var expected = rawExpected.PointwiseMul(scale);
+                NumAssert.AreSame(expected, actual, 1e-12);
             }
         }
 
