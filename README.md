@@ -598,6 +598,31 @@ var spectrum = samples.Fft();
 samples = spectrum.Ifft();
 ```
 
+### Leveraging `System.Numerics.Tensors`
+.NET provides an official numerical computing library from Microsoft called `System.Numerics.Tensors`.
+By using [NumFlatTensorAdapter](https://github.com/sinshu/numflat-tensor-adapter), highly optimized tensor operations can be applied to NumFlat vectors and matrices.
+#### Code
+```cs
+Mat<double> a =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
+
+Mat<double> b =
+[
+    [9, 8, 7],
+    [6, 5, 4],
+    [3, 2, 1],
+];
+
+var c = new Mat<double>(3, 3);
+
+// Use a TensorSpan method.
+Tensor.Add(a.AsTensorSpan(), b.AsTensorSpan(), c.AsTensorSpan());
+```
+
 ### Leveraging OpenBLAS
 NumFlat's vector and matrix memory formats are compatible with BLAS and LAPACK, allowing you to leverage faster linear algebra libraries like [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS). The following code example demonstrates how to perform SVD using a C# binding of OpenBLAS, [OpenBlasSharp](https://github.com/sinshu/OpenBlasSharp). While NumFlat provides its own SVD implementation, the SVD implementation in OpenBLAS can be expected to offer performance improvements, especially for large matrices.
 #### Code
