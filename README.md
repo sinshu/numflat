@@ -600,7 +600,9 @@ samples = spectrum.Ifft();
 
 ### Leveraging `System.Numerics.Tensors`
 .NET provides an official numerical computing library from Microsoft called `System.Numerics.Tensors`.
-By using [NumFlatTensorAdapter](https://github.com/sinshu/numflat-tensor-adapter), highly optimized tensor operations can be applied to NumFlat vectors and matrices.
+By using [NumFlatTensorAdapter](https://github.com/sinshu/numflat-tensor-adapter), you can apply highly optimized tensor operations to NumFlat vectors and matrices.
+This adapter adds an `AsTensorSpan()` extension method to `Mat<T>` and `Vec<T>`.
+Calling this method converts NumFlat-specific types into `TensorSpan<T>`, making them compatible with .NET's tensor-related APIs.
 #### Code
 ```cs
 Mat<double> a =
@@ -619,8 +621,15 @@ Mat<double> b =
 
 var c = new Mat<double>(3, 3);
 
-// Use a TensorSpan method.
+// You can use methods designed for TensorSpan<T>.
 Tensor.Add(a.AsTensorSpan(), b.AsTensorSpan(), c.AsTensorSpan());
+```
+#### Output
+```console
+Matrix 3x3-Double
+10  10  10
+10  10  10
+10  10  10
 ```
 
 ### Leveraging OpenBLAS
