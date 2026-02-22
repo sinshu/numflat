@@ -605,24 +605,26 @@ This adapter adds an `AsTensorSpan()` extension method to `Mat<T>` and `Vec<T>`.
 Calling this method converts NumFlat-specific types into `TensorSpan<T>`, making them compatible with .NET's tensor-related APIs.
 #### Code
 ```cs
-Mat<double> a =
+Mat<double> x =
 [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9],
 ];
 
-Mat<double> b =
+Mat<double> y =
 [
     [9, 8, 7],
     [6, 5, 4],
     [3, 2, 1],
 ];
 
-var c = new Mat<double>(3, 3);
+var ans = new Mat<double>(3, 3);
 
 // You can use methods designed for TensorSpan<T>.
-Tensor.Add(a.AsTensorSpan(), b.AsTensorSpan(), c.AsTensorSpan());
+Tensor.Add(x.AsTensorSpan(), y.AsTensorSpan(), ans.AsTensorSpan());
+
+Console.WriteLine(ans);
 ```
 #### Output
 ```console
