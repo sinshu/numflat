@@ -5,6 +5,8 @@ NumFlat is a numerical computation library written entirely in C#.
 The goal of this project is to provide a lightweight package for handling various mathematical and computational tasks,
 including linear algebra, multivariable analysis, clustering, and signal processing, using only C#.
 
+C# has evolved in recent years. In addition to its long-standing support for operator overloading, it now includes features such as collection expressions, range-based indexing, and generic numeric types. With these capabilities, it should be possible to design a numerical computing library that offers a coding experience comparable to MATLAB or Python. However, no such library currently exists in the C# ecosystem. NumFlat was created to examine what such a library would look like in practice.
+
 
 
 ## Overview
