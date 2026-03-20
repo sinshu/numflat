@@ -11,6 +11,8 @@ namespace NumFlat.MultivariateAnalyses
     {
         private Mat<double> w;
         private Mat<double> h;
+        private const double MinimumValue = 1.0E-12;
+        private const double UpdateTolerance = 1.0E-12;
 
         /// <summary>
         /// Performs non-negative matrix factorization (NMF).
@@ -105,7 +107,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Updates the matrices W and H using the multiplicative update rule for NMF.
+        /// Updates the matrices W and H using greedy coordinate descent for NMF.
         /// </summary>
         /// <param name="xs">
         /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
@@ -153,63 +155,190 @@ namespace NumFlat.MultivariateAnalyses
             var dimension = sourceW.RowCount;
             var componentCount = sourceW.ColCount;
             var dataCount = xs.Count;
-            var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
+            var validatedXs = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs)).ToArray();
 
-            using var utmp0 = new TemporalMatrix2<double>(componentCount, componentCount);
-            ref readonly var wtw = ref utmp0.Item1;
-            ref readonly var hht = ref utmp0.Item2;
+            sourceW.CopyTo(destinationW);
+            sourceH.CopyTo(destinationH);
 
-            //
-            // Update H.
-            //
-
-            using var utmp1 = new TemporalMatrix3<double>(componentCount, dataCount);
-            ref readonly var wtv = ref utmp1.Item1;
-            ref readonly var wtwh = ref utmp1.Item2;
-            ref readonly var frac1 = ref utmp1.Item3;
-
-            foreach (var (x, col) in v.Zip(wtv.Cols))
-            {
-                Mat.Mul(sourceW, x, col, true);
-            }
-            Mat.Mul(sourceW, sourceW, wtw, true, false);
-            Mat.Mul(wtw, sourceH, wtwh, false, false);
-            ClampSmallValues(wtwh);
-            Mat.PointwiseDiv(wtv, wtwh, frac1);
-            Mat.PointwiseMul(sourceH, frac1, destinationH);
-
-            //
-            // Update W.
-            //
-
-            using var utmp2 = new TemporalMatrix4<double>(dimension, componentCount);
-            ref readonly var outer = ref utmp2.Item1;
-            ref readonly var vht = ref utmp2.Item2;
-            ref readonly var whht = ref utmp2.Item3;
-            ref readonly var frac2 = ref utmp2.Item4;
-
-            vht.Clear();
-            foreach (var (x, col) in v.Zip(destinationH.Cols))
-            {
-                Vec.Outer(x, col, outer);
-                vht.AddInplace(outer);
-            }
-            Mat.Mul(destinationH, destinationH, hht, false, true);
-            Mat.Mul(sourceW, hht, whht, false, false);
-            ClampSmallValues(whht);
-            Mat.PointwiseDiv(vht, whht, frac2);
-            Mat.PointwiseMul(sourceW, frac2, destinationW);
+            UpdateActivationMatrix(validatedXs, sourceW, destinationH);
+            UpdateBasisMatrix(validatedXs, destinationH, destinationW);
         }
 
-        private static void ClampSmallValues(in Mat<double> mat)
+        private static void UpdateActivationMatrix(IReadOnlyList<Vec<double>> xs, in Mat<double> w, in Mat<double> h)
         {
-            foreach (var col in mat.Cols)
+            var dimension = w.RowCount;
+            var componentCount = w.ColCount;
+            var dataCount = xs.Count;
+
+            using var unorms = new TemporalVector<double>(componentCount);
+            ref readonly var wNorms = ref unorms.Item;
+
+            var wNormsIndexer = new Vec<double>.UnsafeFastIndexer(wNorms);
+            for (var k = 0; k < componentCount; k++)
             {
-                foreach (ref var value in col)
+                wNormsIndexer[k] = Math.Max(Vec.Dot(w.Cols[k], w.Cols[k]), MinimumValue);
+            }
+
+            using var uresidual = new TemporalVector<double>(dimension);
+            ref readonly var residual = ref uresidual.Item;
+            var residualIndexer = new Vec<double>.UnsafeFastIndexer(residual);
+            var hIndexer = new Mat<double>.UnsafeFastIndexer(h);
+
+            for (var sampleIndex = 0; sampleIndex < dataCount; sampleIndex++)
+            {
+                var x = xs[sampleIndex];
+
+                for (var row = 0; row < dimension; row++)
                 {
-                    if (value < 1.0E-9)
+                    residualIndexer[row] = -x[row];
+                }
+
+                for (var k = 0; k < componentCount; k++)
+                {
+                    var coefficient = hIndexer[k, sampleIndex];
+                    if (coefficient <= MinimumValue)
                     {
-                        value = 1.0E-9;
+                        continue;
+                    }
+
+                    var basis = w.Cols[k];
+                    for (var row = 0; row < dimension; row++)
+                    {
+                        residualIndexer[row] += coefficient * basis[row];
+                    }
+                }
+
+                for (var updateIndex = 0; updateIndex < componentCount; updateIndex++)
+                {
+                    var bestComponent = -1;
+                    var bestValue = 0.0;
+                    var bestDelta = 0.0;
+                    var bestScore = 0.0;
+
+                    for (var k = 0; k < componentCount; k++)
+                    {
+                        var basis = w.Cols[k];
+                        var gradient = Vec.Dot(basis, residual);
+                        var current = hIndexer[k, sampleIndex];
+                        var projectedGradient = current > MinimumValue ? gradient : Math.Min(gradient, 0.0);
+                        var score = Math.Abs(projectedGradient);
+                        if (score <= bestScore + UpdateTolerance)
+                        {
+                            continue;
+                        }
+
+                        var updated = Math.Max(current - (gradient / wNormsIndexer[k]), 0.0);
+                        var delta = updated - current;
+                        if (Math.Abs(delta) <= UpdateTolerance)
+                        {
+                            continue;
+                        }
+
+                        bestComponent = k;
+                        bestValue = updated;
+                        bestDelta = delta;
+                        bestScore = score;
+                    }
+
+                    if (bestComponent < 0)
+                    {
+                        break;
+                    }
+
+                    hIndexer[bestComponent, sampleIndex] = bestValue;
+                    var bestBasis = w.Cols[bestComponent];
+                    for (var row = 0; row < dimension; row++)
+                    {
+                        residualIndexer[row] += bestDelta * bestBasis[row];
+                    }
+                }
+            }
+        }
+
+        private static void UpdateBasisMatrix(IReadOnlyList<Vec<double>> xs, in Mat<double> h, in Mat<double> w)
+        {
+            var dimension = w.RowCount;
+            var componentCount = w.ColCount;
+            var dataCount = xs.Count;
+
+            using var unorms = new TemporalVector<double>(componentCount);
+            ref readonly var hNorms = ref unorms.Item;
+
+            var hNormsIndexer = new Vec<double>.UnsafeFastIndexer(hNorms);
+            for (var k = 0; k < componentCount; k++)
+            {
+                hNormsIndexer[k] = Math.Max(Vec.Dot(h.Rows[k], h.Rows[k]), MinimumValue);
+            }
+
+            using var uresidual = new TemporalVector<double>(dataCount);
+            ref readonly var residual = ref uresidual.Item;
+            var residualIndexer = new Vec<double>.UnsafeFastIndexer(residual);
+            var wIndexer = new Mat<double>.UnsafeFastIndexer(w);
+
+            for (var rowIndex = 0; rowIndex < dimension; rowIndex++)
+            {
+                for (var sampleIndex = 0; sampleIndex < dataCount; sampleIndex++)
+                {
+                    residualIndexer[sampleIndex] = -xs[sampleIndex][rowIndex];
+                }
+
+                for (var k = 0; k < componentCount; k++)
+                {
+                    var coefficient = wIndexer[rowIndex, k];
+                    if (coefficient <= MinimumValue)
+                    {
+                        continue;
+                    }
+
+                    var activation = h.Rows[k];
+                    for (var sampleIndex = 0; sampleIndex < dataCount; sampleIndex++)
+                    {
+                        residualIndexer[sampleIndex] += coefficient * activation[sampleIndex];
+                    }
+                }
+
+                for (var updateIndex = 0; updateIndex < componentCount; updateIndex++)
+                {
+                    var bestComponent = -1;
+                    var bestValue = 0.0;
+                    var bestDelta = 0.0;
+                    var bestScore = 0.0;
+
+                    for (var k = 0; k < componentCount; k++)
+                    {
+                        var activation = h.Rows[k];
+                        var gradient = Vec.Dot(residual, activation);
+                        var current = wIndexer[rowIndex, k];
+                        var projectedGradient = current > MinimumValue ? gradient : Math.Min(gradient, 0.0);
+                        var score = Math.Abs(projectedGradient);
+                        if (score <= bestScore + UpdateTolerance)
+                        {
+                            continue;
+                        }
+
+                        var updated = Math.Max(current - (gradient / hNormsIndexer[k]), 0.0);
+                        var delta = updated - current;
+                        if (Math.Abs(delta) <= UpdateTolerance)
+                        {
+                            continue;
+                        }
+
+                        bestComponent = k;
+                        bestValue = updated;
+                        bestDelta = delta;
+                        bestScore = score;
+                    }
+
+                    if (bestComponent < 0)
+                    {
+                        break;
+                    }
+
+                    wIndexer[rowIndex, bestComponent] = bestValue;
+                    var bestActivation = h.Rows[bestComponent];
+                    for (var sampleIndex = 0; sampleIndex < dataCount; sampleIndex++)
+                    {
+                        residualIndexer[sampleIndex] += bestDelta * bestActivation[sampleIndex];
                     }
                 }
             }
