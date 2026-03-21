@@ -9,6 +9,10 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class NonnegativeMatrixFactorization
     {
+        private const double CoordinateUpdateTolerance = 1.0E-12;
+        private const double CoordinateDenominatorTolerance = 1.0E-12;
+        private const int CoordinateUpdateFactor = 4;
+
         private Mat<double> w;
         private Mat<double> h;
 
@@ -105,7 +109,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Updates the matrices W and H using the multiplicative update rule for NMF.
+        /// Updates the matrices W and H using greedy coordinate descent for NMF.
         /// </summary>
         /// <param name="xs">
         /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
@@ -155,38 +159,29 @@ namespace NumFlat.MultivariateAnalyses
             var dataCount = xs.Count;
             var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
 
-            using var utmp0 = new TemporalMatrix2<double>(componentCount, componentCount);
-            ref readonly var wtw = ref utmp0.Item1;
-            ref readonly var hht = ref utmp0.Item2;
+            using var uwtw = new TemporalMatrix<double>(componentCount, componentCount);
+            ref readonly var wtw = ref uwtw.Item;
+            using var uwtv = new TemporalMatrix<double>(componentCount, dataCount);
+            ref readonly var wtv = ref uwtv.Item;
+            using var uvht = new TemporalMatrix<double>(dimension, componentCount);
+            ref readonly var vht = ref uvht.Item;
+            using var uhht = new TemporalMatrix<double>(componentCount, componentCount);
+            ref readonly var hht = ref uhht.Item;
+            using var ugrad = new TemporalVector<double>(componentCount);
+            ref readonly var gradient = ref ugrad.Item;
+            using var uouter = new TemporalMatrix<double>(dimension, componentCount);
+            ref readonly var outer = ref uouter.Item;
 
-            //
-            // Update H.
-            //
-
-            using var utmp1 = new TemporalMatrix3<double>(componentCount, dataCount);
-            ref readonly var wtv = ref utmp1.Item1;
-            ref readonly var wtwh = ref utmp1.Item2;
-            ref readonly var frac1 = ref utmp1.Item3;
-
+            sourceH.CopyTo(destinationH);
             foreach (var (x, col) in v.Zip(wtv.Cols))
             {
                 Mat.Mul(sourceW, x, col, true);
             }
             Mat.Mul(sourceW, sourceW, wtw, true, false);
-            Mat.Mul(wtw, sourceH, wtwh, false, false);
-            ClampSmallValues(wtwh);
-            Mat.PointwiseDiv(wtv, wtwh, frac1);
-            Mat.PointwiseMul(sourceH, frac1, destinationH);
-
-            //
-            // Update W.
-            //
-
-            using var utmp2 = new TemporalMatrix4<double>(dimension, componentCount);
-            ref readonly var outer = ref utmp2.Item1;
-            ref readonly var vht = ref utmp2.Item2;
-            ref readonly var whht = ref utmp2.Item3;
-            ref readonly var frac2 = ref utmp2.Item4;
+            foreach (var (rhs, solution) in wtv.Cols.Zip(destinationH.Cols))
+            {
+                UpdateByGreedyCoordinateDescent(wtw, rhs, solution, gradient);
+            }
 
             vht.Clear();
             foreach (var (x, col) in v.Zip(destinationH.Cols))
@@ -195,22 +190,73 @@ namespace NumFlat.MultivariateAnalyses
                 vht.AddInplace(outer);
             }
             Mat.Mul(destinationH, destinationH, hht, false, true);
-            Mat.Mul(sourceW, hht, whht, false, false);
-            ClampSmallValues(whht);
-            Mat.PointwiseDiv(vht, whht, frac2);
-            Mat.PointwiseMul(sourceW, frac2, destinationW);
+            sourceW.CopyTo(destinationW);
+            foreach (var (rhs, solution) in vht.Rows.Zip(destinationW.Rows))
+            {
+                UpdateByGreedyCoordinateDescent(hht, rhs, solution, gradient);
+            }
         }
 
-        private static void ClampSmallValues(in Mat<double> mat)
+        private static void UpdateByGreedyCoordinateDescent(in Mat<double> gram, in Vec<double> rhs, in Vec<double> solution, in Vec<double> gradient)
         {
-            foreach (var col in mat.Cols)
+            Mat.Mul(gram, solution, gradient, false);
+            gradient.SubInplace(rhs);
+
+            var stepCount = Math.Max(1, CoordinateUpdateFactor * solution.Count);
+            var fgram = gram.GetUnsafeFastIndexer();
+            var fsolution = solution.GetUnsafeFastIndexer();
+            var fgradient = gradient.GetUnsafeFastIndexer();
+
+            for (var step = 0; step < stepCount; step++)
             {
-                foreach (ref var value in col)
+                var bestIndex = -1;
+                var bestDelta = 0.0;
+                var bestImprovement = 0.0;
+
+                for (var index = 0; index < solution.Count; index++)
                 {
-                    if (value < 1.0E-9)
+                    var denominator = fgram[index, index];
+                    if (denominator <= CoordinateDenominatorTolerance)
                     {
-                        value = 1.0E-9;
+                        continue;
                     }
+
+                    var current = fsolution[index];
+                    var next = current - fgradient[index] / denominator;
+                    if (next < 0)
+                    {
+                        next = 0;
+                    }
+
+                    var delta = next - current;
+                    if (Math.Abs(delta) <= CoordinateUpdateTolerance)
+                    {
+                        continue;
+                    }
+
+                    var improvement = -fgradient[index] * delta - 0.5 * denominator * delta * delta;
+                    if (improvement > bestImprovement)
+                    {
+                        bestIndex = index;
+                        bestDelta = delta;
+                        bestImprovement = improvement;
+                    }
+                }
+
+                if (bestIndex < 0 || bestImprovement <= CoordinateUpdateTolerance)
+                {
+                    break;
+                }
+
+                fsolution[bestIndex] += bestDelta;
+                if (fsolution[bestIndex] < CoordinateUpdateTolerance)
+                {
+                    fsolution[bestIndex] = 0;
+                }
+
+                for (var row = 0; row < solution.Count; row++)
+                {
+                    fgradient[row] += bestDelta * fgram[row, bestIndex];
                 }
             }
         }
