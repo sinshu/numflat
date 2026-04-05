@@ -105,7 +105,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Updates the matrices W and H using the multiplicative update rule for NMF.
+        /// Updates the matrices W and H using coordinate descent for NMF.
         /// </summary>
         /// <param name="xs">
         /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
@@ -155,62 +155,88 @@ namespace NumFlat.MultivariateAnalyses
             var dataCount = xs.Count;
             var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
 
-            using var utmp0 = new TemporalMatrix2<double>(componentCount, componentCount);
-            ref readonly var wtw = ref utmp0.Item1;
-            ref readonly var hht = ref utmp0.Item2;
+            sourceW.CopyTo(destinationW);
+            sourceH.CopyTo(destinationH);
 
-            //
-            // Update H.
-            //
+            using var ugram = new TemporalMatrix<double>(componentCount, componentCount);
+            ref readonly var gram = ref ugram.Item;
 
-            using var utmp1 = new TemporalMatrix3<double>(componentCount, dataCount);
-            ref readonly var wtv = ref utmp1.Item1;
-            ref readonly var wtwh = ref utmp1.Item2;
-            ref readonly var frac1 = ref utmp1.Item3;
+            using var uxht = new TemporalMatrix2<double>(dimension, componentCount);
+            ref readonly var xht = ref uxht.Item1;
+            ref readonly var outer = ref uxht.Item2;
 
-            foreach (var (x, col) in v.Zip(wtv.Cols))
-            {
-                Mat.Mul(sourceW, x, col, true);
-            }
-            Mat.Mul(sourceW, sourceW, wtw, true, false);
-            Mat.Mul(wtw, sourceH, wtwh, false, false);
-            ClampSmallValues(wtwh);
-            Mat.PointwiseDiv(wtv, wtwh, frac1);
-            Mat.PointwiseMul(sourceH, frac1, destinationH);
-
-            //
-            // Update W.
-            //
-
-            using var utmp2 = new TemporalMatrix4<double>(dimension, componentCount);
-            ref readonly var outer = ref utmp2.Item1;
-            ref readonly var vht = ref utmp2.Item2;
-            ref readonly var whht = ref utmp2.Item3;
-            ref readonly var frac2 = ref utmp2.Item4;
-
-            vht.Clear();
-            foreach (var (x, col) in v.Zip(destinationH.Cols))
+            xht.Clear();
+            foreach (var (x, col) in v.Zip(sourceH.Cols))
             {
                 Vec.Outer(x, col, outer);
-                vht.AddInplace(outer);
+                xht.AddInplace(outer);
             }
-            Mat.Mul(destinationH, destinationH, hht, false, true);
-            Mat.Mul(sourceW, hht, whht, false, false);
-            ClampSmallValues(whht);
-            Mat.PointwiseDiv(vht, whht, frac2);
-            Mat.PointwiseMul(sourceW, frac2, destinationW);
+            Mat.Mul(sourceH, sourceH, gram, false, true);
+            UpdateCoordinateDescent(destinationW, gram, xht);
+
+            using var uwtx = new TemporalMatrix<double>(componentCount, dataCount);
+            ref readonly var wtx = ref uwtx.Item;
+
+            foreach (var (x, col) in v.Zip(wtx.Cols))
+            {
+                Mat.Mul(destinationW, x, col, true);
+            }
+            Mat.Mul(destinationW, destinationW, gram, true, false);
+            UpdateCoordinateDescentTransposed(destinationH, gram, wtx);
         }
 
-        private static void ClampSmallValues(in Mat<double> mat)
+        private static void UpdateCoordinateDescent(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
         {
-            foreach (var col in mat.Cols)
+            var ffactor = factor.GetUnsafeFastIndexer();
+            var fgram = gram.GetUnsafeFastIndexer();
+            var fcross = cross.GetUnsafeFastIndexer();
+
+            for (var t = 0; t < factor.ColCount; t++)
             {
-                foreach (ref var value in col)
+                var hess = fgram[t, t];
+                if (hess == 0)
                 {
-                    if (value < 1.0E-9)
+                    continue;
+                }
+
+                for (var i = 0; i < factor.RowCount; i++)
+                {
+                    var grad = -fcross[i, t];
+                    for (var r = 0; r < factor.ColCount; r++)
                     {
-                        value = 1.0E-9;
+                        grad += fgram[t, r] * ffactor[i, r];
                     }
+
+                    var updated = ffactor[i, t] - (grad / hess);
+                    ffactor[i, t] = updated > 0 ? updated : 0;
+                }
+            }
+        }
+
+        private static void UpdateCoordinateDescentTransposed(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
+        {
+            var ffactor = factor.GetUnsafeFastIndexer();
+            var fgram = gram.GetUnsafeFastIndexer();
+            var fcross = cross.GetUnsafeFastIndexer();
+
+            for (var t = 0; t < factor.RowCount; t++)
+            {
+                var hess = fgram[t, t];
+                if (hess == 0)
+                {
+                    continue;
+                }
+
+                for (var i = 0; i < factor.ColCount; i++)
+                {
+                    var grad = -fcross[t, i];
+                    for (var r = 0; r < factor.RowCount; r++)
+                    {
+                        grad += fgram[t, r] * ffactor[r, i];
+                    }
+
+                    var updated = ffactor[t, i] - (grad / hess);
+                    ffactor[t, i] = updated > 0 ? updated : 0;
                 }
             }
         }
