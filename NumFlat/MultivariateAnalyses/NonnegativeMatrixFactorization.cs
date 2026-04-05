@@ -21,8 +21,8 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of basis vectors to be estimated.
         /// </param>
-        /// <param name="iterationCount">
-        /// The number of iterations to perform for updating the solution.
+        /// <param name="options">
+        /// Specifies options for NMF.
         /// </param>
         /// <param name="random">
         /// A random number generator for the initialization.
@@ -31,18 +31,19 @@ namespace NumFlat.MultivariateAnalyses
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public NonnegativeMatrixFactorization(IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
+        public NonnegativeMatrixFactorization(IReadOnlyList<Vec<double>> xs, int componentCount, NonnegativeMatrixFactorizationOptions? options = null, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             if (componentCount <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of basis vectors must be greater than zero.");
             }
 
-            if (iterationCount <= 0)
+            if (options == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of iterations must be greater than zero.");
+                options = new NonnegativeMatrixFactorizationOptions();
             }
 
             var (w1, h1) = GetInitialGuess(xs, componentCount, random);
@@ -53,11 +54,22 @@ namespace NumFlat.MultivariateAnalyses
             using var uh2 = new TemporalMatrix<double>(h1.RowCount, h1.ColCount);
             ref readonly var h2 = ref uh2.Item;
 
-            for (var i = 0; i < iterationCount; i++)
+            var initialViolation = double.NaN;
+            for (var i = 0; i < options.MaxIterations; i++)
             {
-                Update(xs, w1, h1, w2, h2);
+                var violation = Update(xs, w1, h1, w2, h2);
                 w2.CopyTo(w1);
                 h2.CopyTo(h1);
+
+                if (i == 0)
+                {
+                    initialViolation = violation;
+                }
+
+                if (violation <= initialViolation * options.Tolerance)
+                {
+                    break;
+                }
             }
 
             this.w = w1;
@@ -105,7 +117,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Updates the matrices W and H using the multiplicative update rule for NMF.
+        /// Updates the matrices W and H using coordinate descent for NMF.
         /// </summary>
         /// <param name="xs">
         /// The source vectors used to form matrix V, where each vector from the list is placed as a column vector in matrix V.
@@ -122,7 +134,10 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="destinationH">
         /// The destination matrix where the updated H will be stored.
         /// </param>
-        public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
+        /// <returns>
+        /// The sum of projected gradient violations computed during the updates of W and H.
+        /// </returns>
+        public static double Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(sourceW, nameof(sourceW));
@@ -155,64 +170,104 @@ namespace NumFlat.MultivariateAnalyses
             var dataCount = xs.Count;
             var v = xs.ThrowIfEmptyOrDifferentSize(dimension, nameof(xs));
 
-            using var utmp0 = new TemporalMatrix2<double>(componentCount, componentCount);
-            ref readonly var wtw = ref utmp0.Item1;
-            ref readonly var hht = ref utmp0.Item2;
+            sourceW.CopyTo(destinationW);
+            sourceH.CopyTo(destinationH);
 
-            //
-            // Update H.
-            //
+            using var ugram = new TemporalMatrix<double>(componentCount, componentCount);
+            ref readonly var gram = ref ugram.Item;
 
-            using var utmp1 = new TemporalMatrix3<double>(componentCount, dataCount);
-            ref readonly var wtv = ref utmp1.Item1;
-            ref readonly var wtwh = ref utmp1.Item2;
-            ref readonly var frac1 = ref utmp1.Item3;
+            using var uxht = new TemporalMatrix2<double>(dimension, componentCount);
+            ref readonly var xht = ref uxht.Item1;
+            ref readonly var outer = ref uxht.Item2;
 
-            foreach (var (x, col) in v.Zip(wtv.Cols))
-            {
-                Mat.Mul(sourceW, x, col, true);
-            }
-            Mat.Mul(sourceW, sourceW, wtw, true, false);
-            Mat.Mul(wtw, sourceH, wtwh, false, false);
-            ClampSmallValues(wtwh);
-            Mat.PointwiseDiv(wtv, wtwh, frac1);
-            Mat.PointwiseMul(sourceH, frac1, destinationH);
-
-            //
-            // Update W.
-            //
-
-            using var utmp2 = new TemporalMatrix4<double>(dimension, componentCount);
-            ref readonly var outer = ref utmp2.Item1;
-            ref readonly var vht = ref utmp2.Item2;
-            ref readonly var whht = ref utmp2.Item3;
-            ref readonly var frac2 = ref utmp2.Item4;
-
-            vht.Clear();
-            foreach (var (x, col) in v.Zip(destinationH.Cols))
+            xht.Clear();
+            foreach (var (x, col) in v.Zip(sourceH.Cols))
             {
                 Vec.Outer(x, col, outer);
-                vht.AddInplace(outer);
+                xht.AddInplace(outer);
             }
-            Mat.Mul(destinationH, destinationH, hht, false, true);
-            Mat.Mul(sourceW, hht, whht, false, false);
-            ClampSmallValues(whht);
-            Mat.PointwiseDiv(vht, whht, frac2);
-            Mat.PointwiseMul(sourceW, frac2, destinationW);
+            Mat.Mul(sourceH, sourceH, gram, false, true);
+            var violation = UpdateCoordinateDescent(destinationW, gram, xht);
+
+            using var uwtx = new TemporalMatrix<double>(componentCount, dataCount);
+            ref readonly var wtx = ref uwtx.Item;
+
+            foreach (var (x, col) in v.Zip(wtx.Cols))
+            {
+                Mat.Mul(destinationW, x, col, true);
+            }
+            Mat.Mul(destinationW, destinationW, gram, true, false);
+            violation += UpdateCoordinateDescentTransposed(destinationH, gram, wtx);
+
+            return violation;
         }
 
-        private static void ClampSmallValues(in Mat<double> mat)
+        private static double UpdateCoordinateDescent(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
         {
-            foreach (var col in mat.Cols)
+            var ffactor = factor.GetUnsafeFastIndexer();
+            var fgram = gram.GetUnsafeFastIndexer();
+            var fcross = cross.GetUnsafeFastIndexer();
+            var violation = 0.0;
+
+            for (var t = 0; t < factor.ColCount; t++)
             {
-                foreach (ref var value in col)
+                for (var i = 0; i < factor.RowCount; i++)
                 {
-                    if (value < 1.0E-9)
+                    var grad = -fcross[i, t];
+                    for (var r = 0; r < factor.ColCount; r++)
                     {
-                        value = 1.0E-9;
+                        grad += fgram[t, r] * ffactor[i, r];
                     }
+
+                    var pg = ffactor[i, t] == 0 ? Math.Min(0, grad) : grad;
+                    violation += Math.Abs(pg);
+
+                    var hess = fgram[t, t];
+                    if (hess == 0)
+                    {
+                        continue;
+                    }
+
+                    var updated = ffactor[i, t] - (grad / hess);
+                    ffactor[i, t] = updated > 0 ? updated : 0;
                 }
             }
+
+            return violation;
+        }
+
+        private static double UpdateCoordinateDescentTransposed(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
+        {
+            var ffactor = factor.GetUnsafeFastIndexer();
+            var fgram = gram.GetUnsafeFastIndexer();
+            var fcross = cross.GetUnsafeFastIndexer();
+            var violation = 0.0;
+
+            for (var t = 0; t < factor.RowCount; t++)
+            {
+                for (var i = 0; i < factor.ColCount; i++)
+                {
+                    var grad = -fcross[t, i];
+                    for (var r = 0; r < factor.RowCount; r++)
+                    {
+                        grad += fgram[t, r] * ffactor[r, i];
+                    }
+
+                    var pg = ffactor[t, i] == 0 ? Math.Min(0, grad) : grad;
+                    violation += Math.Abs(pg);
+
+                    var hess = fgram[t, t];
+                    if (hess == 0)
+                    {
+                        continue;
+                    }
+
+                    var updated = ffactor[t, i] - (grad / hess);
+                    ffactor[t, i] = updated > 0 ? updated : 0;
+                }
+            }
+
+            return violation;
         }
 
         /// <summary>

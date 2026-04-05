@@ -17,20 +17,30 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var data = ReadIris("iris.csv").ToArray();
-        var kernel = Kernel.Polynomial(2, 1);
+        var sampleRate = 16000;
+        var frameLength = 1024;
+        var frameShift = frameLength / 2;
+        var window = WindowFunctions.SquareRootHann(frameLength);
 
-        var kpca = new KernelPrincipalComponentAnalysis(data, kernel);
+        var piano = WaveFile.ReadMono("piano.wav").Data;
+        var srcStft = piano.Stft(window, frameShift);
+        var power = srcStft.Spectrogram.Select(spectrum => spectrum.Map(x => x.MagnitudeSquared())).ToArray();
 
-        using (var writer = new StreamWriter("out.csv"))
+        var nmf = power.Nmf(3, null, new Random(42));
+        nmf.W.Cols[1].Clear();
+        var reconstructed = nmf.W * nmf.H;
+
+        var dstStft = new List<Vec<Complex>>();
+        foreach (var (rcn, org) in reconstructed.Cols.Zip(srcStft.Spectrogram))
         {
-            writer.WriteLine("x,y");
-            foreach (var x in data)
-            {
-                var transformed = kpca.Transform(x);
-                writer.WriteLine($"{transformed[0]},{transformed[1]}");
-            }
+            var x = rcn.Zip(org, (r, o) => Complex.FromPolarCoordinates(Math.Sqrt(r), o.Phase)).ToVector();
+            dstStft.Add(x);
         }
+
+        var dst = dstStft.Istft(srcStft.Info);
+        var max = dst.Select(x => Math.Abs(x)).Max();
+        dst = 0.999 * dst / max;
+        WaveFile.Write("out.wav", dst, sampleRate);
     }
 
     private static IEnumerable<Vec<double>> ReadIris(string filename)
