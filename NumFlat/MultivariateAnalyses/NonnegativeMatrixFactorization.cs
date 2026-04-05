@@ -122,7 +122,10 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="destinationH">
         /// The destination matrix where the updated H will be stored.
         /// </param>
-        public static void Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
+        /// <returns>
+        /// The sum of projected gradient violations computed during the updates of W and H.
+        /// </returns>
+        public static double Update(IReadOnlyList<Vec<double>> xs, in Mat<double> sourceW, in Mat<double> sourceH, in Mat<double> destinationW, in Mat<double> destinationH)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
             ThrowHelper.ThrowIfEmpty(sourceW, nameof(sourceW));
@@ -172,7 +175,7 @@ namespace NumFlat.MultivariateAnalyses
                 xht.AddInplace(outer);
             }
             Mat.Mul(sourceH, sourceH, gram, false, true);
-            UpdateCoordinateDescent(destinationW, gram, xht);
+            var violation = UpdateCoordinateDescent(destinationW, gram, xht);
 
             using var uwtx = new TemporalMatrix<double>(componentCount, dataCount);
             ref readonly var wtx = ref uwtx.Item;
@@ -182,23 +185,20 @@ namespace NumFlat.MultivariateAnalyses
                 Mat.Mul(destinationW, x, col, true);
             }
             Mat.Mul(destinationW, destinationW, gram, true, false);
-            UpdateCoordinateDescentTransposed(destinationH, gram, wtx);
+            violation += UpdateCoordinateDescentTransposed(destinationH, gram, wtx);
+
+            return violation;
         }
 
-        private static void UpdateCoordinateDescent(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
+        private static double UpdateCoordinateDescent(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
         {
             var ffactor = factor.GetUnsafeFastIndexer();
             var fgram = gram.GetUnsafeFastIndexer();
             var fcross = cross.GetUnsafeFastIndexer();
+            var violation = 0.0;
 
             for (var t = 0; t < factor.ColCount; t++)
             {
-                var hess = fgram[t, t];
-                if (hess == 0)
-                {
-                    continue;
-                }
-
                 for (var i = 0; i < factor.RowCount; i++)
                 {
                     var grad = -fcross[i, t];
@@ -207,26 +207,32 @@ namespace NumFlat.MultivariateAnalyses
                         grad += fgram[t, r] * ffactor[i, r];
                     }
 
+                    var pg = ffactor[i, t] == 0 ? Math.Min(0, grad) : grad;
+                    violation += Math.Abs(pg);
+
+                    var hess = fgram[t, t];
+                    if (hess == 0)
+                    {
+                        continue;
+                    }
+
                     var updated = ffactor[i, t] - (grad / hess);
                     ffactor[i, t] = updated > 0 ? updated : 0;
                 }
             }
+
+            return violation;
         }
 
-        private static void UpdateCoordinateDescentTransposed(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
+        private static double UpdateCoordinateDescentTransposed(in Mat<double> factor, in Mat<double> gram, in Mat<double> cross)
         {
             var ffactor = factor.GetUnsafeFastIndexer();
             var fgram = gram.GetUnsafeFastIndexer();
             var fcross = cross.GetUnsafeFastIndexer();
+            var violation = 0.0;
 
             for (var t = 0; t < factor.RowCount; t++)
             {
-                var hess = fgram[t, t];
-                if (hess == 0)
-                {
-                    continue;
-                }
-
                 for (var i = 0; i < factor.ColCount; i++)
                 {
                     var grad = -fcross[t, i];
@@ -235,10 +241,21 @@ namespace NumFlat.MultivariateAnalyses
                         grad += fgram[t, r] * ffactor[r, i];
                     }
 
+                    var pg = ffactor[t, i] == 0 ? Math.Min(0, grad) : grad;
+                    violation += Math.Abs(pg);
+
+                    var hess = fgram[t, t];
+                    if (hess == 0)
+                    {
+                        continue;
+                    }
+
                     var updated = ffactor[t, i] - (grad / hess);
                     ffactor[t, i] = updated > 0 ? updated : 0;
                 }
             }
+
+            return violation;
         }
 
         /// <summary>
