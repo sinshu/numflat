@@ -157,8 +157,8 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of basis vectors to be estimated.
         /// </param>
-        /// <param name="iterationCount">
-        /// The number of iterations to perform for updating the solution.
+        /// <param name="options">
+        /// Specifies options for NMF.
         /// </param>
         /// <param name="random">
         /// A random number generator for the initialization.
@@ -170,9 +170,9 @@ namespace NumFlat.MultivariateAnalyses
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public static NonnegativeMatrixFactorization Nmf(this IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
+        public static NonnegativeMatrixFactorization Nmf(this IReadOnlyList<Vec<double>> xs, int componentCount, NonnegativeMatrixFactorizationOptions? options = null, Random? random = null)
         {
-            return new NonnegativeMatrixFactorization(xs, componentCount, iterationCount, random);
+            return new NonnegativeMatrixFactorization(xs, componentCount, options, random);
         }
 
         /// <summary>

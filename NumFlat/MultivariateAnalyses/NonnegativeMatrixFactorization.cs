@@ -21,8 +21,8 @@ namespace NumFlat.MultivariateAnalyses
         /// <param name="componentCount">
         /// The number of basis vectors to be estimated.
         /// </param>
-        /// <param name="iterationCount">
-        /// The number of iterations to perform for updating the solution.
+        /// <param name="options">
+        /// Specifies options for NMF.
         /// </param>
         /// <param name="random">
         /// A random number generator for the initialization.
@@ -31,18 +31,19 @@ namespace NumFlat.MultivariateAnalyses
         /// <exception cref="FittingFailureException">
         /// Failed to fit the model.
         /// </exception>
-        public NonnegativeMatrixFactorization(IReadOnlyList<Vec<double>> xs, int componentCount, int iterationCount = 100, Random? random = null)
+        public NonnegativeMatrixFactorization(IReadOnlyList<Vec<double>> xs, int componentCount, NonnegativeMatrixFactorizationOptions? options = null, Random? random = null)
         {
             ThrowHelper.ThrowIfNull(xs, nameof(xs));
+            ThrowHelper.ThrowIfEmpty(xs, nameof(xs));
 
             if (componentCount <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of basis vectors must be greater than zero.");
             }
 
-            if (iterationCount <= 0)
+            if (options == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(componentCount), "The number of iterations must be greater than zero.");
+                options = new NonnegativeMatrixFactorizationOptions();
             }
 
             var (w1, h1) = GetInitialGuess(xs, componentCount, random);
@@ -53,11 +54,22 @@ namespace NumFlat.MultivariateAnalyses
             using var uh2 = new TemporalMatrix<double>(h1.RowCount, h1.ColCount);
             ref readonly var h2 = ref uh2.Item;
 
-            for (var i = 0; i < iterationCount; i++)
+            var initialViolation = double.NaN;
+            for (var i = 0; i < options.MaxIterations; i++)
             {
-                Update(xs, w1, h1, w2, h2);
+                var violation = Update(xs, w1, h1, w2, h2);
                 w2.CopyTo(w1);
                 h2.CopyTo(h1);
+
+                if (i == 0)
+                {
+                    initialViolation = violation;
+                }
+
+                if (violation <= initialViolation * options.Tolerance)
+                {
+                    break;
+                }
             }
 
             this.w = w1;
