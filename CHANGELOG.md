@@ -1,3 +1,7 @@
+# v1.2.3
+* Updated the NMF solver to coordinate descent.
+* Added `NonnegativeMatrixFactorizationOptions`.
+
 # v1.2.2
 
 * Added `CommonSpatialPattern`.
