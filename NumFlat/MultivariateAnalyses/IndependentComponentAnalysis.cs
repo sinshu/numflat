@@ -134,7 +134,7 @@ namespace NumFlat.MultivariateAnalyses
                 // Orthogonalize W.
                 Orthogonalize(w);
 
-                // Chek the convergence.
+                // Check the convergence.
                 if (GetMaximumAbsoluteChange(w, prev) < options.Tolerance)
                 {
                     break;

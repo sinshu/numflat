@@ -26,7 +26,19 @@ namespace NumFlat.Clustering
         /// </param>
         public DiagonalGaussianMixtureModel(IEnumerable<Component> components)
         {
-            this.components = components.ToArray();
+            var array = components.ToArray();
+
+            if (array.Length == 0)
+            {
+                throw new ArgumentException("The number of clusters must be greater than or equal to one.", nameof(components));
+            }
+
+            if (array.Any(component => component == null))
+            {
+                throw new ArgumentException("Null components are not allowed.", nameof(components));
+            }
+
+            this.components = array;
         }
 
         /// <summary>
