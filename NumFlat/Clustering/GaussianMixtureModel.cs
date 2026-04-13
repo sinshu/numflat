@@ -26,6 +26,8 @@ namespace NumFlat.Clustering
         /// </param>
         public GaussianMixtureModel(IEnumerable<Component> components)
         {
+            ThrowHelper.ThrowIfNull(components, nameof(components));
+
             var array = components.ToArray();
 
             if (array.Length == 0)
