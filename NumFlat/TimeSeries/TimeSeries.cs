@@ -70,7 +70,7 @@ namespace NumFlat.TimeSeries
         /// </param>
         /// <param name="distance">
         /// Required minimal horizontal distance (in samples) between neighbouring peaks.
-        /// Must be greater than or equal to 1.
+        /// Must be greater than or equal to one.
         /// </param>
         /// <returns>
         /// An array of index-value pairs representing detected peaks.
@@ -81,7 +81,7 @@ namespace NumFlat.TimeSeries
 
             if (distance < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(distance), "distance must be greater than or equal to 1.");
+                throw new ArgumentOutOfRangeException(nameof(distance), "The distance must be greater than or equal to one.");
             }
 
             var peaks = x.FindPeaks();

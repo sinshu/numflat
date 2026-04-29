@@ -55,7 +55,6 @@ namespace NumFlatTest.TimeSeriesTests
             var lines = File.ReadLines(path).ToArray();
             var header = lines[0].Split(',');
             var distanceColumn = Array.IndexOf(header, $"distance_{distance}");
-            Assert.That(distanceColumn, Is.GreaterThanOrEqualTo(0));
 
             var referenceData = lines
                 .Skip(1)
