@@ -279,5 +279,29 @@ namespace NumFlat
             Vec.Div(x, y, result);
             return result;
         }
+
+        public static Vec<T> operator +(in Vec<T> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            return x.Copy();
+        }
+
+        public static Vec<T> operator -(in Vec<T> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var destination = new Vec<T>(x.count);
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var px = 0;
+            var pd = 0;
+            while (pd < sd.Length)
+            {
+                sd[pd] = -sx[px];
+                px += x.Stride;
+                pd++;
+            }
+            return destination;
+        }
     }
 }
