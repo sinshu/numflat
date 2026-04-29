@@ -128,5 +128,80 @@ namespace NumFlat.TimeSeries
 
             return peaks.Where((peak, i) => keep[i]).ToArray();
         }
+
+        /// <summary>
+        /// Finds local peaks in a vector while enforcing a minimum prominence.
+        /// </summary>
+        /// <param name="x">
+        /// The input vector.
+        /// </param>
+        /// <param name="prominence">
+        /// Required minimum prominence. Must be greater than or equal to zero.
+        /// </param>
+        /// <returns>
+        /// An array of index-value pairs representing detected peaks.
+        /// </returns>
+        public static IndexValuePair<double>[] FindPeaksWithProminenceConstraint(in this Vec<double> x, double prominence)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            if (prominence < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(prominence), "The prominence must be greater than or equal to zero.");
+            }
+
+            var peaks = x.FindPeaks();
+            if (peaks.Length == 0 || prominence == 0)
+            {
+                return peaks;
+            }
+
+            var fx = x.GetUnsafeFastIndexer();
+            var filtered = new List<IndexValuePair<double>>(peaks.Length);
+
+            foreach (var peak in peaks)
+            {
+                var peakIndex = peak.Index;
+                var peakValue = peak.Value;
+
+                var leftEdge = peakIndex;
+                while (leftEdge > 0 && fx[leftEdge - 1] <= peakValue)
+                {
+                    leftEdge--;
+                }
+
+                var rightEdge = peakIndex;
+                while (rightEdge < x.Count - 1 && fx[rightEdge + 1] <= peakValue)
+                {
+                    rightEdge++;
+                }
+
+                var leftBase = peakValue;
+                for (var i = leftEdge; i <= peakIndex; i++)
+                {
+                    if (fx[i] < leftBase)
+                    {
+                        leftBase = fx[i];
+                    }
+                }
+
+                var rightBase = peakValue;
+                for (var i = peakIndex; i <= rightEdge; i++)
+                {
+                    if (fx[i] < rightBase)
+                    {
+                        rightBase = fx[i];
+                    }
+                }
+
+                var actualProminence = peakValue - Math.Max(leftBase, rightBase);
+                if (actualProminence >= prominence)
+                {
+                    filtered.Add(peak);
+                }
+            }
+
+            return filtered.ToArray();
+        }
     }
 }
