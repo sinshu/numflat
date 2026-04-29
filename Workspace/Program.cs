@@ -17,30 +17,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var sampleRate = 16000;
-        var frameLength = 1024;
-        var frameShift = frameLength / 2;
-        var window = WindowFunctions.SquareRootHann(frameLength);
-
-        var piano = WaveFile.ReadMono("piano.wav").Data;
-        var srcStft = piano.Stft(window, frameShift);
-        var power = srcStft.Spectrogram.Select(spectrum => spectrum.Map(x => x.MagnitudeSquared())).ToArray();
-
-        var nmf = power.Nmf(3, null, new Random(42));
-        nmf.W.Cols[1].Clear();
-        var reconstructed = nmf.W * nmf.H;
-
-        var dstStft = new List<Vec<Complex>>();
-        foreach (var (rcn, org) in reconstructed.Cols.Zip(srcStft.Spectrogram))
+        Vec<double> x = [0, 1, 2, 1];
+        var peaks = x.FindPeaks();
+        foreach (var peak in peaks)
         {
-            var x = rcn.Zip(org, (r, o) => Complex.FromPolarCoordinates(Math.Sqrt(r), o.Phase)).ToVector();
-            dstStft.Add(x);
+            Console.WriteLine(peak);
         }
-
-        var dst = dstStft.Istft(srcStft.Info);
-        var max = dst.Select(x => Math.Abs(x)).Max();
-        dst = 0.999 * dst / max;
-        WaveFile.Write("out.wav", dst, sampleRate);
     }
 
     private static IEnumerable<Vec<double>> ReadIris(string filename)
