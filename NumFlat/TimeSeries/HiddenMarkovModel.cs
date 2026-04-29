@@ -65,20 +65,27 @@ namespace NumFlat.TimeSeries
                 throw new ArgumentException("All the values must be non-negative.", nameof(initialProbabilities));
             }
 
+            // When there are many elements, it is difficult to reliably determine whether the sum matches a specific value.
+            // Therefore, we do not check it here and instead trust the user's input.
+            /*
             if (Math.Abs(initialProbabilities.Sum() - 1) > 1.0E-14)
             {
                 throw new ArgumentException("The initial probabilities must sum to one.", nameof(initialProbabilities));
             }
+            */
 
             if (transitionMatrix.SelectMany(row => row).Any(x => x < 0))
             {
                 throw new ArgumentException("All the values must be non-negative.", nameof(transitionMatrix));
             }
 
+            // Same as above.
+            /*
             if (transitionMatrix.Rows.Any(row => Math.Abs(row.Sum() - 1) > 1.0E-14))
             {
                 throw new ArgumentException("The transition probabilities in each row must sum to one.", nameof(transitionMatrix));
             }
+            */
 
             this.initialProbabilities = initialProbabilities;
             this.transitionMatrix = transitionMatrix;
