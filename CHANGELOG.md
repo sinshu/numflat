@@ -1,3 +1,11 @@
+# v1.2.4
+* Relaxed some HMM argument checks.
+* Added the following peak-detection methods to the `TimeSeries` class:
+    - `FindPeaks`
+    - `FindPeaksWithDistanceConstraint`
+    - `FindPeaksWithProminenceConstraint`
+* Added unary `+` and `-` operators to `Vec<T>` and `Mat<T>`.
+
 # v1.2.3
 * Updated the NMF solver to coordinate descent.
 * Added `NonnegativeMatrixFactorizationOptions`.
@@ -5,7 +13,7 @@
 # v1.2.2
 
 * Added `CommonSpatialPattern`.
-* Added the following helper methods for vectors and matrices.
+* Added the following helper methods for vectors and matrices:
     - `Real`
     - `Imaginary`
     - `Magnitude`

@@ -753,6 +753,7 @@ Matrix 3x3-Double
     - ✅ DTW (dynamic time warping)
     - ✅ sDTW (subsequence dynamic time warping)
     - 🚧 HMM (hidden Markov model)
+    - 🚧 Peak finding methods
 * 🚧 Signal processing
     - ✅ FFT (fast Fourier transform)
     - ✅ Real FFT
