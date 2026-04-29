@@ -213,5 +213,57 @@ namespace NumFlatTest.MatTests
                 NumAssert.AreSame(expected, actual, 1.0E-12);
             }
         }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void UnaryPlus(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var expected = x.Cols.Select(col => (+col).AsEnumerable()).ColsToMatrix();
+
+            using (x.EnsureUnchanged())
+            {
+                var actual = +x;
+                NumAssert.AreSame(expected, actual, 1.0E-12);
+            }
+        }
+
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 1, 3)]
+        [TestCase(2, 2, 2)]
+        [TestCase(2, 2, 3)]
+        [TestCase(3, 3, 3)]
+        [TestCase(3, 3, 5)]
+        [TestCase(1, 3, 1)]
+        [TestCase(1, 3, 5)]
+        [TestCase(3, 1, 3)]
+        [TestCase(3, 1, 7)]
+        [TestCase(2, 3, 2)]
+        [TestCase(2, 3, 4)]
+        [TestCase(3, 2, 3)]
+        [TestCase(3, 2, 6)]
+        public void UnaryMinus(int rowCount, int colCount, int xStride)
+        {
+            var x = TestMatrix.RandomDouble(42, rowCount, colCount, xStride);
+            var expected = x.Cols.Select(col => (-col).AsEnumerable()).ColsToMatrix();
+
+            using (x.EnsureUnchanged())
+            {
+                var actual = -x;
+                NumAssert.AreSame(expected, actual, 1.0E-12);
+            }
+        }
     }
 }

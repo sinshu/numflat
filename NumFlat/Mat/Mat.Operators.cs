@@ -347,5 +347,59 @@ namespace NumFlat
             Mat.Div(x, y, result);
             return result;
         }
+
+        /// <summary>
+        /// Returns the matrix itself, <c>+X</c>.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns>
+        /// A copy of <paramref name="x"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// </remarks>
+        public static Mat<T> operator +(in Mat<T> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            return x.Copy();
+        }
+
+        /// <summary>
+        /// Computes a pointwise matrix negation, <c>-X</c>.
+        /// </summary>
+        /// <param name="x">
+        /// The matrix X.
+        /// </param>
+        /// <returns>
+        /// The pointwise negation of <paramref name="x"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new matrix which is independent from the original matrix.
+        /// </remarks>
+        public static Mat<T> operator -(in Mat<T> x)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+
+            var destination = new Mat<T>(x.rowCount, x.colCount);
+            var sx = x.Memory.Span;
+            var sd = destination.Memory.Span;
+            var pd = 0;
+            var ox = 0;
+            for (var col = 0; col < x.colCount; col++)
+            {
+                var px = ox;
+                var end = px + x.rowCount;
+                while (px < end)
+                {
+                    sd[pd] = -sx[px];
+                    px++;
+                    pd++;
+                }
+                ox += x.stride;
+            }
+            return destination;
+        }
     }
 }

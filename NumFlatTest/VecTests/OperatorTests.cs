@@ -153,6 +153,44 @@ namespace NumFlatTest.VecTests
             }
         }
 
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(3, 1)]
+        [TestCase(3, 3)]
+        [TestCase(5, 1)]
+        [TestCase(11, 7)]
+        public void UnaryPlus(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            using (x.EnsureUnchanged())
+            {
+                var destination = +x;
+                var expected = x.ToArray();
+                var actual = destination.ToArray();
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 3)]
+        [TestCase(3, 1)]
+        [TestCase(3, 3)]
+        [TestCase(5, 1)]
+        [TestCase(11, 7)]
+        public void UnaryMinus(int count, int xStride)
+        {
+            var x = TestVector.RandomDouble(42, count, xStride);
+
+            using (x.EnsureUnchanged())
+            {
+                var destination = -x;
+                var expected = x.Select(value => -value).ToArray();
+                var actual = destination.ToArray();
+                Assert.That(actual, Is.EqualTo(expected).Within(1.0E-12));
+            }
+        }
+
         [TestCase(1, 1, 1)]
         [TestCase(1, 3, 2)]
         [TestCase(3, 1, 1)]

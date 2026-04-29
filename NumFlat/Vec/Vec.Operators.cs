@@ -280,12 +280,36 @@ namespace NumFlat
             return result;
         }
 
+        /// <summary>
+        /// Returns the vector itself, <c>+x</c>.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <returns>
+        /// A copy of <paramref name="x"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// </remarks>
         public static Vec<T> operator +(in Vec<T> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
             return x.Copy();
         }
 
+        /// <summary>
+        /// Computes a pointwise vector negation, <c>-x</c>.
+        /// </summary>
+        /// <param name="x">
+        /// The vector x.
+        /// </param>
+        /// <returns>
+        /// The pointwise negation of <paramref name="x"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a new vector which is independent from the original vector.
+        /// </remarks>
         public static Vec<T> operator -(in Vec<T> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
