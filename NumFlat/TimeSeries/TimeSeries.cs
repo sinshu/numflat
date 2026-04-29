@@ -5,8 +5,16 @@ using System.Numerics;
 
 namespace NumFlat.TimeSeries
 {
+    /// <summary>
+    /// Provides utility methods for time-series data.
+    /// </summary>
     public static class TimeSeries
     {
+        /// <summary>
+        /// Finds local peaks in a vector.
+        /// </summary>
+        /// <param name="x">The input vector.</param>
+        /// <returns>An array of index-value pairs representing detected peaks.</returns>
         public static IndexValuePair<double>[] FindPeaks(in this Vec<double> x)
         {
             ThrowHelper.ThrowIfEmpty(x, nameof(x));
