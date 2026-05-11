@@ -82,11 +82,11 @@ namespace NumFlat
             using var utmp = TemporalMatrix.CopyFrom(a);
             ref readonly var tmp = ref utmp.Item;
 
-            using var urdiag = new TemporalArray<double>(a.ColCount);
+            using var urdiag = new TemporalArray<Complex>(a.ColCount);
             var rdiag = urdiag.Item;
 
             fixed (Complex* ptmp = tmp.Memory.Span)
-            fixed (double* prdiag = rdiag)
+            fixed (Complex* prdiag = rdiag)
             fixed (Complex* pq = q.Memory.Span)
             fixed (Complex* pr = r.Memory.Span)
             {
