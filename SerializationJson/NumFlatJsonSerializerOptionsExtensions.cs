@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace NumFlat.Serialization.Json
 {
@@ -25,25 +24,11 @@ namespace NumFlat.Serialization.Json
                 throw new ArgumentNullException(nameof(options));
             }
 
-            AddConverterIfMissing<VecJsonConverterFactory>(options);
-            AddConverterIfMissing<MatJsonConverterFactory>(options);
-            AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
-            AddConverterIfMissing<LinearDiscriminantAnalysisJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<VecJsonConverterFactory>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<MatJsonConverterFactory>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<LinearDiscriminantAnalysisJsonConverter>(options);
             return options;
-        }
-
-        private static void AddConverterIfMissing<TConverter>(JsonSerializerOptions options)
-            where TConverter : JsonConverter, new()
-        {
-            foreach (var converter in options.Converters)
-            {
-                if (converter.GetType() == typeof(TConverter))
-                {
-                    return;
-                }
-            }
-
-            options.Converters.Add(new TConverter());
         }
     }
 }
