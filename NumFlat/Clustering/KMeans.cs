@@ -12,9 +12,39 @@ namespace NumFlat.Clustering
     {
         private readonly Vec<double>[] centroids;
 
-        private KMeans(Vec<double>[] centroids)
+        /// <summary>
+        /// Creates a k-means model from fitted centroids.
+        /// </summary>
+        /// <param name="centroids">
+        /// The fitted centroids.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vectors are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public KMeans(IEnumerable<Vec<double>> centroids)
         {
-            this.centroids = centroids;
+            ThrowHelper.ThrowIfNull(centroids, nameof(centroids));
+
+            var array = centroids.ToArray();
+
+            if (array.Length == 0)
+            {
+                throw new ArgumentException("The number of clusters must be greater than or equal to one.", nameof(centroids));
+            }
+
+            var dimension = array[0].Count;
+            if (dimension == 0)
+            {
+                throw new ArgumentException("Empty centroid vectors are not allowed.", nameof(centroids));
+            }
+
+            if (array.Any(centroid => centroid.Count != dimension))
+            {
+                throw new ArgumentException("All centroid vectors must have the same length.", nameof(centroids));
+            }
+
+            this.centroids = array;
         }
 
         /// <summary>

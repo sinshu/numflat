@@ -40,6 +40,12 @@ namespace NumFlat.Clustering
                 throw new ArgumentException("Null components are not allowed.", nameof(components));
             }
 
+            var dimension = array[0].Gaussian.Dimension;
+            if (array.Any(component => component.Gaussian.Dimension != dimension))
+            {
+                throw new ArgumentException("All Gaussian components must have the same dimension.", nameof(components));
+            }
+
             this.components = array;
         }
 
