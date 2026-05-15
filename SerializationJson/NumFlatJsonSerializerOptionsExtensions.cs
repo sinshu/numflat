@@ -24,6 +24,7 @@ namespace NumFlat.Serialization.Json
                 throw new ArgumentNullException(nameof(options));
             }
 
+            JsonSerializationHelpers.AddConverterIfMissing<ComplexJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<VecJsonConverterFactory>(options);
             JsonSerializationHelpers.AddConverterIfMissing<MatJsonConverterFactory>(options);
             JsonSerializationHelpers.AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
