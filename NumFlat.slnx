@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="NumFlat/NumFlat.csproj" />
   <Project Path="NumFlatTest/NumFlatTest.csproj" />
+  <Project Path="SerializationJson/SerializationJson.csproj" />
+  <Project Path="SerializationJsonTest/SerializationJsonTest.csproj" />
   <Project Path="Workspace/Workspace.csproj" />
 </Solution>
