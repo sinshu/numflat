@@ -8,7 +8,7 @@ namespace NumFlat.Serialization.Json
     public static class NumFlatJsonSerializerOptions
     {
         /// <summary>
-        /// Creates serializer options that include converters for <see cref="Vec{T}" /> and <see cref="Mat{T}" />.
+        /// Creates serializer options that include converters for NumFlat types.
         /// </summary>
         /// <returns>
         /// A new <see cref="JsonSerializerOptions" /> instance configured for NumFlat types.
@@ -19,7 +19,7 @@ namespace NumFlat.Serialization.Json
         }
 
         /// <summary>
-        /// Creates serializer options by copying existing options and adding converters for <see cref="Vec{T}" /> and <see cref="Mat{T}" />.
+        /// Creates serializer options by copying existing options and adding converters for NumFlat types.
         /// </summary>
         /// <param name="options">
         /// The source options to copy.

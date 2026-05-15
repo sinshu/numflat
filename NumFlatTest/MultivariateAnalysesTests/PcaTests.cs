@@ -59,6 +59,28 @@ namespace NumFlatTest.MultivariateAnalysesTests
             }
         }
 
+        [Test]
+        public void ConstructorFromParametersStoresInputsDirectly()
+        {
+            var mean = new Vec<double>(new[] { 1.0, 2.0 });
+            var eigenValues = new Vec<double>(new[] { 3.0, 4.0 });
+            var eigenVectors = new Mat<double>(2, 2, 2, new[]
+            {
+                1.0, 0.0,
+                0.0, 1.0
+            });
+
+            var pca = new PrincipalComponentAnalysis(mean, eigenValues, eigenVectors);
+
+            mean[0] = 10.0;
+            eigenValues[0] = 30.0;
+            eigenVectors[0, 0] = 100.0;
+
+            Assert.That(pca.Mean[0], Is.EqualTo(10.0));
+            Assert.That(pca.EigenValues[0], Is.EqualTo(30.0));
+            Assert.That(pca.EigenVectors[0, 0], Is.EqualTo(100.0));
+        }
+
         private static IEnumerable<Vec<double>> ReadIris(string filename)
         {
             var path = Path.Combine("dataset", filename);
