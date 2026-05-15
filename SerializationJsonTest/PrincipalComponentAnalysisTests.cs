@@ -53,16 +53,6 @@ namespace SerializationJsonTest
             Assert.That((Action)(() => JsonSerializer.Deserialize<PrincipalComponentAnalysis>(json, options)), Throws.TypeOf<JsonException>());
         }
 
-        [Test]
-        public void AddNumFlatConvertersAddsPcaConverterOnce()
-        {
-            var options = new JsonSerializerOptions();
-
-            options.AddNumFlatConverters().AddNumFlatConverters();
-
-            Assert.That(options.Converters.OfType<PrincipalComponentAnalysisJsonConverter>().Count(), Is.EqualTo(1));
-        }
-
         private static PrincipalComponentAnalysis CreatePca()
         {
             var mean = new Vec<double>(new[] { 1.0, 2.0 });

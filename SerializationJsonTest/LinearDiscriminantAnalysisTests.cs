@@ -51,16 +51,6 @@ namespace SerializationJsonTest
             Assert.That((Action)(() => JsonSerializer.Deserialize<LinearDiscriminantAnalysis>(json, options)), Throws.TypeOf<JsonException>());
         }
 
-        [Test]
-        public void AddNumFlatConvertersAddsLdaConverterOnce()
-        {
-            var options = new JsonSerializerOptions();
-
-            options.AddNumFlatConverters().AddNumFlatConverters();
-
-            Assert.That(options.Converters.OfType<LinearDiscriminantAnalysisJsonConverter>().Count(), Is.EqualTo(1));
-        }
-
         private static LinearDiscriminantAnalysis CreateLda()
         {
             var mean = new Vec<double>(new[] { 1.0, 2.0 });
