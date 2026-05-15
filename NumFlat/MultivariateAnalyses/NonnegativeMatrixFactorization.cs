@@ -77,6 +77,33 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
+        /// Creates non-negative matrix factorization (NMF) from fitted parameters.
+        /// </summary>
+        /// <param name="w">
+        /// The basis vectors.
+        /// </param>
+        /// <param name="h">
+        /// The activation vectors.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given matrices are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public NonnegativeMatrixFactorization(in Mat<double> w, in Mat<double> h)
+        {
+            ThrowHelper.ThrowIfEmpty(w, nameof(w));
+            ThrowHelper.ThrowIfEmpty(h, nameof(h));
+
+            if (w.ColCount != h.RowCount)
+            {
+                throw new ArgumentException($"The column count of W must match the row count of H, but they were {w.ColCount} and {h.RowCount}.");
+            }
+
+            this.w = w;
+            this.h = h;
+        }
+
+        /// <summary>
         /// Generates initial values for the matrices W and H using a random number generator.
         /// </summary>
         /// <param name="xs">

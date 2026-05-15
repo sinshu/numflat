@@ -168,6 +168,45 @@ namespace NumFlat.MultivariateAnalyses
             this.mixingMatrix = demixingMatrix.PseudoInverse();
         }
 
+        /// <summary>
+        /// Creates independent component analysis (ICA) from fitted parameters.
+        /// </summary>
+        /// <param name="mean">
+        /// The mean vector of the source vectors.
+        /// </param>
+        /// <param name="demixingMatrix">
+        /// The demixing matrix.
+        /// </param>
+        /// <param name="mixingMatrix">
+        /// The mixing matrix.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vector and matrices are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public IndependentComponentAnalysis(in Vec<double> mean, in Mat<double> demixingMatrix, in Mat<double> mixingMatrix)
+        {
+            ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
+            ThrowHelper.ThrowIfEmpty(demixingMatrix, nameof(demixingMatrix));
+            ThrowHelper.ThrowIfEmpty(mixingMatrix, nameof(mixingMatrix));
+
+            if (demixingMatrix.ColCount != mean.Count)
+            {
+                throw new ArgumentException($"The column count of the demixing matrix must be {mean.Count}, but was {demixingMatrix.ColCount}.", nameof(demixingMatrix));
+            }
+
+            if (mixingMatrix.RowCount != mean.Count || mixingMatrix.ColCount != demixingMatrix.RowCount)
+            {
+                throw new ArgumentException($"The mixing matrix must be {mean.Count} x {demixingMatrix.RowCount}, but was {mixingMatrix.RowCount} x {mixingMatrix.ColCount}.", nameof(mixingMatrix));
+            }
+
+            this.sourceDimension = mean.Count;
+            this.componentCount = demixingMatrix.RowCount;
+            this.mean = mean;
+            this.demixingMatrix = demixingMatrix;
+            this.mixingMatrix = mixingMatrix;
+        }
+
         /// <inheritdoc/>
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {

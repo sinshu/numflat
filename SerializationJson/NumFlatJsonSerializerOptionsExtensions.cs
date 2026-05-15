@@ -29,6 +29,9 @@ namespace NumFlat.Serialization.Json
             JsonSerializationHelpers.AddConverterIfMissing<MatJsonConverterFactory>(options);
             JsonSerializationHelpers.AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<LinearDiscriminantAnalysisJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<CommonSpatialPatternJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<IndependentComponentAnalysisJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<NonnegativeMatrixFactorizationJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<LinearRegressionJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<ComplexLinearRegressionJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<LogisticRegressionJsonConverter>(options);
