@@ -19,7 +19,7 @@ namespace SerializationJsonTest
             var json = JsonSerializer.Serialize(source, options);
             var actual = JsonSerializer.Deserialize<ComplexLinearRegression>(json, options)!;
 
-            Assert.That(json, Is.EqualTo("{\"coefficients\":[[1,2],[3,4]],\"intercept\":[5,6]}"));
+            Assert.That(json, Is.EqualTo(@"{""coefficients"":[[1,2],[3,4]],""intercept"":[5,6]}"));
             Assert.That(actual.Coefficients.ToArray(), Is.EqualTo(new[] { new Complex(1.0, 2.0), new Complex(3.0, 4.0) }));
             Assert.That(actual.Intercept, Is.EqualTo(new Complex(5.0, 6.0)));
         }
@@ -45,7 +45,7 @@ namespace SerializationJsonTest
         {
             var options = NumFlatJsonSerializerOptions.Create();
             options.PropertyNameCaseInsensitive = true;
-            const string json = "{\"Coefficients\":[[1,2],[3,4]],\"Intercept\":[5,6]}";
+            const string json = @"{""Coefficients"":[[1,2],[3,4]],""Intercept"":[5,6]}";
 
             var actual = JsonSerializer.Deserialize<ComplexLinearRegression>(json, options)!;
 
@@ -57,7 +57,7 @@ namespace SerializationJsonTest
         public void DeserializeComplexLinearRegressionWithInvalidShapeThrowsJsonException()
         {
             var options = NumFlatJsonSerializerOptions.Create();
-            const string json = "{\"coefficients\":[],\"intercept\":[5,6]}";
+            const string json = @"{""coefficients"":[],""intercept"":[5,6]}";
 
             Assert.That((Action)(() => JsonSerializer.Deserialize<ComplexLinearRegression>(json, options)), Throws.TypeOf<JsonException>());
         }
