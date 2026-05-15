@@ -1,4 +1,10 @@
+# v1.3.0
+
+* Implemented JSON serializers for the main types.  
+  To use the serialization features, reference the `NumFlat.Serialization.Json` package.
+
 # v1.2.4
+
 * Relaxed some HMM argument checks.
 * Added the following peak-detection methods to the `TimeSeries` class:
     - `FindPeaks`
@@ -7,6 +13,7 @@
 * Added unary `+` and `-` operators to `Vec<T>` and `Mat<T>`.
 
 # v1.2.3
+
 * Updated the NMF solver to coordinate descent.
 * Added `NonnegativeMatrixFactorizationOptions`.
 
