@@ -679,6 +679,29 @@ Matrix 3x3-Double
 7  8  9
 ```
 
+### JSON Serialization
+Referencing the `NumFlat.Serialization.Json` package enables NumFlat's main types to be serialized to JSON.
+#### Code
+```cs
+Mat<double> x =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+];
+
+var options = new JsonSerializerOptions().AddNumFlatConverters();
+var json = JsonSerializer.Serialize(x, options);
+
+Console.WriteLine(json);
+
+var deserialized = JsonSerializer.Deserialize<Mat<double>>(json, options);
+```
+#### Output
+```console
+[[1,2,3],[4,5,6],[7,8,9]]
+```
+
 
 
 ## Todo
