@@ -9,8 +9,8 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class CommonSpatialPattern : IVectorToVectorTransform<double>
     {
-        private readonly GeneralizedEigenValueDecompositionDouble gevd;
         private readonly int sourceDimension;
+        private readonly GeneralizedEigenValueDecompositionDouble gevd;
 
         /// <summary>
         /// Performs common spatial pattern (CSP).
@@ -98,8 +98,8 @@ namespace NumFlat.MultivariateAnalyses
                 throw new FittingFailureException("Failed to compute the GEVD of the covariance matrices.", e);
             }
 
-            this.gevd = gevd;
             this.sourceDimension = d;
+            this.gevd = gevd;
         }
 
         /// <inheritdoc/>
