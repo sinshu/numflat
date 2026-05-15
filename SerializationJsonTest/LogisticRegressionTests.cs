@@ -18,7 +18,7 @@ namespace SerializationJsonTest
             var json = JsonSerializer.Serialize(source, options);
             var actual = JsonSerializer.Deserialize<LogisticRegression>(json, options)!;
 
-            Assert.That(json, Is.EqualTo("{\"coefficients\":[1,2],\"intercept\":3}"));
+            Assert.That(json, Is.EqualTo(@"{""coefficients"":[1,2],""intercept"":3}"));
             Assert.That(actual.Coefficients.ToArray(), Is.EqualTo(new[] { 1.0, 2.0 }));
             Assert.That(actual.Intercept, Is.EqualTo(3.0));
         }
@@ -46,7 +46,7 @@ namespace SerializationJsonTest
         {
             var options = NumFlatJsonSerializerOptions.Create();
             options.PropertyNameCaseInsensitive = true;
-            const string json = "{\"Coefficients\":[1,2],\"Intercept\":3}";
+            const string json = @"{""Coefficients"":[1,2],""Intercept"":3}";
 
             var actual = JsonSerializer.Deserialize<LogisticRegression>(json, options)!;
 
@@ -58,7 +58,7 @@ namespace SerializationJsonTest
         public void DeserializeLogisticRegressionWithInvalidShapeThrowsJsonException()
         {
             var options = NumFlatJsonSerializerOptions.Create();
-            const string json = "{\"coefficients\":[],\"intercept\":3}";
+            const string json = @"{""coefficients"":[],""intercept"":3}";
 
             Assert.That((Action)(() => JsonSerializer.Deserialize<LogisticRegression>(json, options)), Throws.TypeOf<JsonException>());
         }

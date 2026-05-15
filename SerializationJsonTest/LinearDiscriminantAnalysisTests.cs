@@ -18,7 +18,7 @@ namespace SerializationJsonTest
             var json = JsonSerializer.Serialize(source, options);
             var actual = JsonSerializer.Deserialize<LinearDiscriminantAnalysis>(json, options)!;
 
-            Assert.That(json, Is.EqualTo("{\"mean\":[1,2],\"eigenValues\":[3,4],\"eigenVectors\":[[0,1],[1,0]]}"));
+            Assert.That(json, Is.EqualTo(@"{""mean"":[1,2],""eigenValues"":[3,4],""eigenVectors"":[[0,1],[1,0]]}"));
             Assert.That(actual.Mean.ToArray(), Is.EqualTo(new[] { 1.0, 2.0 }));
             Assert.That(actual.EigenValues.ToArray(), Is.EqualTo(new[] { 3.0, 4.0 }));
             Assert.That(actual.EigenVectors[0, 0], Is.EqualTo(0.0));
@@ -47,7 +47,7 @@ namespace SerializationJsonTest
         {
             var options = NumFlatJsonSerializerOptions.Create();
             options.PropertyNameCaseInsensitive = true;
-            const string json = "{\"Mean\":[1,2],\"EigenValues\":[3,4],\"EigenVectors\":[[0,1],[1,0]]}";
+            const string json = @"{""Mean"":[1,2],""EigenValues"":[3,4],""EigenVectors"":[[0,1],[1,0]]}";
 
             var actual = JsonSerializer.Deserialize<LinearDiscriminantAnalysis>(json, options)!;
 
@@ -60,7 +60,7 @@ namespace SerializationJsonTest
         public void DeserializeLdaWithInvalidShapeThrowsJsonException()
         {
             var options = NumFlatJsonSerializerOptions.Create();
-            const string json = "{\"mean\":[1,2],\"eigenValues\":[3],\"eigenVectors\":[[1,0],[0,1]]}";
+            const string json = @"{""mean"":[1,2],""eigenValues"":[3],""eigenVectors"":[[1,0],[0,1]]}";
 
             Assert.That((Action)(() => JsonSerializer.Deserialize<LinearDiscriminantAnalysis>(json, options)), Throws.TypeOf<JsonException>());
         }
