@@ -35,7 +35,7 @@ namespace NumFlatTest.TimeSeriesTests
 
             var actual = x.FindPeaks();
 
-            Assert.That(actual.Count, Is.EqualTo(expected.Count));
+            Assert.That(actual.Length, Is.EqualTo(expected.Count));
 
             foreach (var (a, b) in actual.Zip(expected))
             {
@@ -75,7 +75,7 @@ namespace NumFlatTest.TimeSeriesTests
 
             var actual = x.FindPeaksWithDistanceConstraint(distance);
 
-            Assert.That(actual.Count, Is.EqualTo(expected.Count));
+            Assert.That(actual.Length, Is.EqualTo(expected.Count));
 
             foreach (var (a, b) in actual.Zip(expected))
             {
@@ -115,7 +115,7 @@ namespace NumFlatTest.TimeSeriesTests
 
             var actual = x.FindPeaksWithProminenceConstraint(prominence);
 
-            Assert.That(actual.Count, Is.EqualTo(expected.Count));
+            Assert.That(actual.Length, Is.EqualTo(expected.Count));
 
             foreach (var (a, b) in actual.Zip(expected))
             {

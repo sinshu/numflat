@@ -5,7 +5,7 @@ using NumFlat.Serialization.Json;
 
 namespace SerializationJsonTest
 {
-    public class Tests
+    public class VectorMatrixTests
     {
         [Test]
         public void DeserializeVector()
