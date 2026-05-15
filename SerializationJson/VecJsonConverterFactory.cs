@@ -24,8 +24,7 @@ namespace NumFlat.Serialization.Json
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
             var elementType = typeToConvert.GetGenericArguments()[0];
-            var converterType = typeof(VecJsonConverter<>).MakeGenericType(elementType);
-            return (JsonConverter)Activator.CreateInstance(converterType)!;
+            return JsonSerializationHelpers.CreateGenericConverter(typeof(VecJsonConverter<>), elementType);
         }
     }
 }

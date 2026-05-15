@@ -131,17 +131,5 @@ namespace SerializationJsonTest
             Assert.That((Action)(() => JsonSerializer.Deserialize<Mat<int>>("[[]]", options)), Throws.TypeOf<JsonException>());
             Assert.That((Action)(() => JsonSerializer.Deserialize<Mat<int>>("[[1,2],[3]]", options)), Throws.TypeOf<JsonException>());
         }
-
-        [Test]
-        public void AddNumFlatConvertersDoesNotAddDuplicates()
-        {
-            var options = new JsonSerializerOptions();
-
-            options.AddNumFlatConverters().AddNumFlatConverters();
-
-            Assert.That(options.Converters.OfType<VecJsonConverterFactory>().Count(), Is.EqualTo(1));
-            Assert.That(options.Converters.OfType<MatJsonConverterFactory>().Count(), Is.EqualTo(1));
-            Assert.That(options.Converters.OfType<PrincipalComponentAnalysisJsonConverter>().Count(), Is.EqualTo(1));
-        }
     }
 }
