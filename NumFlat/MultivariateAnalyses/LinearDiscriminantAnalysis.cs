@@ -10,7 +10,8 @@ namespace NumFlat.MultivariateAnalyses
     public sealed class LinearDiscriminantAnalysis : IVectorToVectorTransform<double>
     {
         private readonly Vec<double> mean;
-        private readonly GeneralizedEigenValueDecompositionDouble gevd;
+        private readonly Vec<double> eigenValues;
+        private readonly Mat<double> eigenVectors;
 
         /// <summary>
         /// Performs linear discriminant analysis (LDA).
@@ -55,7 +56,45 @@ namespace NumFlat.MultivariateAnalyses
             }
 
             this.mean = xs.Mean();
-            this.gevd = gevd;
+            this.eigenValues = gevd.D;
+            this.eigenVectors = gevd.V;
+        }
+
+        /// <summary>
+        /// Creates linear discriminant analysis (LDA) from fitted parameters.
+        /// </summary>
+        /// <param name="mean">
+        /// The mean vector of the source vectors.
+        /// </param>
+        /// <param name="eigenValues">
+        /// The eigenvalues obtained from the generalized eigenvalue decomposition.
+        /// </param>
+        /// <param name="eigenVectors">
+        /// The eigenvectors obtained from the generalized eigenvalue decomposition.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vectors and matrix are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public LinearDiscriminantAnalysis(in Vec<double> mean, in Vec<double> eigenValues, in Mat<double> eigenVectors)
+        {
+            ThrowHelper.ThrowIfEmpty(mean, nameof(mean));
+            ThrowHelper.ThrowIfEmpty(eigenValues, nameof(eigenValues));
+            ThrowHelper.ThrowIfEmpty(eigenVectors, nameof(eigenVectors));
+
+            if (eigenValues.Count != mean.Count)
+            {
+                throw new ArgumentException($"The length of the eigenvalue vector must be {mean.Count}, but was {eigenValues.Count}.", nameof(eigenValues));
+            }
+
+            if (eigenVectors.RowCount != mean.Count || eigenVectors.ColCount != mean.Count)
+            {
+                throw new ArgumentException($"The eigenvector matrix must be {mean.Count} x {mean.Count}, but was {eigenVectors.RowCount} x {eigenVectors.ColCount}.", nameof(eigenVectors));
+            }
+
+            this.mean = mean;
+            this.eigenValues = eigenValues;
+            this.eigenVectors = eigenVectors;
         }
 
         /// <inheritdoc/>
@@ -69,7 +108,7 @@ namespace NumFlat.MultivariateAnalyses
             ref readonly var tmp = ref utmp.Item;
 
             Vec.Sub(source, mean, tmp);
-            Mat.Mul(gevd.V, tmp, destination, true);
+            Mat.Mul(eigenVectors, tmp, destination, true);
         }
 
         /// <summary>
@@ -80,12 +119,12 @@ namespace NumFlat.MultivariateAnalyses
         /// <summary>
         /// Gets the eigenvalues obtained from the generalized eigenvalue decomposition.
         /// </summary>
-        public ref readonly Vec<double> EigenValues => ref gevd.D;
+        public ref readonly Vec<double> EigenValues => ref eigenValues;
 
         /// <summary>
         /// Gets the eigenvectors obtained from the generalized eigenvalue decomposition.
         /// </summary>
-        public ref readonly Mat<double> EigenVectors => ref gevd.V;
+        public ref readonly Mat<double> EigenVectors => ref eigenVectors;
 
         /// <inheritdoc/>
         public int SourceDimension => mean.Count;

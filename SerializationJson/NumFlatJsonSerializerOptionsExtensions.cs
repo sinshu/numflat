@@ -28,6 +28,7 @@ namespace NumFlat.Serialization.Json
             AddConverterIfMissing<VecJsonConverterFactory>(options);
             AddConverterIfMissing<MatJsonConverterFactory>(options);
             AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
+            AddConverterIfMissing<LinearDiscriminantAnalysisJsonConverter>(options);
             return options;
         }
 
