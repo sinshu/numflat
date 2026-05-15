@@ -762,9 +762,10 @@ Matrix 3x3-Double
     - ✅ Resampling
     - 🚧 Feature extraction
     - ⬜ Filtering
-* ✅ File IO
+* 🚧 File IO
     - ✅ CSV
     - ✅ WAV
+    - 🚧 JSON serialization
 
 
 
