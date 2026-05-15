@@ -1,0 +1,95 @@
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using NumFlat.MultivariateAnalyses;
+
+namespace NumFlat.Serialization.Json
+{
+    /// <summary>
+    /// Converts <see cref="LinearRegression" /> instances to and from JSON.
+    /// </summary>
+    public sealed class LinearRegressionJsonConverter : JsonConverter<LinearRegression>
+    {
+        private const string CoefficientsPropertyName = "coefficients";
+        private const string InterceptPropertyName = "intercept";
+
+        /// <inheritdoc />
+        public override LinearRegression Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException("A NumFlat linear regression object must be represented as a JSON object.");
+            }
+
+            Vec<double>? coefficients = null;
+            double? intercept = null;
+
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndObject)
+                {
+                    return CreateLinearRegression(coefficients, intercept);
+                }
+
+                if (reader.TokenType != JsonTokenType.PropertyName)
+                {
+                    throw new JsonException("A NumFlat linear regression object property name is expected.");
+                }
+
+                var propertyName = reader.GetString();
+                if (!reader.Read())
+                {
+                    throw new JsonException("The JSON object for a NumFlat linear regression object is incomplete.");
+                }
+
+                if (JsonSerializationHelpers.PropertyNameEquals(propertyName, CoefficientsPropertyName, options))
+                {
+                    coefficients = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                }
+                else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, InterceptPropertyName, options))
+                {
+                    intercept = JsonSerializer.Deserialize<double>(ref reader, options);
+                }
+                else
+                {
+                    reader.Skip();
+                }
+            }
+
+            throw new JsonException("The JSON object for a NumFlat linear regression object is incomplete.");
+        }
+
+        /// <inheritdoc />
+        public override void Write(Utf8JsonWriter writer, LinearRegression value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName(CoefficientsPropertyName);
+            JsonSerializer.Serialize(writer, value.Coefficients, options);
+            writer.WritePropertyName(InterceptPropertyName);
+            JsonSerializer.Serialize(writer, value.Intercept, options);
+            writer.WriteEndObject();
+        }
+
+        private static LinearRegression CreateLinearRegression(Vec<double>? coefficients, double? intercept)
+        {
+            if (coefficients == null)
+            {
+                throw new JsonException("The JSON object for a NumFlat linear regression object must contain a 'coefficients' property.");
+            }
+
+            if (intercept == null)
+            {
+                throw new JsonException("The JSON object for a NumFlat linear regression object must contain an 'intercept' property.");
+            }
+
+            try
+            {
+                return new LinearRegression(coefficients.Value, intercept.Value);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new JsonException("The JSON object cannot be converted to a NumFlat linear regression object.", ex);
+            }
+        }
+    }
+}
