@@ -113,6 +113,27 @@ namespace NumFlat.MultivariateAnalyses
             this.intercept = a[0];
         }
 
+        /// <summary>
+        /// Creates linear regression from fitted parameters.
+        /// </summary>
+        /// <param name="coefficients">
+        /// The coefficients.
+        /// </param>
+        /// <param name="intercept">
+        /// The bias term.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vector is stored directly, so it should not be mutated after construction.
+        /// </remarks>
+        public LinearRegression(in Vec<double> coefficients, double intercept)
+        {
+            ThrowHelper.ThrowIfEmpty(coefficients, nameof(coefficients));
+
+            this.coefficients = coefficients;
+            this.intercept = intercept;
+        }
+
         /// <inheritdoc/>
         public double Transform(in Vec<double> source)
         {
