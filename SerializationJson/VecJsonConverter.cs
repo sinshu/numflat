@@ -22,7 +22,7 @@ namespace NumFlat.Serialization.Json
                 {
                     if (elements.Count == 0)
                     {
-                        throw new JsonException("A NumFlat vector cannot be empty.");
+                        return default;
                     }
 
                     return new Vec<T>(elements.ToArray());

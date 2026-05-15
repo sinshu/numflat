@@ -75,6 +75,11 @@ namespace NumFlat.Serialization.Json
 
         private static Mat<T> CreateMatrix(List<Vec<T>> rows)
         {
+            if (rows.Count == 0)
+            {
+                return default;
+            }
+
             try
             {
                 return MatrixBuilder.Create<T>(rows.ToArray());

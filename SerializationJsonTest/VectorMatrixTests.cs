@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.Json;
 using NumFlat;
@@ -20,6 +21,17 @@ namespace SerializationJsonTest
         }
 
         [Test]
+        public void DeserializeEmptyVector()
+        {
+            var options = NumFlatJsonSerializerOptions.Create();
+
+            var vector = JsonSerializer.Deserialize<Vec<int>>("[]", options);
+
+            Assert.That(vector.IsEmpty, Is.True);
+            Assert.That(vector.Count, Is.EqualTo(0));
+        }
+
+        [Test]
         public void DeserializeMatrix()
         {
             var options = NumFlatJsonSerializerOptions.Create();
@@ -38,6 +50,18 @@ namespace SerializationJsonTest
         }
 
         [Test]
+        public void DeserializeEmptyMatrix()
+        {
+            var options = NumFlatJsonSerializerOptions.Create();
+
+            var matrix = JsonSerializer.Deserialize<Mat<double>>("[]", options);
+
+            Assert.That(matrix.IsEmpty, Is.True);
+            Assert.That(matrix.RowCount, Is.EqualTo(0));
+            Assert.That(matrix.ColCount, Is.EqualTo(0));
+        }
+
+        [Test]
         public void RoundTripVectorKeepsArrayShape()
         {
             var options = new JsonSerializerOptions().AddNumFlatConverters();
@@ -48,6 +72,20 @@ namespace SerializationJsonTest
 
             Assert.That(json, Is.EqualTo("[1,2,3]"));
             Assert.That(actual.ToArray(), Is.EqualTo(new[] { 1, 2, 3 }));
+        }
+
+        [Test]
+        public void RoundTripEmptyVectorKeepsArrayShape()
+        {
+            var options = new JsonSerializerOptions().AddNumFlatConverters();
+            var source = default(Vec<int>);
+
+            var json = JsonSerializer.Serialize(source, options);
+            var actual = JsonSerializer.Deserialize<Vec<int>>(json, options);
+
+            Assert.That(json, Is.EqualTo("[]"));
+            Assert.That(actual.IsEmpty, Is.True);
+            Assert.That(actual.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -71,13 +109,27 @@ namespace SerializationJsonTest
         }
 
         [Test]
+        public void RoundTripEmptyMatrixKeepsArrayOfRowsShape()
+        {
+            var options = new JsonSerializerOptions().AddNumFlatConverters();
+            var source = default(Mat<int>);
+
+            var json = JsonSerializer.Serialize(source, options);
+            var actual = JsonSerializer.Deserialize<Mat<int>>(json, options);
+
+            Assert.That(json, Is.EqualTo("[]"));
+            Assert.That(actual.IsEmpty, Is.True);
+            Assert.That(actual.RowCount, Is.EqualTo(0));
+            Assert.That(actual.ColCount, Is.EqualTo(0));
+        }
+
+        [Test]
         public void DeserializeInvalidMatrixThrowsJsonException()
         {
             var options = NumFlatJsonSerializerOptions.Create();
 
-            Assert.That(() => JsonSerializer.Deserialize<Mat<int>>("[]", options), Throws.TypeOf<JsonException>());
-            Assert.That(() => JsonSerializer.Deserialize<Mat<int>>("[[]]", options), Throws.TypeOf<JsonException>());
-            Assert.That(() => JsonSerializer.Deserialize<Mat<int>>("[[1,2],[3]]", options), Throws.TypeOf<JsonException>());
+            Assert.That((Action)(() => JsonSerializer.Deserialize<Mat<int>>("[[]]", options)), Throws.TypeOf<JsonException>());
+            Assert.That((Action)(() => JsonSerializer.Deserialize<Mat<int>>("[[1,2],[3]]", options)), Throws.TypeOf<JsonException>());
         }
 
         [Test]
