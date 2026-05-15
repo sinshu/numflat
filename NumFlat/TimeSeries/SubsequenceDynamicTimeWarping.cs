@@ -159,7 +159,7 @@ namespace NumFlat.TimeSeries
         /// <returns>
         /// A <see cref="SubsequenceDynamicTimeWarping{T, U}"/> instance that holds the cost matrix and alignment methods.
         /// </returns>
-        public static SubsequenceDynamicTimeWarping<T, U> Compute<T, U>(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
+        public static SubsequenceDynamicTimeWarping<T, U> Fit<T, U>(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {
             return new SubsequenceDynamicTimeWarping<T, U>(query, longSequence, dm);
         }

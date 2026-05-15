@@ -63,7 +63,7 @@ namespace NumFlatTest.TimeSeriesTests
             int[] query = [1, 2, 3];
             int[] longSequence = [0, 0, 0, 0, 1, 2, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 0, 1, 2, 3, 0];
 
-            var sdtw = SubsequenceDynamicTimeWarping.Compute(query, longSequence, intAbs);
+            var sdtw = SubsequenceDynamicTimeWarping.Fit(query, longSequence, intAbs);
             var cost = sdtw.CostMatrix.Rows.Last();
 
             for (var i = 0; i < longSequence.Length; i++)
