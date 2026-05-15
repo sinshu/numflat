@@ -9,7 +9,6 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class CommonSpatialPattern : IVectorToVectorTransform<double>
     {
-        private readonly int sourceDimension;
         private readonly GeneralizedEigenValueDecompositionDouble gevd;
 
         /// <summary>
@@ -98,7 +97,6 @@ namespace NumFlat.MultivariateAnalyses
                 throw new FittingFailureException("Failed to compute the GEVD of the covariance matrices.", e);
             }
 
-            this.sourceDimension = d;
             this.gevd = gevd;
         }
 
@@ -123,9 +121,9 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Mat<double> EigenVectors => ref gevd.V;
 
         /// <inheritdoc/>
-        public int SourceDimension => sourceDimension;
+        public int SourceDimension => gevd.D.Count;
 
         /// <inheritdoc/>
-        public int DestinationDimension => sourceDimension;
+        public int DestinationDimension => gevd.D.Count;
     }
 }
