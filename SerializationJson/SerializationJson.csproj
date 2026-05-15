@@ -12,7 +12,7 @@
     <RootNamespace>NumFlat.Serialization.Json</RootNamespace>
     <Version>1.2.4</Version>
     <Authors>Nobuaki Tanaka</Authors>
-    <Description>System.Text.Json converters for NumFlat vectors and matrices.</Description>
+    <Description>System.Text.Json converters for NumFlat types.</Description>
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

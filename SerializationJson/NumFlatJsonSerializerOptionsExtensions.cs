@@ -10,7 +10,7 @@ namespace NumFlat.Serialization.Json
     public static class NumFlatJsonSerializerOptionsExtensions
     {
         /// <summary>
-        /// Adds converters for <see cref="Vec{T}" /> and <see cref="Mat{T}" /> to the specified options.
+        /// Adds converters for NumFlat types to the specified options.
         /// </summary>
         /// <param name="options">
         /// The serializer options to configure.
@@ -27,6 +27,7 @@ namespace NumFlat.Serialization.Json
 
             AddConverterIfMissing<VecJsonConverterFactory>(options);
             AddConverterIfMissing<MatJsonConverterFactory>(options);
+            AddConverterIfMissing<PrincipalComponentAnalysisJsonConverter>(options);
             return options;
         }
 
