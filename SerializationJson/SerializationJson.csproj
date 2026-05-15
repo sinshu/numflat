@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>NumFlat.Serialization.Json</Title>
+    <PackageId>NumFlat.Serialization.Json</PackageId>
+    <AssemblyName>NumFlat.Serialization.Json</AssemblyName>
+    <RootNamespace>NumFlat.Serialization.Json</RootNamespace>
+    <Version>1.2.4</Version>
+    <Authors>Nobuaki Tanaka</Authors>
+    <Description>System.Text.Json converters for NumFlat types.</Description>
+    <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>math;numerics;linear;algebra;matrix;vector;json;serialization</PackageTags>
+    <PackageReleaseNotes>https://github.com/sinshu/numflat/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NumFlat\NumFlat.csproj" />
+  </ItemGroup>
+
+</Project>

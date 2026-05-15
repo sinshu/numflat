@@ -9,8 +9,8 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class CommonSpatialPattern : IVectorToVectorTransform<double>
     {
-        private readonly GeneralizedEigenValueDecompositionDouble gevd;
-        private readonly int sourceDimension;
+        private readonly Vec<double> eigenValues;
+        private readonly Mat<double> eigenVectors;
 
         /// <summary>
         /// Performs common spatial pattern (CSP).
@@ -98,8 +98,35 @@ namespace NumFlat.MultivariateAnalyses
                 throw new FittingFailureException("Failed to compute the GEVD of the covariance matrices.", e);
             }
 
-            this.gevd = gevd;
-            this.sourceDimension = d;
+            this.eigenValues = gevd.D;
+            this.eigenVectors = gevd.V;
+        }
+
+        /// <summary>
+        /// Creates common spatial pattern (CSP) from fitted parameters.
+        /// </summary>
+        /// <param name="eigenValues">
+        /// The eigenvalues obtained from the generalized eigenvalue decomposition.
+        /// </param>
+        /// <param name="eigenVectors">
+        /// The eigenvectors obtained from the generalized eigenvalue decomposition.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vector and matrix are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public CommonSpatialPattern(in Vec<double> eigenValues, in Mat<double> eigenVectors)
+        {
+            ThrowHelper.ThrowIfEmpty(eigenValues, nameof(eigenValues));
+            ThrowHelper.ThrowIfEmpty(eigenVectors, nameof(eigenVectors));
+
+            if (eigenVectors.RowCount != eigenValues.Count || eigenVectors.ColCount != eigenValues.Count)
+            {
+                throw new ArgumentException($"The eigenvector matrix must be {eigenValues.Count} x {eigenValues.Count}, but was {eigenVectors.RowCount} x {eigenVectors.ColCount}.", nameof(eigenVectors));
+            }
+
+            this.eigenValues = eigenValues;
+            this.eigenVectors = eigenVectors;
         }
 
         /// <inheritdoc/>
@@ -109,23 +136,23 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
             VectorToVectorTransform.ThrowIfInvalidSize(this, source, destination, nameof(source), nameof(destination));
 
-            Mat.Mul(gevd.V, source, destination, true);
+            Mat.Mul(eigenVectors, source, destination, true);
         }
 
         /// <summary>
         /// Gets the eigenvalues obtained from the generalized eigenvalue decomposition.
         /// </summary>
-        public ref readonly Vec<double> EigenValues => ref gevd.D;
+        public ref readonly Vec<double> EigenValues => ref eigenValues;
 
         /// <summary>
         /// Gets the eigenvectors obtained from the generalized eigenvalue decomposition.
         /// </summary>
-        public ref readonly Mat<double> EigenVectors => ref gevd.V;
+        public ref readonly Mat<double> EigenVectors => ref eigenVectors;
 
         /// <inheritdoc/>
-        public int SourceDimension => sourceDimension;
+        public int SourceDimension => eigenValues.Count;
 
         /// <inheritdoc/>
-        public int DestinationDimension => sourceDimension;
+        public int DestinationDimension => eigenValues.Count;
     }
 }
