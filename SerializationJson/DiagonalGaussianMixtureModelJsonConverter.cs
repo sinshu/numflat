@@ -15,8 +15,6 @@ namespace NumFlat.Serialization.Json
         private const string ComponentsPropertyName = "components";
         private const string WeightPropertyName = "weight";
         private const string GaussianPropertyName = "gaussian";
-        private const string MeanPropertyName = "mean";
-        private const string VariancePropertyName = "variance";
 
         /// <inheritdoc />
         public override DiagonalGaussianMixtureModel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -146,57 +144,12 @@ namespace NumFlat.Serialization.Json
 
         private static DiagonalGaussian ReadGaussian(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
-            {
-                throw new JsonException("A NumFlat diagonal Gaussian component distribution must be represented as a JSON object.");
-            }
-
-            Vec<double>? mean = null;
-            Vec<double>? variance = null;
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.EndObject)
-                {
-                    return CreateGaussian(mean, variance);
-                }
-
-                if (reader.TokenType != JsonTokenType.PropertyName)
-                {
-                    throw new JsonException("A NumFlat diagonal Gaussian component distribution property name is expected.");
-                }
-
-                var propertyName = reader.GetString();
-                if (!reader.Read())
-                {
-                    throw new JsonException("The JSON object for a NumFlat diagonal Gaussian component distribution is incomplete.");
-                }
-
-                if (JsonSerializationHelpers.PropertyNameEquals(propertyName, MeanPropertyName, options))
-                {
-                    mean = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
-                }
-                else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, VariancePropertyName, options))
-                {
-                    variance = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
-                }
-                else
-                {
-                    reader.Skip();
-                }
-            }
-
-            throw new JsonException("The JSON object for a NumFlat diagonal Gaussian component distribution is incomplete.");
+            return DiagonalGaussianJsonSerialization.Read(ref reader, options, "NumFlat diagonal Gaussian component distribution");
         }
 
         private static void WriteGaussian(Utf8JsonWriter writer, DiagonalGaussian value, JsonSerializerOptions options)
         {
-            writer.WriteStartObject();
-            writer.WritePropertyName(MeanPropertyName);
-            JsonSerializer.Serialize(writer, value.Mean, options);
-            writer.WritePropertyName(VariancePropertyName);
-            JsonSerializer.Serialize(writer, value.Variance, options);
-            writer.WriteEndObject();
+            DiagonalGaussianJsonSerialization.Write(writer, value, options);
         }
 
         private static DiagonalGaussianMixtureModel CreateGmm(DiagonalGaussianMixtureModel.Component[]? components)
@@ -238,26 +191,5 @@ namespace NumFlat.Serialization.Json
             }
         }
 
-        private static DiagonalGaussian CreateGaussian(Vec<double>? mean, Vec<double>? variance)
-        {
-            if (mean == null)
-            {
-                throw new JsonException("The JSON object for a NumFlat diagonal Gaussian component distribution must contain a 'mean' property.");
-            }
-
-            if (variance == null)
-            {
-                throw new JsonException("The JSON object for a NumFlat diagonal Gaussian component distribution must contain a 'variance' property.");
-            }
-
-            try
-            {
-                return new DiagonalGaussian(mean.Value, variance.Value);
-            }
-            catch (Exception ex) when (ex is ArgumentException || ex is FittingFailureException)
-            {
-                throw new JsonException("The JSON object cannot be converted to a NumFlat diagonal Gaussian component distribution.", ex);
-            }
-        }
     }
 }
