@@ -10,13 +10,13 @@
     <PackageId>NumFlat.Serialization.Json</PackageId>
     <AssemblyName>NumFlat.Serialization.Json</AssemblyName>
     <RootNamespace>NumFlat.Serialization.Json</RootNamespace>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>Nobuaki Tanaka</Authors>
     <Description>System.Text.Json converters for NumFlat types</Description>
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sinshu/numflat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>math;numerics;linear;algebra;matrix;vector;json;serialization</PackageTags>
+    <PackageTags>math;numerics;linear;algebra;matrix;vector;fft;analysis;statistics;clustering;dsp</PackageTags>
     <PackageReleaseNotes>https://github.com/sinshu/numflat/blob/main/SerializationJson/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
