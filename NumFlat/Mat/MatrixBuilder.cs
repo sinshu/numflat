@@ -205,6 +205,27 @@ namespace NumFlat
             return identity;
         }
 
+
+        /// <summary>
+        /// Creates a 1x1 matrix that contains the specified element.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the matrix.
+        /// </typeparam>
+        /// <param name="element">
+        /// The element for the new matrix.
+        /// </param>
+        /// <returns>
+        /// A new 1x1 matrix containing only <paramref name="element"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a single-element array and creates a matrix from it.
+        /// </remarks>
+        public static Mat<T> AsSingleElementMatrix<T>(this T element) where T : unmanaged, INumberBase<T>
+        {
+            return new Mat<T>(1, 1, 1, new T[] { element });
+        }
+
         /// <summary>
         /// Creates a new matrix from the specified elements.
         /// </summary>

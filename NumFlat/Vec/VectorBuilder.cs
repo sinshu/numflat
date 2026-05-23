@@ -10,6 +10,27 @@ namespace NumFlat
     /// </summary>
     public static class VectorBuilder
     {
+
+        /// <summary>
+        /// Creates a one-dimensional vector that contains the specified element.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elements in the vector.
+        /// </typeparam>
+        /// <param name="element">
+        /// The element for the new vector.
+        /// </param>
+        /// <returns>
+        /// A new vector containing only <paramref name="element"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method allocates a single-element array and creates a vector from it.
+        /// </remarks>
+        public static Vec<T> AsSingleElementVector<T>(this T element) where T : unmanaged, INumberBase<T>
+        {
+            return new Vec<T>(new T[] { element });
+        }
+
         /// <summary>
         /// Creates a new vector from the specified elements.
         /// </summary>

@@ -98,6 +98,20 @@ namespace NumFlatTest.MatTests
             }
         }
 
+
+        [Test]
+        public void AsSingleElementMatrix()
+        {
+            const int expected = 42;
+
+            var actual = expected.AsSingleElementMatrix();
+
+            Assert.That(actual.RowCount, Is.EqualTo(1));
+            Assert.That(actual.ColCount, Is.EqualTo(1));
+            Assert.That(actual[0, 0], Is.EqualTo(expected));
+            Assert.That(actual.Memory.ToArray(), Is.EqualTo(new[] { expected }));
+        }
+
         [TestCase(1, 1)]
         [TestCase(2, 2)]
         [TestCase(2, 4)]
