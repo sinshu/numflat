@@ -33,6 +33,19 @@ namespace NumFlatTest.VecTests
             Assert.That(actual, Is.EqualTo(expected));
         }
 
+
+        [Test]
+        public void AsSingleElementVector()
+        {
+            const int expected = 42;
+
+            var actual = expected.AsSingleElementVector();
+
+            Assert.That(actual.Count, Is.EqualTo(1));
+            Assert.That(actual[0], Is.EqualTo(expected));
+            Assert.That(actual.Memory.ToArray(), Is.EqualTo(new[] { expected }));
+        }
+
         [Test]
         public void ToVector()
         {
