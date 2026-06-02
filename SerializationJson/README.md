@@ -33,21 +33,4 @@ Output:
 
 ```console
 [[1,2,3],[4,5,6],[7,8,9]]
-Matrix 3x3-Double
-1  2  3
-4  5  6
-7  8  9
-```
-
-## Vector example
-
-```cs
-using System.Text.Json;
-using NumFlat;
-using NumFlat.Serialization.Json;
-
-Vec<double> x = [1, 2, 3];
-
-var json = JsonSerializer.Serialize(x, NumFlatJsonSerializerContext.Default.VectorDouble);
-var deserialized = JsonSerializer.Deserialize(json, NumFlatJsonSerializerContext.Default.VectorDouble);
 ```
