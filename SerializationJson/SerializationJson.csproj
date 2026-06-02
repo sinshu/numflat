@@ -4,13 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsAotCompatible>true</IsAotCompatible>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>NumFlat.Serialization.Json</Title>
     <PackageId>NumFlat.Serialization.Json</PackageId>
     <AssemblyName>NumFlat.Serialization.Json</AssemblyName>
     <RootNamespace>NumFlat.Serialization.Json</RootNamespace>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <Authors>Nobuaki Tanaka</Authors>
     <Description>System.Text.Json converters for NumFlat types</Description>
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>

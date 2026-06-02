@@ -46,15 +46,15 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, MeanPropertyName, options))
                 {
-                    mean = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                    mean = JsonSerializationHelpers.ReadDoubleVector(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, DemixingMatrixPropertyName, options))
                 {
-                    demixingMatrix = JsonSerializer.Deserialize<Mat<double>>(ref reader, options);
+                    demixingMatrix = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, MixingMatrixPropertyName, options))
                 {
-                    mixingMatrix = JsonSerializer.Deserialize<Mat<double>>(ref reader, options);
+                    mixingMatrix = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
                 }
                 else
                 {
@@ -70,11 +70,11 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(MeanPropertyName);
-            JsonSerializer.Serialize(writer, value.Mean, options);
+            JsonSerializationHelpers.WriteDoubleVector(writer, value.Mean);
             writer.WritePropertyName(DemixingMatrixPropertyName);
-            JsonSerializer.Serialize(writer, value.DemixingMatrix, options);
+            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.DemixingMatrix);
             writer.WritePropertyName(MixingMatrixPropertyName);
-            JsonSerializer.Serialize(writer, value.MixingMatrix, options);
+            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.MixingMatrix);
             writer.WriteEndObject();
         }
 

@@ -681,8 +681,14 @@ Matrix 3x3-Double
 
 ### JSON Serialization
 Referencing the `NumFlat.Serialization.Json` package enables NumFlat's main types to be serialized to JSON.
+Use the source-generated metadata exposed by `NumFlatJsonSerializerContext` and pass its `JsonTypeInfo<T>` properties to `JsonSerializer`.
+
 #### Code
 ```cs
+using System.Text.Json;
+using NumFlat;
+using NumFlat.Serialization.Json;
+
 Mat<double> x =
 [
     [1, 2, 3],
@@ -690,12 +696,11 @@ Mat<double> x =
     [7, 8, 9],
 ];
 
-var options = new JsonSerializerOptions().AddNumFlatConverters();
-var json = JsonSerializer.Serialize(x, options);
+var json = JsonSerializer.Serialize(x, NumFlatJsonSerializerContext.Default.MatrixDouble);
 
 Console.WriteLine(json);
 
-var deserialized = JsonSerializer.Deserialize<Mat<double>>(json, options);
+var deserialized = JsonSerializer.Deserialize(json, NumFlatJsonSerializerContext.Default.MatrixDouble);
 ```
 #### Output
 ```console

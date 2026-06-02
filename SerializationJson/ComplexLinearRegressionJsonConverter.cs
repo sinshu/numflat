@@ -45,11 +45,11 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, CoefficientsPropertyName, options))
                 {
-                    coefficients = JsonSerializer.Deserialize<Vec<Complex>>(ref reader, options);
+                    coefficients = JsonSerializationHelpers.ReadComplexVector(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, InterceptPropertyName, options))
                 {
-                    intercept = JsonSerializer.Deserialize<Complex>(ref reader, options);
+                    intercept = JsonSerializationHelpers.ReadComplex(ref reader);
                 }
                 else
                 {
@@ -65,9 +65,9 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(CoefficientsPropertyName);
-            JsonSerializer.Serialize(writer, value.Coefficients, options);
+            JsonSerializationHelpers.WriteComplexVector(writer, value.Coefficients);
             writer.WritePropertyName(InterceptPropertyName);
-            JsonSerializer.Serialize(writer, value.Intercept, options);
+            JsonSerializationHelpers.WriteComplex(writer, value.Intercept);
             writer.WriteEndObject();
         }
 

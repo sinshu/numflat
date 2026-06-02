@@ -44,11 +44,11 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, WPropertyName, options))
                 {
-                    w = JsonSerializer.Deserialize<Mat<double>>(ref reader, options);
+                    w = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, HPropertyName, options))
                 {
-                    h = JsonSerializer.Deserialize<Mat<double>>(ref reader, options);
+                    h = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
                 }
                 else
                 {
@@ -64,9 +64,9 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(WPropertyName);
-            JsonSerializer.Serialize(writer, value.W, options);
+            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.W);
             writer.WritePropertyName(HPropertyName);
-            JsonSerializer.Serialize(writer, value.H, options);
+            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.H);
             writer.WriteEndObject();
         }
 

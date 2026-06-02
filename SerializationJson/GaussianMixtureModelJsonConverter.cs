@@ -67,7 +67,7 @@ namespace NumFlat.Serialization.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName(WeightPropertyName);
-                JsonSerializer.Serialize(writer, component.Weight, options);
+                writer.WriteNumberValue(component.Weight);
                 writer.WritePropertyName(GaussianPropertyName);
                 WriteGaussian(writer, component.Gaussian, options);
                 writer.WriteEndObject();
@@ -127,7 +127,7 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, WeightPropertyName, options))
                 {
-                    weight = JsonSerializer.Deserialize<double>(ref reader, options);
+                    weight = reader.GetDouble();
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, GaussianPropertyName, options))
                 {
