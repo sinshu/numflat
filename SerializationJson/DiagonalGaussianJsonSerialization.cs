@@ -39,11 +39,11 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, MeanPropertyName, options))
                 {
-                    mean = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                    mean = JsonSerializationHelpers.ReadDoubleVector(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, VariancePropertyName, options))
                 {
-                    variance = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                    variance = JsonSerializationHelpers.ReadDoubleVector(ref reader);
                 }
                 else
                 {
@@ -58,9 +58,9 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(MeanPropertyName);
-            JsonSerializer.Serialize(writer, value.Mean, options);
+            JsonSerializationHelpers.WriteDoubleVector(writer, value.Mean);
             writer.WritePropertyName(VariancePropertyName);
-            JsonSerializer.Serialize(writer, value.Variance, options);
+            JsonSerializationHelpers.WriteDoubleVector(writer, value.Variance);
             writer.WriteEndObject();
         }
 

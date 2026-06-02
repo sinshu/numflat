@@ -25,8 +25,14 @@ namespace NumFlat.Serialization.Json
             }
 
             JsonSerializationHelpers.AddConverterIfMissing<ComplexJsonConverter>(options);
-            JsonSerializationHelpers.AddConverterIfMissing<VecJsonConverterFactory>(options);
-            JsonSerializationHelpers.AddConverterIfMissing<MatJsonConverterFactory>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<Int32VectorJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<SingleVectorJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<DoubleVectorJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<ComplexVectorJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<Int32MatrixJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<SingleMatrixJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<DoubleMatrixJsonConverter>(options);
+            JsonSerializationHelpers.AddConverterIfMissing<ComplexMatrixJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<GaussianJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<DiagonalGaussianJsonConverter>(options);
             JsonSerializationHelpers.AddConverterIfMissing<KMeansJsonConverter>(options);

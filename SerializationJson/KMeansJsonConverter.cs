@@ -42,7 +42,7 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, CentroidsPropertyName, options))
                 {
-                    centroids = JsonSerializer.Deserialize<Vec<double>[]>(ref reader, options);
+                    centroids = JsonSerializationHelpers.ReadDoubleVectorArray(ref reader);
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(CentroidsPropertyName);
-            JsonSerializer.Serialize(writer, value.Centroids, options);
+            JsonSerializationHelpers.WriteDoubleVectorArray(writer, value.Centroids);
             writer.WriteEndObject();
         }
 

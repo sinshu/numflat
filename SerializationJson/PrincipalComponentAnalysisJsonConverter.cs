@@ -46,15 +46,15 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, MeanPropertyName, options))
                 {
-                    mean = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                    mean = JsonSerializationHelpers.ReadDoubleVector(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, EigenValuesPropertyName, options))
                 {
-                    eigenValues = JsonSerializer.Deserialize<Vec<double>>(ref reader, options);
+                    eigenValues = JsonSerializationHelpers.ReadDoubleVector(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, EigenVectorsPropertyName, options))
                 {
-                    eigenVectors = JsonSerializer.Deserialize<Mat<double>>(ref reader, options);
+                    eigenVectors = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
                 }
                 else
                 {
@@ -70,11 +70,11 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(MeanPropertyName);
-            JsonSerializer.Serialize(writer, value.Mean, options);
+            JsonSerializationHelpers.WriteDoubleVector(writer, value.Mean);
             writer.WritePropertyName(EigenValuesPropertyName);
-            JsonSerializer.Serialize(writer, value.EigenValues, options);
+            JsonSerializationHelpers.WriteDoubleVector(writer, value.EigenValues);
             writer.WritePropertyName(EigenVectorsPropertyName);
-            JsonSerializer.Serialize(writer, value.EigenVectors, options);
+            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.EigenVectors);
             writer.WriteEndObject();
         }
 
