@@ -26,7 +26,9 @@ namespace SerializationJsonTest
             Assert.That(options.Converters.OfType<KMeansJsonConverter>().Count(), Is.EqualTo(1));
             Assert.That(options.Converters.OfType<GaussianMixtureModelJsonConverter>().Count(), Is.EqualTo(1));
             Assert.That(options.Converters.OfType<DiagonalGaussianMixtureModelJsonConverter>().Count(), Is.EqualTo(1));
+            Assert.That(options.Converters.OfType<KernelJsonConverter>().Count(), Is.EqualTo(1));
             Assert.That(options.Converters.OfType<PrincipalComponentAnalysisJsonConverter>().Count(), Is.EqualTo(1));
+            Assert.That(options.Converters.OfType<KernelPrincipalComponentAnalysisJsonConverter>().Count(), Is.EqualTo(1));
             Assert.That(options.Converters.OfType<LinearDiscriminantAnalysisJsonConverter>().Count(), Is.EqualTo(1));
         }
 
