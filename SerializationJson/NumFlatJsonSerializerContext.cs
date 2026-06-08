@@ -25,7 +25,9 @@ namespace NumFlat.Serialization.Json
         typeof(KMeansJsonConverter),
         typeof(GaussianMixtureModelJsonConverter),
         typeof(DiagonalGaussianMixtureModelJsonConverter),
+        typeof(KernelJsonConverter),
         typeof(PrincipalComponentAnalysisJsonConverter),
+        typeof(KernelPrincipalComponentAnalysisJsonConverter),
         typeof(LinearDiscriminantAnalysisJsonConverter),
         typeof(CommonSpatialPatternJsonConverter),
         typeof(IndependentComponentAnalysisJsonConverter),
@@ -53,7 +55,9 @@ namespace NumFlat.Serialization.Json
     [JsonSerializable(typeof(DiagonalGaussianMixtureModel), TypeInfoPropertyName = "DiagonalGaussianMixtureModel")]
     [JsonSerializable(typeof(DiagonalGaussianMixtureModel.Component), TypeInfoPropertyName = "DiagonalGaussianMixtureModelComponent")]
     [JsonSerializable(typeof(System.Collections.Generic.IReadOnlyList<DiagonalGaussianMixtureModel.Component>), TypeInfoPropertyName = "DiagonalGaussianMixtureModelComponentList")]
+    [JsonSerializable(typeof(Kernel<Vec<double>, Vec<double>>), TypeInfoPropertyName = "DoubleVectorKernel")]
     [JsonSerializable(typeof(PrincipalComponentAnalysis))]
+    [JsonSerializable(typeof(KernelPrincipalComponentAnalysis))]
     [JsonSerializable(typeof(LinearDiscriminantAnalysis))]
     [JsonSerializable(typeof(CommonSpatialPattern))]
     [JsonSerializable(typeof(IndependentComponentAnalysis))]

@@ -100,6 +100,53 @@ namespace NumFlat.MultivariateAnalyses
             this.projection = projection;
         }
 
+
+        /// <summary>
+        /// Creates kernel principal component analysis (kernel PCA) from fitted parameters.
+        /// </summary>
+        /// <param name="sourceVectors">
+        /// The source vectors stored as columns.
+        /// </param>
+        /// <param name="kernel">
+        /// The kernel function applied to the vectors.
+        /// </param>
+        /// <param name="kernelMeans">
+        /// The mean kernel value for each source vector.
+        /// </param>
+        /// <param name="totalMean">
+        /// The total mean of the kernel matrix.
+        /// </param>
+        /// <param name="projection">
+        /// The projection matrix.
+        /// </param>
+        /// <remarks>
+        /// This constructor is intended primarily for deserializers that reconstruct a fitted model from persisted parameters.
+        /// The given vectors and matrices are stored directly, so they should not be mutated after construction.
+        /// </remarks>
+        public KernelPrincipalComponentAnalysis(in Mat<double> sourceVectors, Kernel<Vec<double>, Vec<double>> kernel, in Vec<double> kernelMeans, double totalMean, in Mat<double> projection)
+        {
+            ThrowHelper.ThrowIfEmpty(sourceVectors, nameof(sourceVectors));
+            ThrowHelper.ThrowIfNull(kernel, nameof(kernel));
+            ThrowHelper.ThrowIfEmpty(kernelMeans, nameof(kernelMeans));
+            ThrowHelper.ThrowIfEmpty(projection, nameof(projection));
+
+            if (kernelMeans.Count != sourceVectors.ColCount)
+            {
+                throw new ArgumentException($"The length of the kernel mean vector must be {sourceVectors.ColCount}, but was {kernelMeans.Count}.", nameof(kernelMeans));
+            }
+
+            if (projection.RowCount != sourceVectors.ColCount || projection.ColCount != sourceVectors.ColCount)
+            {
+                throw new ArgumentException($"The projection matrix must be {sourceVectors.ColCount} x {sourceVectors.ColCount}, but was {projection.RowCount} x {projection.ColCount}.", nameof(projection));
+            }
+
+            this.sourceVectors = sourceVectors;
+            this.kernel = kernel;
+            this.kernelMeans = kernelMeans;
+            this.totalMean = totalMean;
+            this.projection = projection;
+        }
+
         /// <inheritdoc/>
         public void Transform(in Vec<double> source, in Vec<double> destination)
         {
@@ -138,6 +185,32 @@ namespace NumFlat.MultivariateAnalyses
             var components = projection[.., ..destination.Count];
             Mat.Mul(components, tmp, destination, true);
         }
+
+
+        /// <summary>
+        /// Gets the source vectors stored as columns.
+        /// </summary>
+        public ref readonly Mat<double> SourceVectors => ref sourceVectors;
+
+        /// <summary>
+        /// Gets the kernel function applied to the vectors.
+        /// </summary>
+        public Kernel<Vec<double>, Vec<double>> Kernel => kernel;
+
+        /// <summary>
+        /// Gets the mean kernel value for each source vector.
+        /// </summary>
+        public ref readonly Vec<double> KernelMeans => ref kernelMeans;
+
+        /// <summary>
+        /// Gets the total mean of the kernel matrix.
+        /// </summary>
+        public double TotalMean => totalMean;
+
+        /// <summary>
+        /// Gets the projection matrix.
+        /// </summary>
+        public ref readonly Mat<double> Projection => ref projection;
 
         /// <inheritdoc/>
         public int SourceDimension => sourceVectors.RowCount;
