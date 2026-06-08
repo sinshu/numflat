@@ -71,7 +71,7 @@ namespace NumFlatTest.MultivariateAnalysesTests
             var pca = dataset.Pca();
             var reference = dataset.Select(x => pca.Transform(x)[0..2]).ToArray();
 
-            var kPca = dataset.KernelPca(Kernel.Linear);
+            var kPca = dataset.KernelPca(Kernel.Linear());
 
             var transformed = dataset.Select(x =>
             {

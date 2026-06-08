@@ -48,7 +48,7 @@ namespace NumFlat.MultivariateAnalyses
                 for (var j = 0; j <= i; j++)
                 {
                     var vec2 = sourceVectors.Cols[j];
-                    var value = kernel(vec1, vec2);
+                    var value = kernel.Invoke(vec1, vec2);
                     fkmat[i, j] = value;
                     fkmat[j, i] = value;
                 }
@@ -123,7 +123,7 @@ namespace NumFlat.MultivariateAnalyses
             var sum = 0.0;
             for (var i = 0; i < sourceVectors.ColCount; i++)
             {
-                var value = kernel(sourceVectors.Cols[i], source);
+                var value = kernel.Invoke(sourceVectors.Cols[i], source);
                 ftmp[i] = value;
                 sum += value;
             }

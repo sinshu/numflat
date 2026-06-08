@@ -11,16 +11,132 @@ namespace NumFlat
     /// <typeparam name="U">
     /// The type of the second argument.
     /// </typeparam>
-    /// <param name="x">
-    /// The first object to compare.
-    /// </param>
-    /// <param name="y">
-    /// The second object to compare.
-    /// </param>
-    /// <returns>
-    /// The computed kernel value.
-    /// </returns>
-    public delegate double Kernel<T, U>(T x, U y);
+    public abstract class Kernel<T, U>
+    {
+        /// <summary>
+        /// Computes the kernel value between two objects.
+        /// </summary>
+        /// <param name="x">
+        /// The first object to compare.
+        /// </param>
+        /// <param name="y">
+        /// The second object to compare.
+        /// </param>
+        /// <returns>
+        /// The computed kernel value.
+        /// </returns>
+        public abstract double Invoke(T x, U y);
+    }
+
+
+
+    /// <summary>
+    /// Represents the linear kernel.
+    /// </summary>
+    public sealed class LinearKernel : Kernel<Vec<double>, Vec<double>>
+    {
+        /// <inheritdoc/>
+        public override double Invoke(Vec<double> x, Vec<double> y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            return x * y;
+        }
+    }
+
+
+
+    /// <summary>
+    /// Represents a polynomial kernel.
+    /// </summary>
+    public sealed class PolynomialKernel : Kernel<Vec<double>, Vec<double>>
+    {
+        private readonly int degree;
+        private readonly double constant;
+
+        /// <summary>
+        /// Creates a polynomial kernel.
+        /// </summary>
+        /// <param name="degree">
+        /// The degree of the polynomial.
+        /// </param>
+        /// <param name="constant">
+        /// The constant term of the polynomial.
+        /// </param>
+        public PolynomialKernel(int degree, double constant)
+        {
+            if (degree <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(degree), "The degree must be greater than zero.");
+            }
+
+            this.degree = degree;
+            this.constant = constant;
+        }
+
+        /// <inheritdoc/>
+        public override double Invoke(Vec<double> x, Vec<double> y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            return Math.Pow(x * y + constant, degree);
+        }
+
+        /// <summary>
+        /// Gets the degree of the polynomial.
+        /// </summary>
+        public int Degree => degree;
+
+        /// <summary>
+        /// Gets the constant term of the polynomial.
+        /// </summary>
+        public double Constant => constant;
+    }
+
+
+
+    /// <summary>
+    /// Represents a Gaussian radial basis function (RBF) kernel.
+    /// </summary>
+    public sealed class GaussianKernel : Kernel<Vec<double>, Vec<double>>
+    {
+        private readonly double gamma;
+
+        /// <summary>
+        /// Creates a Gaussian radial basis function (RBF) kernel.
+        /// </summary>
+        /// <param name="gamma">
+        /// The gamma parameter of the kernel.
+        /// </param>
+        public GaussianKernel(double gamma)
+        {
+            if (gamma <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(gamma), "The gamma parameter must be greater than zero.");
+            }
+
+            this.gamma = gamma;
+        }
+
+        /// <inheritdoc/>
+        public override double Invoke(Vec<double> x, Vec<double> y)
+        {
+            ThrowHelper.ThrowIfEmpty(x, nameof(x));
+            ThrowHelper.ThrowIfEmpty(y, nameof(y));
+            ThrowHelper.ThrowIfDifferentSize(x, y);
+
+            return Math.Exp(-gamma * x.DistanceSquared(y));
+        }
+
+        /// <summary>
+        /// Gets the gamma parameter of the kernel.
+        /// </summary>
+        public double Gamma => gamma;
+    }
 
 
 
@@ -30,16 +146,15 @@ namespace NumFlat
     public static class Kernel
     {
         /// <summary>
-        /// Gets the linear kernel.
+        /// Creates a linear kernel.
         /// </summary>
-        public static Kernel<Vec<double>, Vec<double>> Linear => (Vec<double> x, Vec<double> y) =>
+        /// <returns>
+        /// The linear kernel.
+        /// </returns>
+        public static LinearKernel Linear()
         {
-            ThrowHelper.ThrowIfEmpty(x, nameof(x));
-            ThrowHelper.ThrowIfEmpty(y, nameof(y));
-            ThrowHelper.ThrowIfDifferentSize(x, y);
-
-            return x * y;
-        };
+            return new LinearKernel();
+        }
 
         /// <summary>
         /// Creates a polynomial kernel.
@@ -53,21 +168,9 @@ namespace NumFlat
         /// <returns>
         /// The polynomial kernel.
         /// </returns>
-        public static Kernel<Vec<double>, Vec<double>> Polynomial(int degree, double constant)
+        public static PolynomialKernel Polynomial(int degree, double constant)
         {
-            if (degree <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(degree), "The degree must be greater than zero.");
-            }
-
-            return (Vec<double> x, Vec<double> y) =>
-            {
-                ThrowHelper.ThrowIfEmpty(x, nameof(x));
-                ThrowHelper.ThrowIfEmpty(y, nameof(y));
-                ThrowHelper.ThrowIfDifferentSize(x, y);
-
-                return Math.Pow(x * y + constant, degree);
-            };
+            return new PolynomialKernel(degree, constant);
         }
 
         /// <summary>
@@ -79,21 +182,9 @@ namespace NumFlat
         /// <returns>
         /// The Gaussian kernel.
         /// </returns>
-        public static Kernel<Vec<double>, Vec<double>> Gaussian(double gamma)
+        public static GaussianKernel Gaussian(double gamma)
         {
-            if (gamma <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(gamma), "The gamma parameter must be greater than zero.");
-            }
-
-            return (Vec<double> x, Vec<double> y) =>
-            {
-                ThrowHelper.ThrowIfEmpty(x, nameof(x));
-                ThrowHelper.ThrowIfEmpty(y, nameof(y));
-                ThrowHelper.ThrowIfDifferentSize(x, y);
-
-                return Math.Exp(-gamma * x.DistanceSquared(y));
-            };
+            return new GaussianKernel(gamma);
         }
     }
 }
