@@ -12,9 +12,6 @@ namespace NumFlat.Serialization.Json
     {
         private const string SourceVectorsPropertyName = "sourceVectors";
         private const string KernelPropertyName = "kernel";
-        private const string KernelMeansPropertyName = "kernelMeans";
-        private const string TotalMeanPropertyName = "totalMean";
-        private const string ProjectionPropertyName = "projection";
 
         /// <inheritdoc />
         public override KernelPrincipalComponentAnalysis Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -26,15 +23,12 @@ namespace NumFlat.Serialization.Json
 
             Mat<double>? sourceVectors = null;
             Kernel<Vec<double>, Vec<double>>? kernel = null;
-            Vec<double>? kernelMeans = null;
-            double? totalMean = null;
-            Mat<double>? projection = null;
 
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndObject)
                 {
-                    return CreateKernelPca(sourceVectors, kernel, kernelMeans, totalMean, projection);
+                    return CreateKernelPca(sourceVectors, kernel);
                 }
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
@@ -56,18 +50,6 @@ namespace NumFlat.Serialization.Json
                 {
                     kernel = KernelJsonSerialization.Read(ref reader, options, "NumFlat kernel PCA kernel");
                 }
-                else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, KernelMeansPropertyName, options))
-                {
-                    kernelMeans = JsonSerializationHelpers.ReadDoubleVector(ref reader);
-                }
-                else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, TotalMeanPropertyName, options))
-                {
-                    totalMean = reader.GetDouble();
-                }
-                else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, ProjectionPropertyName, options))
-                {
-                    projection = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
-                }
                 else
                 {
                     reader.Skip();
@@ -85,16 +67,10 @@ namespace NumFlat.Serialization.Json
             JsonSerializationHelpers.WriteDoubleMatrix(writer, value.SourceVectors);
             writer.WritePropertyName(KernelPropertyName);
             KernelJsonSerialization.Write(writer, value.Kernel, options);
-            writer.WritePropertyName(KernelMeansPropertyName);
-            JsonSerializationHelpers.WriteDoubleVector(writer, value.KernelMeans);
-            writer.WritePropertyName(TotalMeanPropertyName);
-            writer.WriteNumberValue(value.TotalMean);
-            writer.WritePropertyName(ProjectionPropertyName);
-            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.Projection);
             writer.WriteEndObject();
         }
 
-        private static KernelPrincipalComponentAnalysis CreateKernelPca(Mat<double>? sourceVectors, Kernel<Vec<double>, Vec<double>>? kernel, Vec<double>? kernelMeans, double? totalMean, Mat<double>? projection)
+        private static KernelPrincipalComponentAnalysis CreateKernelPca(Mat<double>? sourceVectors, Kernel<Vec<double>, Vec<double>>? kernel)
         {
             if (sourceVectors == null)
             {
@@ -106,24 +82,9 @@ namespace NumFlat.Serialization.Json
                 throw new JsonException("The JSON object for a NumFlat kernel PCA object must contain a 'kernel' property.");
             }
 
-            if (kernelMeans == null)
-            {
-                throw new JsonException("The JSON object for a NumFlat kernel PCA object must contain a 'kernelMeans' property.");
-            }
-
-            if (totalMean == null)
-            {
-                throw new JsonException("The JSON object for a NumFlat kernel PCA object must contain a 'totalMean' property.");
-            }
-
-            if (projection == null)
-            {
-                throw new JsonException("The JSON object for a NumFlat kernel PCA object must contain a 'projection' property.");
-            }
-
             try
             {
-                return new KernelPrincipalComponentAnalysis(sourceVectors.Value, kernel, kernelMeans.Value, totalMean.Value, projection.Value);
+                return new KernelPrincipalComponentAnalysis(sourceVectors.Value.Cols, kernel);
             }
             catch (ArgumentException ex)
             {
