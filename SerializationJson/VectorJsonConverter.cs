@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -35,7 +36,7 @@ namespace NumFlat.Serialization.Json
                         return default;
                     }
 
-                    return new Vec<T>(elements.ToArray());
+                    return VectorBuilder.Create<T>(CollectionsMarshal.AsSpan(elements));
                 }
 
                 elements.Add(ReadElement(ref reader));

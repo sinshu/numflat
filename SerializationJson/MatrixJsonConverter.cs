@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -77,7 +78,7 @@ namespace NumFlat.Serialization.Json
                         throw new JsonException("A NumFlat matrix row cannot be empty.");
                     }
 
-                    return new Vec<T>(elements.ToArray());
+                    return VectorBuilder.Create<T>(CollectionsMarshal.AsSpan(elements));
                 }
 
                 elements.Add(ReadElement(ref reader));
@@ -95,7 +96,7 @@ namespace NumFlat.Serialization.Json
 
             try
             {
-                return MatrixBuilder.Create<T>(rows.ToArray());
+                return MatrixBuilder.Create<T>(CollectionsMarshal.AsSpan(rows));
             }
             catch (ArgumentException ex)
             {
