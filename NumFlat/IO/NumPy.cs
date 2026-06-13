@@ -54,23 +54,25 @@ namespace NumFlat.IO
             ThrowHelper.ThrowIfNull(stream, nameof(stream));
             ThrowIfNotLittleEndian();
 
-            var header = ReadHeader(stream);
+            using var reader = new BinaryReader(stream, Encoding.ASCII, leaveOpen: true);
+
+            var header = ReadHeader(reader);
             if (header.Shape.Length != 1)
             {
                 throw new InvalidDataException("The .npy file does not contain a one-dimensional array.");
             }
 
             var dtype = GetDtype<T>();
-            if (header.Descr != dtype)
+            if (header.Descriptor != dtype)
             {
-                throw new InvalidDataException($"The .npy dtype '{header.Descr}' does not match '{dtype}'.");
+                throw new InvalidDataException($"The .npy dtype '{header.Descriptor}' does not match '{dtype}'.");
             }
 
             var vector = new Vec<T>(header.Shape[0]);
             var fv = vector.GetUnsafeFastIndexer();
             for (var i = 0; i < vector.Count; i++)
             {
-                fv[i] = ReadValue<T>(stream);
+                fv[i] = ReadValue<T>(reader);
             }
             return vector;
         }
@@ -114,16 +116,18 @@ namespace NumFlat.IO
             ThrowHelper.ThrowIfNull(stream, nameof(stream));
             ThrowIfNotLittleEndian();
 
-            var header = ReadHeader(stream);
+            using var reader = new BinaryReader(stream, Encoding.ASCII, leaveOpen: true);
+
+            var header = ReadHeader(reader);
             if (header.Shape.Length != 2)
             {
                 throw new InvalidDataException("The .npy file does not contain a two-dimensional array.");
             }
 
             var dtype = GetDtype<T>();
-            if (header.Descr != dtype)
+            if (header.Descriptor != dtype)
             {
-                throw new InvalidDataException($"The .npy dtype '{header.Descr}' does not match '{dtype}'.");
+                throw new InvalidDataException($"The .npy dtype '{header.Descriptor}' does not match '{dtype}'.");
             }
 
             var matrix = new Mat<T>(header.Shape[0], header.Shape[1]);
@@ -132,7 +136,7 @@ namespace NumFlat.IO
             {
                 for (var col = 0; col < matrix.ColCount; col++)
                 {
-                    fm[row, col] = ReadValue<T>(stream);
+                    fm[row, col] = ReadValue<T>(reader);
                 }
             }
             return matrix;
@@ -179,11 +183,13 @@ namespace NumFlat.IO
             ThrowHelper.ThrowIfNull(stream, nameof(stream));
             ThrowIfNotLittleEndian();
 
-            WriteHeader(stream, GetDtype<T>(), vector.Count);
+            using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true);
+
+            WriteHeader(writer, GetDtype<T>(), vector.Count);
             var fv = vector.GetUnsafeFastIndexer();
             for (var i = 0; i < vector.Count; i++)
             {
-                WriteValue(stream, fv[i]);
+                WriteValue(writer, fv[i]);
             }
         }
 
@@ -228,13 +234,15 @@ namespace NumFlat.IO
             ThrowHelper.ThrowIfNull(stream, nameof(stream));
             ThrowIfNotLittleEndian();
 
-            WriteHeader(stream, GetDtype<T>(), matrix.RowCount, matrix.ColCount);
+            using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true);
+
+            WriteHeader(writer, GetDtype<T>(), matrix.RowCount, matrix.ColCount);
             var fm = matrix.GetUnsafeFastIndexer();
             for (var row = 0; row < matrix.RowCount; row++)
             {
                 for (var col = 0; col < matrix.ColCount; col++)
                 {
-                    WriteValue(stream, fm[row, col]);
+                    WriteValue(writer, fm[row, col]);
                 }
             }
         }
@@ -247,9 +255,10 @@ namespace NumFlat.IO
             }
         }
 
-        private static NpyHeader ReadHeader(Stream stream)
+        private static NpyHeader ReadHeader(BinaryReader reader)
         {
-            var magic = ReadBytes(stream, Magic.Length);
+            var magic = new byte[Magic.Length];
+            reader.BaseStream.ReadExactly(magic);
             for (var i = 0; i < Magic.Length; i++)
             {
                 if (magic[i] != Magic[i])
@@ -258,28 +267,25 @@ namespace NumFlat.IO
                 }
             }
 
-            var major = stream.ReadByte();
-            var minor = stream.ReadByte();
-            if (major < 0 || minor < 0)
-            {
-                throw new EndOfStreamException();
-            }
-
+            var major = reader.ReadByte();
+            var minor = reader.ReadByte();
             var headerLength = major switch
             {
-                1 => ReadUInt16(stream),
-                2 => ReadInt32(stream),
+                1 => reader.ReadUInt16(),
+                2 => reader.ReadInt32(),
                 _ => throw new NotSupportedException($"NumPy .npy version {major}.{minor} is not supported."),
             };
 
-            var header = Encoding.ASCII.GetString(ReadBytes(stream, headerLength));
+            var headerBytes = new byte[headerLength];
+            reader.BaseStream.ReadExactly(headerBytes);
+            var header = Encoding.ASCII.GetString(headerBytes);
             return ParseHeader(header);
         }
 
         private static NpyHeader ParseHeader(string header)
         {
-            var descrMatch = Regex.Match(header, "'descr'\\s*:\\s*'(?<descr>[^']+)'");
-            if (!descrMatch.Success)
+            var descriptorMatch = Regex.Match(header, "'descr'\\s*:\\s*'(?<descr>[^']+)'");
+            if (!descriptorMatch.Success)
             {
                 throw new InvalidDataException("The .npy header does not contain 'descr'.");
             }
@@ -311,14 +317,14 @@ namespace NumFlat.IO
                 }
             }
 
-            return new NpyHeader(descrMatch.Groups["descr"].Value, shape);
+            return new NpyHeader(descriptorMatch.Groups["descr"].Value, shape);
         }
 
-        private static void WriteHeader(Stream stream, string dtype, params int[] shape)
+        private static void WriteHeader(BinaryWriter writer, string dtype, params int[] shape)
         {
-            stream.Write(Magic, 0, Magic.Length);
-            stream.WriteByte(1);
-            stream.WriteByte(0);
+            writer.Write(Magic);
+            writer.Write((byte)1);
+            writer.Write((byte)0);
 
             var shapeText = shape.Length == 1 ? $"{shape[0]}," : string.Join(", ", shape);
             var header = $"{{'descr': '{dtype}', 'fortran_order': False, 'shape': ({shapeText}), }}";
@@ -335,8 +341,8 @@ namespace NumFlat.IO
                 throw new NotSupportedException("The .npy header is too large for version 1.0.");
             }
 
-            WriteUInt16(stream, (ushort)headerBytes.Length);
-            stream.Write(headerBytes, 0, headerBytes.Length);
+            writer.Write((ushort)headerBytes.Length);
+            writer.Write(headerBytes);
         }
 
         private static string GetDtype<T>() where T : unmanaged, INumberBase<T>
@@ -359,105 +365,65 @@ namespace NumFlat.IO
             throw new NotSupportedException("Only float, double, and Complex are supported.");
         }
 
-        private static T ReadValue<T>(Stream stream) where T : unmanaged, INumberBase<T>
+        private static T ReadValue<T>(BinaryReader reader) where T : unmanaged, INumberBase<T>
         {
             if (typeof(T) == typeof(float))
             {
-                var value = BitConverter.ToSingle(ReadBytes(stream, sizeof(float)), 0);
+                var value = reader.ReadSingle();
                 return Unsafe.As<float, T>(ref value);
             }
 
             if (typeof(T) == typeof(double))
             {
-                var value = BitConverter.ToDouble(ReadBytes(stream, sizeof(double)), 0);
+                var value = reader.ReadDouble();
                 return Unsafe.As<double, T>(ref value);
             }
 
             if (typeof(T) == typeof(Complex))
             {
-                var real = BitConverter.ToDouble(ReadBytes(stream, sizeof(double)), 0);
-                var imaginary = BitConverter.ToDouble(ReadBytes(stream, sizeof(double)), 0);
-                var value = new Complex(real, imaginary);
+                var value = new Complex(reader.ReadDouble(), reader.ReadDouble());
                 return Unsafe.As<Complex, T>(ref value);
             }
 
             throw new NotSupportedException("Only float, double, and Complex are supported.");
         }
 
-        private static void WriteValue<T>(Stream stream, T value) where T : unmanaged, INumberBase<T>
+        private static void WriteValue<T>(BinaryWriter writer, T value) where T : unmanaged, INumberBase<T>
         {
             if (typeof(T) == typeof(float))
             {
-                var typed = Unsafe.As<T, float>(ref value);
-                var bytes = BitConverter.GetBytes(typed);
-                stream.Write(bytes, 0, bytes.Length);
+                writer.Write(Unsafe.As<T, float>(ref value));
                 return;
             }
 
             if (typeof(T) == typeof(double))
             {
-                var typed = Unsafe.As<T, double>(ref value);
-                var bytes = BitConverter.GetBytes(typed);
-                stream.Write(bytes, 0, bytes.Length);
+                writer.Write(Unsafe.As<T, double>(ref value));
                 return;
             }
 
             if (typeof(T) == typeof(Complex))
             {
                 var complex = Unsafe.As<T, Complex>(ref value);
-                var real = BitConverter.GetBytes(complex.Real);
-                var imaginary = BitConverter.GetBytes(complex.Imaginary);
-                stream.Write(real, 0, real.Length);
-                stream.Write(imaginary, 0, imaginary.Length);
+                writer.Write(complex.Real);
+                writer.Write(complex.Imaginary);
                 return;
             }
 
             throw new NotSupportedException("Only float, double, and Complex are supported.");
         }
 
-        private static byte[] ReadBytes(Stream stream, int count)
-        {
-            var bytes = new byte[count];
-            var offset = 0;
-            while (offset < bytes.Length)
-            {
-                var read = stream.Read(bytes, offset, bytes.Length - offset);
-                if (read == 0)
-                {
-                    throw new EndOfStreamException();
-                }
-                offset += read;
-            }
-            return bytes;
-        }
 
-        private static ushort ReadUInt16(Stream stream)
-        {
-            var bytes = ReadBytes(stream, sizeof(ushort));
-            return (ushort)(bytes[0] | (bytes[1] << 8));
-        }
-
-        private static int ReadInt32(Stream stream)
-        {
-            var bytes = ReadBytes(stream, sizeof(int));
-            return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
-        }
-
-        private static void WriteUInt16(Stream stream, ushort value)
-        {
-            stream.WriteByte((byte)value);
-            stream.WriteByte((byte)(value >> 8));
-        }
 
         private readonly struct NpyHeader
         {
-            public NpyHeader(string descr, int[] shape)
+            public NpyHeader(string descriptor, int[] shape)
             {
-                Descr = descr;
+                Descriptor = descriptor;
                 Shape = shape;
             }
 
-            public string Descr { get; }
+            public string Descriptor { get; }
 
             public int[] Shape { get; }
         }
