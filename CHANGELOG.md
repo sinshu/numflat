@@ -1,3 +1,9 @@
+# v1.3.1
+
+* Added the `AsSingleElementVector<T>()` and `AsSingleElementMatrix<T>()` extension methods for converting a scalar value of type `T` into a single-element vector or matrix.
+* Refactored JSON serialization to improve performance.
+* Added partial support for NPY files.
+
 # v1.3.0
 
 * Implemented JSON serializers for the main types.  

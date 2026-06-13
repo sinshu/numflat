@@ -793,6 +793,7 @@ var deserialized = JsonSerializer.Deserialize(json, NumFlatJsonSerializerContext
 * 🚧 File IO
     - ✅ CSV
     - ✅ WAV
+    - 🚧 NPY
     - 🚧 JSON serialization
 
 
