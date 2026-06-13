@@ -11,7 +11,7 @@
     <PackageId>NumFlat.Serialization.Json</PackageId>
     <AssemblyName>NumFlat.Serialization.Json</AssemblyName>
     <RootNamespace>NumFlat.Serialization.Json</RootNamespace>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <Authors>Nobuaki Tanaka</Authors>
     <Description>System.Text.Json converters for NumFlat types</Description>
     <PackageProjectUrl>https://github.com/sinshu/numflat</PackageProjectUrl>
