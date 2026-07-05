@@ -69,7 +69,7 @@ namespace NumFlat.TimeSeries
         /// The source sequences.
         /// </param>
         /// <returns>
-        /// A copy of the selected initial barycenter sequence.
+        /// The selected initial barycenter sequence.
         /// </returns>
         public static IReadOnlyList<Vec<double>> GetInitialGuess(IReadOnlyList<IReadOnlyList<Vec<double>>> sourceSequences)
         {
@@ -97,7 +97,7 @@ namespace NumFlat.TimeSeries
                 }
             }
 
-            return sourceSequences[bestIndex].Select(vector => vector.Copy()).ToArray();
+            return sourceSequences[bestIndex];
         }
 
         /// <summary>
