@@ -38,6 +38,14 @@ namespace NumFlat
         };
 
         /// <summary>
+        /// Gets the Euclidean squared distance metric.
+        /// </summary>
+        public static DistanceMetric<Vec<double>, Vec<double>> EuclideanSquared => (Vec<double> x, Vec<double> y) =>
+        {
+            return x.DistanceSquared(y);
+        };
+
+        /// <summary>
         /// Gets the Manhattan distance metric.
         /// </summary>
         public static DistanceMetric<Vec<double>, Vec<double>> Manhattan => (Vec<double> x, Vec<double> y) =>
