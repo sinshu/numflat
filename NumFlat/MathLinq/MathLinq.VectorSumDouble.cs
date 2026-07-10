@@ -25,7 +25,7 @@ namespace NumFlat
             {
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the source vectors must have the same length as the destination.");
+                    throw new ArgumentException("All source vectors must have the same length as the destination.");
                 }
 
                 destination.AddInplace(x);
@@ -53,7 +53,7 @@ namespace NumFlat
                 {
                     if (x.Count == 0)
                     {
-                        throw new ArgumentException("Empty vectors are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty vectors.");
                     }
 
                     destination = new Vec<double>(x.Count);
@@ -61,7 +61,7 @@ namespace NumFlat
 
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors must have the same length.");
+                    throw new ArgumentException("All vectors must have the same length.");
                 }
 
                 destination.AddInplace(x);
@@ -114,7 +114,7 @@ namespace NumFlat
 
                         if (x.Count != destination.Count)
                         {
-                            throw new ArgumentException("All the source vectors must have the same length as the destination.");
+                            throw new ArgumentException("All source vectors must have the same length as the destination.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);
@@ -168,7 +168,7 @@ namespace NumFlat
                         {
                             if (x.Count == 0)
                             {
-                                throw new ArgumentException("Empty vectors are not allowed.");
+                                throw new ArgumentException("The sequence cannot contain empty vectors.");
                             }
 
                             destination = new Vec<double>(x.Count);
@@ -176,7 +176,7 @@ namespace NumFlat
 
                         if (x.Count != destination.Count)
                         {
-                            throw new ArgumentException("All the vectors must have the same length.");
+                            throw new ArgumentException("All vectors must have the same length.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);

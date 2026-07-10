@@ -80,10 +80,10 @@ namespace NumFlat
         /// The destination of the diagonal elements of the matrix S.
         /// </param>
         /// <param name="u">
-        /// The destination of the the matrix U.
+        /// The destination of the matrix U.
         /// </param>
         /// <param name="vt">
-        /// The destination of the the matrix V^T.
+        /// The destination of the matrix V^T.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
@@ -135,7 +135,7 @@ namespace NumFlat
         /// The destination of the diagonal elements of the matrix S.
         /// </param>
         /// <param name="u">
-        /// The destination of the the matrix U.
+        /// The destination of the matrix U.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
@@ -197,7 +197,7 @@ namespace NumFlat
         {
             if (u.RowCount != vt.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square SVD is not allowed.");
+                throw new InvalidOperationException("The singular value decomposition must be square.");
             }
 
             var determinant = 1.0;
@@ -218,7 +218,7 @@ namespace NumFlat
         {
             if (u.RowCount != vt.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square SVD is not allowed.");
+                throw new InvalidOperationException("The singular value decomposition must be square.");
             }
 
             var logDeterminant = 0.0;

@@ -24,7 +24,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Average();
@@ -40,7 +40,7 @@ namespace NumFlat
 
             if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of source values is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source values.");
             }
 
             var variance = sum / (count - ddof);
@@ -153,7 +153,7 @@ namespace NumFlat
 
             if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of source values is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source values.");
             }
 
             return sum / (count - ddof);

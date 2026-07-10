@@ -43,7 +43,7 @@ namespace NumFlat
         /// The matrix to be decomposed.
         /// </param>
         /// <param name="l">
-        /// The destination of the the matrix L.
+        /// The destination of the matrix L.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// The matrix is ill-conditioned.

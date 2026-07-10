@@ -113,7 +113,7 @@ namespace NumFlat
 
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
+                throw new InvalidOperationException("The LU decomposition must be square.");
             }
 
             var fd = destination.GetUnsafeFastIndexer();
@@ -163,7 +163,7 @@ namespace NumFlat
         {
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square LU decomposition is not allowed.");
+                throw new InvalidOperationException("The LU decomposition must be square.");
             }
 
             var determinant = (double)pivotSign;

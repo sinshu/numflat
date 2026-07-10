@@ -491,7 +491,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var normalized = new Vec<float>(x.Count);
@@ -521,7 +521,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var normalized = new Vec<double>(x.Count);
@@ -551,7 +551,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var normalized = new Vec<Complex>(x.Count);

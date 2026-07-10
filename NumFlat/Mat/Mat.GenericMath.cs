@@ -295,7 +295,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination the pointwise multiplication.
+        /// The destination of the pointwise multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.

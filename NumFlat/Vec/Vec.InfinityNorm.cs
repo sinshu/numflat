@@ -9,7 +9,7 @@ namespace NumFlat
         /// Computes the infinity norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The infinity norm.
@@ -34,7 +34,7 @@ namespace NumFlat
         /// Computes the infinity norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The infinity norm.
@@ -59,7 +59,7 @@ namespace NumFlat
         /// Computes the infinity norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The infinity norm.

@@ -292,7 +292,7 @@ namespace NumFlat.IO
 
             if (!Regex.IsMatch(header, "'fortran_order'\\s*:\\s*False"))
             {
-                throw new NotSupportedException("Only C-order .npy arrays are supported.");
+                throw new NotSupportedException("The .npy array must use C-order storage.");
             }
 
             var shapeMatch = Regex.Match(header, "'shape'\\s*:\\s*\\((?<shape>[^)]*)\\)");
@@ -313,7 +313,7 @@ namespace NumFlat.IO
                 shape[i] = int.Parse(parts[i], CultureInfo.InvariantCulture);
                 if (shape[i] <= 0)
                 {
-                    throw new NotSupportedException("Empty .npy arrays are not supported.");
+                    throw new NotSupportedException("The .npy array cannot be empty.");
                 }
             }
 
@@ -362,7 +362,7 @@ namespace NumFlat.IO
                 return "<c16";
             }
 
-            throw new NotSupportedException("Only float, double, and Complex are supported.");
+            throw new NotSupportedException("The element type must be float, double, or Complex.");
         }
 
         private static T ReadValue<T>(BinaryReader reader) where T : unmanaged, INumberBase<T>
@@ -385,7 +385,7 @@ namespace NumFlat.IO
                 return Unsafe.As<Complex, T>(ref value);
             }
 
-            throw new NotSupportedException("Only float, double, and Complex are supported.");
+            throw new NotSupportedException("The element type must be float, double, or Complex.");
         }
 
         private static void WriteValue<T>(BinaryWriter writer, T value) where T : unmanaged, INumberBase<T>
@@ -410,7 +410,7 @@ namespace NumFlat.IO
                 return;
             }
 
-            throw new NotSupportedException("Only float, double, and Complex are supported.");
+            throw new NotSupportedException("The element type must be float, double, or Complex.");
         }
 
 

@@ -9,7 +9,7 @@ namespace NumFlat
         /// Computes the L1 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L1 norm.
@@ -30,7 +30,7 @@ namespace NumFlat
         /// Computes the L1 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L1 norm.
@@ -51,7 +51,7 @@ namespace NumFlat
         /// Computes the L1 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L1 norm.

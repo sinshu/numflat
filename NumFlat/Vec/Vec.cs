@@ -46,12 +46,12 @@ namespace NumFlat
         {
             if (count <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "'count' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(count), "The count must be positive.");
             }
 
             if (stride <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "'stride' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(stride), "The stride must be positive.");
             }
 
             if (memory.Length != stride * (count - 1) + 1)
@@ -101,7 +101,7 @@ namespace NumFlat
         {
             if (this.count == 0)
             {
-                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
             }
 
             var span = memory.Span;
@@ -120,7 +120,7 @@ namespace NumFlat
         {
             if (this.count == 0)
             {
-                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
             }
 
             Fill(default);
@@ -146,17 +146,17 @@ namespace NumFlat
         {
             if (this.count == 0)
             {
-                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
             }
 
             if (startIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), "'startIndex' must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "The start index must be non-negative.");
             }
 
             if (count <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "'count' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(count), "The count must be positive.");
             }
 
             if (startIndex + count > this.count)
@@ -182,7 +182,7 @@ namespace NumFlat
         {
             if (this.count == 0)
             {
-                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
             }
 
             ThrowHelper.ThrowIfDifferentSize(this, destination);
@@ -219,7 +219,7 @@ namespace NumFlat
         {
             if (this.count == 0)
             {
-                throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
             }
 
             if (destination.Length != this.count)
@@ -253,12 +253,12 @@ namespace NumFlat
             {
                 if (this.count == 0)
                 {
-                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                    throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
                 }
 
                 if ((uint)index >= this.count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
+                    throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the vector length.");
                 }
 
                 return ref this.memory.Span[stride * index];
@@ -280,12 +280,12 @@ namespace NumFlat
             {
                 if (this.count == 0)
                 {
-                    throw new InvalidOperationException("Method call against an empty vector is not allowed.");
+                    throw new InvalidOperationException("The vector is empty and cannot be used for this operation.");
                 }
 
                 if ((uint)index >= this.count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the vector length.");
+                    throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the vector length.");
                 }
 
                 return this.memory.Span[stride * index];

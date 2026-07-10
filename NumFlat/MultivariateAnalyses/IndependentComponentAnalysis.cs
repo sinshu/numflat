@@ -25,7 +25,7 @@ namespace NumFlat.MultivariateAnalyses
         /// The number of independent components to be extracted.
         /// </param>
         /// <param name="options">
-        /// Specifies options for ICA.
+        /// The independent component analysis options.
         /// </param>
         /// <param name="random">
         /// A random number generator for initialization.

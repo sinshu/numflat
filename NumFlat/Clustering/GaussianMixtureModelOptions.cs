@@ -3,7 +3,7 @@
 namespace NumFlat.Clustering
 {
     /// <summary>
-    /// Specifies options for GMM.
+    /// Specifies options for Gaussian mixture model fitting.
     /// </summary>
     public sealed class GaussianMixtureModelOptions
     {
@@ -13,7 +13,7 @@ namespace NumFlat.Clustering
         private double tolerance;
 
         /// <summary>
-        /// Creates an instance of <see cref="GaussianMixtureModelOptions"/> with default parameters.
+        /// Initializes a new instance of <see cref="GaussianMixtureModelOptions"/> with default parameters.
         /// </summary>
         public GaussianMixtureModelOptions()
         {
@@ -24,7 +24,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// Specifies options for k-means.
+        /// Gets or sets the options for k-means initialization.
         /// </summary>
         public KMeansOptions? KMeansOptions
         {
@@ -37,7 +37,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// The amount of regularization.
+        /// Gets or sets the amount of regularization.
         /// This value will be added to the diagonal elements of the covariance matrix.
         /// </summary>
         public double Regularization
@@ -48,7 +48,7 @@ namespace NumFlat.Clustering
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("The amount of regularization must be a non-negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The amount of regularization must be a non-negative value.");
                 }
 
                 regularization = value;
@@ -56,7 +56,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// The maximum number of iterations to perform.
+        /// Gets or sets the maximum number of iterations to perform.
         /// </summary>
         public int MaxIterations
         {
@@ -66,7 +66,7 @@ namespace NumFlat.Clustering
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The max number of iterations must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The maximum number of iterations must be greater than zero.");
                 }
 
                 maxIterations = value;
@@ -74,7 +74,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// Specify the amount of change to be considered converging.
+        /// Gets or sets the convergence tolerance.
         /// </summary>
         public double Tolerance
         {
@@ -84,7 +84,7 @@ namespace NumFlat.Clustering
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The tolerance value must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The tolerance value must be greater than zero.");
                 }
 
                 tolerance = value;

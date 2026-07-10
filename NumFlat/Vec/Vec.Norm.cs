@@ -10,7 +10,7 @@ namespace NumFlat
         /// Computes the L2 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L2 norm.
@@ -29,7 +29,7 @@ namespace NumFlat
         /// Computes the L2 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L2 norm.
@@ -48,7 +48,7 @@ namespace NumFlat
         /// Computes the L2 norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <returns>
         /// The L2 norm.
@@ -67,7 +67,7 @@ namespace NumFlat
         /// Computes the Lp norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <param name="p">
         /// The p value.
@@ -81,7 +81,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var norm = 0.0F;
@@ -96,7 +96,7 @@ namespace NumFlat
         /// Computes the Lp norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <param name="p">
         /// The p value.
@@ -110,7 +110,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var norm = 0.0;
@@ -125,7 +125,7 @@ namespace NumFlat
         /// Computes the Lp norm.
         /// </summary>
         /// <param name="x">
-        /// The targer vector.
+        /// The target vector.
         /// </param>
         /// <param name="p">
         /// The p value.
@@ -139,7 +139,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "'p' must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
             }
 
             var norm = 0.0;

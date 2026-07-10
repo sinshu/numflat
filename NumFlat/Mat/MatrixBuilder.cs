@@ -39,12 +39,12 @@ namespace NumFlat
             {
                 if (row.IsEmpty)
                 {
-                    throw new ArgumentException("Empty rows are not allowed.");
+                    throw new ArgumentException("The sequence cannot contain empty rows.");
                 }
 
                 if (row.Count != colCount)
                 {
-                    throw new ArgumentException("All the rows must have the same length.");
+                    throw new ArgumentException("All rows must have the same length.");
                 }
             }
 
@@ -107,7 +107,7 @@ namespace NumFlat
         /// The number of columns.
         /// </param>
         /// <param name="func">
-        /// The function which generates the values for the new matrix.
+        /// The function that generates the values for the new matrix.
         /// The row and column indices are given as arguments of the function.
         /// </param>
         /// <returns>
@@ -332,7 +332,7 @@ namespace NumFlat
             {
                 if (i == limit)
                 {
-                    throw new ArgumentException("Too many elements for the size of the matrix.");
+                    throw new ArgumentException("The sequence contains too many elements for the matrix size.");
                 }
 
                 fm[i, i] = element;
@@ -367,7 +367,7 @@ namespace NumFlat
                 {
                     if (row.Length == 0)
                     {
-                        throw new ArgumentException("Empty rows are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty rows.");
                     }
 
                     colCount = row.Length;
@@ -375,7 +375,7 @@ namespace NumFlat
 
                 if (row.Length != colCount)
                 {
-                    throw new ArgumentException("All the rows must have the same length.");
+                    throw new ArgumentException("All rows must have the same length.");
                 }
 
                 cache.Add(row);
@@ -427,7 +427,7 @@ namespace NumFlat
                 {
                     if (col.Length == 0)
                     {
-                        throw new ArgumentException("Empty columns are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty columns.");
                     }
 
                     rowCount = col.Length;
@@ -435,7 +435,7 @@ namespace NumFlat
 
                 if (col.Length != rowCount)
                 {
-                    throw new ArgumentException("All the columns must have the same length.");
+                    throw new ArgumentException("All columns must have the same length.");
                 }
 
                 cache.Add(col);
@@ -491,12 +491,12 @@ namespace NumFlat
             {
                 if (row.IsEmpty)
                 {
-                    throw new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("The sequence cannot contain empty vectors.");
                 }
 
                 if (row.Count != colCount)
                 {
-                    throw new ArgumentException("All the vectors must have the same length.");
+                    throw new ArgumentException("All vectors must have the same length.");
                 }
             }
 
@@ -540,12 +540,12 @@ namespace NumFlat
             {
                 if (col.IsEmpty)
                 {
-                    throw new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("The sequence cannot contain empty vectors.");
                 }
 
                 if (col.Count != rowCount)
                 {
-                    throw new ArgumentException("All the vectors must have the same length.");
+                    throw new ArgumentException("All vectors must have the same length.");
                 }
             }
 

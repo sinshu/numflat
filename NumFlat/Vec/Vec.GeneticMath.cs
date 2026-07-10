@@ -171,7 +171,7 @@ namespace NumFlat
         /// The scalar y.
         /// </param>
         /// <param name="destination">
-        /// The destination the vector-and-scalar multiplication.
+        /// The destination of the vector-and-scalar multiplication.
         /// </param>
         /// /// <remarks>
         /// This method does not allocate managed heap memory.
@@ -243,7 +243,7 @@ namespace NumFlat
         /// The vector y.
         /// </param>
         /// <param name="destination">
-        /// The destination of the the pointwise multiplication.
+        /// The destination of the pointwise multiplication.
         /// </param>
         /// <remarks>
         /// This method does not allocate managed heap memory.

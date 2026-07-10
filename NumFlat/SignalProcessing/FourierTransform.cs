@@ -397,7 +397,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count < 2)
             {
-                throw new ArgumentException("The window Length must be greater than or equal to two.", nameof(window));
+                throw new ArgumentException("The window length must be greater than or equal to two.", nameof(window));
             }
 
             if ((window.Count & (window.Count - 1)) != 0)
@@ -430,7 +430,7 @@ namespace NumFlat.SignalProcessing
             }
             else
             {
-                throw new ArgumentException("Invalid enum value.", nameof(mode));
+                throw new ArgumentException("The STFT mode is not supported.", nameof(mode));
             }
 
             if (frameCount == 0)

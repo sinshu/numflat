@@ -3,7 +3,7 @@
 namespace NumFlat.Clustering
 {
     /// <summary>
-    /// Specifies options for k-means.
+    /// Specifies options for k-means fitting.
     /// </summary>
     public sealed class KMeansOptions
     {
@@ -12,7 +12,7 @@ namespace NumFlat.Clustering
         private double tolerance;
 
         /// <summary>
-        /// Creates an instance of <see cref="KMeansOptions"/> with default parameters.
+        /// Initializes a new instance of <see cref="KMeansOptions"/> with default parameters.
         /// </summary>
         public KMeansOptions()
         {
@@ -22,7 +22,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// Runs the k-means algorithm a specified number of times and selects the model with the lowest error.
+        /// Gets or sets the number of k-means attempts. The model with the lowest error is selected.
         /// </summary>
         public int TryCount
         {
@@ -32,7 +32,7 @@ namespace NumFlat.Clustering
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The number of attempts must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The number of attempts must be greater than zero.");
                 }
 
                 tryCount = value;
@@ -40,7 +40,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// The maximum number of iterations to perform.
+        /// Gets or sets the maximum number of iterations to perform.
         /// </summary>
         public int MaxIterations
         {
@@ -50,7 +50,7 @@ namespace NumFlat.Clustering
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The maximum number of iterations must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The maximum number of iterations must be greater than zero.");
                 }
 
                 maxIterations = value;
@@ -58,7 +58,7 @@ namespace NumFlat.Clustering
         }
 
         /// <summary>
-        /// Specify the amount of change to be considered converging.
+        /// Gets or sets the convergence tolerance.
         /// </summary>
         public double Tolerance
         {
@@ -68,7 +68,7 @@ namespace NumFlat.Clustering
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The tolerance value must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The tolerance value must be greater than zero.");
                 }
 
                 tolerance = value;

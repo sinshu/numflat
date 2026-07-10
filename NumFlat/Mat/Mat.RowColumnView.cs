@@ -47,7 +47,7 @@ namespace NumFlat
                 {
                     if ((uint)index >= mat.rowCount)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the number of rows.");
+                        throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the number of rows.");
                     }
 
                     return new Vec<T>(mat.colCount, mat.stride, mat.memory.Slice(index, mat.stride * (mat.colCount - 1) + 1));
@@ -175,7 +175,7 @@ namespace NumFlat
                 {
                     if ((uint)index >= mat.colCount)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(index), "Index must be within the number of columns.");
+                        throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the number of columns.");
                     }
 
                     return new Vec<T>(mat.rowCount, 1, mat.memory.Slice(mat.stride * index, mat.rowCount));

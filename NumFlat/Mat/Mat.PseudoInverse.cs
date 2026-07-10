@@ -93,7 +93,7 @@ namespace NumFlat
         /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination the pseudo inversion.
+        /// The destination of the pseudo-inverse.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
@@ -191,7 +191,7 @@ namespace NumFlat
         /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination the pseudo inversion.
+        /// The destination of the pseudo-inverse.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.
@@ -289,7 +289,7 @@ namespace NumFlat
         /// The matrix to be inverted.
         /// </param>
         /// <param name="destination">
-        /// The destination the pseudo inversion.
+        /// The destination of the pseudo-inverse.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the SVD.

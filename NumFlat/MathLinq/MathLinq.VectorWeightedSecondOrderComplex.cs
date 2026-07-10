@@ -47,12 +47,12 @@ namespace NumFlat
 
                         if (x.Count != destination.Count)
                         {
-                            throw new ArgumentException("All the source vectors must have the same length as the destination.");
+                            throw new ArgumentException("All source vectors must have the same length as the destination.");
                         }
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);
@@ -66,7 +66,7 @@ namespace NumFlat
 
                 if (w1Sum <= 0)
                 {
-                    throw new ArgumentException("The number of source vectors is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source vectors.");
                 }
 
                 destination.DivInplace(w1Sum);
@@ -115,7 +115,7 @@ namespace NumFlat
                         {
                             if (x.Count == 0)
                             {
-                                throw new ArgumentException("Empty vectors are not allowed.");
+                                throw new ArgumentException("The sequence cannot contain empty vectors.");
                             }
 
                             destination = new Vec<Complex>(x.Count);
@@ -123,12 +123,12 @@ namespace NumFlat
 
                         if (x.Count != destination.Count)
                         {
-                            throw new ArgumentException("All the vectors must have the same length.");
+                            throw new ArgumentException("All vectors must have the same length.");
                         }
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);
@@ -144,7 +144,7 @@ namespace NumFlat
 
             if (w1Sum <= 0)
             {
-                throw new ArgumentException("The number of source vectors is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source vectors.");
             }
 
             destination.DivInplace(w1Sum);
@@ -184,7 +184,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             destination.Clear();
@@ -210,12 +210,12 @@ namespace NumFlat
 
                         if (x.Count != mean.Count)
                         {
-                            throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
+                            throw new ArgumentException("All source vectors must have the same length as the mean vector.");
                         }
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         AccumulateWeightedVariance(x, w, mean, destination);
@@ -231,7 +231,7 @@ namespace NumFlat
                 var den = w1Sum - ddof * (w2Sum / w1Sum);
                 if (den <= 0)
                 {
-                    throw new ArgumentException("The number of source vectors is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source vectors.");
                 }
 
                 destination.DivInplace(den);
@@ -275,7 +275,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             using var ucentered = new TemporalVector<Complex>(mean.Count);
@@ -307,12 +307,12 @@ namespace NumFlat
 
                             if (x.Count != mean.Count)
                             {
-                                throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
+                                throw new ArgumentException("All source vectors must have the same length as the mean vector.");
                             }
 
                             if (w < 0)
                             {
-                                throw new ArgumentException("Negative weight values are not allowed.");
+                                throw new ArgumentException("The weights cannot contain negative values.");
                             }
 
                             Vec.Sub(x, mean, centered);
@@ -330,7 +330,7 @@ namespace NumFlat
                 var den = w1Sum - ddof * (w2Sum / w1Sum);
                 if (den <= 0)
                 {
-                    throw new ArgumentException("The number of source vectors is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source vectors.");
                 }
 
                 var i = 0;
@@ -366,7 +366,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Mean(weights);
@@ -397,7 +397,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Mean(weights);
@@ -428,7 +428,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var (mean, tmp) = xs.MeanAndVariance(weights, ddof);

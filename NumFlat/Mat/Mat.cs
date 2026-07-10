@@ -52,17 +52,17 @@ namespace NumFlat
         {
             if (rowCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "'rowCount' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "The row count must be positive.");
             }
 
             if (colCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "'colCount' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(colCount), "The column count must be positive.");
             }
 
             if (stride < rowCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(stride), "'stride' must be greater than or equal to 'rowCount'.");
+                throw new ArgumentOutOfRangeException(nameof(stride), "The stride must be greater than or equal to the row count.");
             }
 
             if (memory.Length != stride * (colCount - 1) + rowCount)
@@ -102,7 +102,7 @@ namespace NumFlat
         {
             if (this.rowCount == 0 || this.colCount == 0)
             {
-                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
             }
 
             var span = memory.Span;
@@ -127,7 +127,7 @@ namespace NumFlat
         {
             if (this.rowCount == 0 || this.colCount == 0)
             {
-                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
             }
 
             Fill(default);
@@ -159,27 +159,27 @@ namespace NumFlat
         {
             if (this.rowCount == 0 || this.colCount == 0)
             {
-                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
             }
 
             if (startRow < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startRow), "'startRow' must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startRow), "The start row must be non-negative.");
             }
 
             if (startCol < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startCol), "'startCol' must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(startCol), "The start column must be non-negative.");
             }
 
             if (rowCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(rowCount), "'rowCount' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(rowCount), "The row count must be positive.");
             }
 
             if (colCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(colCount), "'colCount' must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(colCount), "The column count must be positive.");
             }
 
             if (startRow + rowCount > this.rowCount)
@@ -210,7 +210,7 @@ namespace NumFlat
         {
             if (this.rowCount == 0 || this.colCount == 0)
             {
-                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
             }
 
             ThrowHelper.ThrowIfDifferentSize(this, destination);
@@ -256,7 +256,7 @@ namespace NumFlat
         {
             if (this.rowCount == 0 || this.colCount == 0)
             {
-                throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
             }
 
             var array = new T[rowCount, colCount];
@@ -290,17 +290,17 @@ namespace NumFlat
             {
                 if (this.rowCount == 0 || this.colCount == 0)
                 {
-                    throw new InvalidOperationException("Method call against an empty matrix is not allowed.");
+                    throw new InvalidOperationException("The matrix is empty and cannot be used for this operation.");
                 }
 
                 if ((uint)row >= this.rowCount)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(row), "Index must be within the number of rows.");
+                    throw new ArgumentOutOfRangeException(nameof(row), "The index must be within the number of rows.");
                 }
 
                 if ((uint)col >= this.colCount)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(col), "Index must be within the number of columns.");
+                    throw new ArgumentOutOfRangeException(nameof(col), "The index must be within the number of columns.");
                 }
 
                 return ref this.memory.Span[stride * col + row];

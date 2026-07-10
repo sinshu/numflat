@@ -11,7 +11,7 @@ namespace NumFlat.TimeSeries
         private double tolerance;
 
         /// <summary>
-        /// Creates an instance of <see cref="DtwBarycenterAveragingOptions"/> with default parameters.
+        /// Initializes a new instance of <see cref="DtwBarycenterAveragingOptions"/> with default parameters.
         /// </summary>
         public DtwBarycenterAveragingOptions()
         {
@@ -20,7 +20,7 @@ namespace NumFlat.TimeSeries
         }
 
         /// <summary>
-        /// The maximum number of iterations to perform.
+        /// Gets or sets the maximum number of iterations to perform.
         /// </summary>
         public int MaxIterations
         {
@@ -38,7 +38,7 @@ namespace NumFlat.TimeSeries
         }
 
         /// <summary>
-        /// Specify the amount of change to be considered converging.
+        /// Gets or sets the convergence tolerance.
         /// </summary>
         public double Tolerance
         {

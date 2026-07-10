@@ -28,7 +28,7 @@ namespace NumFlat
             {
                 if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                 {
-                    throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
+                    throw new ArgumentException("All source matrices must have the same dimensions as the destination.");
                 }
 
                 destination.AddInplace(x);
@@ -65,7 +65,7 @@ namespace NumFlat
                 {
                     if (x.RowCount == 0 || x.ColCount == 0)
                     {
-                        throw new ArgumentException("Empty matrices are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty matrices.");
                     }
 
                     destination = new Mat<Complex>(x.RowCount, x.ColCount);
@@ -73,7 +73,7 @@ namespace NumFlat
 
                 if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                 {
-                    throw new ArgumentException("All the matrices must have the same dimensions.");
+                    throw new ArgumentException("All matrices must have the same dimensions.");
                 }
 
                 destination.AddInplace(x);
@@ -118,7 +118,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             destination.Clear();
@@ -128,7 +128,7 @@ namespace NumFlat
             {
                 if (x.RowCount != mean.RowCount || x.ColCount != mean.ColCount)
                 {
-                    throw new ArgumentException("All the source matrices must have the same dimensions as the mean matrix.");
+                    throw new ArgumentException("All source matrices must have the same dimensions as the mean matrix.");
                 }
 
                 AccumulateVariance(x, mean, destination);
@@ -137,7 +137,7 @@ namespace NumFlat
 
             if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of source matrices is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source matrices.");
             }
 
             destination.DivInplace(count - ddof);
@@ -161,7 +161,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Mean();
@@ -188,7 +188,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var (mean, tmp) = xs.MeanAndVariance(ddof);

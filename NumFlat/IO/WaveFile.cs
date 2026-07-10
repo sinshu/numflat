@@ -160,25 +160,25 @@ namespace NumFlat.IO
             }
             else
             {
-                throw new InvalidDataException("Unsupported sample format.");
+                throw new InvalidDataException("The sample format is not supported.");
             }
 
             var channelCount = (int)BitConverter.ToInt16(buffer.Slice(2, 2));
             if (channelCount <= 0)
             {
-                throw new InvalidDataException("Invalid channel count.");
+                throw new InvalidDataException("The channel count is invalid.");
             }
 
             var sampleRate = BitConverter.ToInt32(buffer.Slice(4, 4));
             if (sampleRate <= 0)
             {
-                throw new InvalidDataException("Invalid sample rate.");
+                throw new InvalidDataException("The sample rate is invalid.");
             }
 
             var blockAlign = (int)BitConverter.ToInt16(buffer.Slice(12, 2));
             if (blockAlign != GetSampleSize(sampleFormat) * channelCount)
             {
-                throw new InvalidDataException("Invalid block align.");
+                throw new InvalidDataException("The block alignment is invalid.");
             }
 
             return (sampleFormat, channelCount, sampleRate);
@@ -188,7 +188,7 @@ namespace NumFlat.IO
         {
             if (sampleFormat == 0)
             {
-                throw new InvalidDataException($"The format chunk was not found.");
+                throw new InvalidDataException("The format chunk was not found.");
             }
 
             using var ubuffer = new TemporalArray<byte>(size);
@@ -228,7 +228,7 @@ namespace NumFlat.IO
                 }
                 else
                 {
-                    throw new InvalidDataException($"Unsupported sample format ({(int)sampleFormat}).");
+                    throw new InvalidDataException($"The sample format '{(int)sampleFormat}' is not supported.");
                 }
             }
 
@@ -239,7 +239,7 @@ namespace NumFlat.IO
         {
             if (sampleFormat == 0)
             {
-                throw new InvalidDataException($"The format chunk was not found.");
+                throw new InvalidDataException("The format chunk was not found.");
             }
 
             using var ubuffer = new TemporalArray<byte>(size);
@@ -273,7 +273,7 @@ namespace NumFlat.IO
             }
             else
             {
-                throw new InvalidDataException($"Unsupported sample format ({(int)sampleFormat}).");
+                throw new InvalidDataException($"The sample format '{(int)sampleFormat}' is not supported.");
             }
 
             return data;
@@ -288,7 +288,7 @@ namespace NumFlat.IO
                 case SampleFormat.Float32:
                     return 4;
                 default:
-                    throw new InvalidDataException($"Unsupported sample format ({(int)sampleFormat}).");
+                    throw new InvalidDataException($"The sample format '{(int)sampleFormat}' is not supported.");
             }
         }
 
@@ -316,7 +316,7 @@ namespace NumFlat.IO
 
             if (sampleRate <= 0)
             {
-                throw new ArgumentException("The sample rate must be a positive value.");
+                throw new ArgumentException("The sample rate must be positive.");
             }
 
             var sampleCount = 0;
@@ -381,7 +381,7 @@ namespace NumFlat.IO
 
             if (sampleRate <= 0)
             {
-                throw new ArgumentException("The sample rate must be a positive value.");
+                throw new ArgumentException("The sample rate must be positive.");
             }
 
             var dataSize = GetSampleSize(SampleFormat.Int16) * data.Count;

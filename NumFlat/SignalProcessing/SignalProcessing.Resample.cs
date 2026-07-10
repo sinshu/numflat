@@ -44,7 +44,7 @@ namespace NumFlat.SignalProcessing
 
             if (a < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resamplin must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
             }
 
             using var usrc = source.EnsureContiguous(true);
@@ -92,7 +92,7 @@ namespace NumFlat.SignalProcessing
 
             if (a < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resamplin must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
             }
 
             var length = (int)Math.Ceiling((double)source.Count * p / q);

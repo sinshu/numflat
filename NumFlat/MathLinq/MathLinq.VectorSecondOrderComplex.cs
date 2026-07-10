@@ -28,7 +28,7 @@ namespace NumFlat
             {
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the source vectors must have the same length as the destination.");
+                    throw new ArgumentException("All source vectors must have the same length as the destination.");
                 }
 
                 destination.AddInplace(x);
@@ -65,7 +65,7 @@ namespace NumFlat
                 {
                     if (x.Count == 0)
                     {
-                        throw new ArgumentException("Empty vectors are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty vectors.");
                     }
 
                     destination = new Vec<Complex>(x.Count);
@@ -73,7 +73,7 @@ namespace NumFlat
 
                 if (x.Count != destination.Count)
                 {
-                    throw new ArgumentException("All the vectors must have the same length.");
+                    throw new ArgumentException("All vectors must have the same length.");
                 }
 
                 destination.AddInplace(x);
@@ -118,7 +118,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             destination.Clear();
@@ -128,7 +128,7 @@ namespace NumFlat
             {
                 if (x.Count != mean.Count)
                 {
-                    throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
+                    throw new ArgumentException("All source vectors must have the same length as the mean vector.");
                 }
 
                 AccumulateVariance(x, mean, destination);
@@ -137,7 +137,7 @@ namespace NumFlat
 
             if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of source vectors is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source vectors.");
             }
 
             destination.DivInplace(count - ddof);
@@ -176,7 +176,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var one = Complex.One;
@@ -194,7 +194,7 @@ namespace NumFlat
                 {
                     if (x.Count != mean.Count)
                     {
-                        throw new ArgumentException("All the source vectors must have the same length as the mean vector.");
+                        throw new ArgumentException("All source vectors must have the same length as the mean vector.");
                     }
 
                     Vec.Sub(x, mean, centered);
@@ -205,7 +205,7 @@ namespace NumFlat
 
             if (count - ddof <= 0)
             {
-                throw new ArgumentException("The number of source vectors is not sufficient.");
+                throw new ArgumentException("The sequence does not contain enough source vectors.");
             }
 
             var i = 0;
@@ -236,7 +236,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Mean();
@@ -263,7 +263,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var mean = xs.Mean();
@@ -290,7 +290,7 @@ namespace NumFlat
 
             if (ddof < 0)
             {
-                throw new ArgumentException("The delta degrees of freedom must be a non-negative value.");
+                throw new ArgumentException("The delta degrees of freedom must be non-negative.");
             }
 
             var (mean, tmp) = xs.MeanAndVariance(ddof);

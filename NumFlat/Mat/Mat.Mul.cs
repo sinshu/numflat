@@ -76,7 +76,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination the matrix multiplication.
+        /// The destination of the matrix multiplication.
         /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.
@@ -175,7 +175,7 @@ namespace NumFlat
         /// The matrix Y.
         /// </param>
         /// <param name="destination">
-        /// The destination the matrix multiplication.
+        /// The destination of the matrix multiplication.
         /// </param>
         /// <param name="transposeX">
         /// If true, the matrix X is treated as transposed.

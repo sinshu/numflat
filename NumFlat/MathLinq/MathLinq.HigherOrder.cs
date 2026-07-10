@@ -35,7 +35,7 @@ namespace NumFlat
             {
                 if (n <= 2)
                 {
-                    throw new ArgumentException("The number of source values is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source values.");
                 }
                 return Math.Sqrt((n - 1) * n) / (n - 2) * m3 / Math.Pow(m2, 1.5);
             }
@@ -75,7 +75,7 @@ namespace NumFlat
             {
                 if (n <= 3)
                 {
-                    throw new ArgumentException("The number of source values is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source values.");
                 }
                 return 1.0 / (n - 2) / (n - 3) * ((n * n - 1) * m4 / (m2 * m2) - 3 * (n - 1) * (n - 1));
             }

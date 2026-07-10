@@ -75,7 +75,7 @@ namespace NumFlat.AudioFeatures
                     frequencies = GetFrequenciesMel(minFrequency, maxFrequency, filterCount + 2);
                     break;
                 default:
-                    throw new ArgumentException("Invalid enum value.", nameof(scale));
+                    throw new ArgumentException("The frequency scale is not supported.", nameof(scale));
             }
 
             var filters = new TriangularFilter[filterCount];

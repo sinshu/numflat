@@ -14,7 +14,7 @@ namespace NumFlat
             {
                 if (x.Count == 0)
                 {
-                    throw new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("The sequence cannot contain empty vectors.");
                 }
 
                 if (length == 0)
@@ -24,7 +24,7 @@ namespace NumFlat
 
                 if (x.Count != length)
                 {
-                    throw new ArgumentException("All the vectors must have the same length.");
+                    throw new ArgumentException("All vectors must have the same length.");
                 }
 
                 yield return x;
@@ -37,7 +37,7 @@ namespace NumFlat
             {
                 if (x.Count == 0)
                 {
-                    throw new ArgumentException("Empty vectors are not allowed.");
+                    throw new ArgumentException("The sequence cannot contain empty vectors.");
                 }
 
                 if (x.Count != length)

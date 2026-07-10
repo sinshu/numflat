@@ -57,7 +57,7 @@ namespace NumFlat.Clustering
         /// The number of desired clusters.
         /// </param>
         /// <param name="options">
-        /// Specifies options for k-means.
+        /// The k-means options.
         /// </param>
         /// <param name="random">
         /// A random number generator for the k-means++ initialization.

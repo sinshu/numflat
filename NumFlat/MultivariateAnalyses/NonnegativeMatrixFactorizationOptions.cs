@@ -3,7 +3,7 @@ using System;
 namespace NumFlat.MultivariateAnalyses
 {
     /// <summary>
-    /// Specifies options for NMF.
+    /// Specifies options for nonnegative matrix factorization fitting.
     /// </summary>
     public sealed class NonnegativeMatrixFactorizationOptions
     {
@@ -11,7 +11,7 @@ namespace NumFlat.MultivariateAnalyses
         private double tolerance;
 
         /// <summary>
-        /// Creates an instance of <see cref="NonnegativeMatrixFactorizationOptions"/> with default parameters.
+        /// Initializes a new instance of <see cref="NonnegativeMatrixFactorizationOptions"/> with default parameters.
         /// </summary>
         public NonnegativeMatrixFactorizationOptions()
         {
@@ -20,7 +20,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// The maximum number of iterations to perform.
+        /// Gets or sets the maximum number of iterations to perform.
         /// </summary>
         public int MaxIterations
         {
@@ -30,7 +30,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The maximum number of iterations must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The maximum number of iterations must be greater than zero.");
                 }
 
                 maxIterations = value;
@@ -38,7 +38,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Specify the amount of change to be considered converging.
+        /// Gets or sets the convergence tolerance.
         /// </summary>
         public double Tolerance
         {
@@ -48,7 +48,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The tolerance value must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The tolerance value must be greater than zero.");
                 }
 
                 tolerance = value;

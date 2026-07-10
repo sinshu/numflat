@@ -121,7 +121,7 @@ namespace NumFlat
         {
             if (q.RowCount != q.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
+                throw new InvalidOperationException("The QR decomposition must be square.");
             }
 
             var determinant = 1.0;
@@ -142,7 +142,7 @@ namespace NumFlat
         {
             if (q.RowCount != q.ColCount)
             {
-                throw new InvalidOperationException("Calling this method against a non-square QR decomposition is not allowed.");
+                throw new InvalidOperationException("The QR decomposition must be square.");
             }
 
             var logDeterminant = 0.0;

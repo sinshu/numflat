@@ -12,7 +12,7 @@ namespace NumFlat.MultivariateAnalyses
         private double tolerance;
 
         /// <summary>
-        /// Creates an instance of <see cref="LogisticRegressionOptions"/> with default parameters.
+        /// Initializes a new instance of <see cref="LogisticRegressionOptions"/> with default parameters.
         /// </summary>
         public LogisticRegressionOptions()
         {
@@ -22,7 +22,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// The amount of regularization.
+        /// Gets or sets the amount of regularization.
         /// </summary>
         public double Regularization
         {
@@ -32,7 +32,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("The amount of regularization must be a non-negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The amount of regularization must be a non-negative value.");
                 }
 
                 regularization = value;
@@ -40,7 +40,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// The maximum number of iterations to perform.
+        /// Gets or sets the maximum number of iterations to perform.
         /// </summary>
         public int MaxIterations
         {
@@ -50,7 +50,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The max number of iterations must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The maximum number of iterations must be greater than zero.");
                 }
 
                 maxIterations = value;
@@ -58,7 +58,7 @@ namespace NumFlat.MultivariateAnalyses
         }
 
         /// <summary>
-        /// Specify the amount of change to be considered converging.
+        /// Gets or sets the convergence tolerance.
         /// </summary>
         public double Tolerance
         {
@@ -68,7 +68,7 @@ namespace NumFlat.MultivariateAnalyses
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("The tolerance value must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "The tolerance value must be greater than zero.");
                 }
 
                 tolerance = value;

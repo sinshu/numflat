@@ -43,7 +43,7 @@ namespace NumFlat
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         sum += w * x;
@@ -96,7 +96,7 @@ namespace NumFlat
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         xSum += w * x;
@@ -110,7 +110,7 @@ namespace NumFlat
 
                 if (w1Sum <= 0)
                 {
-                    throw new ArgumentException("The number of source values is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source values.");
                 }
 
                 return xSum / w1Sum;
@@ -161,7 +161,7 @@ namespace NumFlat
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         var d = x - mean;
@@ -178,7 +178,7 @@ namespace NumFlat
                 var den = w1Sum - ddof * (w2Sum / w1Sum);
                 if (den <= 0)
                 {
-                    throw new ArgumentException("The number of source vectors is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source vectors.");
                 }
 
                 return (mean, dSum / den);
@@ -302,7 +302,7 @@ namespace NumFlat
 
                         if (w < 0)
                         {
-                            throw new ArgumentException("Negative weight values are not allowed.");
+                            throw new ArgumentException("The weights cannot contain negative values.");
                         }
 
                         dSum += w * (x - xMean) * (y - yMean);
@@ -318,7 +318,7 @@ namespace NumFlat
                 var den = w1Sum - ddof * (w2Sum / w1Sum);
                 if (den <= 0)
                 {
-                    throw new ArgumentException("The number of source vectors is not sufficient.");
+                    throw new ArgumentException("The sequence does not contain enough source vectors.");
                 }
 
                 return dSum / den;

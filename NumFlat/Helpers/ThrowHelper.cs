@@ -26,7 +26,7 @@ namespace NumFlat
         {
             if (v.Count == 0)
             {
-                throw new ArgumentException("An empty vector is not allowed.", name);
+                throw new ArgumentException("The vector cannot be empty.", name);
             }
         }
 
@@ -34,7 +34,7 @@ namespace NumFlat
         {
             if (m.RowCount == 0 || m.ColCount == 0)
             {
-                throw new ArgumentException("An empty matrix is not allowed.", name);
+                throw new ArgumentException("The matrix cannot be empty.", name);
             }
         }
 

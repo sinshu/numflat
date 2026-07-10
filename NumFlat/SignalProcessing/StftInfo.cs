@@ -33,7 +33,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count < 2)
             {
-                throw new ArgumentException("The window Length must be greater than or equal to two.", nameof(window));
+                throw new ArgumentException("The window length must be greater than or equal to two.", nameof(window));
             }
 
             if ((window.Count & (window.Count - 1)) != 0)
@@ -99,7 +99,7 @@ namespace NumFlat.SignalProcessing
         }
 
         /// <summary>
-        /// Gets the frequency by its index;
+        /// Gets the frequency for the specified frequency bin index.
         /// </summary>
         /// <param name="sampleRate">
         /// The sample rate of the source signal.
@@ -108,7 +108,7 @@ namespace NumFlat.SignalProcessing
         /// The index of the frequency bin.
         /// </param>
         /// <returns>
-        /// The specified frequency;
+        /// The frequency for <paramref name="frequencyBinIndex"/>.
         /// </returns>
         public double GetFrequency(int sampleRate, int frequencyBinIndex)
         {
@@ -121,7 +121,7 @@ namespace NumFlat.SignalProcessing
         public ref readonly Vec<double> Window => ref window;
 
         /// <summary>
-        /// Gets te position of the first frame.
+        /// Gets the position of the first frame.
         /// </summary>
         public int FirstFramePosition => firstFramePosition;
 

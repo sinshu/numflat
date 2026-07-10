@@ -25,7 +25,7 @@ namespace NumFlat
             {
                 if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                 {
-                    throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
+                    throw new ArgumentException("All source matrices must have the same dimensions as the destination.");
                 }
 
                 destination.AddInplace(x);
@@ -53,7 +53,7 @@ namespace NumFlat
                 {
                     if (x.RowCount == 0 || x.ColCount == 0)
                     {
-                        throw new ArgumentException("Empty matrices are not allowed.");
+                        throw new ArgumentException("The sequence cannot contain empty matrices.");
                     }
 
                     destination = new Mat<double>(x.RowCount, x.ColCount);
@@ -61,7 +61,7 @@ namespace NumFlat
 
                 if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                 {
-                    throw new ArgumentException("All the matrices must have the same dimensions.");
+                    throw new ArgumentException("All matrices must have the same dimensions.");
                 }
 
                 destination.AddInplace(x);
@@ -114,7 +114,7 @@ namespace NumFlat
 
                         if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                         {
-                            throw new ArgumentException("All the source matrices must have the same dimensions as the destination.");
+                            throw new ArgumentException("All source matrices must have the same dimensions as the destination.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);
@@ -168,7 +168,7 @@ namespace NumFlat
                         {
                             if (x.RowCount == 0 || x.ColCount == 0)
                             {
-                                throw new ArgumentException("Empty matrices are not allowed.");
+                                throw new ArgumentException("The sequence cannot contain empty matrices.");
                             }
 
                             destination = new Mat<double>(x.RowCount, x.ColCount);
@@ -176,7 +176,7 @@ namespace NumFlat
 
                         if (x.RowCount != destination.RowCount || x.ColCount != destination.ColCount)
                         {
-                            throw new ArgumentException("All the matrices must have the same dimensions.");
+                            throw new ArgumentException("All matrices must have the same dimensions.");
                         }
 
                         AccumulateWeightedSum(x, w, destination);

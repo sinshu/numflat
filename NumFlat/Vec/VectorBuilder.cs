@@ -93,7 +93,7 @@ namespace NumFlat
         /// The length of the vector.
         /// </param>
         /// <param name="func">
-        /// The function which generates the values for the new vector.
+        /// The function that generates the values for the new vector.
         /// The element index is given as an argument of the function.
         /// </param>
         /// <returns>

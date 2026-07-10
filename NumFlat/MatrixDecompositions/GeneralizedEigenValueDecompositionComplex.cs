@@ -57,7 +57,7 @@ namespace NumFlat
         /// The destination of the diagonal elements of the matrix D.
         /// </param>
         /// <param name="v">
-        /// The destination of the the matrix V.
+        /// The destination of the matrix V.
         /// </param>
         /// <exception cref="MatrixFactorizationException">
         /// Failed to compute the GEVD.
