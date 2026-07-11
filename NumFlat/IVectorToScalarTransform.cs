@@ -39,7 +39,7 @@ namespace NumFlat
         {
             if (source.Count != method.SourceDimension)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {method.SourceDimension}, but was {source.Count}.", name);
+                throw new ArgumentException($"The transform requires the length of the source vector to be '{method.SourceDimension}', but was '{source.Count}'.", name);
             }
         }
     }

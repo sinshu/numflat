@@ -109,7 +109,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (source.Count != sourceVectors.RowCount)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {sourceVectors.RowCount}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The transform requires the length of the source vector to be '{sourceVectors.RowCount}', but was '{source.Count}'.", nameof(source));
             }
 
             if (destination.Count > sourceVectors.ColCount)

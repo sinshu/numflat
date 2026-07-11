@@ -115,7 +115,7 @@ namespace NumFlat.AudioFeatures
 
             if (destination.Count != method.FeatureLength)
             {
-                throw new ArgumentException($"The feature extraction requires the length of the destination vector to be {method.FeatureLength}, but was {destination.Count}.", destinationName);
+                throw new ArgumentException($"The feature extraction requires the length of the destination vector to be '{method.FeatureLength}', but was '{destination.Count}'.", destinationName);
             }
         }
 
@@ -125,7 +125,7 @@ namespace NumFlat.AudioFeatures
             var expected2 = fftLength / 2 + 1;
             if (source.Count != expected1 && source.Count != expected2)
             {
-                throw new ArgumentException($"The feature extraction requires the length of the spectrum to be {expected1} (FFT length) or {expected2} (half of the FFT length plus one), but was {source.Count}.", name);
+                throw new ArgumentException($"The feature extraction requires the length of the spectrum to be '{expected1}' (FFT length) or '{expected2}' (half of the FFT length plus one), but was '{source.Count}'.", name);
             }
         }
     }

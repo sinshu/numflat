@@ -273,7 +273,7 @@ namespace NumFlat.IO
             {
                 1 => reader.ReadUInt16(),
                 2 => reader.ReadInt32(),
-                _ => throw new NotSupportedException($"NumPy .npy version {major}.{minor} is not supported."),
+                _ => throw new NotSupportedException($"NumPy .npy version '{major}.{minor}' is not supported."),
             };
 
             var headerBytes = new byte[headerLength];

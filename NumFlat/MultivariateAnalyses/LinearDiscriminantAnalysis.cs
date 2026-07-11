@@ -84,12 +84,12 @@ namespace NumFlat.MultivariateAnalyses
 
             if (eigenValues.Count != mean.Count)
             {
-                throw new ArgumentException($"The length of the eigenvalue vector must be {mean.Count}, but was {eigenValues.Count}.", nameof(eigenValues));
+                throw new ArgumentException($"The length of the eigenvalue vector must be '{mean.Count}', but was '{eigenValues.Count}'.", nameof(eigenValues));
             }
 
             if (eigenVectors.RowCount != mean.Count || eigenVectors.ColCount != mean.Count)
             {
-                throw new ArgumentException($"The eigenvector matrix must be {mean.Count} x {mean.Count}, but was {eigenVectors.RowCount} x {eigenVectors.ColCount}.", nameof(eigenVectors));
+                throw new ArgumentException($"The eigenvector matrix must be '{mean.Count} x {mean.Count}', but was '{eigenVectors.RowCount} x {eigenVectors.ColCount}'.", nameof(eigenVectors));
             }
 
             this.mean = mean;

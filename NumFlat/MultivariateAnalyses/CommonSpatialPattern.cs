@@ -122,7 +122,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (eigenVectors.RowCount != eigenValues.Count || eigenVectors.ColCount != eigenValues.Count)
             {
-                throw new ArgumentException($"The eigenvector matrix must be {eigenValues.Count} x {eigenValues.Count}, but was {eigenVectors.RowCount} x {eigenVectors.ColCount}.", nameof(eigenVectors));
+                throw new ArgumentException($"The eigenvector matrix must be '{eigenValues.Count} x {eigenValues.Count}', but was '{eigenVectors.RowCount} x {eigenVectors.ColCount}'.", nameof(eigenVectors));
             }
 
             this.eigenValues = eigenValues;

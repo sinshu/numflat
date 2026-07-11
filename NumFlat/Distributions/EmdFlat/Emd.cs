@@ -151,7 +151,7 @@ namespace EmdFlat
                     }
 
                     if (itr == maxIterations)
-                        throw new EmdFlatException($"Maximum number of iterations has been reached ({maxIterations}).");
+                        throw new EmdFlatException($"The iteration count reached the maximum of '{maxIterations}'.");
                 }
 
                 /* COMPUTE THE TOTAL FLOW */

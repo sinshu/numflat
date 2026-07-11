@@ -192,12 +192,12 @@ namespace NumFlat.MultivariateAnalyses
 
             if (demixingMatrix.ColCount != mean.Count)
             {
-                throw new ArgumentException($"The column count of the demixing matrix must be {mean.Count}, but was {demixingMatrix.ColCount}.", nameof(demixingMatrix));
+                throw new ArgumentException($"The column count of the demixing matrix must be '{mean.Count}', but was '{demixingMatrix.ColCount}'.", nameof(demixingMatrix));
             }
 
             if (mixingMatrix.RowCount != mean.Count || mixingMatrix.ColCount != demixingMatrix.RowCount)
             {
-                throw new ArgumentException($"The mixing matrix must be {mean.Count} x {demixingMatrix.RowCount}, but was {mixingMatrix.RowCount} x {mixingMatrix.ColCount}.", nameof(mixingMatrix));
+                throw new ArgumentException($"The mixing matrix must be '{mean.Count} x {demixingMatrix.RowCount}', but was '{mixingMatrix.RowCount} x {mixingMatrix.ColCount}'.", nameof(mixingMatrix));
             }
 
             this.sourceDimension = mean.Count;

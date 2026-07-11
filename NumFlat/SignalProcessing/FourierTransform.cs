@@ -27,7 +27,7 @@ namespace NumFlat.SignalProcessing
 
             if ((length & (length - 1)) != 0)
             {
-                throw new ArgumentException($"The FFT length must be a power of two, but was {length}.");
+                throw new ArgumentException($"The FFT length must be a power of two, but was '{length}'.");
             }
         }
 
@@ -239,7 +239,7 @@ namespace NumFlat.SignalProcessing
 
             if ((source.Count & (source.Count - 1)) != 0)
             {
-                throw new ArgumentException($"The source length must be a power of two, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The source length must be a power of two, but was '{source.Count}'.", nameof(source));
             }
 
             if (destination.Count != source.Count / 2 + 1)
@@ -281,7 +281,7 @@ namespace NumFlat.SignalProcessing
             var scm1 = source.Count - 1;
             if ((scm1 & (scm1 - 1)) != 0)
             {
-                throw new ArgumentException($"The source length must be a power of two plus one, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The source length must be a power of two plus one, but was '{source.Count}'.", nameof(source));
             }
 
             if (destination.Count != 2 * (source.Count - 1))
@@ -327,7 +327,7 @@ namespace NumFlat.SignalProcessing
 
             if ((source.Count & (source.Count - 1)) != 0)
             {
-                throw new ArgumentException($"The source length must be a power of two, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The source length must be a power of two, but was '{source.Count}'.", nameof(source));
             }
 
             var destination = new Vec<Complex>(source.Count / 2 + 1);
@@ -360,7 +360,7 @@ namespace NumFlat.SignalProcessing
             var scm1 = source.Count - 1;
             if ((scm1 & (scm1 - 1)) != 0)
             {
-                throw new ArgumentException($"The source length must be a power of two plus one, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The source length must be a power of two plus one, but was '{source.Count}'.", nameof(source));
             }
 
             var destination = new Vec<double>(2 * (source.Count - 1));

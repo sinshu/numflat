@@ -175,7 +175,7 @@ namespace NumFlat.Distributions
         {
             if (x.Count != distribution.Dimension)
             {
-                throw new ArgumentException($"The distribution requires the length of the vector to be {distribution.Dimension}, but was {x.Count}.", name);
+                throw new ArgumentException($"The distribution requires the length of the vector to be '{distribution.Dimension}', but was '{x.Count}'.", name);
             }
         }
     }

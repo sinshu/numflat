@@ -64,7 +64,7 @@ namespace NumFlat
         {
             if (source.Count != method.DestinationDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationDimension}, but was {source.Count}.", name);
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be '{method.DestinationDimension}', but was '{source.Count}'.", name);
             }
         }
 
@@ -72,12 +72,12 @@ namespace NumFlat
         {
             if (source.Count != method.DestinationDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the source vector to be {method.DestinationDimension}, but was {source.Count}.", sourceName);
+                throw new ArgumentException($"The inverse transform requires the length of the source vector to be '{method.DestinationDimension}', but was '{source.Count}'.", sourceName);
             }
 
             if (destination.Count != method.SourceDimension)
             {
-                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be {method.SourceDimension}, but was {destination.Count}.", destinationName);
+                throw new ArgumentException($"The inverse transform requires the length of the destination vector to be '{method.SourceDimension}', but was '{destination.Count}'.", destinationName);
             }
         }
     }

@@ -96,7 +96,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (w.ColCount != h.RowCount)
             {
-                throw new ArgumentException($"The column count of W must match the row count of H, but they were {w.ColCount} and {h.RowCount}.");
+                throw new ArgumentException($"The column count of W must match the row count of H, but they were '{w.ColCount}' and '{h.RowCount}'.");
             }
 
             this.w = w;

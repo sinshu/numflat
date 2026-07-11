@@ -44,7 +44,7 @@ namespace NumFlat
         {
             if (x.Count != method.Dimension)
             {
-                throw new ArgumentException($"The classifier requires the length of the vector to be {method.Dimension}, but was {x.Count}.", name);
+                throw new ArgumentException($"The classifier requires the length of the vector to be '{method.Dimension}', but was '{x.Count}'.", name);
             }
         }
     }

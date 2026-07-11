@@ -75,12 +75,12 @@ namespace NumFlat.MultivariateAnalyses
 
             if (eigenValues.Count != mean.Count)
             {
-                throw new ArgumentException($"The length of the eigenvalue vector must be {mean.Count}, but was {eigenValues.Count}.", nameof(eigenValues));
+                throw new ArgumentException($"The length of the eigenvalue vector must be '{mean.Count}', but was '{eigenValues.Count}'.", nameof(eigenValues));
             }
 
             if (eigenVectors.RowCount != mean.Count || eigenVectors.ColCount != mean.Count)
             {
-                throw new ArgumentException($"The eigenvector matrix must be {mean.Count} x {mean.Count}, but was {eigenVectors.RowCount} x {eigenVectors.ColCount}.", nameof(eigenVectors));
+                throw new ArgumentException($"The eigenvector matrix must be '{mean.Count} x {mean.Count}', but was '{eigenVectors.RowCount} x {eigenVectors.ColCount}'.", nameof(eigenVectors));
             }
 
             this.mean = mean;
@@ -96,7 +96,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (source.Count != mean.Count)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be {mean.Count}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The transform requires the length of the source vector to be '{mean.Count}', but was '{source.Count}'.", nameof(source));
             }
 
             if (destination.Count > mean.Count)
@@ -124,7 +124,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (destination.Count != mean.Count)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be {mean.Count}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The transform requires the length of the destination vector to be '{mean.Count}', but was '{destination.Count}'.", nameof(destination));
             }
 
             Mat.Mul(eigenVectors.Submatrix(0, 0, mean.Count, source.Count), source, destination, false);

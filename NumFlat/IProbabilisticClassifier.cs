@@ -34,12 +34,12 @@ namespace NumFlat
         {
             if (source.Count != method.Dimension)
             {
-                throw new ArgumentException($"The classifier requires the length of the source vector to be {method.Dimension}, but was {source.Count}.", sourceName);
+                throw new ArgumentException($"The classifier requires the length of the source vector to be '{method.Dimension}', but was '{source.Count}'.", sourceName);
             }
 
             if (destination.Count != method.ClassCount)
             {
-                throw new ArgumentException($"The classifier requires the length of the destination vector to be {method.ClassCount}, but was {destination.Count}.", destinationName);
+                throw new ArgumentException($"The classifier requires the length of the destination vector to be '{method.ClassCount}', but was '{destination.Count}'.", destinationName);
             }
         }
 
