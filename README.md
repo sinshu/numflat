@@ -780,6 +780,7 @@ var deserialized = JsonSerializer.Deserialize(json, NumFlatJsonSerializerContext
 * 🚧 Time series
     - ✅ DTW (dynamic time warping)
     - ✅ sDTW (subsequence dynamic time warping)
+    - ✅ DTW Barycenter Averaging
     - 🚧 HMM (hidden Markov model)
     - 🚧 Peak finding methods
 * 🚧 Signal processing
