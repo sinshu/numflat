@@ -33,7 +33,7 @@ namespace NumFlat.Distributions
 
             if (covariance.RowCount != mean.Count)
             {
-                throw new ArgumentException("The length of the mean vector must match the order of the covariance matrix.");
+                throw new ArgumentException($"The mean vector length must match the covariance matrix order, but they were '{mean.Count}' and '{covariance.RowCount}'.");
             }
 
             var (cholesky, logNormalizationTerm) = GetCholeskyAndLogNormalizationTerm(mean, covariance); 
@@ -63,7 +63,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             Vec<double> mean;
@@ -112,7 +112,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             Vec<double> mean;
@@ -255,7 +255,7 @@ namespace NumFlat.Distributions
 
             if (x.mean.Count != this.mean.Count)
             {
-                throw new ArgumentException("The distributions must have the same dimension.");
+                throw new ArgumentException($"The distributions must have the same dimension, but their dimensions were '{this.mean.Count}' and '{x.mean.Count}'.");
             }
 
             using var ul = new TemporalMatrix<double>(this.covariance.RowCount, this.covariance.ColCount);

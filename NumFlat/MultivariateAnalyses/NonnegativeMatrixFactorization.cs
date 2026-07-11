@@ -174,22 +174,22 @@ namespace NumFlat.MultivariateAnalyses
 
             if (sourceW.RowCount != destinationW.RowCount || sourceW.ColCount != destinationW.ColCount)
             {
-                throw new ArgumentException("The dimensions of 'sourceW' and 'destinationW' must match.");
+                throw new ArgumentException($"The dimensions of 'destinationW' must be '{sourceW.RowCount} x {sourceW.ColCount}', but were '{destinationW.RowCount} x {destinationW.ColCount}'.");
             }
 
             if (sourceH.RowCount != destinationH.RowCount || sourceH.ColCount != destinationH.ColCount)
             {
-                throw new ArgumentException("The dimensions of 'sourceH' and 'destinationH' must match.");
+                throw new ArgumentException($"The dimensions of 'destinationH' must be '{sourceH.RowCount} x {sourceH.ColCount}', but were '{destinationH.RowCount} x {destinationH.ColCount}'.");
             }
 
             if (sourceW.ColCount != sourceH.RowCount)
             {
-                throw new ArgumentException("'sourceW.ColCount' and 'sourceH.RowCount' must match.");
+                throw new ArgumentException($"The column count of 'sourceW' must match the row count of 'sourceH', but they were '{sourceW.ColCount}' and '{sourceH.RowCount}'.");
             }
 
             if (sourceH.ColCount != xs.Count)
             {
-                throw new ArgumentException("'sourceH.ColCount' and 'xs.Count' must match.");
+                throw new ArgumentException($"The column count of 'sourceH' must match the number of source vectors, but they were '{sourceH.ColCount}' and '{xs.Count}'.");
             }
 
             var dimension = sourceW.RowCount;

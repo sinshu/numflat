@@ -70,7 +70,7 @@ namespace NumFlat.TimeSeries
         {
             if (lastIndex < 0 || lastIndex >= m)
             {
-                throw new ArgumentOutOfRangeException(nameof(lastIndex), "The index must be within the valid range of the long sequence.");
+                throw new ArgumentOutOfRangeException(nameof(lastIndex), $"The last index '{lastIndex}' is outside the long sequence, whose length is '{costMatrix.ColCount}'.");
             }
 
             var fdtw = costMatrix.GetUnsafeFastIndexer();

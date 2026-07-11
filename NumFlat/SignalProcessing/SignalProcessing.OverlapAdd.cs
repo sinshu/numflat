@@ -82,7 +82,7 @@ namespace NumFlat.SignalProcessing
 
             if (length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "The frame length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(length), $"The frame length must be greater than zero, but was '{length}'.");
             }
 
             var srcStart = start;
@@ -141,7 +141,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count != destination.Count)
             {
-                throw new ArgumentException("The length of the window and destination must match.");
+                throw new ArgumentException($"The window length must match the destination length, but they were '{window.Count}' and '{destination.Count}'.");
             }
 
             var srcStart = start;
@@ -346,7 +346,7 @@ namespace NumFlat.SignalProcessing
 
             if (length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "The frame length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(length), $"The frame length must be greater than zero, but was '{length}'.");
             }
 
             var srcStart = start;
@@ -417,7 +417,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count != destination.Count)
             {
-                throw new ArgumentException("The length of the window and destination must match.");
+                throw new ArgumentException($"The window length must match the destination length, but they were '{window.Count}' and '{destination.Count}'.");
             }
 
             var srcStart = start;
@@ -665,7 +665,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count != frame.Count)
             {
-                throw new ArgumentException("The length of the window and frame must match.");
+                throw new ArgumentException($"The window length must match the frame length, but they were '{window.Count}' and '{frame.Count}'.");
             }
 
             var trgStart = start;
@@ -736,7 +736,7 @@ namespace NumFlat.SignalProcessing
 
             if (window.Count != frame.Count)
             {
-                throw new ArgumentException("The length of the window and frame must match.");
+                throw new ArgumentException($"The window length must match the frame length, but they were '{window.Count}' and '{frame.Count}'.");
             }
 
             var trgStart = start;

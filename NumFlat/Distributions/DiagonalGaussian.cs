@@ -61,7 +61,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             Vec<double> mean;
@@ -107,7 +107,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             Vec<double> mean;
@@ -147,7 +147,7 @@ namespace NumFlat.Distributions
                 }
                 else
                 {
-                    throw new FittingFailureException("Variance is too small.");
+                    throw new FittingFailureException($"The variance must be greater than '1.0E-14', but was '{value}'.");
                 }
             }
 
@@ -243,7 +243,7 @@ namespace NumFlat.Distributions
 
             if (x.mean.Count != this.mean.Count)
             {
-                throw new ArgumentException("The distributions must have the same dimension.");
+                throw new ArgumentException($"The distributions must have the same dimension, but their dimensions were '{this.mean.Count}' and '{x.mean.Count}'.");
             }
 
             using var utmp = new TemporalVector3<double>(this.mean.Count);

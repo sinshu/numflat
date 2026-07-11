@@ -28,12 +28,12 @@ namespace NumFlat
 
             if (destination.RowCount != a.ColCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.ColCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != a.RowCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.RowCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             using var us = new TemporalVector<float>(Math.Min(a.RowCount, a.ColCount));
@@ -126,12 +126,12 @@ namespace NumFlat
 
             if (destination.RowCount != a.ColCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.ColCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != a.RowCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.RowCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             using var us = new TemporalVector<double>(Math.Min(a.RowCount, a.ColCount));
@@ -224,12 +224,12 @@ namespace NumFlat
 
             if (destination.RowCount != a.ColCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.ColCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != a.RowCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'a.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{a.RowCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             using var us = new TemporalVector<double>(Math.Min(a.RowCount, a.ColCount));

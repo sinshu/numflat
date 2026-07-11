@@ -42,12 +42,12 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to one, but was '{clusterCount}'.");
             }
 
             if (xs.Count < clusterCount)
             {
-                throw new ArgumentException("The number of source features must be larger than the number of clusters.", nameof(xs));
+                throw new ArgumentException($"The number of source features must be greater than the number of clusters, but they were '{xs.Count}' and '{clusterCount}'.", nameof(xs));
             }
 
             this.dm = dm;

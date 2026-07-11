@@ -39,7 +39,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to two, but was '{clusterCount}'.");
             }
 
             return new KMeans(xs, clusterCount, options, random);
@@ -74,7 +74,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to two.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to two, but was '{clusterCount}'.");
             }
 
             return new KMedoids<T>(xs, dm, clusterCount, random);
@@ -112,7 +112,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to one, but was '{clusterCount}'.");
             }
 
             return new GaussianMixtureModel(xs, clusterCount, options, random);
@@ -150,7 +150,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to one, but was '{clusterCount}'.");
             }
 
             return new DiagonalGaussianMixtureModel(xs, clusterCount, options, random);
@@ -260,12 +260,12 @@ namespace NumFlat.Clustering
 
             if (eps <= 0)
             {
-                throw new ArgumentException("The eps must be a non-negative value.", nameof(eps));
+                throw new ArgumentException($"The neighborhood radius must be greater than zero, but was '{eps}'.", nameof(eps));
             }
 
             if (minPoints <= 0)
             {
-                throw new ArgumentException("The minimum number of points must be a non-negative value.", nameof(minPoints));
+                throw new ArgumentException($"The minimum number of points must be greater than zero, but was '{minPoints}'.", nameof(minPoints));
             }
 
             var result = new int[xs.Count];

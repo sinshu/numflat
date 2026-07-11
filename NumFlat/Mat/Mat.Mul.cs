@@ -35,24 +35,24 @@ namespace NumFlat
             {
                 if (y.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix row count, but they were '{y.Count}' and '{x.RowCount}'.");
                 }
 
                 if (destination.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.ColCount}', but its length was '{destination.Count}'.");
                 }
             }
             else
             {
                 if (y.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix column count, but they were '{y.Count}' and '{x.ColCount}'.");
                 }
 
                 if (destination.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.RowCount}', but its length was '{destination.Count}'.");
                 }
             }
 
@@ -134,24 +134,24 @@ namespace NumFlat
             {
                 if (y.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix row count, but they were '{y.Count}' and '{x.RowCount}'.");
                 }
 
                 if (destination.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.ColCount}', but its length was '{destination.Count}'.");
                 }
             }
             else
             {
                 if (y.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix column count, but they were '{y.Count}' and '{x.ColCount}'.");
                 }
 
                 if (destination.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.RowCount}', but its length was '{destination.Count}'.");
                 }
             }
 
@@ -236,24 +236,24 @@ namespace NumFlat
             {
                 if (y.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix row count, but they were '{y.Count}' and '{x.RowCount}'.");
                 }
 
                 if (destination.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.ColCount}', but its length was '{destination.Count}'.");
                 }
             }
             else
             {
                 if (y.Count != x.ColCount)
                 {
-                    throw new ArgumentException("'y.Count' must match 'x.ColCount'.");
+                    throw new ArgumentException($"The vector length must match the matrix column count, but they were '{y.Count}' and '{x.ColCount}'.");
                 }
 
                 if (destination.Count != x.RowCount)
                 {
-                    throw new ArgumentException("'destination.Count' must match 'x.RowCount'.");
+                    throw new ArgumentException($"The destination vector must have length '{x.RowCount}', but its length was '{destination.Count}'.");
                 }
             }
 

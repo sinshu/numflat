@@ -29,12 +29,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.Count)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{x.Count}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != y.Count)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{y.Count}' columns, but it had '{destination.ColCount}'.");
             }
 
             fixed (float* px = x.Memory.Span)
@@ -68,12 +68,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.Count)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{x.Count}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != y.Count)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{y.Count}' columns, but it had '{destination.ColCount}'.");
             }
 
             fixed (double* px = x.Memory.Span)
@@ -110,12 +110,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.Count)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{x.Count}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != y.Count)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'y.Count'.");
+                throw new ArgumentException($"The destination matrix must have '{y.Count}' columns, but it had '{destination.ColCount}'.");
             }
 
             fixed (Complex* px = x.Memory.Span)

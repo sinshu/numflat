@@ -184,12 +184,16 @@ namespace NumFlat
 
             if (startRow + rowCount > this.rowCount)
             {
-                throw new ArgumentOutOfRangeException("'startRow + rowCount' must be less than or equal to the number of rows of the source matrix.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(rowCount),
+                    $"The requested row range with start row '{startRow}' and row count '{rowCount}' exceeds the source matrix row count '{this.rowCount}'.");
             }
 
             if (startCol + colCount > this.colCount)
             {
-                throw new ArgumentOutOfRangeException("'startCol + colCount' must be less than or equal to the number of columns of the source matrix.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(colCount),
+                    $"The requested column range with start column '{startCol}' and column count '{colCount}' exceeds the source matrix column count '{this.colCount}'.");
             }
 
             var stride = this.stride;
@@ -295,12 +299,12 @@ namespace NumFlat
 
                 if ((uint)row >= this.rowCount)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(row), "The index must be within the number of rows.");
+                    throw new ArgumentOutOfRangeException(nameof(row), $"The row index '{row}' is outside the matrix, whose row count is '{rowCount}'.");
                 }
 
                 if ((uint)col >= this.colCount)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(col), "The index must be within the number of columns.");
+                    throw new ArgumentOutOfRangeException(nameof(col), $"The column index '{col}' is outside the matrix, whose column count is '{colCount}'.");
                 }
 
                 return ref this.memory.Span[stride * col + row];

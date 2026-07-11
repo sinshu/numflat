@@ -56,7 +56,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (!(1 <= componentCount && componentCount <= pca.SourceDimension))
             {
-                throw new ArgumentException($"The number of components must be between one and the source dimension {pca.SourceDimension}.", nameof(componentCount));
+                throw new ArgumentException($"The number of components must be in the range from one through '{pca.SourceDimension}', but was '{componentCount}'.", nameof(componentCount));
             }
 
             if (options == null)

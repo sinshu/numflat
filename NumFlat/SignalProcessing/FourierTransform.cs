@@ -244,7 +244,7 @@ namespace NumFlat.SignalProcessing
 
             if (destination.Count != source.Count / 2 + 1)
             {
-                throw new ArgumentException("'destination.Count' must match 'source.Count / 2 + 1'.");
+                throw new ArgumentException($"The destination length '{destination.Count}' is incompatible with the source length '{source.Count}' for a real forward FFT.");
             }
 
             using var utmp = destination.EnsureContiguous(false);
@@ -286,7 +286,7 @@ namespace NumFlat.SignalProcessing
 
             if (destination.Count != 2 * (source.Count - 1))
             {
-                throw new ArgumentException("'destination.Count' must match '2 * (source.Count - 1)'.");
+                throw new ArgumentException($"The destination length '{destination.Count}' is incompatible with the source length '{source.Count}' for a real inverse FFT.");
             }
 
             using var utmp = new TemporalArray<Complex>(source.Count);
@@ -402,17 +402,17 @@ namespace NumFlat.SignalProcessing
 
             if ((window.Count & (window.Count - 1)) != 0)
             {
-                throw new ArgumentException($"The window length must be a power of two.", nameof(window));
+                throw new ArgumentException($"The window length must be a power of two, but was '{window.Count}'.", nameof(window));
             }
 
             if (frameShift <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(frameShift), "The frame shift must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(frameShift), $"The frame shift must be greater than zero, but was '{frameShift}'.");
             }
 
             if (window.Count % frameShift != 0)
             {
-                throw new ArgumentException("The window length must be divisible by the frame shift.");
+                throw new ArgumentException($"The window length '{window.Count}' must be divisible by the frame shift '{frameShift}'.");
             }
 
             int firstFramePosition;
@@ -430,12 +430,12 @@ namespace NumFlat.SignalProcessing
             }
             else
             {
-                throw new ArgumentException("The STFT mode is not supported.", nameof(mode));
+                throw new ArgumentException($"The STFT mode '{mode}' is not supported.", nameof(mode));
             }
 
             if (frameCount == 0)
             {
-                throw new ArgumentException("The length of the source signal is too short.");
+                throw new ArgumentException($"The source signal length '{source.Count}' is insufficient for the window length '{window.Count}', frame shift '{frameShift}', and mode '{mode}'.");
             }
 
             var rft = GetRftInstance(window.Count);

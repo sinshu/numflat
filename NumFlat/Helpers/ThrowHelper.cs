@@ -18,7 +18,7 @@ namespace NumFlat
         {
             if (xs.Count == 0)
             {
-                throw new ArgumentException("The sequence must contain at least one vector.", nameof(xs));
+                throw new ArgumentException("The sequence must contain at least one vector.", name);
             }
         }
 
@@ -42,7 +42,7 @@ namespace NumFlat
         {
             if (v1.Count != v2.Count)
             {
-                throw new ArgumentException("The vectors must have the same length.");
+                throw new ArgumentException($"The vectors must have the same length, but their lengths were '{v1.Count}' and '{v2.Count}'.");
             }
         }
 
@@ -50,7 +50,7 @@ namespace NumFlat
         {
             if (v1.Count != v2.Count || v1.Count != v3.Count)
             {
-                throw new ArgumentException("The vectors must have the same length.");
+                throw new ArgumentException($"The vectors must have the same length, but their lengths were '{v1.Count}', '{v2.Count}', and '{v3.Count}'.");
             }
         }
 
@@ -58,7 +58,7 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount)
             {
-                throw new ArgumentException("The matrices must have the same dimensions.");
+                throw new ArgumentException($"The matrices must have the same dimensions, but their dimensions were '{m1.RowCount} x {m1.ColCount}' and '{m2.RowCount} x {m2.ColCount}'.");
             }
         }
 
@@ -66,7 +66,7 @@ namespace NumFlat
         {
             if (m1.RowCount != m2.RowCount || m1.ColCount != m2.ColCount || m1.RowCount != m3.RowCount || m1.ColCount != m3.ColCount)
             {
-                throw new ArgumentException("The matrices must have the same dimensions.");
+                throw new ArgumentException($"The matrices must have the same dimensions, but their dimensions were '{m1.RowCount} x {m1.ColCount}', '{m2.RowCount} x {m2.ColCount}', and '{m3.RowCount} x {m3.ColCount}'.");
             }
         }
 
@@ -74,7 +74,7 @@ namespace NumFlat
         {
             if (m.RowCount != m.ColCount)
             {
-                throw new ArgumentException("The matrix must be a square matrix.", name);
+                throw new ArgumentException($"The matrix must be square, but its dimensions were '{m.RowCount} x {m.ColCount}'.", name);
             }
         }
     }

@@ -143,7 +143,7 @@ namespace NumFlat
 
             if (b.ColCount != destination.ColCount)
             {
-                throw new ArgumentException("The number of the right-hand side vectors and solution vectors must match.");
+                throw new ArgumentException($"The number of right-hand side vectors must match the number of solution vectors, but they were '{b.ColCount}' and '{destination.ColCount}'.");
             }
         }
     }

@@ -114,7 +114,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (destination.Count > sourceVectors.ColCount)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be within {sourceVectors.ColCount}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The destination vector length must be less than or equal to '{sourceVectors.ColCount}', but was '{destination.Count}'.", nameof(destination));
             }
 
             using var utmp = new TemporalVector<double>(sourceVectors.ColCount);

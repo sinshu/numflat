@@ -179,7 +179,7 @@ namespace NumFlat
 
             if (destination.Count != mean.Count)
             {
-                throw new ArgumentException("The length of the destination must match the length of the mean vector.");
+                throw new ArgumentException($"The destination vector must have length '{mean.Count}', but its length was '{destination.Count}'.");
             }
 
             if (ddof < 0)
@@ -265,12 +265,12 @@ namespace NumFlat
 
             if (destination.RowCount != mean.Count)
             {
-                throw new ArgumentException("The number of rows of the destination must match the length of the mean vector.");
+                throw new ArgumentException($"The destination matrix must have '{mean.Count}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != mean.Count)
             {
-                throw new ArgumentException("The number of columns of the destination must match the length of the mean vector.");
+                throw new ArgumentException($"The destination matrix must have '{mean.Count}' columns, but it had '{destination.ColCount}'.");
             }
 
             if (ddof < 0)

@@ -53,17 +53,17 @@ namespace NumFlat.Clustering
 
             if (eps <= 0)
             {
-                throw new ArgumentException("The eps must be a non-negative value.", nameof(eps));
+                throw new ArgumentException($"The neighborhood radius must be greater than zero, but was '{eps}'.", nameof(eps));
             }
 
             if (minPoints <= 0)
             {
-                throw new ArgumentException("The minimum number of points must be a non-negative value.", nameof(minPoints));
+                throw new ArgumentException($"The minimum number of points must be greater than zero, but was '{minPoints}'.", nameof(minPoints));
             }
 
             if (destination.Length != points.Count)
             {
-                throw new ArgumentException("The length of destination must match the number of points.", nameof(destination));
+                throw new ArgumentException($"The destination length must match the number of points, but they were '{destination.Length}' and '{points.Count}'.", nameof(destination));
             }
 
             var allPoints = new DbScanPoint<T>[points.Count];

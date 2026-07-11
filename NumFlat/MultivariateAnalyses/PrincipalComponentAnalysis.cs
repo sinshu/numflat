@@ -101,7 +101,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (destination.Count > mean.Count)
             {
-                throw new ArgumentException($"The transform requires the length of the destination vector to be within {mean.Count}, but was {destination.Count}.", nameof(destination));
+                throw new ArgumentException($"The destination vector length must be less than or equal to '{mean.Count}', but was '{destination.Count}'.", nameof(destination));
             }
 
             using var utmp = new TemporalVector<double>(source.Count);
@@ -119,7 +119,7 @@ namespace NumFlat.MultivariateAnalyses
 
             if (source.Count > mean.Count)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be within {mean.Count}, but was {source.Count}.", nameof(source));
+                throw new ArgumentException($"The source vector length must be less than or equal to '{mean.Count}', but was '{source.Count}'.", nameof(source));
             }
 
             if (destination.Count != mean.Count)

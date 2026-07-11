@@ -38,22 +38,22 @@ namespace NumFlat.SignalProcessing
 
             if ((window.Count & (window.Count - 1)) != 0)
             {
-                throw new ArgumentException($"The window length must be a power of two.", nameof(window));
+                throw new ArgumentException($"The window length must be a power of two, but was '{window.Count}'.", nameof(window));
             }
 
             if (frameShift <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(frameShift), "The frame shift must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(frameShift), $"The frame shift must be greater than zero, but was '{frameShift}'.");
             }
 
             if (window.Count % frameShift != 0)
             {
-                throw new ArgumentException("The window length must be divisible by the frame shift.");
+                throw new ArgumentException($"The window length '{window.Count}' must be divisible by the frame shift '{frameShift}'.");
             }
 
             if (signalLength <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(signalLength), "The signal length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(signalLength), $"The signal length must be greater than zero, but was '{signalLength}'.");
             }
 
             this.window = window;

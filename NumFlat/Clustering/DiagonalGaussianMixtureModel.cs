@@ -32,7 +32,7 @@ namespace NumFlat.Clustering
 
             if (array.Length == 0)
             {
-                throw new ArgumentException("The number of clusters must be greater than or equal to one.", nameof(components));
+                throw new ArgumentException("At least one component is required.", nameof(components));
             }
 
             if (array.Any(component => component == null))
@@ -78,7 +78,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to one, but was '{clusterCount}'.");
             }
 
             if (options == null)
@@ -189,7 +189,7 @@ namespace NumFlat.Clustering
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             using var utmp = new TemporalMatrix<double>(ClassCount, xs.Count);

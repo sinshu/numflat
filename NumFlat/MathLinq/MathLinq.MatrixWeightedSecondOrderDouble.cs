@@ -178,7 +178,7 @@ namespace NumFlat
 
             if (destination.RowCount != mean.RowCount || destination.ColCount != mean.ColCount)
             {
-                throw new ArgumentException("The dimensions of the destination must match the dimensions of the mean matrix.");
+                throw new ArgumentException($"The destination matrix must have dimensions '{mean.RowCount} x {mean.ColCount}', but it had '{destination.RowCount} x {destination.ColCount}'.");
             }
 
             if (ddof < 0)

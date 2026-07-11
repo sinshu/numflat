@@ -332,7 +332,7 @@ namespace NumFlat
             {
                 if (i == limit)
                 {
-                    throw new ArgumentException("The sequence contains too many elements for the matrix size.");
+                    throw new ArgumentException($"The sequence contains more elements than the '{rowCount} x {colCount}' matrix can hold.");
                 }
 
                 fm[i, i] = element;

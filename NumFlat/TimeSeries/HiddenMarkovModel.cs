@@ -42,17 +42,17 @@ namespace NumFlat.TimeSeries
 
             if (transitionMatrix.RowCount != stateCount)
             {
-                throw new ArgumentException("The number of rows in the transition matrix must match the number of initial probabilities.");
+                throw new ArgumentException($"The transition matrix row count must match the number of initial probabilities, but they were '{transitionMatrix.RowCount}' and '{stateCount}'.");
             }
 
             if (transitionMatrix.ColCount != stateCount)
             {
-                throw new ArgumentException("The number of columns in the transition matrix must match the number of initial probabilities.");
+                throw new ArgumentException($"The transition matrix column count must match the number of initial probabilities, but they were '{transitionMatrix.ColCount}' and '{stateCount}'.");
             }
 
             if (emissions.Count != stateCount)
             {
-                throw new ArgumentException("The number of distributions must match the number of initial probabilities.");
+                throw new ArgumentException($"The number of distributions must match the number of initial probabilities, but they were '{emissions.Count}' and '{stateCount}'.");
             }
 
             if (emissions.Any(d => d == null))
@@ -117,7 +117,7 @@ namespace NumFlat.TimeSeries
 
             if (path.Length != observations.Count)
             {
-                throw new ArgumentException("The length of the path must match the number of observations.");
+                throw new ArgumentException($"The path length must match the number of observations, but they were '{path.Length}' and '{observations.Count}'.");
             }
 
             // Viterbi-forward algorithm.

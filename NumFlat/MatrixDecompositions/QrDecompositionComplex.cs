@@ -25,7 +25,7 @@ namespace NumFlat
 
             if (a.RowCount < a.ColCount)
             {
-                throw new ArgumentException("The number of rows must be greater than or equal to the number of columns.");
+                throw new ArgumentException($"The matrix row count must be greater than or equal to its column count, but they were '{a.RowCount}' and '{a.ColCount}'.");
             }
 
             var q = new Mat<Complex>(a.RowCount, a.ColCount);
@@ -56,27 +56,27 @@ namespace NumFlat
 
             if (a.RowCount < a.ColCount)
             {
-                throw new ArgumentException("'a.RowCount' must be greater than or equal to 'a.ColCount'.");
+                throw new ArgumentException($"The row count of 'a' must be greater than or equal to its column count, but they were '{a.RowCount}' and '{a.ColCount}'.");
             }
 
             if (q.RowCount != a.RowCount)
             {
-                throw new ArgumentException("'q.RowCount' must match 'a.RowCount'.");
+                throw new ArgumentException($"The row count of 'q' must be '{a.RowCount}', but was '{q.RowCount}'.");
             }
 
             if (q.ColCount != a.ColCount)
             {
-                throw new ArgumentException("'q.ColCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The column count of 'q' must be '{a.ColCount}', but was '{q.ColCount}'.");
             }
 
             if (r.RowCount != a.ColCount)
             {
-                throw new ArgumentException("'r.RowCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The row count of 'r' must be '{a.ColCount}', but was '{r.RowCount}'.");
             }
 
             if (r.ColCount != a.ColCount)
             {
-                throw new ArgumentException("'r.ColCount' must match 'a.ColCount'.");
+                throw new ArgumentException($"The column count of 'r' must be '{a.ColCount}', but was '{r.ColCount}'.");
             }
 
             using var utmp = TemporalMatrix.CopyFrom(a);
@@ -122,7 +122,7 @@ namespace NumFlat
         {
             if (q.RowCount != q.ColCount)
             {
-                throw new InvalidOperationException("The QR decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square QR decomposition.");
             }
 
             var determinant = 1.0;
@@ -143,7 +143,7 @@ namespace NumFlat
         {
             if (q.RowCount != q.ColCount)
             {
-                throw new InvalidOperationException("The QR decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square QR decomposition.");
             }
 
             var logDeterminant = 0.0;

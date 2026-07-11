@@ -41,22 +41,22 @@ namespace NumFlat.AudioFeatures
         {
             if (sampleRate <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(sampleRate), "The sample rate must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(sampleRate), $"The sample rate must be greater than zero, but was '{sampleRate}'.");
             }
 
             if (fftLength <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(fftLength), "The FFT length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(fftLength), $"The FFT length must be greater than zero, but was '{fftLength}'.");
             }
 
             if (minFrequency < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(minFrequency), "The frequency value must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(minFrequency), $"The minimum frequency must be greater than or equal to zero, but was '{minFrequency}'.");
             }
 
             if (maxFrequency < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxFrequency), "The frequency value must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(maxFrequency), $"The maximum frequency must be greater than or equal to zero, but was '{maxFrequency}'.");
             }
 
             this.sampleRate = sampleRate;
@@ -75,7 +75,7 @@ namespace NumFlat.AudioFeatures
                     frequencies = GetFrequenciesMel(minFrequency, maxFrequency, filterCount + 2);
                     break;
                 default:
-                    throw new ArgumentException("The frequency scale is not supported.", nameof(scale));
+                    throw new ArgumentException($"The frequency scale '{scale}' is not supported.", nameof(scale));
             }
 
             var filters = new TriangularFilter[filterCount];

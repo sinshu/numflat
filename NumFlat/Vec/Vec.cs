@@ -161,7 +161,9 @@ namespace NumFlat
 
             if (startIndex + count > this.count)
             {
-                throw new ArgumentOutOfRangeException("'startIndex + count' must be less than or equal to the length of the source vector.");
+                throw new ArgumentOutOfRangeException(
+                    nameof(count),
+                    $"The requested range with start index '{startIndex}' and count '{count}' exceeds the source vector length '{this.count}'.");
             }
 
             var stride = this.stride;
@@ -224,7 +226,7 @@ namespace NumFlat
 
             if (destination.Length != this.count)
             {
-                throw new ArgumentException("The length of the destination must match the length of the vector.");
+                throw new ArgumentException($"The destination length must be '{this.count}', but was '{destination.Length}'.");
             }
 
             var st = this.memory.Span;
@@ -258,7 +260,7 @@ namespace NumFlat
 
                 if ((uint)index >= this.count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the vector length.");
+                    throw new ArgumentOutOfRangeException(nameof(index), $"The index '{index}' is outside the vector, whose length is '{count}'.");
                 }
 
                 return ref this.memory.Span[stride * index];
@@ -285,7 +287,7 @@ namespace NumFlat
 
                 if ((uint)index >= this.count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), "The index must be within the vector length.");
+                    throw new ArgumentOutOfRangeException(nameof(index), $"The index '{index}' is outside the vector, whose length is '{count}'.");
                 }
 
                 return this.memory.Span[stride * index];

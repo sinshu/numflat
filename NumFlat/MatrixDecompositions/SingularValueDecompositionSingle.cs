@@ -197,7 +197,7 @@ namespace NumFlat
         {
             if (u.RowCount != vt.ColCount)
             {
-                throw new InvalidOperationException("The singular value decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square singular value decomposition.");
             }
 
             var determinant = 1.0F;
@@ -218,7 +218,7 @@ namespace NumFlat
         {
             if (u.RowCount != vt.ColCount)
             {
-                throw new InvalidOperationException("The singular value decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square singular value decomposition.");
             }
 
             var logDeterminant = 0.0F;

@@ -113,7 +113,7 @@ namespace NumFlat
 
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("The LU decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square LU decomposition.");
             }
 
             var fd = destination.GetUnsafeFastIndexer();
@@ -163,7 +163,7 @@ namespace NumFlat
         {
             if (l.RowCount != u.ColCount)
             {
-                throw new InvalidOperationException("The LU decomposition must be square.");
+                throw new InvalidOperationException("This operation requires a square LU decomposition.");
             }
 
             var determinant = (float)pivotSign;

@@ -234,7 +234,7 @@ namespace NumFlat
 
             if (y.Count != x.ColCount)
             {
-                throw new ArgumentException("The vector length must match the number of columns of the matrix.");
+                throw new ArgumentException($"The vector length must match the matrix column count, but they were '{y.Count}' and '{x.ColCount}'.");
             }
 
             if (typeof(T) == typeof(float))
@@ -290,7 +290,7 @@ namespace NumFlat
 
             if (x.colCount != y.rowCount)
             {
-                throw new ArgumentException($"The dimensions of the matrices do not meet the requirement for matrix multiplication.");
+                throw new ArgumentException($"Matrix multiplication requires the left matrix column count to equal the right matrix row count, but they were '{x.ColCount}' and '{y.RowCount}'.");
             }
 
             if (typeof(T) == typeof(float))

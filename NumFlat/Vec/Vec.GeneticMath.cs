@@ -373,7 +373,7 @@ namespace NumFlat
 
             if (source.Count != destination.Count)
             {
-                throw new ArgumentException("The vectors must have the same length.");
+                throw new ArgumentException($"The vectors must have the same length, but their lengths were '{source.Count}' and '{destination.Count}'.");
             }
 
             var ss = source.Memory.Span;

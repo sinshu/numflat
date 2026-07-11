@@ -74,7 +74,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             return new Gaussian(xs, regularization);
@@ -106,7 +106,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             return new Gaussian(xs, weights, regularization);
@@ -134,7 +134,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             return new DiagonalGaussian(xs, regularization);
@@ -165,7 +165,7 @@ namespace NumFlat.Distributions
 
             if (regularization < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(regularization), "The amount of regularization must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(regularization), $"The regularization amount must be greater than or equal to zero, but was '{regularization}'.");
             }
 
             return new DiagonalGaussian(xs, weights, regularization);

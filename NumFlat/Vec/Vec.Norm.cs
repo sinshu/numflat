@@ -81,7 +81,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), $"The norm order must be greater than or equal to one, but was '{p}'.");
             }
 
             var norm = 0.0F;
@@ -110,7 +110,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), $"The norm order must be greater than or equal to one, but was '{p}'.");
             }
 
             var norm = 0.0;
@@ -139,7 +139,7 @@ namespace NumFlat
 
             if (p < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(p), "The p value must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(p), $"The norm order must be greater than or equal to one, but was '{p}'.");
             }
 
             var norm = 0.0;

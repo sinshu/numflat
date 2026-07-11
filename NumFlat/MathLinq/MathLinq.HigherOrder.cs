@@ -26,7 +26,7 @@ namespace NumFlat
             var m2 = xs.Moment(2, mean);
             if (m2 <= 1.0E-14) // np.finfo(np.float64).resolution * 10
             {
-                throw new ArgumentException("The variance of the values is too small.");
+                throw new ArgumentException($"The second central moment must be greater than '1.0E-14', but was '{m2}'.");
             }
 
             var m3 = xs.Moment(3, mean);
@@ -35,7 +35,7 @@ namespace NumFlat
             {
                 if (n <= 2)
                 {
-                    throw new ArgumentException("The sequence does not contain enough source values.");
+                    throw new ArgumentException($"At least three source values are required for the unbiased skewness calculation, but the sequence contained '{n}'.");
                 }
                 return Math.Sqrt((n - 1) * n) / (n - 2) * m3 / Math.Pow(m2, 1.5);
             }
@@ -66,7 +66,7 @@ namespace NumFlat
             var m2 = xs.Moment(2, mean);
             if (m2 <= 1.0E-14) // np.finfo(np.float64).resolution * 10
             {
-                throw new ArgumentException("The variance of the values is too small.");
+                throw new ArgumentException($"The second central moment must be greater than '1.0E-14', but was '{m2}'.");
             }
 
             var m4 = xs.Moment(4, mean);
@@ -75,7 +75,7 @@ namespace NumFlat
             {
                 if (n <= 3)
                 {
-                    throw new ArgumentException("The sequence does not contain enough source values.");
+                    throw new ArgumentException($"At least four source values are required for the unbiased kurtosis calculation, but the sequence contained '{n}'.");
                 }
                 return 1.0 / (n - 2) / (n - 3) * ((n * n - 1) * m4 / (m2 * m2) - 3 * (n - 1) * (n - 1));
             }

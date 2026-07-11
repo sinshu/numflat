@@ -21,7 +21,7 @@ namespace NumFlat
 
         public override MemoryHandle Pin(int elementIndex = 0)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("Pinning unmanaged memory through this memory manager is not supported.");
         }
 
         public override void Unpin()

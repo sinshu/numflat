@@ -42,7 +42,7 @@ namespace NumFlat
 
                 if (x.Count != length)
                 {
-                    throw new ArgumentException($"The length of the vectors must be {length}, but a vector with a length {x.Count} was found.");
+                    throw new ArgumentException($"Each vector must have length '{length}', but a vector with length '{x.Count}' was found.");
                 }
 
                 yield return x;
@@ -86,7 +86,7 @@ namespace NumFlat
 
             if (dic.Count < 2)
             {
-                throw new ArgumentException("A minimum of two classes are required.");
+                throw new ArgumentException("At least two classes are required.");
             }
 
             var expected = 0;
@@ -94,7 +94,7 @@ namespace NumFlat
             {
                 if (actual != expected)
                 {
-                    throw new ArgumentException($"Class index must be a sequential integer starting from zero, but the class index '{expected}' was missing.");
+                    throw new ArgumentException($"The class indices must be consecutive integers starting at zero, but index '{expected}' is missing.");
                 }
                 expected++;
             }

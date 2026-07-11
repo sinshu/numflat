@@ -68,12 +68,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;
@@ -125,12 +125,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;
@@ -172,12 +172,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;
@@ -219,12 +219,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;
@@ -266,12 +266,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;
@@ -314,12 +314,12 @@ namespace NumFlat
 
             if (destination.RowCount != x.RowCount)
             {
-                throw new ArgumentException("'destination.RowCount' must match 'x.RowCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.RowCount}' rows, but it had '{destination.RowCount}'.");
             }
 
             if (destination.ColCount != x.ColCount)
             {
-                throw new ArgumentException("'destination.ColCount' must match 'x.ColCount'.");
+                throw new ArgumentException($"The destination matrix must have '{x.ColCount}' columns, but it had '{destination.ColCount}'.");
             }
 
             var sx = x.Memory.Span;

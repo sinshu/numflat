@@ -31,7 +31,7 @@ namespace NumFlat.Distributions
 
             if (features.Count != weights.Count)
             {
-                throw new ArgumentException("The number of features and weights must match.");
+                throw new ArgumentException($"The number of features must match the number of weights, but they were '{features.Count}' and '{weights.Count}'.");
             }
 
             if (features.Count == 0)

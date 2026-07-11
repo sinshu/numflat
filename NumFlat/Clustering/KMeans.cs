@@ -30,7 +30,7 @@ namespace NumFlat.Clustering
 
             if (array.Length == 0)
             {
-                throw new ArgumentException("The number of clusters must be greater than or equal to one.", nameof(centroids));
+                throw new ArgumentException("At least one centroid is required.", nameof(centroids));
             }
 
             var dimension = array[0].Count;
@@ -73,7 +73,7 @@ namespace NumFlat.Clustering
 
             if (clusterCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(clusterCount), "The number of clusters must be greater than or equal to one.");
+                throw new ArgumentOutOfRangeException(nameof(clusterCount), $"The number of clusters must be greater than or equal to one, but was '{clusterCount}'.");
             }
 
             if (clusterCount == 1)

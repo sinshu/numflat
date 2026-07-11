@@ -20,7 +20,7 @@ namespace NumFlat.SignalProcessing
         {
             if (length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "The length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(length), $"The length must be greater than zero, but was '{length}'.");
             }
 
             var window = new double[length];
@@ -45,7 +45,7 @@ namespace NumFlat.SignalProcessing
         {
             if (length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "The length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(length), $"The length must be greater than zero, but was '{length}'.");
             }
 
             var window = new double[length];
@@ -70,7 +70,7 @@ namespace NumFlat.SignalProcessing
         {
             if (length <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "The length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(length), $"The length must be greater than zero, but was '{length}'.");
             }
 
             var window = new double[length];

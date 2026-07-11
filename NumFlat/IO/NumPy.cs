@@ -65,7 +65,7 @@ namespace NumFlat.IO
             var dtype = GetDtype<T>();
             if (header.Descriptor != dtype)
             {
-                throw new InvalidDataException($"The .npy dtype '{header.Descriptor}' does not match '{dtype}'.");
+                throw new InvalidDataException($"The .npy dtype must be '{dtype}', but was '{header.Descriptor}'.");
             }
 
             var vector = new Vec<T>(header.Shape[0]);
@@ -127,7 +127,7 @@ namespace NumFlat.IO
             var dtype = GetDtype<T>();
             if (header.Descriptor != dtype)
             {
-                throw new InvalidDataException($"The .npy dtype '{header.Descriptor}' does not match '{dtype}'.");
+                throw new InvalidDataException($"The .npy dtype must be '{dtype}', but was '{header.Descriptor}'.");
             }
 
             var matrix = new Mat<T>(header.Shape[0], header.Shape[1]);

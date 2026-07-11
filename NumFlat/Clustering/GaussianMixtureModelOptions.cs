@@ -48,7 +48,7 @@ namespace NumFlat.Clustering
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), "The amount of regularization must be a non-negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(value), $"The regularization amount must be greater than or equal to zero, but was '{value}'.");
                 }
 
                 regularization = value;

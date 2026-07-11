@@ -38,37 +38,37 @@ namespace NumFlat.AudioFeatures
         {
             if (sampleRate <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(sampleRate), "The sample rate must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(sampleRate), $"The sample rate must be greater than zero, but was '{sampleRate}'.");
             }
 
             if (fftLength <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(fftLength), "The FFT length must be a positive value.");
+                throw new ArgumentOutOfRangeException(nameof(fftLength), $"The FFT length must be greater than zero, but was '{fftLength}'.");
             }
 
             if (lowerFrequency < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(lowerFrequency), "The frequency value must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(lowerFrequency), $"The lower frequency must be greater than or equal to zero, but was '{lowerFrequency}'.");
             }
 
             if (centerFrequency < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(centerFrequency), "The frequency value must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(centerFrequency), $"The center frequency must be greater than or equal to zero, but was '{centerFrequency}'.");
             }
 
             if (upperFrequency < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(upperFrequency), "The frequency value must be a non-negative value.");
+                throw new ArgumentOutOfRangeException(nameof(upperFrequency), $"The upper frequency must be greater than or equal to zero, but was '{upperFrequency}'.");
             }
 
             if (lowerFrequency > centerFrequency)
             {
-                throw new ArgumentException("The lower frequency must be smaller than or equal to the center frequency.");
+                throw new ArgumentException($"The lower frequency must be less than or equal to the center frequency, but they were '{lowerFrequency}' and '{centerFrequency}'.");
             }
 
             if (upperFrequency < centerFrequency)
             {
-                throw new ArgumentException("The upper frequency must be greater than or equal to the center frequency.");
+                throw new ArgumentException($"The upper frequency must be greater than or equal to the center frequency, but they were '{upperFrequency}' and '{centerFrequency}'.");
             }
 
             this.sampleRate = sampleRate;
@@ -87,7 +87,7 @@ namespace NumFlat.AudioFeatures
 
             if (frequencyBinEndIndex > fftLength / 2 + 1)
             {
-                throw new ArgumentException("The upper frequency must be within the Nyquist frequency.");
+                throw new ArgumentException("The upper frequency must not exceed the Nyquist frequency.");
             }
 
             var useLowerPart = centerW - lowerW > 0;

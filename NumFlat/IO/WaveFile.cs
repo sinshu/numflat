@@ -160,25 +160,25 @@ namespace NumFlat.IO
             }
             else
             {
-                throw new InvalidDataException("The sample format is not supported.");
+                throw new InvalidDataException($"The WAV sample format with format tag '{formatTag}' and '{bitsPerSample}' bits per sample is not supported.");
             }
 
             var channelCount = (int)BitConverter.ToInt16(buffer.Slice(2, 2));
             if (channelCount <= 0)
             {
-                throw new InvalidDataException("The channel count is invalid.");
+                throw new InvalidDataException($"The channel count must be greater than zero, but was '{channelCount}'.");
             }
 
             var sampleRate = BitConverter.ToInt32(buffer.Slice(4, 4));
             if (sampleRate <= 0)
             {
-                throw new InvalidDataException("The sample rate is invalid.");
+                throw new InvalidDataException($"The sample rate must be greater than zero, but was '{sampleRate}'.");
             }
 
             var blockAlign = (int)BitConverter.ToInt16(buffer.Slice(12, 2));
             if (blockAlign != GetSampleSize(sampleFormat) * channelCount)
             {
-                throw new InvalidDataException("The block alignment is invalid.");
+                throw new InvalidDataException($"The block alignment '{blockAlign}' does not match the sample format and channel count.");
             }
 
             return (sampleFormat, channelCount, sampleRate);

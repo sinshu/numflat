@@ -54,7 +54,7 @@ namespace NumFlat
 
             if (destination.Count != x.Count)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+                throw new ArgumentException($"The destination vector must have length '{x.Count}', but its length was '{destination.Count}'.");
             }
 
             var sx = x.Memory.Span;
@@ -88,7 +88,7 @@ namespace NumFlat
 
             if (destination.Count != x.Count)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+                throw new ArgumentException($"The destination vector must have length '{x.Count}', but its length was '{destination.Count}'.");
             }
 
             var sx = x.Memory.Span;
@@ -122,7 +122,7 @@ namespace NumFlat
 
             if (destination.Count != x.Count)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+                throw new ArgumentException($"The destination vector must have length '{x.Count}', but its length was '{destination.Count}'.");
             }
 
             var sx = x.Memory.Span;
@@ -156,7 +156,7 @@ namespace NumFlat
 
             if (destination.Count != x.Count)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+                throw new ArgumentException($"The destination vector must have length '{x.Count}', but its length was '{destination.Count}'.");
             }
 
             var sx = x.Memory.Span;
@@ -191,7 +191,7 @@ namespace NumFlat
 
             if (destination.Count != x.Count)
             {
-                throw new ArgumentException("'destination.Count' must match 'x.Count'.");
+                throw new ArgumentException($"The destination vector must have length '{x.Count}', but its length was '{destination.Count}'.");
             }
 
             var sx = x.Memory.Span;
