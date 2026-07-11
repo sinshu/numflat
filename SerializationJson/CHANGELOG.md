@@ -1,4 +1,4 @@
-# v0.0.4
+﻿# v0.0.4
 
 * Refactored the implementation to improve performance.
 * Added support for additional serializable types.

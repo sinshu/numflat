@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.Json;
 using NumFlat;
 using NumFlat.Serialization.Json;

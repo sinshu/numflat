@@ -1,4 +1,4 @@
-# v1.3.1
+﻿# v1.3.1
 
 * Added the `AsSingleElementVector<T>()` and `AsSingleElementMatrix<T>()` extension methods for converting a scalar value of type `T` into a single-element vector or matrix.
 * Refactored JSON serialization to improve performance.

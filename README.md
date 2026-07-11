@@ -1,4 +1,4 @@
-# NumFlat
+﻿# NumFlat
 
 NumFlat is a numerical computation library written entirely in C#.
 
