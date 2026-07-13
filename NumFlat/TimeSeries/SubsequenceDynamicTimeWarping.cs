@@ -62,6 +62,8 @@ namespace NumFlat.TimeSeries
         /// </param>
         /// <returns>
         /// The alignment path between the query and long sequence.
+        /// In each <see cref="IndexPair"/> in the alignment path, <see cref="IndexPair.First"/> is an index into the query sequence,
+        /// and <see cref="IndexPair.Second"/> is an index into the long sequence.
         /// </returns>
         /// <remarks>
         /// Note that <paramref name="lastIndex"/> refers to the actual position of the last element, not one past it.
@@ -184,6 +186,8 @@ namespace NumFlat.TimeSeries
         /// </param>
         /// <returns>
         /// An array of <see cref="IndexPair"/> representing the alignment path of the best matching subsequence.
+        /// In each pair, <see cref="IndexPair.First"/> is an index into <paramref name="query"/>,
+        /// and <see cref="IndexPair.Second"/> is an index into <paramref name="longSequence"/>.
         /// </returns>
         public static IndexPair[] GetBestAlignment<T, U>(IReadOnlyList<T> query, IReadOnlyList<U> longSequence, DistanceMetric<T, U> dm)
         {

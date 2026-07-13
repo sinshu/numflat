@@ -102,6 +102,8 @@ namespace NumFlat.TimeSeries
         /// </param>
         /// <returns>
         /// A tuple containing the DTW distance and the alignment path between the input sequences.
+        /// In each <see cref="IndexPair"/> in the alignment path, <see cref="IndexPair.First"/> is an index into <paramref name="xs"/>,
+        /// and <see cref="IndexPair.Second"/> is an index into <paramref name="ys"/>.
         /// </returns>
         public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, DistanceMetric<T, U> dm, int w)
         {
@@ -143,6 +145,8 @@ namespace NumFlat.TimeSeries
         /// </param>
         /// <returns>
         /// A tuple containing the DTW distance and the alignment path between the input sequences.
+        /// In each <see cref="IndexPair"/> in the alignment path, <see cref="IndexPair.First"/> is an index into <paramref name="xs"/>,
+        /// and <see cref="IndexPair.Second"/> is an index into <paramref name="ys"/>.
         /// </returns>
         public static (double Distance, IndexPair[] Alignment) GetDistanceAndAlignment<T, U>(IReadOnlyList<T> xs, IReadOnlyList<U> ys, DistanceMetric<T, U> dm)
         {
