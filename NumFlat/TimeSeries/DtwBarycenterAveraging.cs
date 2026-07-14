@@ -29,7 +29,7 @@ namespace NumFlat.TimeSeries
             ThrowHelper.ThrowIfNull(sourceSequences, nameof(sourceSequences));
             if (sourceSequences.Count == 0)
             {
-                throw new ArgumentException("The sequence must contain at least one vector.", nameof(sourceSequences));
+                throw new ArgumentException("The list must contain at least one sequence.", nameof(sourceSequences));
             }
 
             if (options == null)
@@ -157,7 +157,7 @@ namespace NumFlat.TimeSeries
             {
                 if (counts[i] == 0)
                 {
-                    sums[i] = currentBarycenter[i].Copy();
+                    currentBarycenter[i].CopyTo(sums[i]);
                 }
                 else
                 {
