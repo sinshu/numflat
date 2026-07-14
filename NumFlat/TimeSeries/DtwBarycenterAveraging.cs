@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace NumFlat.TimeSeries
 {
@@ -27,12 +26,20 @@ namespace NumFlat.TimeSeries
         /// </exception>
         public static IReadOnlyList<Vec<double>> Fit(IReadOnlyList<IReadOnlyList<Vec<double>>> sourceSequences, DtwBarycenterAveragingOptions? options = null)
         {
-            ThrowIfInvalidSequences(sourceSequences, nameof(sourceSequences));
-            options ??= new DtwBarycenterAveragingOptions();
+            ThrowHelper.ThrowIfNull(sourceSequences, nameof(sourceSequences));
+            if (sourceSequences.Count == 0)
+            {
+                throw new ArgumentException("The sequence must contain at least one vector.", nameof(sourceSequences));
+            }
+
+            if (options == null)
+            {
+                options = new DtwBarycenterAveragingOptions();
+            }
 
             try
             {
-                var currentBarycenter = GetInitialGuess(sourceSequences).Select(vector => vector.Copy()).ToArray();
+                var currentBarycenter = GetInitialGuess(sourceSequences);
                 var previousCost = double.PositiveInfinity;
                 for (var i = 0; i < options.MaxIterations; i++)
                 {
@@ -73,7 +80,11 @@ namespace NumFlat.TimeSeries
         /// </returns>
         public static IReadOnlyList<Vec<double>> GetInitialGuess(IReadOnlyList<IReadOnlyList<Vec<double>>> sourceSequences)
         {
-            ThrowIfInvalidSequences(sourceSequences, nameof(sourceSequences));
+            ThrowHelper.ThrowIfNull(sourceSequences, nameof(sourceSequences));
+            if (sourceSequences.Count == 0)
+            {
+                throw new ArgumentException("The list must contain at least one sequence.", nameof(sourceSequences));
+            }
 
             var totalDistances = new double[sourceSequences.Count];
             for (var i = 0; i < sourceSequences.Count; i++)
@@ -114,10 +125,15 @@ namespace NumFlat.TimeSeries
         /// </returns>
         public static (Vec<double>[] Barycenter, double AverageCost) Update(IReadOnlyList<Vec<double>> currentBarycenter, IReadOnlyList<IReadOnlyList<Vec<double>>> sourceSequences)
         {
-            ThrowIfInvalidSequence(currentBarycenter, nameof(currentBarycenter));
-            var dimension = currentBarycenter[0].Count;
-            ThrowIfInvalidSequences(sourceSequences, nameof(sourceSequences), dimension);
+            ThrowHelper.ThrowIfNull(currentBarycenter, nameof(currentBarycenter));
+            ThrowHelper.ThrowIfEmpty(currentBarycenter, nameof(currentBarycenter));
+            ThrowHelper.ThrowIfNull(sourceSequences, nameof(sourceSequences));
+            if (sourceSequences.Count == 0)
+            {
+                throw new ArgumentException("The list must contain at least one sequence.", nameof(sourceSequences));
+            }
 
+            var dimension = currentBarycenter[0].Count;
             var sums = new Vec<double>[currentBarycenter.Count];
             var counts = new int[currentBarycenter.Count];
             for (var i = 0; i < sums.Length; i++)
@@ -150,38 +166,6 @@ namespace NumFlat.TimeSeries
             }
 
             return (sums, cost / sourceSequences.Count);
-        }
-
-        private static void ThrowIfInvalidSequences(IReadOnlyList<IReadOnlyList<Vec<double>>> sourceSequences, string paramName, int? dimension = null)
-        {
-            ThrowHelper.ThrowIfNull(sourceSequences, paramName);
-            if (sourceSequences.Count == 0)
-            {
-                throw new ArgumentException("The sequence must contain at least one sequence.", paramName);
-            }
-
-            foreach (var sequence in sourceSequences)
-            {
-                ThrowIfInvalidSequence(sequence, paramName, dimension);
-                dimension ??= sequence[0].Count;
-            }
-        }
-
-        private static void ThrowIfInvalidSequence(IReadOnlyList<Vec<double>> sequence, string paramName, int? dimension = null)
-        {
-            ThrowHelper.ThrowIfNull(sequence, paramName);
-            ThrowHelper.ThrowIfEmpty(sequence, paramName);
-
-            var expectedDimension = dimension;
-            foreach (var vector in sequence)
-            {
-                ThrowHelper.ThrowIfEmpty(vector, paramName);
-                expectedDimension ??= vector.Count;
-                if (vector.Count != expectedDimension.Value)
-                {
-                    throw new ArgumentException("All vectors must have the same length.", paramName);
-                }
-            }
         }
     }
 }
