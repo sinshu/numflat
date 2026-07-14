@@ -9,7 +9,7 @@ namespace NumFlat.MultivariateAnalyses
     /// </summary>
     public sealed class KernelPrincipalComponentAnalysis : IVectorToVectorTransform<double>
     {
-        private readonly Mat<double> sourceVectors;
+        private readonly Vec<double>[] sourceVectors;
         private readonly Kernel<Vec<double>, Vec<double>> kernel;
         private readonly Vec<double> kernelMeans;
         private readonly double totalMean;
@@ -33,22 +33,23 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfNull(kernel, nameof(kernel));
 
             var sampleCount = xs.Count;
-            var dimension = xs[0].Count;
-            var sourceVectors = new Mat<double>(dimension, sampleCount);
-            foreach (var (x, col) in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)).Zip(sourceVectors.Cols))
+            var sourceVectors = new Vec<double>[sampleCount];
             {
-                x.CopyTo(col);
+                var i = 0;
+                foreach (var x in xs.ThrowIfEmptyOrDifferentSize(nameof(xs)))
+                {
+                    sourceVectors[i] = x.Copy();
+                    i++;
+                }
             }
 
             var kernelMatrix = new Mat<double>(sampleCount, sampleCount);
             var fkmat = kernelMatrix.GetUnsafeFastIndexer();
             for (var i = 0; i < sampleCount; i++)
             {
-                var vec1 = sourceVectors.Cols[i];
                 for (var j = 0; j <= i; j++)
                 {
-                    var vec2 = sourceVectors.Cols[j];
-                    var value = kernel.Invoke(vec1, vec2);
+                    var value = kernel.Invoke(sourceVectors[i], sourceVectors[j]);
                     fkmat[i, j] = value;
                     fkmat[j, i] = value;
                 }
@@ -107,31 +108,31 @@ namespace NumFlat.MultivariateAnalyses
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
-            if (source.Count != sourceVectors.RowCount)
+            if (source.Count != sourceVectors[0].Count)
             {
-                throw new ArgumentException($"The transform requires the length of the source vector to be '{sourceVectors.RowCount}', but was '{source.Count}'.", nameof(source));
+                throw new ArgumentException($"The transform requires the length of the source vector to be '{sourceVectors[0].Count}', but was '{source.Count}'.", nameof(source));
             }
 
-            if (destination.Count > sourceVectors.ColCount)
+            if (destination.Count > sourceVectors.Length)
             {
-                throw new ArgumentException($"The destination vector length must be less than or equal to '{sourceVectors.ColCount}', but was '{destination.Count}'.", nameof(destination));
+                throw new ArgumentException($"The destination vector length must be less than or equal to '{sourceVectors.Length}', but was '{destination.Count}'.", nameof(destination));
             }
 
-            using var utmp = new TemporalVector<double>(sourceVectors.ColCount);
+            using var utmp = new TemporalVector<double>(sourceVectors.Length);
             ref readonly var tmp = ref utmp.Item;
             var ftmp = tmp.GetUnsafeFastIndexer();
 
             var sum = 0.0;
-            for (var i = 0; i < sourceVectors.ColCount; i++)
+            for (var i = 0; i < sourceVectors.Length; i++)
             {
-                var value = kernel.Invoke(sourceVectors.Cols[i], source);
+                var value = kernel.Invoke(sourceVectors[i], source);
                 ftmp[i] = value;
                 sum += value;
             }
 
-            var mean = sum / sourceVectors.ColCount;
+            var mean = sum / sourceVectors.Length;
             var fkmean = kernelMeans.GetUnsafeFastIndexer();
-            for (var i = 0; i < sourceVectors.ColCount; i++)
+            for (var i = 0; i < sourceVectors.Length; i++)
             {
                 ftmp[i] = ftmp[i] - fkmean[i] - mean + totalMean;
             }
@@ -142,9 +143,9 @@ namespace NumFlat.MultivariateAnalyses
 
 
         /// <summary>
-        /// Gets the source vectors stored as columns.
+        /// Gets the source vectors.
         /// </summary>
-        public ref readonly Mat<double> SourceVectors => ref sourceVectors;
+        public IReadOnlyList<Vec<double>> SourceVectors => sourceVectors;
 
         /// <summary>
         /// Gets the kernel function applied to the vectors.
@@ -167,9 +168,9 @@ namespace NumFlat.MultivariateAnalyses
         public ref readonly Mat<double> Projection => ref projection;
 
         /// <inheritdoc/>
-        public int SourceDimension => sourceVectors.RowCount;
+        public int SourceDimension => sourceVectors[0].Count;
 
         /// <inheritdoc/>
-        public int DestinationDimension => sourceVectors.ColCount;
+        public int DestinationDimension => sourceVectors.Length;
     }
 }

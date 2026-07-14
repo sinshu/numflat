@@ -21,7 +21,7 @@ namespace NumFlat.Serialization.Json
                 throw new JsonException("A NumFlat kernel PCA object must be represented as a JSON object.");
             }
 
-            Mat<double>? sourceVectors = null;
+            Vec<double>[]? sourceVectors = null;
             Kernel<Vec<double>, Vec<double>>? kernel = null;
 
             while (reader.Read())
@@ -44,7 +44,7 @@ namespace NumFlat.Serialization.Json
 
                 if (JsonSerializationHelpers.PropertyNameEquals(propertyName, SourceVectorsPropertyName, options))
                 {
-                    sourceVectors = JsonSerializationHelpers.ReadDoubleMatrix(ref reader);
+                    sourceVectors = JsonSerializationHelpers.ReadDoubleVectorArray(ref reader);
                 }
                 else if (JsonSerializationHelpers.PropertyNameEquals(propertyName, KernelPropertyName, options))
                 {
@@ -64,13 +64,13 @@ namespace NumFlat.Serialization.Json
         {
             writer.WriteStartObject();
             writer.WritePropertyName(SourceVectorsPropertyName);
-            JsonSerializationHelpers.WriteDoubleMatrix(writer, value.SourceVectors);
+            JsonSerializationHelpers.WriteDoubleVectorArray(writer, value.SourceVectors);
             writer.WritePropertyName(KernelPropertyName);
             KernelJsonSerialization.Write(writer, value.Kernel, options);
             writer.WriteEndObject();
         }
 
-        private static KernelPrincipalComponentAnalysis CreateKernelPca(Mat<double>? sourceVectors, Kernel<Vec<double>, Vec<double>>? kernel)
+        private static KernelPrincipalComponentAnalysis CreateKernelPca(Vec<double>[]? sourceVectors, Kernel<Vec<double>, Vec<double>>? kernel)
         {
             if (sourceVectors == null)
             {
@@ -84,7 +84,7 @@ namespace NumFlat.Serialization.Json
 
             try
             {
-                return new KernelPrincipalComponentAnalysis(sourceVectors.Value.Cols, kernel);
+                return new KernelPrincipalComponentAnalysis(sourceVectors, kernel);
             }
             catch (ArgumentException ex)
             {

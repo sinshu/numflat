@@ -18,11 +18,9 @@ namespace SerializationJsonTest
             var json = JsonSerializer.Serialize(source, options);
             var actual = JsonSerializer.Deserialize<KernelPrincipalComponentAnalysis>(json, options)!;
 
-            Assert.That(json, Is.EqualTo(@"{""sourceVectors"":[[1,3],[2,4]],""kernel"":{""type"":""gaussian"",""gamma"":0.5}}"));
-            Assert.That(actual.SourceVectors[0, 0], Is.EqualTo(1.0));
-            Assert.That(actual.SourceVectors[1, 0], Is.EqualTo(2.0));
-            Assert.That(actual.SourceVectors[0, 1], Is.EqualTo(3.0));
-            Assert.That(actual.SourceVectors[1, 1], Is.EqualTo(4.0));
+            Assert.That(json, Is.EqualTo(@"{""sourceVectors"":[[1,2],[3,4]],""kernel"":{""type"":""gaussian"",""gamma"":0.5}}"));
+            Assert.That(actual.SourceVectors[0].ToArray(), Is.EqualTo(new[] { 1.0, 2.0 }));
+            Assert.That(actual.SourceVectors[1].ToArray(), Is.EqualTo(new[] { 3.0, 4.0 }));
             Assert.That(actual.Kernel, Is.TypeOf<GaussianKernel>());
             Assert.That(((GaussianKernel)actual.Kernel).Gamma, Is.EqualTo(0.5));
         }
@@ -46,7 +44,7 @@ namespace SerializationJsonTest
         public void DeserializeKernelPcaIgnoresLegacyFittedParametersAndRefits()
         {
             var options = NumFlatJsonSerializerOptions.Create();
-            const string json = @"{""sourceVectors"":[[1,3],[2,4]],""kernel"":{""type"":""gaussian"",""gamma"":0.5},""kernelMeans"":[5,6],""totalMean"":7,""projection"":[[1,0],[0,1]]}";
+            const string json = @"{""sourceVectors"":[[1,2],[3,4]],""kernel"":{""type"":""gaussian"",""gamma"":0.5},""kernelMeans"":[5,6],""totalMean"":7,""projection"":[[1,0],[0,1]]}";
 
             var actual = JsonSerializer.Deserialize<KernelPrincipalComponentAnalysis>(json, options)!;
             var expected = CreateKernelPca();
@@ -61,7 +59,7 @@ namespace SerializationJsonTest
         public void DeserializeKernelPcaWithoutKernelThrowsJsonException()
         {
             var options = NumFlatJsonSerializerOptions.Create();
-            const string json = @"{""sourceVectors"":[[1,3],[2,4]]}";
+            const string json = @"{""sourceVectors"":[[1,2],[3,4]]}";
 
             Assert.That((Action)(() => JsonSerializer.Deserialize<KernelPrincipalComponentAnalysis>(json, options)), Throws.TypeOf<JsonException>());
         }
