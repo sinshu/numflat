@@ -1,4 +1,9 @@
-﻿# v1.3.3
+﻿# v1.3.4
+
+* Added `Special.GreatestCommonDivisor`.
+* Updated `SignalProcessing.Resample` to use the fast path in more cases.
+
+# v1.3.3
 
 * Improved documentation comments and exception messages.
 * Improved the performance of:
