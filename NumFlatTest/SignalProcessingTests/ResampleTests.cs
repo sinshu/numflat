@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
 using MathNet.Numerics.IntegralTransforms;
 using NumFlat;
+using NumFlat.IO;
 using NumFlat.SignalProcessing;
 
 namespace NumFlatTest.SignalProcessingTests
@@ -127,6 +129,74 @@ namespace NumFlatTest.SignalProcessingTests
             }
 
             TestVector.FailIfOutOfRangeWrite(destination);
+        }
+
+        [TestCase("noise16k.wav", "noise16kto48k.wav", 3, 1)]
+        [TestCase("noise48k.wav", "noise48kto16k.wav", 1, 3)]
+        public void MatchesPythonLanczosReferenceWave(string sourceFileName, string expectedFileName, int p, int q)
+        {
+            var (source, sourceSampleRate) = WaveFile.ReadMono(Path.Combine("dataset", sourceFileName));
+            var (expected, expectedSampleRate) = WaveFile.ReadMono(Path.Combine("dataset", expectedFileName));
+
+            var actual = source.Resample(p, q, 50);
+
+            Assert.That(expectedSampleRate * q, Is.EqualTo(sourceSampleRate * p));
+            Assert.That(actual.Count, Is.EqualTo(expected.Count));
+
+            NumAssert.AreSame(expected, actual, 1.0 / 32768 + 1.0E-12);
+        }
+
+        [TestCase(1, 12, 5, 1, 3, 1, 2)]
+        [TestCase(2, 15, 4, 1, 2, 3, 1)]
+        [TestCase(9, 7, 3, 1, 1, 2, 3)]
+        [TestCase(1, 10, 1, 3, 2, 2, 1)]
+        [TestCase(2, 8, 1, 4, 3, 1, 3)]
+        [TestCase(17, 3, 1, 2, 1, 3, 2)]
+        public void ConvolutionPathMatchesDirectCalculation(
+            int sourceLength,
+            int destinationLength,
+            int p,
+            int q,
+            int a,
+            int sourceStride,
+            int destinationStride)
+        {
+            var source = TestVector.RandomDouble(42, sourceLength, sourceStride);
+            var destination = TestVector.RandomDouble(0, destinationLength, destinationStride);
+
+            SignalProcessing.Resample(source, destination, p, q, a);
+
+            for (var i = 0; i < destination.Count; i++)
+            {
+                var expected = LocalResample(source, i, p, q, a);
+                Assert.That(destination[i], Is.EqualTo(expected).Within(1.0E-12));
+            }
+
+            TestVector.FailIfOutOfRangeWrite(destination);
+        }
+
+        private static double LocalResample(in Vec<double> source, int destinationIndex, int p, int q, int a)
+        {
+            var position = (double)destinationIndex * q / p;
+            var sincFactor = p > q ? 1.0 : (double)q / p;
+            var gain = p < q ? (double)p / q : 1.0;
+            var left = Math.Max(0, (int)Math.Floor(position - a * sincFactor) + 1);
+            var right = Math.Min(source.Count, (int)Math.Ceiling(position + a * sincFactor));
+            var sincScale = Math.PI / sincFactor;
+            var windowScale = sincScale / a;
+
+            var sum = 0.0;
+            for (var i = left; i < right; i++)
+            {
+                var distance = i - position;
+                sum += source[i] * LocalSinc(sincScale * distance) * LocalSinc(windowScale * distance);
+            }
+            return gain * sum;
+        }
+
+        private static double LocalSinc(double x)
+        {
+            return Math.Abs(x) < 1.0E-15 ? 1.0 : Math.Sin(x) / x;
         }
 
         private static double Lanczos(double x, int a)
