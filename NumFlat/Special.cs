@@ -77,6 +77,40 @@ namespace NumFlat
         }
 
         /// <summary>
+        /// Calculates the greatest common divisor of two positive integers.
+        /// </summary>
+        /// <param name="x">
+        /// The first positive integer.
+        /// </param>
+        /// <param name="y">
+        /// The second positive integer.
+        /// </param>
+        /// <returns>
+        /// The greatest common divisor of <paramref name="x"/> and <paramref name="y"/>.
+        /// </returns>
+        public static int GreatestCommonDivisor(int x, int y)
+        {
+            if (x < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), "The value must be greater than or equal to one.");
+            }
+
+            if (y < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(y), "The value must be greater than or equal to one.");
+            }
+
+            while (y != 0)
+            {
+                var remainder = x % y;
+                x = y;
+                y = remainder;
+            }
+
+            return x;
+        }
+
+        /// <summary>
         /// Copies the upper triangular part to the lower triangular part to generate a Hermitian matrix.
         /// </summary>
         /// <param name="x">

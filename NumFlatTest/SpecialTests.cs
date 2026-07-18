@@ -32,6 +32,25 @@ namespace NumFlatTest
             Assert.That(Special.Eps(x), Is.EqualTo(Precision.EpsilonOf(x)));
         }
 
+        [TestCase(1, 1, 1)]
+        [TestCase(12, 8, 4)]
+        [TestCase(48000, 16000, 16000)]
+        [TestCase(16000, 48000, 16000)]
+        [TestCase(17, 13, 1)]
+        public void GreatestCommonDivisor(int x, int y, int expected)
+        {
+            Assert.That(Special.GreatestCommonDivisor(x, y), Is.EqualTo(expected));
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(1, 0)]
+        [TestCase(-1, 1)]
+        [TestCase(1, -1)]
+        public void GreatestCommonDivisorRejectsNonPositiveValues(int x, int y)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => Special.GreatestCommonDivisor(x, y)));
+        }
+
         [TestCase(1, 1)]
         [TestCase(1, 3)]
         [TestCase(2, 2)]

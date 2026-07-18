@@ -32,6 +32,13 @@ namespace NumFlat.SignalProcessing
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
             ThrowHelper.ThrowIfEmpty(destination, nameof(destination));
 
+            ValidateAndReduceResamplingFactors(ref p, ref q, a);
+
+            ResampleCore(source, destination, p, q, a);
+        }
+
+        private static void ValidateAndReduceResamplingFactors(ref int p, ref int q, int a)
+        {
             if (p < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
@@ -47,6 +54,13 @@ namespace NumFlat.SignalProcessing
                 throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
             }
 
+            var greatestCommonDivisor = Special.GreatestCommonDivisor(p, q);
+            p /= greatestCommonDivisor;
+            q /= greatestCommonDivisor;
+        }
+
+        private static void ResampleCore(in Vec<double> source, in Vec<double> destination, int p, int q, int a)
+        {
             using var usrc = source.EnsureContiguous(true);
             ref readonly var src = ref usrc.Item;
 
@@ -91,24 +105,11 @@ namespace NumFlat.SignalProcessing
         {
             ThrowHelper.ThrowIfEmpty(source, nameof(source));
 
-            if (p < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
-            }
-
-            if (q < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(q), "The downsampling factor must be greater than or equal to one.");
-            }
-
-            if (a < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
-            }
+            ValidateAndReduceResamplingFactors(ref p, ref q, a);
 
             var length = (int)Math.Ceiling((double)source.Count * p / q);
             var destination = new Vec<double>(length);
-            Resample(source, destination, p, q, a);
+            ResampleCore(source, destination, p, q, a);
             return destination;
         }
 

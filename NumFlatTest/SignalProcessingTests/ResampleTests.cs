@@ -108,6 +108,18 @@ namespace NumFlatTest.SignalProcessingTests
             }
         }
 
+        [TestCase(48000, 16000, 3, 1)]
+        [TestCase(16000, 48000, 1, 3)]
+        public void CommonFactorsUseReducedRatio(int p, int q, int reducedP, int reducedQ)
+        {
+            var source = TestVector.RandomDouble(42, 30, 2);
+
+            var actual = source.Resample(p, q, 10);
+            var expected = source.Resample(reducedP, reducedQ, 10);
+
+            NumAssert.AreSame(expected, actual, 0);
+        }
+
         [TestCase(100, 10, 2, 4)]
         [TestCase(100, 10, 4, 2)]
         [TestCase(50, 12, 9, 5)]
