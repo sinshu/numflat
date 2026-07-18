@@ -37,28 +37,6 @@ namespace NumFlat.SignalProcessing
             ResampleCore(source, destination, p, q, a);
         }
 
-        private static void ValidateAndReduceResamplingFactors(ref int p, ref int q, int a)
-        {
-            if (p < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
-            }
-
-            if (q < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(q), "The downsampling factor must be greater than or equal to one.");
-            }
-
-            if (a < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
-            }
-
-            var greatestCommonDivisor = Special.GreatestCommonDivisor(p, q);
-            p /= greatestCommonDivisor;
-            q /= greatestCommonDivisor;
-        }
-
         /// <summary>
         /// The given sequence is resampled using sinc function interpolation.
         /// The interpolation process is performed using Lanczos resampling.
@@ -89,6 +67,28 @@ namespace NumFlat.SignalProcessing
             var destination = new Vec<double>(length);
             ResampleCore(source, destination, p, q, a);
             return destination;
+        }
+
+        private static void ValidateAndReduceResamplingFactors(ref int p, ref int q, int a)
+        {
+            if (p < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(p), "The upsampling factor must be greater than or equal to one.");
+            }
+
+            if (q < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(q), "The downsampling factor must be greater than or equal to one.");
+            }
+
+            if (a < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(a), "The quality factor of the Lanczos resampling must be greater than or equal to one.");
+            }
+
+            var greatestCommonDivisor = Special.GreatestCommonDivisor(p, q);
+            p /= greatestCommonDivisor;
+            q /= greatestCommonDivisor;
         }
 
         private static void ResampleCore(in Vec<double> source, in Vec<double> destination, int p, int q, int a)
