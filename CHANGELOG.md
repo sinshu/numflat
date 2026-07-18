@@ -1,4 +1,12 @@
-﻿# v1.3.2
+﻿# v1.3.3
+
+* Improved documentation comments and exception messages.
+* Improved the performance of:
+    - `KernelPrincipalComponentAnalysis`
+    - `DtwBarycenterAveraging`
+    - `SignalProcessing.Resample`
+
+# v1.3.2
 
 * Added `DtwBarycenterAveraging`.
 * Improved documentation comments and exception messages.

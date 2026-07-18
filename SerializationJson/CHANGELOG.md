@@ -1,4 +1,9 @@
-﻿# v0.0.4
+﻿# v0.0.5
+
+* Updated to support the latest version of NumFlat.  
+  (Note that the kernel PCA implementation has changed and is no longer compatible with previous versions.)
+
+# v0.0.4
 
 * Refactored the implementation to improve performance.
 * Added support for additional serializable types.
