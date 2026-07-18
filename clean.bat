@@ -1,4 +1,4 @@
-﻿rmdir /s /q "NumFlat\bin"
+rmdir /s /q "NumFlat\bin"
 rmdir /s /q "NumFlat\obj"
 rmdir /s /q "NumFlatTest\bin"
 rmdir /s /q "NumFlatTest\obj"
