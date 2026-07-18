@@ -59,28 +59,6 @@ namespace NumFlat.SignalProcessing
             q /= greatestCommonDivisor;
         }
 
-        private static void ResampleCore(in Vec<double> source, in Vec<double> destination, int p, int q, int a)
-        {
-            using var usrc = source.EnsureContiguous(true);
-            ref readonly var src = ref usrc.Item;
-
-            using var udst = destination.EnsureContiguous(false);
-            ref readonly var dst = ref udst.Item;
-
-            if (q == 1 && p > 1)
-            {
-                FastUpsample(src, dst, p, a);
-            }
-            else if (p == 1 && q > 1)
-            {
-                FastDownsample(src, dst, q, a);
-            }
-            else
-            {
-                NaiveResample(src.Memory.Span, dst.Memory.Span, p, q, a);
-            }
-        }
-
         /// <summary>
         /// The given sequence is resampled using sinc function interpolation.
         /// The interpolation process is performed using Lanczos resampling.
@@ -111,6 +89,28 @@ namespace NumFlat.SignalProcessing
             var destination = new Vec<double>(length);
             ResampleCore(source, destination, p, q, a);
             return destination;
+        }
+
+        private static void ResampleCore(in Vec<double> source, in Vec<double> destination, int p, int q, int a)
+        {
+            using var usrc = source.EnsureContiguous(true);
+            ref readonly var src = ref usrc.Item;
+
+            using var udst = destination.EnsureContiguous(false);
+            ref readonly var dst = ref udst.Item;
+
+            if (q == 1 && p > 1)
+            {
+                FastUpsample(src, dst, p, a);
+            }
+            else if (p == 1 && q > 1)
+            {
+                FastDownsample(src, dst, q, a);
+            }
+            else
+            {
+                NaiveResample(src.Memory.Span, dst.Memory.Span, p, q, a);
+            }
         }
 
         private static void FastUpsample(in Vec<double> source, in Vec<double> destination, int p, int a)
@@ -237,7 +237,7 @@ namespace NumFlat.SignalProcessing
             for (var i = 0; i < destination.Length; i++)
             {
                 var position = i * qdp;
-                destination[i] = NaiveResample(source, position, 1, a);
+                destination[i] = NaiveResampleSinglePoint(source, position, 1, a);
             }
         }
 
@@ -248,11 +248,11 @@ namespace NumFlat.SignalProcessing
             for (var i = 0; i < destination.Length; i++)
             {
                 var position = i * qdp;
-                destination[i] = pdq * NaiveResample(source, position, qdp, a);
+                destination[i] = pdq * NaiveResampleSinglePoint(source, position, qdp, a);
             }
         }
 
-        private static double NaiveResample(ReadOnlySpan<double> source, double position, double sincFactor, int a)
+        private static double NaiveResampleSinglePoint(ReadOnlySpan<double> source, double position, double sincFactor, int a)
         {
             var left = (int)Math.Floor(position - a * sincFactor) + 1;
             var right = (int)Math.Ceiling(position + a * sincFactor);
