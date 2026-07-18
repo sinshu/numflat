@@ -35,7 +35,7 @@ Console.WriteLine(mat * vec);
 
 
 > [!NOTE]
-> **Use of LLMs**  
+> #### Use of LLMs
 > This project was started around January 2024, and most of its core linear algebra and signal-processing functionality was written by hand. As coding agents became more widely available, I began using LLMs to help implement some algorithms. I make an effort to verify the correctness of such implementations through unit tests.  
 > I also use this library in my own work and personally believe that it is suitable for practical use. Nevertheless, users are encouraged to review the code quality and decide for themselves whether the library is appropriate for their needs.
 
