@@ -10,6 +10,60 @@ namespace NumFlatTest.SignalProcessingTests
 {
     public class StftTests
     {
+        [TestCase(128, 128, 64, 1)]
+        [TestCase(129, 128, 64, 1)]
+        [TestCase(191, 128, 64, 1)]
+        [TestCase(192, 128, 64, 2)]
+        [TestCase(193, 128, 64, 2)]
+        [TestCase(1000, 128, 64, 14)]
+        [TestCase(1500, 64, 16, 90)]
+        [TestCase(256, 128, 128, 2)]
+        public void FrameCount_AnalysisMode(int sourceLength, int frameLength, int frameShift, int expectedCount)
+        {
+            var source = TestVector.RandomDouble(42, sourceLength, 1);
+            var window = WindowFunctions.Hann(frameLength);
+
+            var (spectrogram, info) = source.Stft(window, frameShift, StftMode.Analysis);
+
+            Assert.That(spectrogram.Length, Is.EqualTo(expectedCount));
+            Assert.That(info.GetFramePosition(0).Start, Is.Zero);
+            Assert.That(info.GetFramePosition(expectedCount - 1).End, Is.LessThanOrEqualTo(sourceLength));
+            Assert.That(info.GetFramePosition(expectedCount).End, Is.GreaterThan(sourceLength));
+        }
+
+        [TestCase(1, 32)]
+        [TestCase(64, 32)]
+        [TestCase(65, 64)]
+        [TestCase(127, 64)]
+        [TestCase(127, 128)]
+        public void InsufficientSource_AnalysisMode(int sourceLength, int frameShift)
+        {
+            var source = TestVector.RandomDouble(42, sourceLength, 1);
+            var window = WindowFunctions.Hann(128);
+
+            var exception = Assert.Throws<ArgumentException>(new Action(() => source.Stft(window, frameShift, StftMode.Analysis)));
+
+            Assert.That(exception!.ParamName, Is.EqualTo("source"));
+        }
+
+        [TestCase(1, 2)]
+        [TestCase(63, 2)]
+        [TestCase(64, 2)]
+        [TestCase(65, 3)]
+        [TestCase(128, 3)]
+        [TestCase(129, 4)]
+        public void FrameCount_SynthesisMode(int sourceLength, int expectedCount)
+        {
+            var source = TestVector.RandomDouble(42, sourceLength, 1);
+            var window = WindowFunctions.SquareRootHann(128);
+
+            var (spectrogram, info) = source.Stft(window, 64, StftMode.Synthesis);
+
+            Assert.That(spectrogram.Length, Is.EqualTo(expectedCount));
+            Assert.That(info.FirstFramePosition, Is.EqualTo(-64));
+            NumAssert.AreSame(source, spectrogram.Istft(info), 1.0E-12);
+        }
+
         [TestCase(1000, 128, 64, 1, 1)]
         [TestCase(1000, 128, 64, 3, 2)]
         [TestCase(1500, 64, 16, 1, 1)]

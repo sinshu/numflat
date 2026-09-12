@@ -8,17 +8,13 @@ namespace NumFlat.SignalProcessing
     public enum StftMode
     {
         /// <summary>
-        /// Computes the STFT for analysis purposes.
-        /// Since all short-time frames fit within the length of the original signal,
-        /// zero-filling has no effect.
-        /// However, information at the beginning and end of the original signal may be lost.
+        /// Uses only frames within the signal, potentially losing information near its boundaries.
         /// </summary>
         Analysis,
 
         /// <summary>
-        /// Computes the STFT for synthesis purposes.
-        /// Short-time frames completely cover the entire original signal, allowing for perfect reconstruction.
-        /// However, zero-filling may disturb the frequency characteristics of the beginning and ending short-time frames.
+        /// Adds frames with zeros outside the signal for reconstruction,
+        /// potentially affecting frequency characteristics near its boundaries.
         /// </summary>
         Synthesis,
     }

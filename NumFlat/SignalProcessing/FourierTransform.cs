@@ -419,8 +419,13 @@ namespace NumFlat.SignalProcessing
             int frameCount;
             if (mode == StftMode.Analysis)
             {
+                if (source.Count < window.Count)
+                {
+                    throw new ArgumentException($"The source signal length '{source.Count}' must be greater than or equal to the window length '{window.Count}' in analysis mode.", nameof(source));
+                }
+
                 firstFramePosition = 0;
-                frameCount = (source.Count - window.Count) / frameShift;
+                frameCount = 1 + (source.Count - window.Count) / frameShift;
             }
             else if (mode == StftMode.Synthesis)
             {
