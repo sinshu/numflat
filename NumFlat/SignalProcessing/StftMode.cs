@@ -3,18 +3,22 @@
 namespace NumFlat.SignalProcessing
 {
     /// <summary>
-    /// Specifies an STFT mode.
+    /// Specifies how the STFT handles signal boundaries.
     /// </summary>
     public enum StftMode
     {
         /// <summary>
-        /// Uses only frames within the signal, potentially losing information near its boundaries.
+        /// Computes the STFT using only frames that fit entirely within the input signal.
+        /// No zero-padding is required, but samples near the beginning and end of the signal
+        /// may not be fully represented.
         /// </summary>
         Analysis,
 
         /// <summary>
-        /// Adds frames with zeros outside the signal for reconstruction,
-        /// potentially affecting frequency characteristics near its boundaries.
+        /// Computes the STFT using frames that fully cover the input signal.
+        /// This enables perfect reconstruction by the inverse STFT, but requires zero-padding
+        /// near the signal boundaries, which may affect the spectral characteristics of the
+        /// first and last frames.
         /// </summary>
         Synthesis,
     }
