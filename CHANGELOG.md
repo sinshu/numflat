@@ -1,4 +1,8 @@
-﻿# v1.3.4
+﻿# v1.3.5
+
+* Fixed an issue where STFT produced one fewer frame than expected.
+
+# v1.3.4
 
 * Added `Special.GreatestCommonDivisor`.
 * Updated `SignalProcessing.Resample` to use the fast path in more cases.
